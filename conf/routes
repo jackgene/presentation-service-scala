@@ -1,0 +1,21 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# https://www.playframework.com/documentation/latest/ScalaRouting
+# ~~~~
+
+GET         /                           controllers.Assets.at(path="/public", file="html/deck.html")
+GET         /event/language-poll        controllers.MainController.languagePollEvent()
+GET         /event/question             controllers.MainController.questionEvent()
+GET         /event/transcription        controllers.MainController.transcriptionEvent()
+
+GET         /moderator                  controllers.Assets.at(path="/public", file="html/moderator.html")
+GET         /moderator/event            controllers.MainController.moderationEvent()
+
+POST        /chat                       controllers.MainController.chat(route, text)
+GET         /reset                      controllers.MainController.reset()
+
+GET         /transcriber                controllers.Assets.at(path="/public", file="html/transcriber.html")
+POST        /transcription              controllers.MainController.transcription(text)
+
+# Map static resources from the /public folder to the /assets URL path
+GET         /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
