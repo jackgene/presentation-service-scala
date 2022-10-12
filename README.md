@@ -1,1 +1,6 @@
-# What Does it Mean for a Language to be Strongly Typed?
+# Presentation Service in Scala and Play Framework
+
+Run:
+```shell
+./sbt run
+```
