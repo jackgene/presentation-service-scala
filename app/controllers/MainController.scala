@@ -26,7 +26,7 @@ class MainController @Inject() (cc: ControllerComponents)
   private val languagePollActor: ActorRef =
     system.actorOf(
       SendersByTokenCounterActor.props(
-        Token.languageFromFirstWord, chatMsgActor, rejectedMsgActor
+        Token.languagesFromWords, chatMsgActor, rejectedMsgActor
       ),
       "language-poll"
     )

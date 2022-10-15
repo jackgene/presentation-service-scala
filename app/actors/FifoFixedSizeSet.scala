@@ -45,6 +45,21 @@ class FifoFixedSizeSet[T] private (
           Some(insertionOrder.headOption)
         )
 
+  def addAll(items: Seq[T]): (FifoFixedSizeSet[T], Option[Seq[T]]) =
+    items.foldLeft((this, None: Option[Seq[T]])) { (accum: (FifoFixedSizeSet[T], Option[Seq[T]]), item: T) =>
+      val (accumSet: FifoFixedSizeSet[T], accumUpdatesOpt: Option[Seq[T]]) = accum
+      val (nextAccumSet: FifoFixedSizeSet[T], updateOpt: Option[Option[T]]) = accumSet.add(item)
+
+      (
+        nextAccumSet,
+        (accumUpdatesOpt, updateOpt) match {
+          case (None, Some(update)) => Some(update.toSeq)
+          case (Some(accumUpdates), Some(update)) => Some(update.toSeq ++ accumUpdates)
+          case (_, None) => accumUpdatesOpt
+        }
+      )
+    }
+
   def toSeq: Seq[T] = insertionOrder
 
   override def toString: String =
