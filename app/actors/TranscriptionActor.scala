@@ -12,7 +12,7 @@ object TranscriptionActor {
   case class Transcription(text: String)
 
   // JSON
-  private implicit val TranscriptionWrites: Writes[Transcription] =
+  private implicit val transcriptionWrites: Writes[Transcription] =
     (transcription: Transcription) => Json.obj("transcriptionText" -> transcription.text)
 
   def props: Props = Props(new TranscriptionActor())
@@ -27,8 +27,8 @@ object TranscriptionActor {
     transcriptions ! TranscriptionActor.Register(listener = self)
 
     override def receive: Receive = {
-      case transcriptions: TranscriptionActor.Transcription =>
-        webSocketClient ! Json.toJson(transcriptions)
+      case transcription: TranscriptionActor.Transcription =>
+        webSocketClient ! Json.toJson(transcription)
     }
   }
 }
