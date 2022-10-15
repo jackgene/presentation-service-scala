@@ -1,7 +1,12 @@
 package actors
 
+import play.api.libs.json._
+
 object FifoFixedSizeSet {
   def sized[T](size: Int): FifoFixedSizeSet[T] = new FifoFixedSizeSet[T](size)
+
+  implicit def writes[T](implicit itemWrites: Writes[T]): Writes[FifoFixedSizeSet[T]] =
+    (set: FifoFixedSizeSet[T]) => Json.arr(set.toSeq.map(itemWrites.writes))
 }
 
 class FifoFixedSizeSet[T] private (
@@ -39,6 +44,8 @@ class FifoFixedSizeSet[T] private (
           ),
           Some(insertionOrder.headOption)
         )
+
+  def toSeq: Seq[T] = insertionOrder
 
   override def toString: String =
     insertionOrder.mkString("FifoQueueSet(", ", ", ")")
