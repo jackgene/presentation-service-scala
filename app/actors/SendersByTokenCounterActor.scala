@@ -39,7 +39,7 @@ object SendersByTokenCounterActor {
     )
 
   def props(
-      extractToken: String => Option[String],
+      extractToken: String => Seq[String],
       chatMessageActor: ActorRef, rejectedMessageActor: ActorRef):
       Props =
     Props(
@@ -82,7 +82,7 @@ object SendersByTokenCounterActor {
   }
 }
 private class SendersByTokenCounterActor(
-    extractToken: String => Option[String],
+    extractToken: String => Seq[String],
     chatMessageActor: ActorRef, rejectedMessageActor: ActorRef)
     extends Actor with ActorLogging {
   import SendersByTokenCounterActor._
@@ -121,32 +121,43 @@ private class SendersByTokenCounterActor(
       listeners: Set[ActorRef]): Receive = {
     case event @ ChatMessageActor.New(msg: ChatMessage) =>
       val senderOpt: Option[String] = Option(msg.sender).filter { _ != "" }
-      val newTokenOpt: Option[String] = extractToken(msg.text)
+      val newTokens: Seq[String] = extractToken(msg.text)
 
-      newTokenOpt match {
-        case Some(newToken: String) =>
-          log.info(s"Extracted token \"${newToken}\"")
+      newTokens match {
+        case Nil =>
+          log.info("No token extracted")
+          rejectedMessageActor ! event
+          context.become(
+            running(
+              chatMessagesAndTokens :+ ChatMessageAndTokens(msg, Nil),
+              tokensBySender, tokenFrequencies, listeners
+            )
+          )
+        case newTokens =>
+          log.info(s"Extracted tokens ${newTokens.mkString("\"", "\", \"", "\"")}")
           val newChatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens] =
-            chatMessagesAndTokens :+ ChatMessageAndTokens(msg, Seq(newToken))
+            chatMessagesAndTokens :+ ChatMessageAndTokens(msg, newTokens)
           val (
             newTokensBySender: Map[String, FifoFixedSizeSet[String]],
-            updated: Option[Option[String]]
+            updated: Option[Seq[String]]
           ) = senderOpt match {
             case Some(sender: String) =>
-              val (tokens: FifoFixedSizeSet[String], updated: Option[Option[String]]) =
-                tokensBySender(sender).add(newToken)
+              val (tokens: FifoFixedSizeSet[String], updated: Option[Seq[String]]) =
+                tokensBySender(sender).addAll(newTokens)
               (tokensBySender.updated(sender, tokens), updated)
 
-            case None => (tokensBySender, Some(None))
+            case None => (tokensBySender, Some(Nil))
           }
           val newTokenFrequencies: Frequencies = updated match {
-            case Some(oldTokenOpt: Option[String]) =>
-              val newTokenFrequencies = oldTokenOpt.
-                // Only remove old token if there's a valid new token replacing it
-                foldLeft(tokenFrequencies) { (freqs: Frequencies, oldToken: String) =>
-                  freqs.updated(oldToken, -1)
-                }.
-                updated(newToken, 1)
+            case Some(oldTokens: Seq[String]) =>
+              val newTokenFrequencies = newTokens.
+                foldLeft(
+                  oldTokens.foldLeft(tokenFrequencies) { (freqs: Frequencies, oldToken: String) =>
+                    freqs.updated(oldToken, -1)
+                  }
+                ) { (freqs: Frequencies, newToken: String) =>
+                  freqs.updated(newToken, 1)
+                }
               for (listener: ActorRef <- listeners) {
                 listener ! Counts(
                   newChatMessagesAndTokens, newTokensBySender, newTokenFrequencies
@@ -160,16 +171,6 @@ private class SendersByTokenCounterActor(
           context.become(
             running(
               newChatMessagesAndTokens, newTokensBySender, newTokenFrequencies, listeners
-            )
-          )
-
-        case None =>
-          log.info("No token extracted")
-          rejectedMessageActor ! event
-          context.become(
-            running(
-              chatMessagesAndTokens :+ ChatMessageAndTokens(msg, Nil),
-              tokensBySender, tokenFrequencies, listeners
             )
           )
       }

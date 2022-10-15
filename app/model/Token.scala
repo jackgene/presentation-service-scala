@@ -54,11 +54,18 @@ object Token {
     "typescript" -> "TypeScript",
   )
 
-  def languageFromFirstWord(text: String): Option[String] = {
+  def languageFromFirstWord(text: String): Seq[String] = {
     val normalizedFirstWordOpt: Option[String] = text.trim.
-      split("""[\s!,./]""").headOption.
+      split("""[^\w#]""").headOption.
       map { _.toLowerCase }
-    normalizedFirstWordOpt.flatMap { TokensByString.get }
+    normalizedFirstWordOpt.flatMap { TokensByString.get }.toSeq
+  }
+
+  def languagesFromWords(text: String): Seq[String] = {
+    val normalizedWords: Seq[String] = text.trim.
+      split("""[^\w#]""").toSeq.
+      map { _.toLowerCase }
+    normalizedWords.flatMap { TokensByString.get }
   }
 
   private val TokensByLetter: Map[Char,String] = Map(
@@ -90,10 +97,11 @@ object Token {
     'z' -> "Rust",
   )
 
-  def languageFromFirstLetter(text: String): Option[String] = {
+  def languageFromFirstLetter(text: String): Seq[String] = {
     val normalizedFirstLetterOpt: Option[Char] = text.trim.toLowerCase.headOption
     normalizedFirstLetterOpt.
       flatMap { TokensByLetter.get }.
-      orElse(Some("Swift"))
+      orElse(Some("Swift")).
+      toSeq
   }
 }
