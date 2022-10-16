@@ -30,6 +30,13 @@ class MainController @Inject() (cc: ControllerComponents)
       ),
       "language-poll"
     )
+  private val wordCloudActor: ActorRef =
+    system.actorOf(
+      SendersByTokenCounterActor.props(
+        Token.words, chatMsgActor, rejectedMsgActor
+      ),
+      "word-cloud"
+    )
   private val questionActor: ActorRef =
     system.actorOf(
       ApprovalRouterActor.props(chatMsgActor, rejectedMsgActor),
@@ -41,6 +48,12 @@ class MainController @Inject() (cc: ControllerComponents)
   def languagePollEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { _: RequestHeader =>
     ActorFlow.actorRef { webSocketClient: ActorRef =>
       SendersByTokenCounterActor.WebSocketActor.props(webSocketClient, languagePollActor)
+    }
+  }
+
+  def wordCloudEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { _: RequestHeader =>
+    ActorFlow.actorRef { webSocketClient: ActorRef =>
+      SendersByTokenCounterActor.WebSocketActor.props(webSocketClient, wordCloudActor)
     }
   }
 
@@ -74,6 +87,7 @@ class MainController @Inject() (cc: ControllerComponents)
 
   def reset(): Action[Unit] = Action(parse.empty) { _: Request[Unit] =>
     languagePollActor ! SendersByTokenCounterActor.Reset
+    wordCloudActor ! SendersByTokenCounterActor.Reset
     questionActor ! ApprovalRouterActor.Reset
     NoContent
   }
