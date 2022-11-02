@@ -78,6 +78,21 @@ type EventBody
   | Questions (List String)
 
 
+chatMessageDecoder : Decoder ChatMessage
+chatMessageDecoder =
+  Decode.map3 ChatMessage
+  ( Decode.field "s" Decode.string )
+  ( Decode.field "r" Decode.string )
+  ( Decode.field "t" Decode.string )
+
+
+chatMessageAndTokensDecoder : Decoder ChatMessageAndTokens
+chatMessageAndTokensDecoder =
+  Decode.map2 ChatMessageAndTokens
+  ( Decode.field "chatMessage" chatMessageDecoder )
+  ( Decode.field "tokens" (Decode.list Decode.string) )
+
+
 eventBodyDecoder : Decoder EventBody
 eventBodyDecoder =
   Decode.oneOf
