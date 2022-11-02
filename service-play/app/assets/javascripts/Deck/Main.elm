@@ -3,7 +3,10 @@ module Deck exposing (main)
 import AnimationFrame
 import Array exposing (Array)
 import Deck.Common exposing
-  ( Model, Msg(..), Navigation, Slide(Slide), SlideModel, typingSpeedMultiplier )
+  ( ChatMessage, ChatMessageAndTokens, Model
+  , Msg(..), Navigation, Slide(Slide), SlideModel
+  , typingSpeedMultiplier
+  )
 import Deck.Slide exposing
   ( activeNavigationOf, slideFromLocationHash, slideView, firstQuestionIndex )
 import Dict exposing (Dict)
@@ -53,10 +56,10 @@ init location =
         , activeNavigation = Array.empty
         , currentSlide = slideFromLocationHash "#"
         , animationFramesRemaining = 0
-        , languagesAndCounts = []
-        , typeScriptVsJavaScript =
-          { typeScriptFraction = 0.0
-          , lastVoteTypeScript = False
+        , wordCloud =
+          { tokensAndCounts = []
+          , tokensBySender = Dict.empty
+          , chatMessagesAndTokens = []
           }
         , questions = Array.empty
         , transcription = { text = "", updated = 0 }
@@ -74,8 +77,23 @@ init location =
 
 -- Update
 type EventBody
-  = TokensAndCounts (List (Int, (List String)))
+  = Tokens (List ChatMessageAndTokens) (Dict String (List String)) (List (Int, (List String)))
   | Questions (List String)
+
+
+chatMessageDecoder : Decoder ChatMessage
+chatMessageDecoder =
+  Decode.map3 ChatMessage
+  ( Decode.field "s" Decode.string )
+  ( Decode.field "r" Decode.string )
+  ( Decode.field "t" Decode.string )
+
+
+chatMessageAndTokensDecoder : Decoder ChatMessageAndTokens
+chatMessageAndTokensDecoder =
+  Decode.map2 ChatMessageAndTokens
+  ( Decode.field "chatMessage" chatMessageDecoder )
+  ( Decode.field "tokens" (Decode.list Decode.string) )
 
 
 eventBodyDecoder : Decoder EventBody
@@ -83,9 +101,15 @@ eventBodyDecoder =
   Decode.oneOf
   [ Decode.map Questions
     ( Decode.field "chatText"
-      (Decode.list Decode.string)
+      ( Decode.list Decode.string )
     )
-  , Decode.map TokensAndCounts
+  , Decode.map3 Tokens
+    ( Decode.field "chatMessagesAndTokens"
+      ( Decode.list chatMessageAndTokensDecoder )
+    )
+    ( Decode.field "tokensBySender"
+      ( Decode.dict (Decode.list Decode.string) )
+    )
     ( Decode.field "tokensAndCounts"
       ( Decode.list
         ( Decode.map2 (\l r -> (l, r))
@@ -144,7 +168,7 @@ update msg model =
           if newSlideIdx == curSlideIdx then Cmd.none
           else
             Navigation.newUrl
-            ( if newSlideIdx == 0 then "#"
+            ( if newSlideIdx == 0 then "."
               else "#slide-" ++ toString newSlideIdx
             )
       )
@@ -167,43 +191,28 @@ update msg model =
 
     Event body ->
       case Decode.decodeString eventBodyDecoder body of
-        Ok (TokensAndCounts langsByCount) ->
+        Ok (Tokens chatMessagesAndTokens wordsBySender wordsByCount) ->
           let
-            langsAndCounts : List (String, Int)
-            langsAndCounts =
+            wordsAndCounts : List (String, Int)
+            wordsAndCounts =
               Dict.foldr
-              ( \count langs accum ->
+              ( \count tokens accum ->
                 accum ++ (
                   List.map
-                  ( \lang -> (lang, count) )
-                  langs
+                  ( \token -> (token, count) )
+                  tokens
                 )
               )
               []
-              ( Dict.fromList langsByCount ) -- Sorts by count
-
-            (jsCount, tsCount) =
-              List.foldl
-              ( \(lang, count) (jsCountAcc, tsCountAcc) ->
-                case lang of
-                  "JavaScript" -> (toFloat count, tsCountAcc)
-                  "TypeScript" -> (jsCountAcc, toFloat count)
-                  _ -> (jsCountAcc, tsCountAcc)
-              )
-              (0.0, 0.0)
-              langsAndCounts
-
-            tsFrac : Float
-            tsFrac = tsCount / (tsCount + jsCount)
+              ( Dict.fromList wordsByCount ) -- Sorts by count
 
             statsUpdatedModel : Model
             statsUpdatedModel =
               { model
-              | languagesAndCounts = langsAndCounts
-              , typeScriptVsJavaScript =
-                { typeScriptFraction = tsFrac
-                , lastVoteTypeScript =
-                  tsFrac > model.typeScriptVsJavaScript.typeScriptFraction
+              | wordCloud =
+                { tokensAndCounts = wordsAndCounts
+                , tokensBySender = wordsBySender
+                , chatMessagesAndTokens = chatMessagesAndTokens
                 }
               }
 
