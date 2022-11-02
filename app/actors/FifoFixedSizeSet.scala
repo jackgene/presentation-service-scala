@@ -45,19 +45,16 @@ class FifoFixedSizeSet[T] private (
           Some(insertionOrder.headOption)
         )
 
-  def addAll(items: Seq[T]): (FifoFixedSizeSet[T], Option[Seq[T]]) =
-    items.foldLeft((this, None: Option[Seq[T]])) { (accum: (FifoFixedSizeSet[T], Option[Seq[T]]), item: T) =>
-      val (accumSet: FifoFixedSizeSet[T], accumUpdatesOpt: Option[Seq[T]]) = accum
-      val (nextAccumSet: FifoFixedSizeSet[T], updateOpt: Option[Option[T]]) = accumSet.add(item)
-
+  def addAll(items: Seq[T]): (FifoFixedSizeSet[T], Seq[Option[Option[T]]]) =
+    items.foldLeft((this, IndexedSeq[Option[Option[T]]]())) {
       (
-        nextAccumSet,
-        (accumUpdatesOpt, updateOpt) match {
-          case (None, Some(update)) => Some(update.toSeq)
-          case (Some(accumUpdates), Some(update)) => Some(update.toSeq ++ accumUpdates)
-          case (_, None) => accumUpdatesOpt
-        }
-      )
+        accum: (FifoFixedSizeSet[T], IndexedSeq[Option[Option[T]]]), item: T
+      ) =>
+
+      val (accumSet: FifoFixedSizeSet[T], accumUpdates: IndexedSeq[Option[Option[T]]]) = accum
+      val (nextAccumSet: FifoFixedSizeSet[T], update: Option[Option[T]]) = accumSet.add(item)
+
+      (nextAccumSet, accumUpdates :+ update)
     }
 
   def toSeq: Seq[T] = insertionOrder
