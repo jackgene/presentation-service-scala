@@ -35,7 +35,7 @@ object SendersByTokenCounterActor {
     (counts: Counts) => Json.obj(
       "chatMessagesAndTokens" -> counts.chatMessagesAndTokens,
       "tokensBySender" -> counts.tokensBySender.view.mapValues(_.toSeq),
-      "tokensByCount" -> counts.tokensByCount.itemsByCount.toSeq // JSON keys must be strings
+      "tokensAndCounts" -> counts.tokensByCount.itemsByCount.toSeq // JSON keys must be strings
     )
 
   def props(
@@ -87,8 +87,9 @@ private class SendersByTokenCounterActor(
     extends Actor with ActorLogging {
   import SendersByTokenCounterActor._
 
+  private val limit: Int = 3
   private val emptyTokensBySender: Map[String, FifoFixedSizeSet[String]] =
-    Map().withDefaultValue(FifoFixedSizeSet.sized(3))
+    Map().withDefaultValue(FifoFixedSizeSet.sized(limit))
 
   private def paused(
       chatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens],
@@ -121,59 +122,74 @@ private class SendersByTokenCounterActor(
       listeners: Set[ActorRef]): Receive = {
     case event @ ChatMessageActor.New(msg: ChatMessage) =>
       val senderOpt: Option[String] = Option(msg.sender).filter { _ != "" }
-      val newTokens: Seq[String] = extractToken(msg.text)
+      val extractedTokens: Seq[String] = extractToken(msg.text)
 
-      newTokens match {
-        case Nil =>
-          log.info("No token extracted")
-          rejectedMessageActor ! event
-          context.become(
-            running(
+      val (
+        newChatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens],
+        newTokensBySender: Map[String, FifoFixedSizeSet[String]],
+        newTokenFrequencies: Frequencies
+      ) =
+        extractedTokens match {
+          case Nil =>
+            log.info("No token extracted")
+            rejectedMessageActor ! event
+            (
               chatMessagesAndTokens :+ ChatMessageAndTokens(msg, Nil),
-              tokensBySender, tokenFrequencies, listeners
+              tokensBySender, tokenFrequencies
             )
-          )
-        case newTokens =>
-          log.info(s"Extracted tokens ${newTokens.mkString("\"", "\", \"", "\"")}")
-          val newChatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens] =
-            chatMessagesAndTokens :+ ChatMessageAndTokens(msg, newTokens)
-          val (
-            newTokensBySender: Map[String, FifoFixedSizeSet[String]],
-            updated: Option[Seq[String]]
-          ) = senderOpt match {
-            case Some(sender: String) =>
-              val (tokens: FifoFixedSizeSet[String], updated: Option[Seq[String]]) =
-                tokensBySender(sender).addAll(newTokens)
-              (tokensBySender.updated(sender, tokens), updated)
 
-            case None => (tokensBySender, Some(Nil))
-          }
-          val newTokenFrequencies: Frequencies = updated match {
-            case Some(oldTokens: Seq[String]) =>
-              val newTokenFrequencies = newTokens.
-                foldLeft(
-                  oldTokens.foldLeft(tokenFrequencies) { (freqs: Frequencies, oldToken: String) =>
-                    freqs.updated(oldToken, -1)
-                  }
-                ) { (freqs: Frequencies, newToken: String) =>
-                  freqs.updated(newToken, 1)
-                }
-              for (listener: ActorRef <- listeners) {
-                listener ! Counts(
-                  newChatMessagesAndTokens, newTokensBySender, newTokenFrequencies
+          case extractedTokens =>
+            log.info(s"Extracted tokens ${extractedTokens.mkString("\"", "\", \"", "\"")}")
+            val newChatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens] =
+              chatMessagesAndTokens :+ ChatMessageAndTokens(msg, extractedTokens)
+            val (
+              newTokensBySender: Map[String, FifoFixedSizeSet[String]],
+              addedTokens: Set[String],
+              removedTokens: Set[String]
+            ) = senderOpt match {
+              case Some(sender: String) =>
+                val (tokens: FifoFixedSizeSet[String], updates: Seq[Option[Option[String]]]) =
+                  tokensBySender(sender).addAll(extractedTokens)
+                val addedTokens: Set[String] = extractedTokens.zip(updates).
+                  collect {
+                    case (token: String, Some(_)) => token
+                  }.
+                  toSet
+                val removedTokens : Set[String] = updates.
+                  collect {
+                    case Some(Some(token: String)) => token
+                  }.
+                  toSet
+                (
+                  tokensBySender.updated(sender, tokens),
+                  addedTokens -- removedTokens,
+                  removedTokens -- addedTokens
                 )
+
+              case None => (tokensBySender, extractedTokens.toSet, Set.empty)
+            }
+            val newTokenFrequencies: Frequencies = addedTokens.
+              foldLeft(
+                removedTokens.foldLeft(tokenFrequencies) { (freqs: Frequencies, oldToken: String) =>
+                  freqs.updated(oldToken, -1)
+                }
+              ) { (freqs: Frequencies, newToken: String) =>
+                freqs.updated(newToken, 1)
               }
-              newTokenFrequencies
 
-            case None => tokenFrequencies
-          }
+            (newChatMessagesAndTokens, newTokensBySender, newTokenFrequencies)
+        }
 
-          context.become(
-            running(
-              newChatMessagesAndTokens, newTokensBySender, newTokenFrequencies, listeners
-            )
-          )
+      for (listener: ActorRef <- listeners) {
+        listener ! Counts(
+          newChatMessagesAndTokens, newTokensBySender, newTokenFrequencies
+        )
       }
+      context.become(
+        running(
+          newChatMessagesAndTokens, newTokensBySender, newTokenFrequencies, listeners
+        )
+      )
 
     case Reset =>
       for (listener: ActorRef <- listeners) {
