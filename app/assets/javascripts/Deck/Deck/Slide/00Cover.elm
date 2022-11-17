@@ -27,13 +27,15 @@ cover =
       , div
         [ css
           [ position absolute
-          , top (vw 20), left (vw 35), width (vw 58)
+          , top (vw 17), left (vw 35), width (vw 58)
           ]
         ]
         [ h1 [ css [ margin zero, headerFontFamily, fontSize (vw 4.5) ] ]
           [ text "Kafka as the"
           , br [] []
           , text "Source of Truth"
+          , br [] []
+          , text "in Event Driven Systems"
           ]
         , p
           [ css [ margin2 (em 2.5) zero, fontSize (em 0.875) ] ]
