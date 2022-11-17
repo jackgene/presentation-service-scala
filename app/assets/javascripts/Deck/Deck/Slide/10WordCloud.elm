@@ -195,9 +195,19 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
                           ]
                         ]
                       ]
+                    , div
+                      [ css
+                        [ position absolute, left (em (if step > 0 then 27 else 43))
+                        , transition
+                          ( if scaleChanged then []
+                            else [ Css.Transitions.left3 transitionDurationMs 0 easeInOut ]
+                          )
+                        ]
+                      ]
+                      [ text "- flatMap() →" ]
                     , div -- extracted tokens
                       [ css
-                        [ position absolute, left (em (if step > 0 then 36 else 45))
+                        [ position absolute, left (em (if step > 0 then 36 else 52))
                         , transition
                           ( if scaleChanged then []
                             else [ Css.Transitions.left3 transitionDurationMs 0 easeInOut ]
@@ -361,7 +371,7 @@ implementation1EventSource =
     ( \page model ->
       standardSlideView page heading implementationSubHeading
       ( div []
-        [ p [] [ text "The application processes a stream of Zoom chat messages:" ]
+        [ p [] [ text "We start with a stream of Zoom chat messages (most recent depicted first):" ]
         , implementationDiagramView model.wordCloud 0 -0.2 0.75 False
         ]
       )
