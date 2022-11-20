@@ -636,7 +636,6 @@ urlRes.fold(
     onSuccess = { println(it) },
     onFailure = { println("Unable to decode URL") },
 )
-\xAD
 """
   in
   { baseSlideModel
