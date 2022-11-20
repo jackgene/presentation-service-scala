@@ -60,7 +60,15 @@ black = rgb 0 0 0
 
 
 primary : Color
-primary = rgb 224 229 249
+primary = rgb 35 132 198
+
+
+secondary : Color
+secondary = rgb 28 173 226
+
+
+tertiary : Color
+tertiary = rgb 39 206 215
 
 
 blackTranslucent : Color
