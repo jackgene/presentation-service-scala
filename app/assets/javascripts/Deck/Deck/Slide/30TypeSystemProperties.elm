@@ -98,6 +98,7 @@ typeSystemProperties =
           [ ( "Go", scoreRequired )
           , ( "Python", scoreOptional )
           , ( "TypeScript", scorePartialAndOptional )
+          , ( "Scala", scoreRequired )
           , ( "Kotlin", scoreRequired )
           , ( "Swift", scoreRequired )
           ]
@@ -107,6 +108,7 @@ typeSystemProperties =
           [ ( "Go", scoreUnsupported )
           , ( "Python", scoreOptional )
           , ( "TypeScript", scoreOptional )
+          , ( "Scala", scoreOptional )
           , ( "Kotlin", scoreDefeatable )
           , ( "Swift", scoreDefeatable )
           ]
@@ -116,6 +118,7 @@ typeSystemProperties =
           [ ( "Go", scoreUnsupported )
           , ( "Python", scorePartialAndOptional )
           , ( "TypeScript", scoreOptional )
+          , ( "Scala", scoreOptional )
           , ( "Kotlin", scoreOptional )
           , ( "Swift", scorePartialAndOptional )
           ]
@@ -125,6 +128,7 @@ typeSystemProperties =
           [ ( "Go", scorePartialAndOptional )
           , ( "Python", scorePartialAndOptional )
           , ( "TypeScript", scorePartialAndOptional )
+          , ( "Scala", scoreOptional )
           , ( "Kotlin", scoreDefeatable )
           , ( "Swift", scoreDefeatable )
           ]
@@ -134,6 +138,7 @@ typeSystemProperties =
           [ ( "Go", scoreUnsupported )
           , ( "Python", scorePartialAndOptional )
           , ( "TypeScript", scorePartialAndOptional )
+          , ( "Scala", scorePartialAndOptional )
           , ( "Kotlin", scorePartialAndOptional )
           , ( "Swift", scoreDefeatable )
           ]
@@ -143,6 +148,7 @@ typeSystemProperties =
           [ ( "Go", scoreUnsupported )
           , ( "Python", scoreOptional )
           , ( "TypeScript", scoreOptional )
+          , ( "Scala", scoreOptional )
           , ( "Kotlin", scoreOptional )
           , ( "Swift", scoreOptional )
           ]
@@ -152,6 +158,7 @@ typeSystemProperties =
           [ ( "Go", scoreOptional )
           , ( "Python", scoreOptional )
           , ( "TypeScript", scoreOptional )
+          , ( "Scala", scoreOptional )
           , ( "Kotlin", scoreOptional )
           , ( "Swift", scoreOptional )
           ]
@@ -161,6 +168,7 @@ typeSystemProperties =
           [ ( "Go", scorePartialAndOptional )
           , ( "Python", scorePartialAndOptional  )
           , ( "TypeScript", scoreOptional )
+          , ( "Scala", scoreOptional )
           , ( "Kotlin", scoreOptional )
           , ( "Swift", scoreOptional )
           ]
@@ -416,7 +424,7 @@ languageReport propertyIndex =
       ( div []
         [ p [] [ text "Type system strengths of the languages we are evaluating:" ]
         , div [ css [ width (pct 90), margin2 zero auto ] ]
-          [ div [ css [ position relative, height (em 10) ] ]
+          [ div [ css [ position relative, height (em (2 * toFloat (Dict.size property.cumulativeScores))) ] ]
             ( -- Vertical lines
               List.map
               ( \score ->
