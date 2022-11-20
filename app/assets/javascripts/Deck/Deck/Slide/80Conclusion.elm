@@ -66,6 +66,12 @@ enableStricterTypeChecking =
               , text " - "
               , syntaxHighlightedCodeSnippet XML "tsc --strict --noUncheckedIndexedAccess"
               ]
+            , li []
+              [ b [] [ text "Scala" ]
+              , text " - "
+              , syntaxHighlightedCodeSnippet XML
+                "-Xfatal-warnings -Yexplicit-nulls -Wdead-code -Wextra-implicit -Wnumeric-widen -Woctal-literal"
+              ]
             ]
           ]
         ]
