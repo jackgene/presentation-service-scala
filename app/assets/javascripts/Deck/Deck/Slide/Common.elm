@@ -47,7 +47,7 @@ baseSlideModel =
 
 languages : Set String
 languages =
-  Set.fromList ["Go", "Python", "TypeScript", "Scala", "Kotlin", "Swift"]
+  Set.fromList ["Go", "Python", "Scala", "Swift"]
 
 
 -- Styles
