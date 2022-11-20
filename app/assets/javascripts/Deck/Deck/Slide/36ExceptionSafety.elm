@@ -295,6 +295,7 @@ def safe_unquote(quoted: str) -> str | Exception:
 unquoted_or_err: str | Exception = safe_unquote("bad%c3url")
 if not isinstance(unquoted_or_err, Exception):
 print(unquoted_or_err.lower())
+\xAD
 """
   in
   { baseSlideModel
@@ -409,6 +410,7 @@ function safeDecodeURI(encodedURI: string): string | Error {
 const urlOrErr: string | Error = safeDecodeURI("bad%url");
 if (urlOrErr instanceof string)
 console.log(urlOrErr.toLowerCase());
+\xAD
 """
   in
   { baseSlideModel
@@ -523,6 +525,7 @@ urlRes.fold(
     onSuccess = { println(it) },
     onFailure = { println("Unable to decode URL") },
 )
+\xAD
 """
   in
   { baseSlideModel
