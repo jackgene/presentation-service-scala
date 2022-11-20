@@ -25,6 +25,7 @@ import Deck.Slide.Template exposing (standardSlideView)
 import Dict exposing (Dict)
 import Html.Styled exposing (Html, text, div, p, table, td, th, tr)
 import Html.Styled.Attributes exposing (css)
+import Set
 import Svg.Styled.Attributes as SvgAttributes
 
 
@@ -84,6 +85,13 @@ typeSystemProperties =
   let
     nameProblemAndScores : List (String, String, Dict String Score)
     nameProblemAndScores =
+      List.map
+      ( \(name, description, scores) ->
+        ( name
+        , description
+        , Dict.filter ( \lang _ -> Set.member lang languages ) scores
+        )
+      )
       --[ ( "Memory Safety", "Memory Leaks, Buffer Overlow"
       --  , Dict.fromList
       --    [ ( "Go", scoreDefeatable )
