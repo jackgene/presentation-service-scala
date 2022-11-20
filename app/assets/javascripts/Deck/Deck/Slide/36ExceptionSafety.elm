@@ -511,10 +511,8 @@ safeKotlinInvalid =
       syntaxHighlightedCodeBlock Kotlin
       ( Dict.fromList [ (6, Deletion) ] )
       ( Dict.fromList [ (7, [ ColumnEmphasis Error 0 1 ] ) ] )
-      [ CodeBlockError 7 0
-        [ div []
-          [ text "no value passed for parameter 'onFailure'" ]
-        ]
+      [ CodeBlockError 6 1
+        [ div [] [ text "no value passed for parameter 'onFailure'" ] ]
       ]
       """
 fun safeDecodeUrl(s: String, enc: String): Result<String> =
@@ -525,7 +523,6 @@ urlRes.fold(
     onSuccess = { println(it) },
     onFailure = { println("Unable to decode URL") },
 )
-\xAD
 """
   in
   { baseSlideModel
