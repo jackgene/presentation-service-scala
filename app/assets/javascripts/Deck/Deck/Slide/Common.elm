@@ -54,7 +54,7 @@ black = rgb 0 0 0
 
 
 primary : Color
-primary = rgb 224 229 249
+primary = rgb 37 164 242
 
 
 blackTranslucent : Color

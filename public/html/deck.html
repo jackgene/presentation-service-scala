@@ -20407,7 +20407,7 @@ var _jackgene$live_deck$Deck_Slide_Common$consoleText = A3(_rtfeldman$elm_css$Cs
 var _jackgene$live_deck$Deck_Slide_Common$lightGrey = A3(_rtfeldman$elm_css$Css$rgb, 238, 238, 238);
 var _jackgene$live_deck$Deck_Slide_Common$darkGray = A3(_rtfeldman$elm_css$Css$rgb, 192, 192, 192);
 var _jackgene$live_deck$Deck_Slide_Common$blackTranslucent = A4(_rtfeldman$elm_css$Css$rgba, 32, 31, 27, 0.15);
-var _jackgene$live_deck$Deck_Slide_Common$primary = A3(_rtfeldman$elm_css$Css$rgb, 224, 229, 249);
+var _jackgene$live_deck$Deck_Slide_Common$primary = A3(_rtfeldman$elm_css$Css$rgb, 37, 164, 242);
 var _jackgene$live_deck$Deck_Slide_Common$headerStyle = _rtfeldman$elm_css$Css$batch(
 	{
 		ctor: '::',
@@ -44029,8 +44029,8 @@ var _jackgene$live_deck$Deck_Slide_ExceptionSafety$safeKotlinInvalid = function 
 			ctor: '::',
 			_0: A3(
 				_jackgene$live_deck$Deck_Slide_SyntaxHighlight$CodeBlockError,
-				7,
-				0,
+				6,
+				1,
 				{
 					ctor: '::',
 					_0: A2(
@@ -44045,7 +44045,7 @@ var _jackgene$live_deck$Deck_Slide_ExceptionSafety$safeKotlinInvalid = function 
 				}),
 			_1: {ctor: '[]'}
 		},
-		'\nfun safeDecodeUrl(s: String, enc: String): Result<String> =\n    Result.runCatching { java.net.URLDecoder.decode(s, enc) }\n\nval urlRes: Result<String> = safeDecodeUrl(\"bad%url\", \"UTF-8\")\nurlRes.fold(\n    onSuccess = { println(it) },\n    onFailure = { println(\"Unable to decode URL\") },\n)\n­\n');
+		'\nfun safeDecodeUrl(s: String, enc: String): Result<String> =\n    Result.runCatching { java.net.URLDecoder.decode(s, enc) }\n\nval urlRes: Result<String> = safeDecodeUrl(\"bad%url\", \"UTF-8\")\nurlRes.fold(\n    onSuccess = { println(it) },\n    onFailure = { println(\"Unable to decode URL\") },\n)\n');
 	return _elm_lang$core$Native_Utils.update(
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
