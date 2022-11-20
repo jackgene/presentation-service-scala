@@ -26,7 +26,7 @@ sectionCoverSlideView number title =
   , h1
     [ css
       [ position absolute, margin zero
-      , top (vw 5), left (vw 6)
+      , top (vw 4), left (vw 6)
       , color white, numberFontFamily, fontWeight normal, fontSize (vw 35)
       ]
     ]
