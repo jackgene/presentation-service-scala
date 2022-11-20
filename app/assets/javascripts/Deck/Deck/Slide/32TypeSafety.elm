@@ -4,6 +4,7 @@ module Deck.Slide.TypeSafety exposing
   , safePython, invalidSafePython, unsafePythonUnannotated, unsafePythonRun
   , pythonTypeHintUnannotated, pythonTypeHintWrong, pythonTypeHintWrongRun
   , safeTypeScript, invalidSafeTypeScript, unsafeTypeScriptAny, unsafeTypeScriptUnannotated, unsafeTypeScriptFuncParam
+  , safeScala, invalidSafeScala, invalidUnsafeScala, unsafeScala
   , safeKotlin, invalidSafeKotlin, invalidUnsafeKotlin, unsafeKotlin
   , safeSwift, invalidSafeSwift, invalidUnsafeSwift, unsafeSwift
   )
@@ -38,6 +39,9 @@ subheadingPython = "Python Can Be Type Safe"
 
 subheadingTypeScript : String
 subheadingTypeScript = "TypeScript Can Be Type Safe"
+
+subheadingScala : String
+subheadingScala = "Scala Is Type Safe"
 
 subheadingKotlin : String
 subheadingKotlin = "Kotlin Is Type Safe"
@@ -530,7 +534,7 @@ function multiply(num1: number, num2: number): number {
 
 const product: number = multiply(42, 2.718);
 const product: number = multiply("42", true);
-\xAD
+
 \xAD
 """
   in
@@ -652,6 +656,149 @@ elem.onclose = window.close;
           ]
         , div [] [] -- Skip transition animation
         , div [ css [] ] [ codeBlock ]
+        ]
+      )
+    )
+  }
+
+
+safeScala : UnindexedSlideModel
+safeScala =
+  let
+    codeBlock : Html msg
+    codeBlock =
+      syntaxHighlightedCodeBlock Scala Dict.empty Dict.empty []
+      """
+def multiply(num1: Double, num2: Double): Double = num1 * num2
+
+val product: Double = multiply(42.0, 2.718)
+"""
+  in
+  { baseSlideModel
+  | view =
+    ( \page _ ->
+      standardSlideView page heading subheadingScala
+      ( div []
+        [ p []
+          [ text "Function parameters and return values "
+          , em [] [ text "must " ]
+          , text "have declared types, and must be called with those types:" ]
+        , div [] [ codeBlock ]
+        ]
+      )
+    )
+  }
+
+
+invalidSafeScala : UnindexedSlideModel
+invalidSafeScala =
+  let
+    codeBlock : Html msg
+    codeBlock =
+      syntaxHighlightedCodeBlock Scala
+      ( Dict.fromList [ (2, Deletion), (3, Addition) ] )
+      ( Dict.fromList [ (3, [ ColumnEmphasis Error 31 4,  ColumnEmphasis Error 37 4 ] ) ] )
+      [ CodeBlockError 3 29
+        [ div []
+          [ text """Found:    ("42" : String)""" ]
+        , div []
+          [ text "Required: Double" ]
+        ]
+      , CodeBlockError 2 42
+        [ div []
+          [ text "Found:    (true : Boolean)" ]
+        , div []
+          [ text "Required: Double" ]
+        ]
+      ]
+      """
+def multiply(num1: Double, num2: Double): Double = num1 * num2
+
+val product: Double = multiply(42.0, 2.718)
+val product: Double = multiply("42", true)
+
+\xAD
+"""
+  in
+  { baseSlideModel
+  | view =
+    ( \page _ ->
+      standardSlideView page heading subheadingScala
+      ( div []
+        [ p []
+          [ text "Compilation fails if a function is called with non-matching parameter types:" ]
+        , div [] [ codeBlock ]
+        ]
+      )
+    )
+  }
+
+
+invalidUnsafeScala : UnindexedSlideModel
+invalidUnsafeScala =
+  let
+    codeBlock : Html msg
+    codeBlock =
+      syntaxHighlightedCodeBlock Scala
+      ( Dict.fromList [ (0, Deletion), (1, Addition) ] )
+      ( Dict.fromList [ (1, [ ColumnEmphasis Error 45 6 ] ) ] )
+      [ CodeBlockError 1 45
+        [ div []
+          [ text "value * is not a member of Any" ]
+        ]
+      ]
+      """
+def multiply(num1: Double, num2: Double): Double = num1 * num2
+def multiply(num1: Any, num2: Any): Double = num1 * num2
+
+val product: Double = multiply("42.0", true)
+"""
+  in
+  { baseSlideModel
+  | view =
+    ( \page _ ->
+      standardSlideView page heading subheadingScala
+      ( div []
+        [ p []
+          [ text "As with Go, you cannot accidentally get around Scala’s type safety:" ]
+        , div [] [ codeBlock ]
+        ]
+      )
+    )
+  }
+
+
+unsafeScala : UnindexedSlideModel
+unsafeScala =
+  let
+    codeBlock : Html msg
+    codeBlock =
+      syntaxHighlightedCodeBlock Scala
+      ( Dict.fromList
+        [ (0, Deletion), (1, Addition), (2, Addition), (3, Addition), (4, Addition)
+        , (5, Deletion), (6, Addition)
+        ]
+      )
+      Dict.empty []
+      """
+def multiply(num1: Any, num2: Any): Double = num1 * num2
+def multiply(a1: Any, a2: Any): Option[Double] = (a1, a2) match
+  case (num1: Double, num2: Double) => Some(num1 * num2)
+  case _ => None
+
+val product: Double = multiply("42.0", true)
+val product: Option[Double] = multiply("42.0", true)
+"""
+  in
+  { baseSlideModel
+  | view =
+    ( \page _ ->
+      standardSlideView page heading subheadingScala
+      ( div []
+        [ p []
+          [ text "It takes a little more effort:" ]
+        , div [] [] -- Skip transition animation
+        , div [] [ codeBlock ]
         ]
       )
     )
