@@ -84,6 +84,10 @@ preQuestionSlides =
   , TypeSafety.unsafeTypeScriptAny
   , TypeSafety.unsafeTypeScriptUnannotated
   , TypeSafety.unsafeTypeScriptFuncParam
+  , TypeSafety.safeScala
+  , TypeSafety.invalidSafeScala
+  , TypeSafety.invalidUnsafeScala
+  , TypeSafety.unsafeScala
   , TypeSafety.safeKotlin
   , TypeSafety.invalidSafeKotlin
   , TypeSafety.invalidUnsafeKotlin
@@ -105,6 +109,11 @@ preQuestionSlides =
   , NullSafety.safeTypeScriptNonNullInvalid
   , NullSafety.safeTypeScriptNullableInvalid
   , NullSafety.safeTypeScriptNullable
+  , NullSafety.safeScalaNullableInvalid
+  , NullSafety.safeScalaNullable
+  , NullSafety.safeScalaNullableFun
+  , NullSafety.safeScalaNullableFor
+  , NullSafety.unsafeScala
   , NullSafety.safeKotlinNullable
   , NullSafety.unsafeKotlin
   , NullSafety.safeSwiftNullable
@@ -120,6 +129,8 @@ preQuestionSlides =
   , SafeArrayAccess.unsafeTypeScript
   , SafeArrayAccess.safeTypeScriptInvalid
   , SafeArrayAccess.safeTypeScript
+  , SafeArrayAccess.unsafeScala
+  , SafeArrayAccess.safeScala
   , SafeArrayAccess.unsafeKotlin
   , SafeArrayAccess.safeKotlin
   , SafeArrayAccess.unsafeSwift
@@ -142,6 +153,8 @@ preQuestionSlides =
   , SafeTypeConversion.unsafeTypeScriptBadPredicate
   , SafeTypeConversion.unsafeTypeScriptBadPredicateRun
   , SafeTypeConversion.unsafeTypeScriptCast
+  , SafeTypeConversion.safeScala
+  , SafeTypeConversion.unsafeScala
   , SafeTypeConversion.safeKotlinSmart
   , SafeTypeConversion.safeKotlinExplicit
   , SafeTypeConversion.unsafeKotlin
@@ -160,6 +173,9 @@ preQuestionSlides =
   , ExceptionSafety.unsafeTypeScript
   , ExceptionSafety.safeTypeScript
   , ExceptionSafety.safeTypeScriptInvalid
+  , ExceptionSafety.unsafeScala
+  , ExceptionSafety.safeScala
+  , ExceptionSafety.safeScalaInvalid
   , ExceptionSafety.unsafeKotlin
   , ExceptionSafety.safeKotlin
   , ExceptionSafety.safeKotlinInvalid
@@ -178,6 +194,10 @@ preQuestionSlides =
   , ExhaustivenessChecking.safePythonInvalid
   , ExhaustivenessChecking.safeTypeScript
   , ExhaustivenessChecking.safeTypeScriptInvalid
+  , ExhaustivenessChecking.safeScalaPrep
+  , ExhaustivenessChecking.safeScala
+  , ExhaustivenessChecking.safeScalaInvalid
+  , ExhaustivenessChecking.safeScalaAlt
   , ExhaustivenessChecking.safeKotlin
   , ExhaustivenessChecking.safeKotlinInvalid
   , ExhaustivenessChecking.safeSwiftPrep
@@ -191,6 +211,7 @@ preQuestionSlides =
   , Encapsulation.safeGo
   , Encapsulation.safePython
   , Encapsulation.safeTypeScript
+  , Encapsulation.safeScala
   , Encapsulation.safeKotlin
   , Encapsulation.safeSwift
   , TypeSystemProperties.languageReport 6
@@ -205,6 +226,7 @@ preQuestionSlides =
   , Immutability.unsafePythonFrozenMutation
   , Immutability.unsafePythonConstantMutation
   , Immutability.safeTypeScript
+  , Immutability.safeScala
   , Immutability.safeKotlin
   , Immutability.safeSwift
   , TypeSystemProperties.languageReport 7
@@ -214,6 +236,7 @@ preQuestionSlides =
   , TypeSystemProperties.errorPreventionReport "Go"
   , TypeSystemProperties.errorPreventionReport "Python"
   , TypeSystemProperties.errorPreventionReport "TypeScript"
+  , TypeSystemProperties.errorPreventionReport "Scala"
   , TypeSystemProperties.errorPreventionReport "Kotlin"
   , TypeSystemProperties.errorPreventionReport "Swift"
   , Conclusion.introduction
