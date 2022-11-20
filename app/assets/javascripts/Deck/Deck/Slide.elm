@@ -163,13 +163,13 @@ unindexedSlideModels =
       , unindexedSlideModelForLang "Go" SafeTypeConversion.unsafeGo 
       , unindexedSlideModelForLang "Go" SafeTypeConversion.unsafeGoRun 
       , unindexedSlideModelForLang "Python" SafeTypeConversion.safePython 
-      , unindexedSlideModelForLang "Go" SafeTypeConversion.unsafePythonGoodGuard 
+      , unindexedSlideModelForLang "Python" SafeTypeConversion.unsafePythonGoodGuard
       , unindexedSlideModelForLang "Python" SafeTypeConversion.unsafePythonBadGuard 
       , unindexedSlideModelForLang "Python" SafeTypeConversion.unsafePythonBadGuardRun 
       , unindexedSlideModelForLang "Python" SafeTypeConversion.unsafePythonCast 
       , unindexedSlideModelForLang "TypeScript" SafeTypeConversion.safeTypeScript 
-      , unindexedSlideModelForLang "Go" SafeTypeConversion.unsafeTypeScriptGoodPredicateInvalid 
-      , unindexedSlideModelForLang "Go" SafeTypeConversion.unsafeTypeScriptGoodPredicate 
+      , unindexedSlideModelForLang "TypeScript" SafeTypeConversion.unsafeTypeScriptGoodPredicateInvalid
+      , unindexedSlideModelForLang "TypeScript" SafeTypeConversion.unsafeTypeScriptGoodPredicate
       , unindexedSlideModelForLang "TypeScript" SafeTypeConversion.unsafeTypeScriptBadPredicate 
       , unindexedSlideModelForLang "TypeScript" SafeTypeConversion.unsafeTypeScriptBadPredicateRun 
       , unindexedSlideModelForLang "TypeScript" SafeTypeConversion.unsafeTypeScriptCast 
