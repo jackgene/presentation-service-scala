@@ -6,7 +6,7 @@ module Deck.Slide.Graphics exposing
   )
 
 import Css exposing (fontSize, px, vw)
-import Deck.Slide.Common exposing (black, numberFontFamily, primary, secondary, tertiary)
+import Deck.Slide.Common exposing (numberFontFamily, primary, secondary, white)
 import Dict exposing (Dict)
 import Html.Styled exposing (span)
 import Html.Styled.Attributes exposing (attribute)
@@ -52,7 +52,7 @@ numberedDisc num fontSizePct attributes =
   [ circle [ r "50", css [ Css.fill secondary ] ] []
   , text_
     [ alignmentBaseline "middle", textAnchor "middle", y "5"
-    , css [ numberFontFamily, Css.fill black, fontSize (px fontSizePct) ]
+    , css [ numberFontFamily, Css.fill white, fontSize (px fontSizePct) ]
     ]
     [ text num ]
   ]
