@@ -505,7 +505,7 @@ textOpt match
       """
 val textOpt: Option[String] = None
 
-println(textOpt.map(_.toUpperCase()).getOrElse("(text was null)"))
+println(textOpt.map(_.toUpperCase).getOrElse("(text was null)"))
 """
   in
   { baseSlideModel
