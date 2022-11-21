@@ -36,7 +36,10 @@ cover =
           ]
         , p
           [ css [ margin2 (em 2.5) zero, fontSize (vw 2.5) ] ]
-          [ text "Jack Leow" ]
+          [ text "Jack Leow"
+          , br [] []
+          , text "November 22, 2022"
+          ]
         ]
       ]
     )
