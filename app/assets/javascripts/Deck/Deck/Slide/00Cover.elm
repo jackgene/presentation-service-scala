@@ -4,17 +4,16 @@ import Css exposing
   -- Container
   ( left, position, top, width, margin, margin2
   -- Content
-  , backgroundColor, fontSize, fontWeight
+  , backgroundColor, color, fontSize
   -- Units
-  , em, int, vw, zero
+  , em, vw, zero
   -- Alignments & Positions
   , absolute
   -- Other values
-  , normal
   )
 import Deck.Slide.Common exposing (..)
 import Deck.Slide.Graphics exposing (coverBackgroundGraphic)
-import Html.Styled exposing (Html, br, div, h1, h2, p, text)
+import Html.Styled exposing (Html, br, div, h1, p, text)
 import Html.Styled.Attributes exposing (css)
 
 
@@ -23,7 +22,7 @@ cover =
   { baseSlideModel
   | view =
     ( \_ _ ->
-      div [ css [ backgroundColor tertiary ] ]
+      div [ css [ color white, backgroundColor tertiary ] ]
       [ coverBackgroundGraphic
       , div
         [ css

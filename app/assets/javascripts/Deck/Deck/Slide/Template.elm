@@ -21,7 +21,7 @@ import Svg.Styled.Attributes exposing (css)
 
 sectionCoverSlideView : Int -> String -> Html msg
 sectionCoverSlideView number title =
-  div [ css [ backgroundColor tertiary ] ]
+  div [ css [ color white, backgroundColor tertiary ] ]
   [ coverBackgroundGraphic
   , h1
     [ css
