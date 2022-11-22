@@ -615,7 +615,7 @@ unsafeScala =
       syntaxHighlightedCodeBlock Scala Dict.empty Dict.empty []
       """
 val text: String = null
-println(text.uppercase) // NullPointerException!
+println(text.toUpperCase) // NullPointerException!
 """
 
     codeBlock2 : Html msg
