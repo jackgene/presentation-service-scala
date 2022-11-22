@@ -495,7 +495,7 @@ safeScalaNullable =
 val textOpt: Option[String] = None
 
 println(textOpt.toUpperCase)
-textOpt.foreach { text: String => println(text.toUpperCase) }
+textOpt.foreach { (text: String) => println(text.toUpperCase) }
 """
 
     codeBlock2 : Html msg
