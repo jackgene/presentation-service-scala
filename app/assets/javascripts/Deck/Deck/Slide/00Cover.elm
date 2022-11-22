@@ -4,7 +4,7 @@ import Css exposing
   -- Container
   ( left, position, top, width, margin, margin2
   -- Content
-  , backgroundColor, color, fontSize
+  , fontSize
   -- Units
   , em, vw, zero
   -- Alignments & Positions
@@ -22,7 +22,7 @@ cover =
   { baseSlideModel
   | view =
     ( \_ _ ->
-      div [ css [ color white, backgroundColor tertiary ] ]
+      div [ css [ coverStyle ] ]
       [ coverBackgroundGraphic
       , div
         [ css

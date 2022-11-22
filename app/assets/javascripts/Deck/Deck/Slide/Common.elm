@@ -12,7 +12,7 @@ import Css exposing
   , em, int, rgb, rgba, vw, zero
   -- Alignments & Positions
   -- Other values
-  , block, italic
+  , block, italic, textShadow4
   )
 import Deck.Common exposing (Model, Msg)
 import Html.Styled as Html exposing (Attribute, Html, text)
@@ -101,6 +101,14 @@ paragraphFontFamily = fontFamilies [ "Open Sans" ]
 
 codeFontFamily : Style
 codeFontFamily = Css.batch [ fontFamilies [ "Fira Code" ], fontWeight (int 500) ]
+
+
+coverStyle : Style
+coverStyle =
+  Css.batch
+  [ textShadow4 zero zero (em 0.25) (rgb 64 64 64)
+  , color white, backgroundColor tertiary
+  ]
 
 
 headerStyle : Style
