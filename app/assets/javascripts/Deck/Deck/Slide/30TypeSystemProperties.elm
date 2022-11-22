@@ -360,7 +360,7 @@ methodology =
       "Analysis of Some Popular Languages"
       ( div []
         [ p []
-          [ text "We’ll go through each type system property "
+          [ text "We will go through each type system property "
           , text "and evaluates how they apply to a number of popular languages. "
           ]
         , p []
