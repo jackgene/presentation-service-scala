@@ -4,15 +4,18 @@ module Deck.Slide.WordCloud exposing
   , implementation2ExtractWords
   , implementation3RetainLastNWords
   , implementation4CountSendersByWord
-  , implementationComplete
+  , implementation5Complete
+  , implementation6CountSendersByWord
+  , implementation7RetainLastNWords
+  , implementation8ExtractWords
   )
 
 import Css exposing
-  ( Vw
+  ( Style, Vw
   -- Container
-  , bottom, borderSpacing, borderTop3, display, displayFlex, height, left
-  , listStyle, marginBottom, overflow, padding2, paddingTop, position, right
-  , top, width
+  , bottom, border3, borderRadius, borderSpacing, borderTop3
+  , display, displayFlex, height, left, listStyle, marginBottom, overflow
+  , padding2, paddingTop, position, right, top, width
   -- Content
   , alignItems, backgroundColor, backgroundImage, color, flexWrap, fontSize
   , justifyContent, lineHeight, opacity, textAlign, verticalAlign
@@ -49,6 +52,15 @@ chatMessageEventHeightEm = 5.5
 
 tokenEventHeightEm : Float
 tokenEventHeightEm = 3.8
+
+
+eventBlockStyle : Style
+eventBlockStyle =
+  Css.batch
+  [ border3 (em 0.125) solid black
+  , borderSpacing zero, borderRadius (em 0.75)
+  , backgroundColor themeBackgroundColor
+  ]
 
 
 -- View
@@ -108,6 +120,7 @@ wordCloud =
                       [ padding2 (em 0.125) (em 0.25)
                       , color themeForegroundColor, opacity (num (percentage * 0.75 + 0.25))
                       , fontSize (em (3.6 * (percentage * 0.75 + 0.25)))
+                      , transition [ Css.Transitions.fontSize3 transitionDurationMs 0 easeInOut ]
                       ]
                     , title (toString count)
                     ]
@@ -131,7 +144,13 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
     diagramHeightEm : Float
     diagramHeightEm = 13.5 / scale
   in
-  div []
+  div
+  [ css
+    [ position relative
+    , height (vw 30)
+    , overflow hidden
+    ]
+  ]
   [ div -- diagram view box
     [ css
       [ position relative
@@ -147,8 +166,11 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
     ]
     [ div
       [ css
-        [ position absolute, left (em (-fromLeft * 50))
-        , transition [ Css.Transitions.left3 transitionDurationMs 0 easeInOut ]
+        [ position absolute, right (em (52 + fromLeft * 50))
+        , transition
+          ( if scaleChanged then []
+            else [ Css.Transitions.right3 transitionDurationMs 0 easeInOut ]
+          )
         ]
       ]
       [ div [] -- events
@@ -176,11 +198,7 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
                     [ div -- chat messages
                       [ css [ position absolute, left zero ] ]
                       [ table
-                        [ css
-                          [ width (em 24), marginBottom (em 0.625), borderSpacing zero
-                          , backgroundColor themeBackgroundColor
-                          ]
-                        ]
+                        [ css [ width (em 24), marginBottom (em 0.625), eventBlockStyle ] ]
                         [ tr []
                           [ th [ css [ width (em 6), textAlign right, verticalAlign top ] ] [ text "sender:" ]
                           , td [] [ text chatMessageAndTokens.chatMessage.sender ]
@@ -204,7 +222,7 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
                           )
                         ]
                       ]
-                      [ text "- flatMap() →" ]
+                      [ text "- extractTokens() →" ]
                     , div -- extracted tokens
                       [ css
                         [ position absolute, left (em (if step > 0 then 36 else 52))
@@ -217,11 +235,7 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
                       ( List.map
                         ( \token ->
                           table
-                          [ css
-                            [ width (em 16), marginBottom (em 0.5), borderSpacing zero
-                            , backgroundColor themeBackgroundColor
-                            ]
-                          ]
+                          [ css [ width (em 16), marginBottom (em 0.5), eventBlockStyle ] ]
                           [ tr []
                             [ th [ css [ width (em 6), textAlign right, verticalAlign top ] ] [ text "sender:" ]
                             , td [] [ text chatMessageAndTokens.chatMessage.sender ]
@@ -266,7 +280,7 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
         [ css [ position absolute, left (em 62) ] ]
         ( if List.isEmpty counts.chatMessagesAndTokens then []
           else
-            [ table [ css [ width (em 27), backgroundColor themeBackgroundColor ] ]
+            [ table [ css [ width (em 26), eventBlockStyle ] ]
               ( ( tr []
                   [ th [ css [ width (em 10) ] ] [ text "sender" ]
                   , th [] [ text "words" ]
@@ -283,8 +297,8 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
                         if Set.member sender senders then (nodes, senders)
                         else
                           ( ( tr []
-                              [ td [ css [ verticalAlign top ] ] [ text sender ]
-                              , td [ css [ verticalAlign top ] ]
+                              [ td [ css [ textAlign center, verticalAlign top ] ] [ text sender ]
+                              , td [ css [ textAlign center, verticalAlign top ] ]
                                 [ text
                                   ( String.join ", "
                                     ( Maybe.withDefault []
@@ -309,9 +323,9 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
         [ css [ position absolute, left (em 99) ] ]
         ( if List.isEmpty counts.chatMessagesAndTokens then []
           else
-            [ table [ css [ width (em 15), backgroundColor themeBackgroundColor ] ]
+            [ table [ css [ width (em 15), eventBlockStyle ] ]
               ( ( tr []
-                  [ th [ css [ width (em 9) ] ] [ text "word" ]
+                  [ th [ css [ width (em 8) ] ] [ text "word" ]
                   , th [] [ text "senders" ]
                   ]
                 )
@@ -333,7 +347,7 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
                         if count == 0 || Set.member word displayedWords then (nodes, displayedWords)
                         else
                           ( ( tr []
-                              [ td [ css [ verticalAlign top ] ] [ text word ]
+                              [ td [ css [ textAlign center, verticalAlign top ] ] [ text word ]
                               , td [ css [ textAlign center, verticalAlign top ] ] [ text (toString count) ]
                               ]
                             ) :: nodes
@@ -348,15 +362,15 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
               )
             ]
         )
-    ]
-    , div -- fade out
-      [ css
-        [ position absolute, bottom zero, height (vw 10), width (pct 100)
-        , backgroundImage (linearGradient (stop (rgba 255 255 255 0)) (stop white) [])
-        ]
       ]
-      []
     ]
+  , div -- fade out
+    [ css
+      [ position absolute, bottom zero, height (vw 10), width (pct 100)
+      , backgroundImage (linearGradient (stop (rgba 255 255 255 0)) (stop white) [])
+      ]
+    ]
+    []
   ]
 
 
@@ -371,8 +385,8 @@ implementation1EventSource =
     ( \page model ->
       standardSlideView page heading implementationSubHeading
       ( div []
-        [ p [] [ text "We start with a stream of Zoom chat messages (most recent depicted first):" ]
-        , implementationDiagramView model.wordCloud 0 -0.2 0.75 False
+        [ p [] [ text "We start the events: Zoom chat messages:" ]
+        , implementationDiagramView model.wordCloud 0 -0.3 0.75 False
         ]
       )
     )
@@ -428,16 +442,64 @@ implementation4CountSendersByWord =
   }
 
 
-implementationComplete : UnindexedSlideModel
-implementationComplete =
+implementation5Complete : UnindexedSlideModel
+implementation5Complete =
   { baseSlideModel
   | animationFrames = always 30
   , view =
     ( \page model ->
       standardSlideView page heading implementationSubHeading
       ( div []
-        [ p [] [ text "The complete application:" ]
-        , implementationDiagramView model.wordCloud 4 0 0.34 (model.animationFramesRemaining > 0)
+        [ p [] [ text "Observe that information is lost as it moves through the system:" ]
+        , implementationDiagramView model.wordCloud 4 1.24 0.34 (model.animationFramesRemaining > 0)
+        ]
+      )
+    )
+  , eventsWsPath = Just "word-cloud"
+  }
+
+
+implementation6CountSendersByWord : UnindexedSlideModel
+implementation6CountSendersByWord =
+  { baseSlideModel
+  | view =
+    ( \page model ->
+      standardSlideView page heading implementationSubHeading
+      ( div []
+        [ p [] [ text "Counting the number of senders for a word, we lose who submitted the word:" ]
+        , implementationDiagramView model.wordCloud 3 1.24 0.75 True
+        ]
+      )
+    )
+  , eventsWsPath = Just "word-cloud"
+  }
+
+
+implementation7RetainLastNWords : UnindexedSlideModel
+implementation7RetainLastNWords =
+  { baseSlideModel
+  | view =
+    ( \page model ->
+      standardSlideView page heading implementationSubHeading
+      ( div []
+        [ p [] [ text "Retaining only recent words, we lose the full history of a sender's submissions:" ]
+        , implementationDiagramView model.wordCloud 2 0.72 0.75 False
+        ]
+      )
+    )
+  , eventsWsPath = Just "word-cloud"
+  }
+
+
+implementation8ExtractWords : UnindexedSlideModel
+implementation8ExtractWords =
+  { baseSlideModel
+  | view =
+    ( \page model ->
+      standardSlideView page heading implementationSubHeading
+      ( div []
+        [ p [] [ text "Extracting and filtering words, we lose the original chat text, and the recipient:" ]
+        , implementationDiagramView model.wordCloud 1 0 0.75 False
         ]
       )
     )
