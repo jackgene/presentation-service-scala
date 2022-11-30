@@ -29019,6 +29019,29 @@ var _rtfeldman$elm_css$Css_Transitions$background3 = _rtfeldman$elm_css$Css_Tran
 var _rtfeldman$elm_css$Css_Transitions$background2 = _rtfeldman$elm_css$Css_Transitions$durationDelayTransition(_rtfeldman$elm_css$Css_Transitions$Background);
 var _rtfeldman$elm_css$Css_Transitions$background = _rtfeldman$elm_css$Css_Transitions$durationTransition(_rtfeldman$elm_css$Css_Transitions$Background);
 var _jackgene$live_deck$Deck_Slide_WordCloud$implementationSubHeading = 'Word Clouds as a Reactive Streaming Application';
+var _jackgene$live_deck$Deck_Slide_WordCloud$eventBlockStyle = _rtfeldman$elm_css$Css$batch(
+	{
+		ctor: '::',
+		_0: A3(
+			_rtfeldman$elm_css$Css$border3,
+			_rtfeldman$elm_css$Css$em(0.125),
+			_rtfeldman$elm_css$Css$solid,
+			_jackgene$live_deck$Deck_Slide_Common$black),
+		_1: {
+			ctor: '::',
+			_0: _rtfeldman$elm_css$Css$borderSpacing(_rtfeldman$elm_css$Css$zero),
+			_1: {
+				ctor: '::',
+				_0: _rtfeldman$elm_css$Css$borderRadius(
+					_rtfeldman$elm_css$Css$em(0.75)),
+				_1: {
+					ctor: '::',
+					_0: _rtfeldman$elm_css$Css$backgroundColor(_jackgene$live_deck$Deck_Slide_Common$themeBackgroundColor),
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	});
 var _jackgene$live_deck$Deck_Slide_WordCloud$tokenEventHeightEm = 3.8;
 var _jackgene$live_deck$Deck_Slide_WordCloud$chatMessageEventHeightEm = 5.5;
 var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
@@ -29026,7 +29049,25 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 		var diagramHeightEm = 13.5 / scale;
 		return A2(
 			_rtfeldman$elm_css$Html_Styled$div,
-			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
+					{
+						ctor: '::',
+						_0: _rtfeldman$elm_css$Css$position(_rtfeldman$elm_css$Css$relative),
+						_1: {
+							ctor: '::',
+							_0: _rtfeldman$elm_css$Css$height(
+								_rtfeldman$elm_css$Css$vw(30)),
+							_1: {
+								ctor: '::',
+								_0: _rtfeldman$elm_css$Css$overflow(_rtfeldman$elm_css$Css$hidden),
+								_1: {ctor: '[]'}
+							}
+						}
+					}),
+				_1: {ctor: '[]'}
+			},
 			{
 				ctor: '::',
 				_0: A2(
@@ -29084,14 +29125,14 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 										_0: _rtfeldman$elm_css$Css$position(_rtfeldman$elm_css$Css$absolute),
 										_1: {
 											ctor: '::',
-											_0: _rtfeldman$elm_css$Css$left(
-												_rtfeldman$elm_css$Css$em((0 - fromLeft) * 50)),
+											_0: _rtfeldman$elm_css$Css$right(
+												_rtfeldman$elm_css$Css$em(52 + (fromLeft * 50))),
 											_1: {
 												ctor: '::',
 												_0: _rtfeldman$elm_css$Css_Transitions$transition(
-													{
+													scaleChanged ? {ctor: '[]'} : {
 														ctor: '::',
-														_0: A3(_rtfeldman$elm_css$Css_Transitions$left3, _jackgene$live_deck$Deck_Slide_Common$transitionDurationMs, 0, _rtfeldman$elm_css$Css_Transitions$easeInOut),
+														_0: A3(_rtfeldman$elm_css$Css_Transitions$right3, _jackgene$live_deck$Deck_Slide_Common$transitionDurationMs, 0, _rtfeldman$elm_css$Css_Transitions$easeInOut),
 														_1: {ctor: '[]'}
 													}),
 												_1: {ctor: '[]'}
@@ -29220,12 +29261,8 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																									_rtfeldman$elm_css$Css$em(0.625)),
 																								_1: {
 																									ctor: '::',
-																									_0: _rtfeldman$elm_css$Css$borderSpacing(_rtfeldman$elm_css$Css$zero),
-																									_1: {
-																										ctor: '::',
-																										_0: _rtfeldman$elm_css$Css$backgroundColor(_jackgene$live_deck$Deck_Slide_Common$themeBackgroundColor),
-																										_1: {ctor: '[]'}
-																									}
+																									_0: _jackgene$live_deck$Deck_Slide_WordCloud$eventBlockStyle,
+																									_1: {ctor: '[]'}
 																								}
 																							}
 																						}),
@@ -29396,7 +29433,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																			},
 																			{
 																				ctor: '::',
-																				_0: _rtfeldman$elm_css$Html_Styled$text('- flatMap() →'),
+																				_0: _rtfeldman$elm_css$Html_Styled$text('- extractTokens() →'),
 																				_1: {ctor: '[]'}
 																			}),
 																		_1: {
@@ -29446,12 +29483,8 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																												_rtfeldman$elm_css$Css$em(0.5)),
 																											_1: {
 																												ctor: '::',
-																												_0: _rtfeldman$elm_css$Css$borderSpacing(_rtfeldman$elm_css$Css$zero),
-																												_1: {
-																													ctor: '::',
-																													_0: _rtfeldman$elm_css$Css$backgroundColor(_jackgene$live_deck$Deck_Slide_Common$themeBackgroundColor),
-																													_1: {ctor: '[]'}
-																												}
+																												_0: _jackgene$live_deck$Deck_Slide_WordCloud$eventBlockStyle,
+																												_1: {ctor: '[]'}
 																											}
 																										}
 																									}),
@@ -29634,10 +29667,10 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 														{
 															ctor: '::',
 															_0: _rtfeldman$elm_css$Css$width(
-																_rtfeldman$elm_css$Css$em(27)),
+																_rtfeldman$elm_css$Css$em(26)),
 															_1: {
 																ctor: '::',
-																_0: _rtfeldman$elm_css$Css$backgroundColor(_jackgene$live_deck$Deck_Slide_Common$themeBackgroundColor),
+																_0: _jackgene$live_deck$Deck_Slide_WordCloud$eventBlockStyle,
 																_1: {ctor: '[]'}
 															}
 														}),
@@ -29707,8 +29740,12 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																								_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
 																									{
 																										ctor: '::',
-																										_0: _rtfeldman$elm_css$Css$verticalAlign(_rtfeldman$elm_css$Css$top),
-																										_1: {ctor: '[]'}
+																										_0: _rtfeldman$elm_css$Css$textAlign(_rtfeldman$elm_css$Css$center),
+																										_1: {
+																											ctor: '::',
+																											_0: _rtfeldman$elm_css$Css$verticalAlign(_rtfeldman$elm_css$Css$top),
+																											_1: {ctor: '[]'}
+																										}
 																									}),
 																								_1: {ctor: '[]'}
 																							},
@@ -29726,8 +29763,12 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																									_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
 																										{
 																											ctor: '::',
-																											_0: _rtfeldman$elm_css$Css$verticalAlign(_rtfeldman$elm_css$Css$top),
-																											_1: {ctor: '[]'}
+																											_0: _rtfeldman$elm_css$Css$textAlign(_rtfeldman$elm_css$Css$center),
+																											_1: {
+																												ctor: '::',
+																												_0: _rtfeldman$elm_css$Css$verticalAlign(_rtfeldman$elm_css$Css$top),
+																												_1: {ctor: '[]'}
+																											}
 																										}),
 																									_1: {ctor: '[]'}
 																								},
@@ -29792,7 +29833,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																	_rtfeldman$elm_css$Css$em(15)),
 																_1: {
 																	ctor: '::',
-																	_0: _rtfeldman$elm_css$Css$backgroundColor(_jackgene$live_deck$Deck_Slide_Common$themeBackgroundColor),
+																	_0: _jackgene$live_deck$Deck_Slide_WordCloud$eventBlockStyle,
 																	_1: {ctor: '[]'}
 																}
 															}),
@@ -29813,7 +29854,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																			{
 																				ctor: '::',
 																				_0: _rtfeldman$elm_css$Css$width(
-																					_rtfeldman$elm_css$Css$em(9)),
+																					_rtfeldman$elm_css$Css$em(8)),
 																				_1: {ctor: '[]'}
 																			}),
 																		_1: {ctor: '[]'}
@@ -29873,8 +29914,12 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																										_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
 																											{
 																												ctor: '::',
-																												_0: _rtfeldman$elm_css$Css$verticalAlign(_rtfeldman$elm_css$Css$top),
-																												_1: {ctor: '[]'}
+																												_0: _rtfeldman$elm_css$Css$textAlign(_rtfeldman$elm_css$Css$center),
+																												_1: {
+																													ctor: '::',
+																													_0: _rtfeldman$elm_css$Css$verticalAlign(_rtfeldman$elm_css$Css$top),
+																													_1: {ctor: '[]'}
+																												}
 																											}),
 																										_1: {ctor: '[]'}
 																									},
@@ -29929,49 +29974,49 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 									}
 								}
 							}),
-						_1: {
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_rtfeldman$elm_css$Html_Styled$div,
+						{
 							ctor: '::',
-							_0: A2(
-								_rtfeldman$elm_css$Html_Styled$div,
+							_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
 								{
 									ctor: '::',
-									_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
-										{
+									_0: _rtfeldman$elm_css$Css$position(_rtfeldman$elm_css$Css$absolute),
+									_1: {
+										ctor: '::',
+										_0: _rtfeldman$elm_css$Css$bottom(_rtfeldman$elm_css$Css$zero),
+										_1: {
 											ctor: '::',
-											_0: _rtfeldman$elm_css$Css$position(_rtfeldman$elm_css$Css$absolute),
+											_0: _rtfeldman$elm_css$Css$height(
+												_rtfeldman$elm_css$Css$vw(10)),
 											_1: {
 												ctor: '::',
-												_0: _rtfeldman$elm_css$Css$bottom(_rtfeldman$elm_css$Css$zero),
+												_0: _rtfeldman$elm_css$Css$width(
+													_rtfeldman$elm_css$Css$pct(100)),
 												_1: {
 													ctor: '::',
-													_0: _rtfeldman$elm_css$Css$height(
-														_rtfeldman$elm_css$Css$vw(10)),
-													_1: {
-														ctor: '::',
-														_0: _rtfeldman$elm_css$Css$width(
-															_rtfeldman$elm_css$Css$pct(100)),
-														_1: {
-															ctor: '::',
-															_0: _rtfeldman$elm_css$Css$backgroundImage(
-																A3(
-																	_rtfeldman$elm_css$Css$linearGradient,
-																	_rtfeldman$elm_css$Css$stop(
-																		A4(_rtfeldman$elm_css$Css$rgba, 255, 255, 255, 0)),
-																	_rtfeldman$elm_css$Css$stop(_jackgene$live_deck$Deck_Slide_Common$white),
-																	{ctor: '[]'})),
-															_1: {ctor: '[]'}
-														}
-													}
+													_0: _rtfeldman$elm_css$Css$backgroundImage(
+														A3(
+															_rtfeldman$elm_css$Css$linearGradient,
+															_rtfeldman$elm_css$Css$stop(
+																A4(_rtfeldman$elm_css$Css$rgba, 255, 255, 255, 0)),
+															_rtfeldman$elm_css$Css$stop(_jackgene$live_deck$Deck_Slide_Common$white),
+															{ctor: '[]'})),
+													_1: {ctor: '[]'}
 												}
 											}
-										}),
-									_1: {ctor: '[]'}
-								},
-								{ctor: '[]'}),
+										}
+									}
+								}),
 							_1: {ctor: '[]'}
-						}
-					}),
-				_1: {ctor: '[]'}
+						},
+						{ctor: '[]'}),
+					_1: {ctor: '[]'}
+				}
 			});
 	});
 var _jackgene$live_deck$Deck_Slide_WordCloud$maxWordDisplayCount = 11;
@@ -30173,7 +30218,16 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$wordCloud = _elm_lang$core$Native_U
 																							ctor: '::',
 																							_0: _rtfeldman$elm_css$Css$fontSize(
 																								_rtfeldman$elm_css$Css$em(3.6 * ((percentage * 0.75) + 0.25))),
-																							_1: {ctor: '[]'}
+																							_1: {
+																								ctor: '::',
+																								_0: _rtfeldman$elm_css$Css_Transitions$transition(
+																									{
+																										ctor: '::',
+																										_0: A3(_rtfeldman$elm_css$Css_Transitions$fontSize3, _jackgene$live_deck$Deck_Slide_Common$transitionDurationMs, 0, _rtfeldman$elm_css$Css_Transitions$easeInOut),
+																										_1: {ctor: '[]'}
+																									}),
+																								_1: {ctor: '[]'}
+																							}
 																						}
 																					}
 																				}
@@ -30224,12 +30278,12 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementation1EventSource = _elm_l
 								{ctor: '[]'},
 								{
 									ctor: '::',
-									_0: _rtfeldman$elm_css$Html_Styled$text('We start with a stream of Zoom chat messages (most recent depicted first):'),
+									_0: _rtfeldman$elm_css$Html_Styled$text('We start the events: Zoom chat messages:'),
 									_1: {ctor: '[]'}
 								}),
 							_1: {
 								ctor: '::',
-								_0: A5(_jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView, model.wordCloud, 0, -0.2, 0.75, false),
+								_0: A5(_jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView, model.wordCloud, 0, -0.3, 0.75, false),
 								_1: {ctor: '[]'}
 							}
 						}));
@@ -30332,7 +30386,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementation4CountSendersByWord =
 			}),
 		eventsWsPath: _elm_lang$core$Maybe$Just('word-cloud')
 	});
-var _jackgene$live_deck$Deck_Slide_WordCloud$implementationComplete = _elm_lang$core$Native_Utils.update(
+var _jackgene$live_deck$Deck_Slide_WordCloud$implementation5Complete = _elm_lang$core$Native_Utils.update(
 	_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 	{
 		animationFrames: _elm_lang$core$Basics$always(30),
@@ -30353,7 +30407,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationComplete = _elm_lang$
 								{ctor: '[]'},
 								{
 									ctor: '::',
-									_0: _rtfeldman$elm_css$Html_Styled$text('The complete application:'),
+									_0: _rtfeldman$elm_css$Html_Styled$text('Observe that information is lost as it moves through the system:'),
 									_1: {ctor: '[]'}
 								}),
 							_1: {
@@ -30362,9 +30416,105 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationComplete = _elm_lang$
 									_jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView,
 									model.wordCloud,
 									4,
-									0,
+									1.24,
 									0.34,
 									_elm_lang$core$Native_Utils.cmp(model.animationFramesRemaining, 0) > 0),
+								_1: {ctor: '[]'}
+							}
+						}));
+			}),
+		eventsWsPath: _elm_lang$core$Maybe$Just('word-cloud')
+	});
+var _jackgene$live_deck$Deck_Slide_WordCloud$implementation6CountSendersByWord = _elm_lang$core$Native_Utils.update(
+	_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
+	{
+		view: F2(
+			function (page, model) {
+				return A4(
+					_jackgene$live_deck$Deck_Slide_Template$standardSlideView,
+					page,
+					_jackgene$live_deck$Deck_Slide_WordCloud$heading,
+					_jackgene$live_deck$Deck_Slide_WordCloud$implementationSubHeading,
+					A2(
+						_rtfeldman$elm_css$Html_Styled$div,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: A2(
+								_rtfeldman$elm_css$Html_Styled$p,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: _rtfeldman$elm_css$Html_Styled$text('Counting the number of senders for a word, we lose who submitted the word:'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A5(_jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView, model.wordCloud, 3, 1.24, 0.75, true),
+								_1: {ctor: '[]'}
+							}
+						}));
+			}),
+		eventsWsPath: _elm_lang$core$Maybe$Just('word-cloud')
+	});
+var _jackgene$live_deck$Deck_Slide_WordCloud$implementation7RetainLastNWords = _elm_lang$core$Native_Utils.update(
+	_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
+	{
+		view: F2(
+			function (page, model) {
+				return A4(
+					_jackgene$live_deck$Deck_Slide_Template$standardSlideView,
+					page,
+					_jackgene$live_deck$Deck_Slide_WordCloud$heading,
+					_jackgene$live_deck$Deck_Slide_WordCloud$implementationSubHeading,
+					A2(
+						_rtfeldman$elm_css$Html_Styled$div,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: A2(
+								_rtfeldman$elm_css$Html_Styled$p,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: _rtfeldman$elm_css$Html_Styled$text('Retaining only recent words, we lose the full history of a sender\'s submissions:'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A5(_jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView, model.wordCloud, 2, 0.72, 0.75, false),
+								_1: {ctor: '[]'}
+							}
+						}));
+			}),
+		eventsWsPath: _elm_lang$core$Maybe$Just('word-cloud')
+	});
+var _jackgene$live_deck$Deck_Slide_WordCloud$implementation8ExtractWords = _elm_lang$core$Native_Utils.update(
+	_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
+	{
+		view: F2(
+			function (page, model) {
+				return A4(
+					_jackgene$live_deck$Deck_Slide_Template$standardSlideView,
+					page,
+					_jackgene$live_deck$Deck_Slide_WordCloud$heading,
+					_jackgene$live_deck$Deck_Slide_WordCloud$implementationSubHeading,
+					A2(
+						_rtfeldman$elm_css$Html_Styled$div,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: A2(
+								_rtfeldman$elm_css$Html_Styled$p,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: _rtfeldman$elm_css$Html_Styled$text('Extracting and filtering words, we lose the original chat text, and the recipient:'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A5(_jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView, model.wordCloud, 1, 0, 0.75, false),
 								_1: {ctor: '[]'}
 							}
 						}));
@@ -30740,11 +30890,23 @@ var _jackgene$live_deck$Deck_Slide$preQuestionSlides = {
 						_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation4CountSendersByWord,
 						_1: {
 							ctor: '::',
-							_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementationComplete,
+							_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation5Complete,
 							_1: {
 								ctor: '::',
-								_0: _jackgene$live_deck$Deck_Slide_SectionCover$questions,
-								_1: {ctor: '[]'}
+								_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation6CountSendersByWord,
+								_1: {
+									ctor: '::',
+									_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation7RetainLastNWords,
+									_1: {
+										ctor: '::',
+										_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation8ExtractWords,
+										_1: {
+											ctor: '::',
+											_0: _jackgene$live_deck$Deck_Slide_SectionCover$questions,
+											_1: {ctor: '[]'}
+										}
+									}
+								}
 							}
 						}
 					}
