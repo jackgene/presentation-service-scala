@@ -46,7 +46,10 @@ preQuestionSlides =
   , WordCloud.implementation2ExtractWords
   , WordCloud.implementation3RetainLastNWords
   , WordCloud.implementation4CountSendersByWord
-  , WordCloud.implementationComplete
+  , WordCloud.implementation5Complete
+  , WordCloud.implementation6CountSendersByWord
+  , WordCloud.implementation7RetainLastNWords
+  , WordCloud.implementation8ExtractWords
 
   -- Q & A
   , SectionCover.questions
