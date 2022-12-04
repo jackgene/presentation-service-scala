@@ -20407,7 +20407,14 @@ var _jackgene$live_deck$Deck_Slide_Common$consoleText = A3(_rtfeldman$elm_css$Cs
 var _jackgene$live_deck$Deck_Slide_Common$lightGrey = A3(_rtfeldman$elm_css$Css$rgb, 238, 238, 238);
 var _jackgene$live_deck$Deck_Slide_Common$darkGray = A3(_rtfeldman$elm_css$Css$rgb, 192, 192, 192);
 var _jackgene$live_deck$Deck_Slide_Common$blackTranslucent = A4(_rtfeldman$elm_css$Css$rgba, 32, 31, 27, 0.15);
-var _jackgene$live_deck$Deck_Slide_Common$primary = A3(_rtfeldman$elm_css$Css$rgb, 37, 164, 242);
+var _jackgene$live_deck$Deck_Slide_Common$secondaryBackground = A3(_rtfeldman$elm_css$Css$rgb, 111, 194, 246);
+var _jackgene$live_deck$Deck_Slide_Common$coverStyle = _rtfeldman$elm_css$Css$batch(
+	{
+		ctor: '::',
+		_0: _rtfeldman$elm_css$Css$backgroundColor(_jackgene$live_deck$Deck_Slide_Common$secondaryBackground),
+		_1: {ctor: '[]'}
+	});
+var _jackgene$live_deck$Deck_Slide_Common$primaryBackground = A3(_rtfeldman$elm_css$Css$rgb, 37, 164, 242);
 var _jackgene$live_deck$Deck_Slide_Common$headerStyle = _rtfeldman$elm_css$Css$batch(
 	{
 		ctor: '::',
@@ -20442,7 +20449,7 @@ var _jackgene$live_deck$Deck_Slide_Common$headerStyle = _rtfeldman$elm_css$Css$b
 												_rtfeldman$elm_css$Css$em(1.875)),
 											_1: {
 												ctor: '::',
-												_0: _rtfeldman$elm_css$Css$backgroundColor(_jackgene$live_deck$Deck_Slide_Common$primary),
+												_0: _rtfeldman$elm_css$Css$backgroundColor(_jackgene$live_deck$Deck_Slide_Common$primaryBackground),
 												_1: {ctor: '[]'}
 											}
 										}
@@ -20455,6 +20462,7 @@ var _jackgene$live_deck$Deck_Slide_Common$headerStyle = _rtfeldman$elm_css$Css$b
 			}
 		}
 	});
+var _jackgene$live_deck$Deck_Slide_Common$primaryForeground = A3(_rtfeldman$elm_css$Css$rgb, 34, 31, 58);
 var _jackgene$live_deck$Deck_Slide_Common$black = A3(_rtfeldman$elm_css$Css$rgb, 0, 0, 0);
 var _jackgene$live_deck$Deck_Slide_Common$console = function (output) {
 	return A2(
@@ -27604,7 +27612,7 @@ var _jackgene$live_deck$Deck_Slide_Graphics$numberedDisc = F3(
 							_0: _rtfeldman$elm_css$Svg_Styled_Attributes$css(
 								{
 									ctor: '::',
-									_0: _rtfeldman$elm_css$Css$fill(_jackgene$live_deck$Deck_Slide_Common$primary),
+									_0: _rtfeldman$elm_css$Css$fill(_jackgene$live_deck$Deck_Slide_Common$primaryBackground),
 									_1: {ctor: '[]'}
 								}),
 							_1: {ctor: '[]'}
@@ -27632,7 +27640,7 @@ var _jackgene$live_deck$Deck_Slide_Graphics$numberedDisc = F3(
 												_0: _jackgene$live_deck$Deck_Slide_Common$numberFontFamily,
 												_1: {
 													ctor: '::',
-													_0: _rtfeldman$elm_css$Css$fill(_jackgene$live_deck$Deck_Slide_Common$black),
+													_0: _rtfeldman$elm_css$Css$fill(_jackgene$live_deck$Deck_Slide_Common$primaryForeground),
 													_1: {
 														ctor: '::',
 														_0: _rtfeldman$elm_css$Css$fontSize(
@@ -27655,7 +27663,7 @@ var _jackgene$live_deck$Deck_Slide_Graphics$numberedDisc = F3(
 				}
 			});
 	});
-var _jackgene$live_deck$Deck_Slide_Graphics$coverBackgroundViewBox = 52;
+var _jackgene$live_deck$Deck_Slide_Graphics$coverBackgroundViewBox = 70;
 var _jackgene$live_deck$Deck_Slide_Graphics$coverBackgroundGraphic = A2(
 	_rtfeldman$elm_css$Svg_Styled$svg,
 	{
@@ -27683,23 +27691,19 @@ var _jackgene$live_deck$Deck_Slide_Graphics$coverBackgroundGraphic = A2(
 	{
 		ctor: '::',
 		_0: A2(
-			_rtfeldman$elm_css$Svg_Styled$rect,
+			_rtfeldman$elm_css$Svg_Styled$polygon,
 			{
 				ctor: '::',
-				_0: _rtfeldman$elm_css$Svg_Styled_Attributes$width('52'),
+				_0: _rtfeldman$elm_css$Svg_Styled_Attributes$points('0,0 70,0 38,45 70,90 0,90'),
 				_1: {
 					ctor: '::',
-					_0: _rtfeldman$elm_css$Svg_Styled_Attributes$height('90'),
-					_1: {
-						ctor: '::',
-						_0: _rtfeldman$elm_css$Svg_Styled_Attributes$css(
-							{
-								ctor: '::',
-								_0: _rtfeldman$elm_css$Css$fill(_jackgene$live_deck$Deck_Slide_Common$primary),
-								_1: {ctor: '[]'}
-							}),
-						_1: {ctor: '[]'}
-					}
+					_0: _rtfeldman$elm_css$Svg_Styled_Attributes$css(
+						{
+							ctor: '::',
+							_0: _rtfeldman$elm_css$Css$fill(_jackgene$live_deck$Deck_Slide_Common$primaryBackground),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
 				}
 			},
 			{ctor: '[]'}),
@@ -27898,7 +27902,16 @@ var _jackgene$live_deck$Deck_Slide_Template$sectionCoverSlideView = F2(
 	function (number, title) {
 		return A2(
 			_rtfeldman$elm_css$Html_Styled$div,
-			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: _rtfeldman$elm_css$Svg_Styled_Attributes$css(
+					{
+						ctor: '::',
+						_0: _jackgene$live_deck$Deck_Slide_Common$coverStyle,
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			},
 			{
 				ctor: '::',
 				_0: _jackgene$live_deck$Deck_Slide_Graphics$coverBackgroundGraphic,
@@ -27925,7 +27938,7 @@ var _jackgene$live_deck$Deck_Slide_Template$sectionCoverSlideView = F2(
 													_rtfeldman$elm_css$Css$vw(6)),
 												_1: {
 													ctor: '::',
-													_0: _rtfeldman$elm_css$Css$color(_jackgene$live_deck$Deck_Slide_Common$primary),
+													_0: _rtfeldman$elm_css$Css$color(_jackgene$live_deck$Deck_Slide_Common$primaryForeground),
 													_1: {
 														ctor: '::',
 														_0: _jackgene$live_deck$Deck_Slide_Common$numberFontFamily,
@@ -27977,12 +27990,16 @@ var _jackgene$live_deck$Deck_Slide_Template$sectionCoverSlideView = F2(
 														_rtfeldman$elm_css$Css$vw(55)),
 													_1: {
 														ctor: '::',
-														_0: _jackgene$live_deck$Deck_Slide_Common$headerFontFamily,
+														_0: _rtfeldman$elm_css$Css$color(_jackgene$live_deck$Deck_Slide_Common$primaryForeground),
 														_1: {
 															ctor: '::',
-															_0: _rtfeldman$elm_css$Css$fontSize(
-																_rtfeldman$elm_css$Css$vw(6)),
-															_1: {ctor: '[]'}
+															_0: _jackgene$live_deck$Deck_Slide_Common$headerFontFamily,
+															_1: {
+																ctor: '::',
+																_0: _rtfeldman$elm_css$Css$fontSize(
+																	_rtfeldman$elm_css$Css$vw(6)),
+																_1: {ctor: '[]'}
+															}
 														}
 													}
 												}
@@ -28147,7 +28164,16 @@ var _jackgene$live_deck$Deck_Slide_Cover$cover = _elm_lang$core$Native_Utils.upd
 			function (_p1, _p0) {
 				return A2(
 					_rtfeldman$elm_css$Html_Styled$div,
-					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
+							{
+								ctor: '::',
+								_0: _jackgene$live_deck$Deck_Slide_Common$coverStyle,
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					},
 					{
 						ctor: '::',
 						_0: _jackgene$live_deck$Deck_Slide_Graphics$coverBackgroundGraphic,
@@ -28164,7 +28190,7 @@ var _jackgene$live_deck$Deck_Slide_Cover$cover = _elm_lang$core$Native_Utils.upd
 											_1: {
 												ctor: '::',
 												_0: _rtfeldman$elm_css$Css$top(
-													_rtfeldman$elm_css$Css$vw(13)),
+													_rtfeldman$elm_css$Css$vw(18)),
 												_1: {
 													ctor: '::',
 													_0: _rtfeldman$elm_css$Css$left(
@@ -28173,7 +28199,11 @@ var _jackgene$live_deck$Deck_Slide_Cover$cover = _elm_lang$core$Native_Utils.upd
 														ctor: '::',
 														_0: _rtfeldman$elm_css$Css$width(
 															_rtfeldman$elm_css$Css$vw(58)),
-														_1: {ctor: '[]'}
+														_1: {
+															ctor: '::',
+															_0: _rtfeldman$elm_css$Css$color(_jackgene$live_deck$Deck_Slide_Common$primaryForeground),
+															_1: {ctor: '[]'}
+														}
 													}
 												}
 											}
@@ -28205,24 +28235,13 @@ var _jackgene$live_deck$Deck_Slide_Cover$cover = _elm_lang$core$Native_Utils.upd
 										},
 										{
 											ctor: '::',
-											_0: _rtfeldman$elm_css$Html_Styled$text('What Does It Mean for'),
-											_1: {
-												ctor: '::',
-												_0: A2(
-													_rtfeldman$elm_css$Html_Styled$br,
-													{ctor: '[]'},
-													{ctor: '[]'}),
-												_1: {
-													ctor: '::',
-													_0: _rtfeldman$elm_css$Html_Styled$text('a Programming Language to Be Strongly Typed?'),
-													_1: {ctor: '[]'}
-												}
-											}
+											_0: _rtfeldman$elm_css$Html_Styled$text('Strong Typing and the Errors It Prevents'),
+											_1: {ctor: '[]'}
 										}),
 									_1: {
 										ctor: '::',
 										_0: A2(
-											_rtfeldman$elm_css$Html_Styled$h2,
+											_rtfeldman$elm_css$Html_Styled$p,
 											{
 												ctor: '::',
 												_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
@@ -28230,59 +28249,51 @@ var _jackgene$live_deck$Deck_Slide_Cover$cover = _elm_lang$core$Native_Utils.upd
 														ctor: '::',
 														_0: A2(
 															_rtfeldman$elm_css$Css$margin2,
-															_rtfeldman$elm_css$Css$em(0.5),
+															_rtfeldman$elm_css$Css$em(2.8),
 															_rtfeldman$elm_css$Css$zero),
 														_1: {
 															ctor: '::',
-															_0: _jackgene$live_deck$Deck_Slide_Common$headerFontFamily,
-															_1: {
-																ctor: '::',
-																_0: _rtfeldman$elm_css$Css$fontWeight(_rtfeldman$elm_css$Css$normal),
-																_1: {
-																	ctor: '::',
-																	_0: _rtfeldman$elm_css$Css$fontSize(
-																		_rtfeldman$elm_css$Css$vw(2.2)),
-																	_1: {ctor: '[]'}
-																}
-															}
+															_0: _rtfeldman$elm_css$Css$fontSize(
+																_rtfeldman$elm_css$Css$vw(2.5)),
+															_1: {ctor: '[]'}
 														}
 													}),
 												_1: {ctor: '[]'}
 											},
 											{
 												ctor: '::',
-												_0: _rtfeldman$elm_css$Html_Styled$text('How Does it Help Me Produce Reliable Software?'),
-												_1: {ctor: '[]'}
-											}),
-										_1: {
-											ctor: '::',
-											_0: A2(
-												_rtfeldman$elm_css$Html_Styled$p,
-												{
+												_0: _rtfeldman$elm_css$Html_Styled$text('Jack Leow'),
+												_1: {
 													ctor: '::',
-													_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
-														{
-															ctor: '::',
-															_0: A2(
-																_rtfeldman$elm_css$Css$margin2,
-																_rtfeldman$elm_css$Css$em(2.5),
-																_rtfeldman$elm_css$Css$zero),
-															_1: {
+													_0: A2(
+														_rtfeldman$elm_css$Html_Styled$br,
+														{ctor: '[]'},
+														{ctor: '[]'}),
+													_1: {
+														ctor: '::',
+														_0: A2(
+															_rtfeldman$elm_css$Html_Styled$span,
+															{
 																ctor: '::',
-																_0: _rtfeldman$elm_css$Css$fontSize(
-																	_rtfeldman$elm_css$Css$vw(2.5)),
+																_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
+																	{
+																		ctor: '::',
+																		_0: _rtfeldman$elm_css$Css$fontSize(
+																			_rtfeldman$elm_css$Css$vw(2.0)),
+																		_1: {ctor: '[]'}
+																	}),
 																_1: {ctor: '[]'}
-															}
-														}),
-													_1: {ctor: '[]'}
-												},
-												{
-													ctor: '::',
-													_0: _rtfeldman$elm_css$Html_Styled$text('Jack Leow'),
-													_1: {ctor: '[]'}
-												}),
-											_1: {ctor: '[]'}
-										}
+															},
+															{
+																ctor: '::',
+																_0: _rtfeldman$elm_css$Html_Styled$text('December 7, 2022'),
+																_1: {ctor: '[]'}
+															}),
+														_1: {ctor: '[]'}
+													}
+												}
+											}),
+										_1: {ctor: '[]'}
 									}
 								}),
 							_1: {ctor: '[]'}
@@ -29047,7 +29058,7 @@ var _jackgene$live_deck$Deck_Slide_AudiencePoll$horizontalBarView = F2(
 									_0: _rtfeldman$elm_css$Css$color(_jackgene$live_deck$Deck_Slide_Common$black),
 									_1: {
 										ctor: '::',
-										_0: _rtfeldman$elm_css$Css$backgroundColor(_jackgene$live_deck$Deck_Slide_Common$primary),
+										_0: _rtfeldman$elm_css$Css$backgroundColor(_jackgene$live_deck$Deck_Slide_Common$primaryBackground),
 										_1: {
 											ctor: '::',
 											_0: _rtfeldman$elm_css$Css$opacity(
@@ -32118,7 +32129,7 @@ var _jackgene$live_deck$Deck_Slide_TypeSystemProperties$languageReport = functio
 																													_rtfeldman$elm_css$Css$vw(2.5)),
 																												_1: {
 																													ctor: '::',
-																													_0: _rtfeldman$elm_css$Css$backgroundColor(_jackgene$live_deck$Deck_Slide_Common$primary),
+																													_0: _rtfeldman$elm_css$Css$backgroundColor(_jackgene$live_deck$Deck_Slide_Common$primaryBackground),
 																													_1: {
 																														ctor: '::',
 																														_0: _rtfeldman$elm_css$Css$opacity(
@@ -35692,85 +35703,77 @@ var _jackgene$live_deck$SyntaxHighlight_Language_Kotlin$kotlin = {
 									_0: 'import',
 									_1: {
 										ctor: '::',
-										_0: 'protocol',
+										_0: 'package',
 										_1: {
 											ctor: '::',
-											_0: 'struct',
+											_0: 'actual',
 											_1: {
 												ctor: '::',
-												_0: 'package',
+												_0: 'annotation',
 												_1: {
 													ctor: '::',
-													_0: 'actual',
+													_0: 'companion',
 													_1: {
 														ctor: '::',
-														_0: 'annotation',
+														_0: 'const',
 														_1: {
 															ctor: '::',
-															_0: 'companion',
+															_0: 'crossinline',
 															_1: {
 																ctor: '::',
-																_0: 'const',
+																_0: 'expect',
 																_1: {
 																	ctor: '::',
-																	_0: 'crossinline',
+																	_0: 'external',
 																	_1: {
 																		ctor: '::',
-																		_0: 'expect',
+																		_0: 'final',
 																		_1: {
 																			ctor: '::',
-																			_0: 'external',
+																			_0: 'infix',
 																			_1: {
 																				ctor: '::',
-																				_0: 'final',
+																				_0: 'inline',
 																				_1: {
 																					ctor: '::',
-																					_0: 'infix',
+																					_0: 'inner',
 																					_1: {
 																						ctor: '::',
-																						_0: 'inline',
+																						_0: 'internal',
 																						_1: {
 																							ctor: '::',
-																							_0: 'inner',
+																							_0: 'lateinit',
 																							_1: {
 																								ctor: '::',
-																								_0: 'internal',
+																								_0: 'noinline',
 																								_1: {
 																									ctor: '::',
-																									_0: 'lateinit',
+																									_0: 'open',
 																									_1: {
 																										ctor: '::',
-																										_0: 'noinline',
+																										_0: 'operator',
 																										_1: {
 																											ctor: '::',
-																											_0: 'open',
+																											_0: 'out',
 																											_1: {
 																												ctor: '::',
-																												_0: 'operator',
+																												_0: 'override',
 																												_1: {
 																													ctor: '::',
-																													_0: 'out',
+																													_0: 'reified',
 																													_1: {
 																														ctor: '::',
-																														_0: 'override',
+																														_0: 'sealed',
 																														_1: {
 																															ctor: '::',
-																															_0: 'reified',
+																															_0: 'suspend',
 																															_1: {
 																																ctor: '::',
-																																_0: 'sealed',
+																																_0: 'tailrec',
 																																_1: {
 																																	ctor: '::',
-																																	_0: 'suspend',
-																																	_1: {
-																																		ctor: '::',
-																																		_0: 'tailrec',
-																																		_1: {
-																																			ctor: '::',
-																																			_0: 'vararg',
-																																			_1: {ctor: '[]'}
-																																		}
-																																	}
+																																	_0: 'vararg',
+																																	_1: {ctor: '[]'}
 																																}
 																															}
 																														}
@@ -36862,111 +36865,95 @@ var _jackgene$live_deck$SyntaxHighlight_Language_Scala$scala = {
 	keywords: _elm_lang$core$Set$fromList(
 		{
 			ctor: '::',
-			_0: 'break',
+			_0: 'asInstanceOf',
 			_1: {
 				ctor: '::',
-				_0: 'case',
+				_0: 'break',
 				_1: {
 					ctor: '::',
-					_0: 'catch',
+					_0: 'case',
 					_1: {
 						ctor: '::',
-						_0: 'constructor',
+						_0: 'catch',
 						_1: {
 							ctor: '::',
-							_0: 'continue',
+							_0: 'constructor',
 							_1: {
 								ctor: '::',
-								_0: 'do',
+								_0: 'continue',
 								_1: {
 									ctor: '::',
-									_0: 'else',
+									_0: 'do',
 									_1: {
 										ctor: '::',
-										_0: 'for',
+										_0: 'else',
 										_1: {
 											ctor: '::',
-											_0: 'if',
+											_0: 'extends',
 											_1: {
 												ctor: '::',
-												_0: 'import',
+												_0: 'finally',
 												_1: {
 													ctor: '::',
-													_0: 'interface',
+													_0: 'for',
 													_1: {
 														ctor: '::',
-														_0: 'match',
+														_0: 'forSome',
 														_1: {
 															ctor: '::',
-															_0: 'object',
+															_0: 'if',
 															_1: {
 																ctor: '::',
-																_0: 'param',
+																_0: 'implements',
 																_1: {
 																	ctor: '::',
-																	_0: 'private',
+																	_0: 'implicit',
 																	_1: {
 																		ctor: '::',
-																		_0: 'property',
+																		_0: 'isInstanceOf',
 																		_1: {
 																			ctor: '::',
-																			_0: 'protected',
+																			_0: 'match',
 																			_1: {
 																				ctor: '::',
-																				_0: 'public',
+																				_0: 'private',
 																				_1: {
 																					ctor: '::',
-																					_0: 'receiver',
+																					_0: 'protected',
 																					_1: {
 																						ctor: '::',
-																						_0: 'return',
+																						_0: 'public',
 																						_1: {
 																							ctor: '::',
-																							_0: 'static',
+																							_0: 'return',
 																							_1: {
 																								ctor: '::',
-																								_0: 'setparam',
+																								_0: 'super',
 																								_1: {
 																									ctor: '::',
-																									_0: 'super',
+																									_0: 'this',
 																									_1: {
 																										ctor: '::',
-																										_0: 'this',
+																										_0: 'throw',
 																										_1: {
 																											ctor: '::',
-																											_0: 'throw',
+																											_0: 'try',
 																											_1: {
 																												ctor: '::',
-																												_0: 'try',
+																												_0: 'typealias',
 																												_1: {
 																													ctor: '::',
-																													_0: 'typealias',
+																													_0: 'type',
 																													_1: {
 																														ctor: '::',
-																														_0: 'typeof',
+																														_0: 'while',
 																														_1: {
 																															ctor: '::',
-																															_0: 'val',
+																															_0: 'with',
 																															_1: {
 																																ctor: '::',
-																																_0: 'value',
-																																_1: {
-																																	ctor: '::',
-																																	_0: 'var',
-																																	_1: {
-																																		ctor: '::',
-																																		_0: 'where',
-																																		_1: {
-																																			ctor: '::',
-																																			_0: 'while',
-																																			_1: {
-																																				ctor: '::',
-																																				_0: 'yield',
-																																				_1: {ctor: '[]'}
-																																			}
-																																		}
-																																	}
-																																}
+																																_0: 'yield',
+																																_1: {ctor: '[]'}
 																															}
 																														}
 																													}
@@ -37000,115 +36987,59 @@ var _jackgene$live_deck$SyntaxHighlight_Language_Scala$scala = {
 	declarationKeywords: _elm_lang$core$Set$fromList(
 		{
 			ctor: '::',
-			_0: 'val',
+			_0: 'lazy',
 			_1: {
 				ctor: '::',
-				_0: 'var',
+				_0: 'val',
 				_1: {
 					ctor: '::',
-					_0: 'class',
+					_0: 'var',
 					_1: {
 						ctor: '::',
-						_0: 'abstract',
+						_0: 'def',
 						_1: {
 							ctor: '::',
-							_0: 'enum',
+							_0: 'class',
 							_1: {
 								ctor: '::',
-								_0: 'import',
+								_0: 'abstract',
 								_1: {
 									ctor: '::',
-									_0: 'protocol',
+									_0: 'enum',
 									_1: {
 										ctor: '::',
-										_0: 'struct',
+										_0: 'import',
 										_1: {
 											ctor: '::',
 											_0: 'package',
 											_1: {
 												ctor: '::',
-												_0: 'actual',
+												_0: 'annotation',
 												_1: {
 													ctor: '::',
-													_0: 'annotation',
+													_0: 'final',
 													_1: {
 														ctor: '::',
-														_0: 'companion',
+														_0: 'object',
 														_1: {
 															ctor: '::',
-															_0: 'const',
+															_0: 'override',
 															_1: {
 																ctor: '::',
-																_0: 'crossinline',
+																_0: 'sealed',
 																_1: {
 																	ctor: '::',
-																	_0: 'expect',
+																	_0: 'tailrec',
 																	_1: {
 																		ctor: '::',
-																		_0: 'external',
+																		_0: 'trait',
 																		_1: {
 																			ctor: '::',
-																			_0: 'final',
+																			_0: 'type',
 																			_1: {
 																				ctor: '::',
-																				_0: 'infix',
-																				_1: {
-																					ctor: '::',
-																					_0: 'inline',
-																					_1: {
-																						ctor: '::',
-																						_0: 'inner',
-																						_1: {
-																							ctor: '::',
-																							_0: 'internal',
-																							_1: {
-																								ctor: '::',
-																								_0: 'lateinit',
-																								_1: {
-																									ctor: '::',
-																									_0: 'noinline',
-																									_1: {
-																										ctor: '::',
-																										_0: 'open',
-																										_1: {
-																											ctor: '::',
-																											_0: 'operator',
-																											_1: {
-																												ctor: '::',
-																												_0: 'out',
-																												_1: {
-																													ctor: '::',
-																													_0: 'override',
-																													_1: {
-																														ctor: '::',
-																														_0: 'reified',
-																														_1: {
-																															ctor: '::',
-																															_0: 'sealed',
-																															_1: {
-																																ctor: '::',
-																																_0: 'suspend',
-																																_1: {
-																																	ctor: '::',
-																																	_0: 'tailrec',
-																																	_1: {
-																																		ctor: '::',
-																																		_0: 'vararg',
-																																		_1: {ctor: '[]'}
-																																	}
-																																}
-																															}
-																														}
-																													}
-																												}
-																											}
-																										}
-																									}
-																								}
-																							}
-																						}
-																					}
-																				}
+																				_0: 'vararg',
+																				_1: {ctor: '[]'}
 																			}
 																		}
 																	}
@@ -37137,15 +37068,7 @@ var _jackgene$live_deck$SyntaxHighlight_Language_Scala$scala = {
 				_1: {
 					ctor: '::',
 					_0: 'null',
-					_1: {
-						ctor: '::',
-						_0: 'field',
-						_1: {
-							ctor: '::',
-							_0: 'it',
-							_1: {ctor: '[]'}
-						}
-					}
+					_1: {ctor: '[]'}
 				}
 			}
 		}),
@@ -37155,7 +37078,7 @@ var _jackgene$live_deck$SyntaxHighlight_Language_Scala$scala = {
 			_0: 'Any',
 			_1: {
 				ctor: '::',
-				_0: 'Array',
+				_0: 'AnyRef',
 				_1: {
 					ctor: '::',
 					_0: 'Boolean',
@@ -37179,74 +37102,26 @@ var _jackgene$live_deck$SyntaxHighlight_Language_Scala$scala = {
 											_0: 'Long',
 											_1: {
 												ctor: '::',
-												_0: 'UByte',
+												_0: 'Float',
 												_1: {
 													ctor: '::',
-													_0: 'UShort',
+													_0: 'Double',
 													_1: {
 														ctor: '::',
-														_0: 'UInt',
+														_0: 'Array',
 														_1: {
 															ctor: '::',
-															_0: 'ULong',
+															_0: 'List',
 															_1: {
 																ctor: '::',
-																_0: 'Float',
+																_0: 'Seq',
 																_1: {
 																	ctor: '::',
-																	_0: 'Double',
+																	_0: 'Set',
 																	_1: {
 																		ctor: '::',
-																		_0: 'BooleanArray',
-																		_1: {
-																			ctor: '::',
-																			_0: 'CharArray',
-																			_1: {
-																				ctor: '::',
-																				_0: 'StringArray',
-																				_1: {
-																					ctor: '::',
-																					_0: 'ByteArray',
-																					_1: {
-																						ctor: '::',
-																						_0: 'ShortArray',
-																						_1: {
-																							ctor: '::',
-																							_0: 'IntArray',
-																							_1: {
-																								ctor: '::',
-																								_0: 'LongArray',
-																								_1: {
-																									ctor: '::',
-																									_0: 'UByteArray',
-																									_1: {
-																										ctor: '::',
-																										_0: 'UShortArray',
-																										_1: {
-																											ctor: '::',
-																											_0: 'UIntArray',
-																											_1: {
-																												ctor: '::',
-																												_0: 'ULongArray',
-																												_1: {
-																													ctor: '::',
-																													_0: 'FloatArray',
-																													_1: {
-																														ctor: '::',
-																														_0: 'DoubleArray',
-																														_1: {ctor: '[]'}
-																													}
-																												}
-																											}
-																										}
-																									}
-																								}
-																							}
-																						}
-																					}
-																				}
-																			}
-																		}
+																		_0: 'Option',
+																		_1: {ctor: '[]'}
 																	}
 																}
 															}
@@ -37268,20 +37143,20 @@ var _jackgene$live_deck$SyntaxHighlight_Language_Scala$scala = {
 	typeCheckCastOperator: _elm_tools$parser$Parser$oneOf(
 		{
 			ctor: '::',
-			_0: _elm_tools$parser$Parser$keyword('as'),
+			_0: _elm_tools$parser$Parser$keyword('asInstanceOf'),
 			_1: {
 				ctor: '::',
-				_0: _elm_tools$parser$Parser$keyword('!is'),
+				_0: _elm_tools$parser$Parser$keyword('isInstanceOf'),
 				_1: {ctor: '[]'}
 			}
 		}),
 	typeCheckCastKeywords: _elm_lang$core$Set$fromList(
 		{
 			ctor: '::',
-			_0: 'as',
+			_0: 'asInstanceOf',
 			_1: {
 				ctor: '::',
-				_0: 'is',
+				_0: 'isInstanceOf',
 				_1: {ctor: '[]'}
 			}
 		}),
