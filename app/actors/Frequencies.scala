@@ -1,19 +1,20 @@
 package actors
 
-case class Frequencies(
-  countsByItem: Map[String,Int] = Map(),
-  itemsByCount: Map[Int,Seq[String]] = Map()
+case class Frequencies[T](
+  countsByItem: Map[T, Int] = Map[T, Int](),
+  itemsByCount: Map[Int, Seq[T]] = Map[Int, Seq[T]]()
 ) {
-  def updated(item: String, delta: Int): Frequencies = {
+  def updated(item: T, delta: Int): Frequencies[T] = {
     if (delta == 0) this
     else {
       val oldCount: Int = countsByItem.getOrElse(item, 0)
       val newCount: Int = oldCount + delta
-      val newCountItems: Seq[String] =
+      val newCountItems: Seq[T] =
         itemsByCount.getOrElse(newCount, IndexedSeq())
 
       Frequencies(
-        countsByItem.updated(item, newCount),
+        if (newCount <= 0) countsByItem.removed(item)
+        else countsByItem.updated(item, newCount),
         itemsByCount.
           updated(
             oldCount,
@@ -25,7 +26,7 @@ case class Frequencies(
             else newCountItems.prepended(item)
           ).
           filter {
-            case (count: Int, items: Seq[String]) =>
+            case (count: Int, items: Seq[T]) =>
               count > 0 && items.nonEmpty
           }
       )
