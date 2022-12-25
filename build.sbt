@@ -41,6 +41,7 @@ scalacOptions ++= Seq(
 
 libraryDependencies += guice
 libraryDependencies += ws
+libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
 
 PlayKeys.devSettings += "play.server.http.port" -> "8973"
 PlayKeys.devSettings += "play.server.http.idleTimeout" -> "900s"

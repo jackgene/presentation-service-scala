@@ -22,7 +22,7 @@ object SendersByTokenCounterActor {
   case class Counts(
     chatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens],
     tokensBySender: Map[String, FifoFixedSizeSet[String]],
-    tokensByCount: Frequencies
+    tokensByCount: Frequencies[String]
   )
 
   // JSON
@@ -93,11 +93,11 @@ private class SendersByTokenCounterActor(
 
   private def paused(
       chatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens],
-      tokensBySender: Map[String, FifoFixedSizeSet[String]], tokenCount: Frequencies):
+      tokensBySender: Map[String, FifoFixedSizeSet[String]], tokenCount: Frequencies[String]):
       Receive = {
     case Reset =>
       context.become(
-        paused(IndexedSeq(), emptyTokensBySender, Frequencies())
+        paused(IndexedSeq(), emptyTokensBySender, Frequencies[String]())
       )
 
     case Register(listener: ActorRef) =>
@@ -118,7 +118,7 @@ private class SendersByTokenCounterActor(
 
   private def running(
       chatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens],
-      tokensBySender: Map[String, FifoFixedSizeSet[String]], tokenFrequencies: Frequencies,
+      tokensBySender: Map[String, FifoFixedSizeSet[String]], tokenFrequencies: Frequencies[String],
       listeners: Set[ActorRef]): Receive = {
     case event @ ChatMessageActor.New(msg: ChatMessage) =>
       val senderOpt: Option[String] = Option(msg.sender).filter { _ != "" }
@@ -127,7 +127,7 @@ private class SendersByTokenCounterActor(
       val (
         newChatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens],
         newTokensBySender: Map[String, FifoFixedSizeSet[String]],
-        newTokenFrequencies: Frequencies
+        newTokenFrequencies: Frequencies[String]
       ) =
         extractedTokens match {
           case Nil =>
@@ -168,12 +168,12 @@ private class SendersByTokenCounterActor(
 
               case None => (tokensBySender, extractedTokens.toSet, Set.empty)
             }
-            val newTokenFrequencies: Frequencies = addedTokens.
+            val newTokenFrequencies: Frequencies[String] = addedTokens.
               foldLeft(
-                removedTokens.foldLeft(tokenFrequencies) { (freqs: Frequencies, oldToken: String) =>
+                removedTokens.foldLeft(tokenFrequencies) { (freqs: Frequencies[String], oldToken: String) =>
                   freqs.updated(oldToken, -1)
                 }
-              ) { (freqs: Frequencies, newToken: String) =>
+              ) { (freqs: Frequencies[String], newToken: String) =>
                 freqs.updated(newToken, 1)
               }
 
@@ -193,11 +193,11 @@ private class SendersByTokenCounterActor(
 
     case Reset =>
       for (listener: ActorRef <- listeners) {
-        listener ! Counts(IndexedSeq(), emptyTokensBySender, Frequencies())
+        listener ! Counts(IndexedSeq(), emptyTokensBySender, Frequencies[String]())
       }
       context.become(
         running(
-          IndexedSeq(), emptyTokensBySender, Frequencies(), listeners
+          IndexedSeq(), emptyTokensBySender, Frequencies[String](), listeners
         )
       )
 
@@ -231,6 +231,6 @@ private class SendersByTokenCounterActor(
   }
 
   override def receive: Receive = paused(
-    IndexedSeq(), emptyTokensBySender, Frequencies()
+    IndexedSeq(), emptyTokensBySender, Frequencies[String]()
   )
 }

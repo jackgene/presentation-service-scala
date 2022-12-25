@@ -10,17 +10,23 @@ object MessagesBySenderCounterActor {
   // Outgoing messages
   case class Counts(sendersByCount: Map[Int,Seq[String]])
 
-  def props(chatActor: ActorRef): Props = Props(new MessagesBySenderCounterActor(chatActor))
+  def props(chatActor: ActorRef): Props = Props(
+    new MessagesBySenderCounterActor(chatActor)
+  )
 }
-private class MessagesBySenderCounterActor(chatActor: ActorRef) extends Actor with ActorLogging {
+private class MessagesBySenderCounterActor(chatActor: ActorRef)
+    extends Actor with ActorLogging {
   import MessagesBySenderCounterActor._
 
   chatActor ! ChatMessageActor.Register(self)
 
-  private def running(senderFrequencies: Frequencies, listeners: Set[ActorRef]): Receive = {
+  private def running(
+    senderFrequencies: Frequencies[String], listeners: Set[ActorRef]
+  ): Receive = {
     case ChatMessageActor.New(msg: ChatMessage) =>
       val sender: String = msg.sender
-      val newSenderFrequencies: Frequencies = senderFrequencies.updated(sender, 1)
+      val newSenderFrequencies: Frequencies[String] =
+        senderFrequencies.updated(sender, 1)
       for (listener: ActorRef <- listeners) {
         listener ! Counts(newSenderFrequencies.itemsByCount)
       }
@@ -43,5 +49,5 @@ private class MessagesBySenderCounterActor(chatActor: ActorRef) extends Actor wi
       log.info(s"-1 ${self.path.name} listener (=${listeners.size - 1})")
   }
 
-  override def receive: Receive = running(Frequencies(), Set())
+  override def receive: Receive = running(Frequencies[String](), Set())
 }
