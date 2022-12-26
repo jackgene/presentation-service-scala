@@ -8,7 +8,7 @@ class FrequenciesSpec extends PlaySpec {
 
     "be initially empty" in {
       // Set up & Test
-      val instance = empty
+      val instance: Frequencies[String] = empty
 
       // Verify
       assert(instance.countsByItem.isEmpty)
@@ -17,7 +17,7 @@ class FrequenciesSpec extends PlaySpec {
 
     "record correct counts" in {
       // Set up & Test
-      val instance = empty.
+      val instance: Frequencies[String] = empty.
         updated("test-1", -1). // test-1: 0
         updated("test-1", 2).  // test-1: 2
         updated("test-1", 3).  // test-1: 5
@@ -26,12 +26,14 @@ class FrequenciesSpec extends PlaySpec {
 
       // Verify
       assert(instance.countsByItem == Map("test-1" -> 1, "test-2" -> 5))
-      assert(instance.itemsByCount == Map(1 -> Seq("test-1"), 5 -> Seq("test-2")))
+      assert(
+        instance.itemsByCount == Map(1 -> Seq("test-1"), 5 -> Seq("test-2"))
+      )
     }
 
     "append item to itemsByCount when incremented" in {
       // Set up & Test
-      val instance = empty.
+      val instance: Frequencies[String] = empty.
         updated("test-1", 1).
         updated("test-2", 1) // Incrementing from 0 -> 1
 
@@ -42,7 +44,7 @@ class FrequenciesSpec extends PlaySpec {
 
     "prepend item to itemsByCount when decremented" in {
       // Set up & Test
-      val instance = empty.
+      val instance: Frequencies[String] = empty.
         updated("test-1", 1).
         updated("test-2", 2).
         updated("test-2", -1) // Decrement from 2 -> 1
@@ -52,9 +54,20 @@ class FrequenciesSpec extends PlaySpec {
       assert(instance.itemsByCount == Map(1 -> Seq("test-2", "test-1")))
     }
 
+    "never record negative counts" in {
+      // Set up & Test
+      val instance: Frequencies[String] = empty.
+        updated("test", -1)
+
+      // Verify
+      assert(instance.countsByItem.isEmpty)
+      assert(instance.itemsByCount.isEmpty)
+    }
+
     "no-op when updated with a 0 delta" in {
       // Set up
-      val instance = empty.updated("test", 42)
+      val instance: Frequencies[String] = empty.
+        updated("test", 42)
 
       // Test
       val updated = instance.updated("test", 0)
@@ -66,18 +79,9 @@ class FrequenciesSpec extends PlaySpec {
 
     "omit zero counts" in {
       // Set up & Test
-      val instance = empty.
+      val instance: Frequencies[String] = empty.
         updated("test", 1).
         updated("test", -1)
-
-      // Verify
-      assert(instance.countsByItem.isEmpty)
-      assert(instance.itemsByCount.isEmpty)
-    }
-
-    "omit negative counts" in {
-      // Set up & Test
-      val instance = empty.updated("test", -1)
 
       // Verify
       assert(instance.countsByItem.isEmpty)
