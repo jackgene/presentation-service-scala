@@ -1,5 +1,6 @@
 package actors
 
+import actors.counter.{FifoFixedSizedSet, Frequencies}
 import akka.actor.{Actor, ActorLogging, ActorRef, Props, Terminated}
 import model.ChatMessage
 import play.api.libs.json._
