@@ -1,4 +1,4 @@
-package actors
+package actors.counter
 
 /**
  * Immutable data structure that tracks frequencies/counts of anything.

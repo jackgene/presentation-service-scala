@@ -1,4 +1,4 @@
-package actors
+package actors.counter
 
 import org.scalatestplus.play.PlaySpec
 

@@ -1,5 +1,6 @@
 package actors
 
+import actors.counter.Frequencies
 import akka.actor.{Actor, ActorLogging, ActorRef, Props, Terminated}
 import model.ChatMessage
 
