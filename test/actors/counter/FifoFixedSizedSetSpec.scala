@@ -6,7 +6,7 @@ class FifoFixedSizedSetSpec extends PlaySpec {
   "A FifoFixedSizeSet of size 2" when {
     val empty: FifoFixedSizedSet[String] = FifoFixedSizedSet[String](2)
 
-    "no items are added" must {
+    "no item has been added" must {
       // Set up
       val instance: FifoFixedSizedSet[String] = empty
 
@@ -94,7 +94,7 @@ class FifoFixedSizedSetSpec extends PlaySpec {
       }
     }
 
-    "2 items has been added" must {
+    "2 items have been added" must {
       // Set up
       val (instance: FifoFixedSizedSet[String], _) = empty.addAll(Seq("test-1", "test-2"))
 
