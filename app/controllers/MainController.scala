@@ -1,20 +1,22 @@
 package controllers
 
 import actors._
+import actors.tokenizing.{mappedKeywordsTokenizer, normalizedWordsTokenizer}
 import akka.actor.{ActorRef, ActorSystem}
 import akka.stream.Materializer
-import model.{ChatMessage, Token}
+import javax.inject._
+import model.ChatMessage
+import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.libs.streams.ActorFlow
 import play.api.mvc._
-import javax.inject._
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
  * application's home page.
  */
 @Singleton
-class MainController @Inject() (cc: ControllerComponents)
+class MainController @Inject() (cc: ControllerComponents, cfg: Configuration)
     (implicit system: ActorSystem, mat: Materializer)
     extends AbstractController(cc) {
   private val RoutePattern = """(.*) to (Everyone|Me)(?: \(Direct Message\))?""".r
@@ -26,14 +28,22 @@ class MainController @Inject() (cc: ControllerComponents)
   private val languagePollActor: ActorRef =
     system.actorOf(
       SendersByTokenCounterActor.props(
-        Token.languagesFromWords, chatMsgActor, rejectedMsgActor
+        mappedKeywordsTokenizer(
+          cfg.get[Seq[String]]("presentation.languagePoll.languageByKeyword").
+            grouped(2).map { case key :: value :: Nil => key -> value }.toMap
+        ),
+        chatMsgActor, rejectedMsgActor
       ),
       "language-poll"
     )
   private val wordCloudActor: ActorRef =
     system.actorOf(
       SendersByTokenCounterActor.props(
-        Token.words, chatMsgActor, rejectedMsgActor
+        normalizedWordsTokenizer(
+          cfg.get[Seq[String]]("presentation.wordCloud.stopWords").toSet,
+          cfg.get[Int]("presentation.wordCloud.minWordLength")
+        ),
+        chatMsgActor, rejectedMsgActor
       ),
       "word-cloud"
     )
