@@ -29,8 +29,7 @@ class MainController @Inject() (cc: ControllerComponents, cfg: Configuration)
     system.actorOf(
       SendersByTokenCounterActor.props(
         mappedKeywordsTokenizer(
-          cfg.get[Seq[String]]("presentation.languagePoll.languageByKeyword").
-            grouped(2).map { case key :: value :: Nil => key -> value }.toMap
+          cfg.get[Map[String, String]]("presentation.languagePoll.languageByKeyword")
         ),
         chatMsgActor, rejectedMsgActor
       ),
