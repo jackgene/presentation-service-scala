@@ -682,7 +682,6 @@ thing match
         ]
       )
     )
-  , active = ( \model -> List.isEmpty model.languagesAndCounts )
   }
 
 
@@ -720,7 +719,6 @@ java.base of loader 'bootstrap')
         ]
       )
     )
-  , active = ( \model -> List.isEmpty model.languagesAndCounts )
   }
 
 
