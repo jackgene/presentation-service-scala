@@ -46,11 +46,15 @@ object FifoFixedSizedSet {
  * @tparam T the element type
  */
 class FifoFixedSizedSet[T] private(
-  maxSize: Int,
-  uniques: Set[T] = Set[T](),
-  insertionOrder: IndexedSeq[T] = Vector[T]()
+  val maxSize: Int,
+  val uniques: Set[T] = Set[T](),
+  val insertionOrder: IndexedSeq[T] = Vector[T]()
 ) {
   import FifoFixedSizedSet._
+
+  if (maxSize < 1) {
+    throw new IllegalArgumentException("maxSize must be positive")
+  }
 
   private def copy(
       uniques: Set[T] = uniques, insertionOrder: IndexedSeq[T]):
@@ -60,7 +64,7 @@ class FifoFixedSizedSet[T] private(
   /**
    * Adds a single item to this set, returning its effect.
    *
-   * See [[Effect]] for details.
+   * See [[FifoFixedSizedSet.Effect]] for details.
    *
    * @param item item to add
    * @return updated copy of this set, and effects of the addition
@@ -94,16 +98,14 @@ class FifoFixedSizedSet[T] private(
   /**
    * Adds the items to this set, returning the effect of each addition.
    *
-   * See [[Effect]] for details.
+   * See [[FifoFixedSizedSet.Effect]] for details.
    *
    * @param items items to add
    * @return updated copy of this set, and effects of each addition
    */
   def addAll(items: Seq[T]): (FifoFixedSizedSet[T], Seq[Effect[T]]) =
     items.foldLeft((this, IndexedSeq[Effect[T]]())) {
-      (
-        accum: (FifoFixedSizedSet[T], IndexedSeq[Effect[T]]), item: T
-      ) =>
+      (accum: (FifoFixedSizedSet[T], IndexedSeq[Effect[T]]), item: T) =>
 
       val (accumSet: FifoFixedSizedSet[T], accumUpdates: IndexedSeq[Effect[T]]) = accum
       val (nextAccumSet: FifoFixedSizedSet[T], update: Effect[T]) = accumSet.add(item)
@@ -112,6 +114,22 @@ class FifoFixedSizedSet[T] private(
     }
 
   def toSeq: Seq[T] = insertionOrder
+
+  private def canEqual(other: Any): Boolean = other.isInstanceOf[FifoFixedSizedSet[_]]
+
+  override def equals(other: Any): Boolean = other match {
+    case that: FifoFixedSizedSet[_] =>
+      (that canEqual this) &&
+        maxSize == that.maxSize &&
+        uniques == that.uniques &&
+        insertionOrder == that.insertionOrder
+    case _ => false
+  }
+
+  override def hashCode(): Int = {
+    val state = Seq[Any](maxSize, uniques, insertionOrder)
+    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+  }
 
   override def toString: String =
     insertionOrder.mkString("FifoFixedSizedSet(", ", ", ")")
