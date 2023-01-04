@@ -43,6 +43,7 @@ libraryDependencies += guice
 libraryDependencies += ws
 libraryDependencies += "com.google.inject" % "guice" % "5.1.0"
 libraryDependencies += "com.google.inject.extensions" % "guice-assistedinject" % "5.1.0"
+libraryDependencies += "org.scalatestplus" %% "scalacheck-1-14" % "3.1.1.0" % Test
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
 
 PlayKeys.devSettings += "play.server.http.port" -> "8973"
