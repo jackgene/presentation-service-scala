@@ -1,7 +1,10 @@
 package actors.counter
 
 /**
- * Immutable data structure that tracks frequencies/counts of anything.
+ * Immutable data structure that tracks counts of anything.
+ *
+ * Counts are [[Int]]s and will never exceed [[Int.MaxValue]], and
+ * does not overflow.
  *
  * @param countsByItem mapping of item -> count
  * @param itemsByCount mapping of count -> items
@@ -24,7 +27,10 @@ case class Frequencies[T](
     if (delta == 0) this
     else {
       val oldCount: Int = countsByItem.getOrElse(item, 0)
-      val newCount: Int = oldCount + delta
+      val newCountUnbounded: Int = oldCount + delta
+      val newCount: Int =
+        if (newCountUnbounded >= 0) newCountUnbounded
+        else if (delta > 0) Int.MaxValue else 0
       val newCountItems: Seq[T] =
         itemsByCount.getOrElse(newCount, IndexedSeq())
 
