@@ -1,17 +1,9 @@
 package actors.counter
 
+import common.CommonProp
 import org.scalacheck.Gen
-import org.scalactic.anyvals.PosInt
-import org.scalatest.propspec.AnyPropSpec
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class FifoFixedSizedSetProp extends AnyPropSpec with ScalaCheckPropertyChecks {
-  implicit override val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfiguration(
-    minSuccessful = 10_000,
-    sizeRange = PosInt(1_000),
-    workers = 2
-  )
-
+class FifoFixedSizedSetProp extends CommonProp {
   property("never contain more items than fixed limit") {
     forAll(
       "fixedSize" |: Gen.posNum[Int],
