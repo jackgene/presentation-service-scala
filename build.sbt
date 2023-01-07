@@ -46,13 +46,17 @@ libraryDependencies += "com.google.inject.extensions" % "guice-assistedinject" %
 libraryDependencies += "org.scalatestplus" %% "scalacheck-1-14" % "3.1.1.0" % Test
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
 
-Test / fork := false
+// Forward all system properties to forked tests
+Test / javaOptions ++= {
+  sys.props.toList.map {
+    case (key, value) => s"-D$key=$value"
+  }
+}
 
 PlayKeys.devSettings += "play.server.http.port" -> "8973"
 PlayKeys.devSettings += "play.server.http.idleTimeout" -> "900s"
 
 // Deck Elm app
-
 val elmMakeDeck = taskKey[Seq[File]]("elm-make-deck")
 
 elmMakeDeck := {
@@ -201,7 +205,6 @@ elmMakeModerator := {
 Assets / sourceGenerators += elmMakeModerator.taskValue
 
 // Transcriber Elm app
-
 val elmMakeTranscriber = taskKey[Seq[File]]("elm-make-transcriber")
 
 elmMakeTranscriber := {
