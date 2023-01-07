@@ -46,6 +46,8 @@ libraryDependencies += "com.google.inject.extensions" % "guice-assistedinject" %
 libraryDependencies += "org.scalatestplus" %% "scalacheck-1-14" % "3.1.1.0" % Test
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
 
+Test / fork := false
+
 PlayKeys.devSettings += "play.server.http.port" -> "8973"
 PlayKeys.devSettings += "play.server.http.idleTimeout" -> "900s"
 
