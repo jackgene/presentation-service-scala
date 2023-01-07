@@ -17,4 +17,4 @@ jobs:
       with:
         java-version: zulu@1.11
     - name: Build and Test
-      run: sbt -v -Dfile.encoding=UTF-8 '; set javaOptions := Seq("-Dtest.prop.minSuccessful=10000", "-Dtest.prop.sizeRange=10000"); test'
+      run: sbt -v -Dfile.encoding=UTF-8 '; set javaOptions := Seq("-Dtest.prop.minSuccessful=100000", "-Dtest.prop.sizeRange=10000"); test'
