@@ -9,7 +9,7 @@ class NormalizedWordsTokenizerProp extends CommonProp {
       "text" |: Gen.asciiPrintableStr
     ) { (text: String) =>
       // Set up
-      val instance = new NormalizedWordsTokenizer(Set(), 0)
+      val instance = new NormalizedWordsTokenizer(Set(), 1)
 
       // Test
       val actualTokens: Seq[String] = instance(text)
@@ -21,11 +21,11 @@ class NormalizedWordsTokenizerProp extends CommonProp {
 
   property("never extract stop words") {
     forAll(
-      "stopWords" |: Gen.nonEmptyContainerOf[Set, String](Gen.alphaLowerStr),
+      "stopWords" |: Gen.nonEmptyContainerOf[Set, String](Gen.nonEmptyListOf[Char](Gen.alphaLowerChar).map(_.mkString)),
       "text"      |: Gen.asciiPrintableStr
     ) { (stopWords: Set[String], text: String) =>
       // Set up
-      val instance = new NormalizedWordsTokenizer(stopWords, 0)
+      val instance = new NormalizedWordsTokenizer(stopWords, 1)
 
       // Test
       val actualTokens: Seq[String] = instance(text)

@@ -10,7 +10,7 @@ class NormalizedWordsTokenizerSpec extends PlaySpec {
   "A NormalizedWordsTokenizer" when {
     "configured with no stop words or minimum word length" must {
       val instance = new NormalizedWordsTokenizer(
-        stopWords = Set(), minWordLength = 0
+        stopWords = Set(), minWordLength = 1
       )
 
       "correctly tokenize ASCII text" in {
@@ -100,7 +100,7 @@ class NormalizedWordsTokenizerSpec extends PlaySpec {
 
     "configured with stop words and no minimum word length" must {
       val instance = new NormalizedWordsTokenizer(
-        stopWords = Set("yolo", "large", "schrödinger"), minWordLength = 0
+        stopWords = Set("yolo", "large", "schrödinger"), minWordLength = 1
       )
 
       "omit stop words tokenizing ASCII text" in {
@@ -186,6 +186,43 @@ class NormalizedWordsTokenizerSpec extends PlaySpec {
         // Verify
         val expectedTokens: Seq[String] = Seq("teapot")
         assert(actualTokens === expectedTokens)
+      }
+    }
+
+    "misconfigured" must {
+      "fail on stop word of an empty string" in {
+        // Test
+        assertThrows[IllegalArgumentException] {
+          new NormalizedWordsTokenizer(Set(""), 1)
+        }
+      }
+
+      "fail on stop word of a blank word" in {
+        // Test
+        assertThrows[IllegalArgumentException] {
+          new NormalizedWordsTokenizer(Set(" "), 1)
+        }
+      }
+
+      "fail on stop word of a numeric string" in {
+        // Test
+        assertThrows[IllegalArgumentException] {
+          new NormalizedWordsTokenizer(Set("1"), 1)
+        }
+      }
+
+      "fail on stop word containing non-letter symbols" in {
+        // Test
+        assertThrows[IllegalArgumentException] {
+          new NormalizedWordsTokenizer(Set("$_"), 1)
+        }
+      }
+
+      "fail on minimum word length less than 1" in {
+        // Test
+        assertThrows[IllegalArgumentException] {
+          new NormalizedWordsTokenizer(Set(), 0)
+        }
       }
     }
   }
