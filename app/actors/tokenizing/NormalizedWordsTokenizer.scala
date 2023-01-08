@@ -17,7 +17,9 @@ class NormalizedWordsTokenizer private[tokenizing](
   {
     val invalidStopWords: Set[String] = stopWords.filterNot(ValidWordPattern.matches)
     if (invalidStopWords.nonEmpty) {
-      throw new IllegalArgumentException(s"some stop words are invalid: ${invalidStopWords.mkString("{", ",", "}")}")
+      throw new IllegalArgumentException(
+        s"some stop words are invalid: ${invalidStopWords.mkString("{", ",", "}")}"
+      )
     }
   }
 
