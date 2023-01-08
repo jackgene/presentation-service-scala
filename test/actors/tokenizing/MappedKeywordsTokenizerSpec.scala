@@ -6,21 +6,12 @@ class MappedKeywordsTokenizerSpec extends PlaySpec {
   val testText = "Lorem ipsum dolor sit amet!"
 
   "A MappedKeywordsTokenizer" when {
-    "configured with an empty mapping" must {
-      "fail" in {
-        // Test
-        assertThrows[IllegalArgumentException] {
-          new MappedKeywordsTokenizer(Map())
-        }
-      }
-    }
-
     "configured with lower-case keyed mapping" must {
       val instance = new MappedKeywordsTokenizer(
         Map(
           "lorem" -> "Mock-1",
           "ipsum" -> "Mock-1",
-          "amet!" -> "Mock-2",
+          "amet" -> "Mock-2",
           "other" -> "Mock-2",
         )
       )
@@ -40,7 +31,7 @@ class MappedKeywordsTokenizerSpec extends PlaySpec {
         Map(
           "LOREM" -> "Mock-1",
           "IPSUM" -> "Mock-1",
-          "AMET!" -> "Mock-2",
+          "AMET" -> "Mock-2",
           "OTHER" -> "Mock-2",
         )
       )
@@ -52,6 +43,71 @@ class MappedKeywordsTokenizerSpec extends PlaySpec {
         // Verify
         val expectedTokens = Seq("Mock-1", "Mock-1", "Mock-2")
         assert(actualTokens == expectedTokens)
+      }
+    }
+
+    "misconfigured" must {
+      "fail on an empty mapping" in {
+        // Test
+        assertThrows[IllegalArgumentException] {
+          new MappedKeywordsTokenizer(Map())
+        }
+      }
+
+      "fail on mapping with space in raw token" in {
+        // Test
+        assertThrows[IllegalArgumentException] {
+          new MappedKeywordsTokenizer(Map(" " -> "Mock-1"))
+        }
+      }
+
+      "fail on mapping with tab in raw token" in {
+        // Test
+        assertThrows[IllegalArgumentException] {
+          new MappedKeywordsTokenizer(Map("\t" -> "Mock-1"))
+        }
+      }
+
+      "fail on mapping with comma in raw token" in {
+        // Test
+        assertThrows[IllegalArgumentException] {
+          new MappedKeywordsTokenizer(Map("," -> "Mock-1"))
+        }
+      }
+
+      "fail on mapping with period in raw token" in {
+        // Test
+        assertThrows[IllegalArgumentException] {
+          new MappedKeywordsTokenizer(Map("." -> "Mock-1"))
+        }
+      }
+
+      "fail on mapping with slash in raw token" in {
+        // Test
+        assertThrows[IllegalArgumentException] {
+          new MappedKeywordsTokenizer(Map("/" -> "Mock-1"))
+        }
+      }
+
+      "fail on mapping with pipe in raw token" in {
+        // Test
+        assertThrows[IllegalArgumentException] {
+          new MappedKeywordsTokenizer(Map("|" -> "Mock-1"))
+        }
+      }
+
+      "fail on mapping with question mark in raw token" in {
+        // Test
+        assertThrows[IllegalArgumentException] {
+          new MappedKeywordsTokenizer(Map("?" -> "Mock-1"))
+        }
+      }
+
+      "fail on mapping with exclamation mark in raw token" in {
+        // Test
+        assertThrows[IllegalArgumentException] {
+          new MappedKeywordsTokenizer(Map("!" -> "Mock-1"))
+        }
       }
     }
   }
