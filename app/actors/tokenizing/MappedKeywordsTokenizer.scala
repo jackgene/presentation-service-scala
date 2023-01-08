@@ -7,9 +7,8 @@ object MappedKeywordsTokenizer {
 }
 
 class MappedKeywordsTokenizer private[tokenizing](
-                                                   keywordsByRawToken: Map[String, String]
-                                                 ) extends Tokenizer {
-
+  keywordsByRawToken: Map[String, String]
+) extends Tokenizer {
   import MappedKeywordsTokenizer.*
 
   if (keywordsByRawToken.isEmpty) {
