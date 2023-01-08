@@ -6,7 +6,7 @@ import org.scalacheck.Gen
 class NormalizedWordsTokenizerProp extends CommonProp {
   property("only extract hyphenated lower-case tokens") {
     forAll(
-      "text" |: Gen.asciiPrintableStr
+      "text" |: Gen.asciiStr
     ) { (text: String) =>
       // Set up
       val instance = new NormalizedWordsTokenizer(Set(), 1)
@@ -22,7 +22,7 @@ class NormalizedWordsTokenizerProp extends CommonProp {
   property("never extract stop words") {
     forAll(
       "stopWords" |: Gen.nonEmptyContainerOf[Set, String](Gen.nonEmptyListOf[Char](Gen.alphaLowerChar).map(_.mkString)),
-      "text"      |: Gen.asciiPrintableStr
+      "text"      |: Gen.asciiStr
     ) { (stopWords: Set[String], text: String) =>
       // Set up
       val instance = new NormalizedWordsTokenizer(stopWords, 1)
@@ -38,7 +38,7 @@ class NormalizedWordsTokenizerProp extends CommonProp {
   property("only extract words longer than minWordLength") {
     forAll(
       "minWordLength" |: Gen.posNum[Int],
-      "text"          |: Gen.asciiPrintableStr
+      "text"          |: Gen.asciiStr
     ) { (minWordLength: Int, text: String) =>
       // Set up
       val instance = new NormalizedWordsTokenizer(Set(), minWordLength)
