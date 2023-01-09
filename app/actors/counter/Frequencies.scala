@@ -3,8 +3,8 @@ package actors.counter
 /**
  * Immutable data structure that tracks counts of anything.
  *
- * Counts are [[Int]]s and will never exceed [[Int.MaxValue]], and
- * does not overflow.
+ * Counts are `Int`s and will never exceed `Int.MaxValue`, and does
+ * not overflow.
  *
  * @param countsByItem mapping of item -> count
  * @param itemsByCount mapping of count -> items
