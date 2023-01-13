@@ -44,8 +44,10 @@ case class Frequencies[T](
           ).
           updated(
             newCount,
-            if (delta > 0) newCountItems.appended(item)
-            else newCountItems.prepended(item)
+            if (delta < 0) newCountItems.prepended(item)
+            else
+              if (newCount == oldCount) newCountItems
+              else newCountItems.appended(item)
           ).
           filter {
             case (count: Int, items: Seq[T]) =>
