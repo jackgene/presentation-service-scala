@@ -15,6 +15,8 @@ class FrequenciesProp extends CommonProp {
 
       // Verify
       assert(instance.countsByItem.getOrElse((), 0) >= 0)
+      assert(instance.itemsByCount.values.forall { _.size == 1})
+      assert(instance.itemsByCount.keySet.forall { _ >= 0})
     }
   }
 
@@ -32,6 +34,11 @@ class FrequenciesProp extends CommonProp {
 
         // Verify
         assert(finalInstance.countsByItem.getOrElse((), 0) >= initialInstance.countsByItem.getOrElse((), 0))
+        assert(finalInstance.itemsByCount.values.forall { _.size == 1})
+        assert(
+          finalInstance.itemsByCount.keys.headOption.getOrElse(0) >=
+          initialInstance.itemsByCount.keys.headOption.getOrElse(0)
+        )
       }
     }
   }
@@ -50,6 +57,11 @@ class FrequenciesProp extends CommonProp {
 
         // Verify
         assert(finalInstance.countsByItem.getOrElse((), 0) <= initialInstance.countsByItem.getOrElse((), 0))
+        assert(finalInstance.itemsByCount.values.forall { _.size == 1 })
+        assert(
+          finalInstance.itemsByCount.keys.headOption.getOrElse(0) <=
+          initialInstance.itemsByCount.keys.headOption.getOrElse(0)
+        )
       }
     }
   }
