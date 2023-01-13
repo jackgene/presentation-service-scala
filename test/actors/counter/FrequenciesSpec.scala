@@ -54,7 +54,7 @@ class FrequenciesSpec extends PlaySpec {
       assert(instance.itemsByCount == Map(1 -> Seq("test-2", "test-1")))
     }
 
-    "never record negative counts" in {
+    "never record counts less than zero" in {
       // Set up & Test
       val instance: Frequencies[String] = empty.
         updated("test", -1)
@@ -62,6 +62,19 @@ class FrequenciesSpec extends PlaySpec {
       // Verify
       assert(instance.countsByItem.isEmpty)
       assert(instance.itemsByCount.isEmpty)
+    }
+
+    "never record counts greater than the maximum" in {
+      // Set up & Test
+      val instance: Frequencies[String] = empty.
+        updated("test", Int.MaxValue).
+        updated("test", 1) // Should not overflow
+
+      // Verify
+      assert(instance.countsByItem == Map("test" -> Int.MaxValue))
+      assert(
+        instance.itemsByCount == Map(Int.MaxValue -> Seq("test"))
+      )
     }
 
     "no-op when updated with a 0 delta" in {
