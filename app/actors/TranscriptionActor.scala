@@ -33,11 +33,11 @@ object TranscriptionActor {
   }
 }
 private class TranscriptionActor extends Actor with ActorLogging {
-  import TranscriptionActor._
+  import TranscriptionActor.*
 
   private def running(text: String, listeners: Set[ActorRef]): Receive = {
     case NewTranscriptionText(text: String) =>
-      log.info(s"Received transcription text: ${text}")
+      log.info(s"Received transcription text: $text")
       for (listener: ActorRef <- listeners) {
         listener ! Transcription(text)
       }

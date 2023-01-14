@@ -2,7 +2,7 @@ package actors
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props, Terminated}
 import model.ChatMessage
-import play.api.libs.json._
+import play.api.libs.json.*
 
 object ApprovalRouterActor {
   // Incoming messages
@@ -37,7 +37,7 @@ object ApprovalRouterActor {
 private class ApprovalRouterActor(
     chatMessageActor: ActorRef, rejectedMessageActor: ActorRef)
     extends Actor with ActorLogging {
-  import ApprovalRouterActor._
+  import ApprovalRouterActor.*
 
   private def paused(text: IndexedSeq[String]): Receive = {
     case Reset =>
