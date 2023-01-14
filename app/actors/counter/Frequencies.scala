@@ -1,5 +1,11 @@
 package actors.counter
 
+object Frequencies {
+  def apply[T](): Frequencies[T] = new Frequencies[T](
+    Map[T, Int](), Map[Int, Seq[T]]()
+  )
+}
+
 /**
  * Immutable data structure that tracks counts of anything.
  *
@@ -10,9 +16,9 @@ package actors.counter
  * @param itemsByCount mapping of count -> items
  * @tparam T type of item being counted
  */
-case class Frequencies[T](
-  countsByItem: Map[T, Int] = Map[T, Int](),
-  itemsByCount: Map[Int, Seq[T]] = Map[Int, Seq[T]]()
+class Frequencies[T] private (
+  private[counter] val countsByItem: Map[T, Int],
+  val itemsByCount: Map[Int, Seq[T]]
 ) {
   /**
    * Updates the counts of a single item by incrementing
@@ -34,7 +40,7 @@ case class Frequencies[T](
       val newCountItems: Seq[T] =
         itemsByCount.getOrElse(newCount, IndexedSeq())
 
-      Frequencies(
+      new Frequencies(
         if (newCount <= 0) countsByItem.removed(item)
         else countsByItem.updated(item, newCount),
         itemsByCount.
@@ -56,4 +62,21 @@ case class Frequencies[T](
       )
     }
   }
+
+  def canEqual(other: Any): Boolean = other.isInstanceOf[Frequencies[?]]
+
+  override def equals(other: Any): Boolean = other match {
+    case that: Frequencies[?] =>
+      (that canEqual this) &&
+        countsByItem == that.countsByItem &&
+        itemsByCount == that.itemsByCount
+    case _ => false
+  }
+
+  override def hashCode(): Int = {
+    val state = Seq(countsByItem, itemsByCount)
+    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+  }
+
+  override def toString = s"Frequencies($itemsByCount)"
 }
