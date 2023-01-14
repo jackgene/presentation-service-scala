@@ -4,8 +4,8 @@ import actors.counter.{FifoFixedSizedSet, Frequencies}
 import actors.tokenizing.Tokenizer
 import akka.actor.{Actor, ActorLogging, ActorRef, Props, Terminated}
 import model.ChatMessage
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
+import play.api.libs.json.*
+import play.api.libs.functional.syntax.*
 
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 
@@ -19,7 +19,7 @@ object SendersByTokenCounterActor {
     chatMessage: ChatMessage,
     tokens: Seq[String]
   ) {
-    override def toString: String = s"${chatMessage} -> ${tokens.mkString("[", ",", "]")}"
+    override def toString: String = s"$chatMessage -> ${tokens.mkString("[", ",", "]")}"
   }
   case class Counts(
     chatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens],
@@ -54,7 +54,7 @@ object SendersByTokenCounterActor {
   object WebSocketActor {
     object Send
 
-    val BatchPeriod: FiniteDuration = 250.milliseconds
+    private val BatchPeriod: FiniteDuration = 250.milliseconds
 
     def props(webSocketClient: ActorRef, counts: ActorRef): Props =
       Props(new WebSocketActor(webSocketClient, counts))
@@ -63,7 +63,7 @@ object SendersByTokenCounterActor {
   class WebSocketActor(
     webSocketClient: ActorRef, counts: ActorRef
   ) extends Actor with ActorLogging {
-    import WebSocketActor._
+    import WebSocketActor.*
     import context.dispatcher
 
     counts ! SendersByTokenCounterActor.Register(listener = self)
@@ -91,7 +91,7 @@ private class SendersByTokenCounterActor(
   tokenize: Tokenizer,
   chatMessageActor: ActorRef, rejectedMessageActor: ActorRef
 ) extends Actor with ActorLogging {
-  import SendersByTokenCounterActor._
+  import SendersByTokenCounterActor.*
 
   private val maxTokensPerSender: Int = 3
   private val emptyTokensBySender: Map[String, FifoFixedSizedSet[String]] =

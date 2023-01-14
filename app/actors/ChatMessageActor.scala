@@ -14,11 +14,11 @@ object ChatMessageActor {
   val props: Props = Props(new ChatMessageActor)
 }
 private class ChatMessageActor extends Actor with ActorLogging {
-  import ChatMessageActor._
+  import ChatMessageActor.*
 
   private def running(listeners: Set[ActorRef]): Receive = {
     case event @ New(chatMessage: ChatMessage) =>
-      log.info(s"Received ${self.path.name} message - ${chatMessage}")
+      log.info(s"Received ${self.path.name} message - $chatMessage")
       for (listener: ActorRef <- listeners) {
         listener ! event
       }

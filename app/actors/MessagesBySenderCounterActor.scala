@@ -17,7 +17,7 @@ object MessagesBySenderCounterActor {
 }
 private class MessagesBySenderCounterActor(chatActor: ActorRef)
     extends Actor with ActorLogging {
-  import MessagesBySenderCounterActor._
+  import MessagesBySenderCounterActor.*
 
   chatActor ! ChatMessageActor.Register(self)
 

@@ -1,6 +1,6 @@
 package actors.counter
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 object FifoFixedSizedSet {
   /**
@@ -50,7 +50,7 @@ class FifoFixedSizedSet[T] private(
   val uniques: Set[T] = Set[T](),
   val insertionOrder: IndexedSeq[T] = Vector[T]()
 ) {
-  import FifoFixedSizedSet._
+  import FifoFixedSizedSet.*
 
   if (maxSize < 1) {
     throw new IllegalArgumentException("maxSize must be positive")
@@ -115,10 +115,10 @@ class FifoFixedSizedSet[T] private(
 
   def toSeq: Seq[T] = insertionOrder
 
-  private def canEqual(other: Any): Boolean = other.isInstanceOf[FifoFixedSizedSet[_]]
+  private def canEqual(other: Any): Boolean = other.isInstanceOf[FifoFixedSizedSet[?]]
 
   override def equals(other: Any): Boolean = other match {
-    case that: FifoFixedSizedSet[_] =>
+    case that: FifoFixedSizedSet[?] =>
       (that canEqual this) &&
         maxSize == that.maxSize &&
         uniques == that.uniques &&
