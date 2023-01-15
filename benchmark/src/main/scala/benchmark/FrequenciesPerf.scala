@@ -37,7 +37,7 @@ class FrequenciesPerf:
     val removed: Option[String] = existingVotes.get("Charlie")
     val updatedFrequencies: Frequencies[String] = removed match
       case Some(_: String) => throw new IllegalStateException() 
-      case None => existingFrequencies.increment(existingVotes("Charlie"))
+      case None => existingFrequencies.increment(updatedVotes("Charlie"))
 
     updatedFrequencies.itemsByCount
 
