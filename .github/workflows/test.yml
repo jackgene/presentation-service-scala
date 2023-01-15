@@ -19,4 +19,4 @@ jobs:
     - name: Build and Test
       run: sbt -v -Dfile.encoding=UTF-8 -Dtest.prop.minSuccessful=1000000 -Dtest.prop.sizeRange=100 test
     - name: Benchmark
-      run: sbt "benchmark/jmh:run -i10 -f1 -tmax"
+      run: sbt "benchmark/jmh:run -i10 -f1 -t1"
