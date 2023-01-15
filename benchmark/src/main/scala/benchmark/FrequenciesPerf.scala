@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit
 /**
  * Benchmark comparing implementations using [[Frequencies]] against
  * a baseline of naïve implementations using only Scala collections.
+ * 
+ * Naïve implementation does not correctly maintain item order.
  */
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.AverageTime))
