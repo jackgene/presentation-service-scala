@@ -20,6 +20,10 @@ class Frequencies[T] private (
   private[counter] val countsByItem: Map[T, Int],
   val itemsByCount: Map[Int, Seq[T]]
 ) {
+  def increment(item: T): Frequencies[T] = updated(item, 1)
+
+  def decrement(item: T): Frequencies[T] = updated(item, -1)
+
   /**
    * Updates the counts of a single item by incrementing
    * (positive-delta) or decrementing (negative-delta) by the given
