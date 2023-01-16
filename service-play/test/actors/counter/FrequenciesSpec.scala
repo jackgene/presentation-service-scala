@@ -18,11 +18,25 @@ class FrequenciesSpec extends PlaySpec {
     "record correct counts" in {
       // Set up & Test
       val instance: Frequencies[String] = empty.
-        updated("test-1", -1). // test-1: 0
-        updated("test-1", 2).  // test-1: 2
-        updated("test-1", 3).  // test-1: 5
-        updated("test-1", -4). // test-1: 1
-        updated("test-2", 5)   // test-2: 5
+        // "test-1"
+        decremented("test-1").  // 0
+        incremented("test-1").  // 1
+        incremented("test-1").  // 2
+        decremented("test-1").  // 1
+        incremented("test-1").  // 2
+        incremented("test-1").  // 3
+        incremented("test-1").  // 4
+        incremented("test-1").  // 5
+        decremented("test-1").  // 4
+        decremented("test-1").  // 3
+        decremented("test-1").  // 2
+        decremented("test-1").  // 1
+        // "test-2"
+        incremented("test-2").  // 1
+        incremented("test-2").  // 2
+        incremented("test-2").  // 3
+        incremented("test-2").  // 4
+        incremented("test-2")   // 5
 
       // Verify
       assert(instance.countsByItem == Map("test-1" -> 1, "test-2" -> 5))
@@ -34,8 +48,8 @@ class FrequenciesSpec extends PlaySpec {
     "append item to itemsByCount when incremented" in {
       // Set up & Test
       val instance: Frequencies[String] = empty.
-        updated("test-1", 1).
-        updated("test-2", 1) // Incrementing from 0 -> 1
+        incremented("test-1").
+        incremented("test-2")
 
       // Verify
       // Incremented value should be appended
@@ -43,11 +57,15 @@ class FrequenciesSpec extends PlaySpec {
     }
 
     "prepend item to itemsByCount when decremented" in {
-      // Set up & Test
-      val instance: Frequencies[String] = empty.
-        updated("test-1", 1).
-        updated("test-2", 2).
-        updated("test-2", -1) // Decrement from 2 -> 1
+      // Set up
+      val instanceSetup: Frequencies[String] = empty.
+        incremented("test-1").
+        incremented("test-2").
+        incremented("test-2")
+
+      // Test
+      val instance: Frequencies[String] = instanceSetup.
+        decremented("test-2") // Decrement from 2 -> 1
 
       // Verify
       // Decremented value should be prepended
@@ -55,46 +73,48 @@ class FrequenciesSpec extends PlaySpec {
     }
 
     "never record counts less than zero" in {
-      // Set up & Test
-      val instance: Frequencies[String] = empty.
-        updated("test", -1)
+      // Set up
+      val instanceSetup: Frequencies[String] = empty
+
+      // Test
+      val instance: Frequencies[String] = instanceSetup.
+        decremented("test")
 
       // Verify
       assert(instance.countsByItem.isEmpty)
       assert(instance.itemsByCount.isEmpty)
+      // Instance equality is not strictly necessary, just verify optimization
+      // Ok to remove if optimization no longer appropriate
+      assert(instance eq instanceSetup)
     }
 
     "never record counts greater than the maximum" in {
-      // Set up & Test
-      val instance: Frequencies[String] = empty.
-        updated("test", Int.MaxValue).
-        updated("test", 1) // Should not overflow
+      // Set up
+      // Private API: manually set count to Int.MaxValue
+      val instanceSetup: Frequencies[String] = new Frequencies[String](
+        countsByItem = Map("test" -> Int.MaxValue),
+        itemsByCount = Map(Int.MaxValue -> Seq("test"))
+      )
+
+      // Test
+      val instance: Frequencies[String] = instanceSetup.
+        incremented("test") // Should not overflow
 
       // Verify
       assert(instance.countsByItem == Map("test" -> Int.MaxValue))
       assert(
         instance.itemsByCount == Map(Int.MaxValue -> Seq("test"))
       )
-    }
-
-    "no-op when updated with a 0 delta" in {
-      // Set up
-      val instance: Frequencies[String] = empty.
-        updated("test", 42)
-
-      // Test
-      val updated = instance.updated("test", 0)
-
-      // Verify
-      assert(instance == updated)
-      assert(instance eq updated)
+      // Instance equality is not strictly necessary, just verify optimization
+      // Ok to remove if optimization no longer appropriate
+      assert(instance eq instanceSetup)
     }
 
     "omit zero counts" in {
       // Set up & Test
       val instance: Frequencies[String] = empty.
-        updated("test", 1).
-        updated("test", -1)
+        incremented("test").
+        decremented("test")
 
       // Verify
       assert(instance.countsByItem.isEmpty)

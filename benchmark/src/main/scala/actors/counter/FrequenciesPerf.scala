@@ -1,6 +1,5 @@
-package benchmark
+package actors.counter
 
-import actors.counter.Frequencies
 import org.openjdk.jmh.annotations.*
 
 import java.util.concurrent.TimeUnit
@@ -8,7 +7,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Benchmark comparing implementations using [[Frequencies]] against
  * a baseline of naïve implementations using only Scala collections.
- * 
+ *
  * Naïve implementation does not correctly maintain item order.
  */
 @State(Scope.Benchmark)
@@ -19,8 +18,8 @@ class FrequenciesPerf:
     "Alice" -> "Java", "Bob" -> "Scala"
   )
   private val existingFrequencies: Frequencies[String] = Frequencies().
-    updated("Java", 1).
-    updated("Scala", 1)
+    incremented("Java").
+    incremented("Scala")
 
   @Benchmark
   def newVoteBaseline(): Map[Int, Iterable[String]] =
@@ -39,7 +38,7 @@ class FrequenciesPerf:
     val removed: Option[String] = existingVotes.get("Charlie")
     val updatedFrequencies: Frequencies[String] = removed match
       case Some(_: String) => throw new IllegalStateException("removal not expected")
-      case None => existingFrequencies.increment(updatedVotes("Charlie"))
+      case None => existingFrequencies.incremented(updatedVotes("Charlie"))
 
     updatedFrequencies.itemsByCount
 
@@ -60,8 +59,8 @@ class FrequenciesPerf:
     val removed: Option[String] = existingVotes.get("Alice")
     val updatedFrequencies: Frequencies[String] = removed match
       case Some(item: String) => existingFrequencies.
-        increment(updatedVotes("Alice")).
-        decrement(item)
+        incremented(updatedVotes("Alice")).
+        decremented(item)
       case None => throw new IllegalStateException("removal expected")
 
     updatedFrequencies.itemsByCount
