@@ -9,6 +9,10 @@ import java.util.concurrent.TimeUnit
  * a baseline of naïve implementations using only Scala collections.
  *
  * Naïve implementation does not correctly maintain item order.
+ * 
+ * Use cases:
+ * - New Vote - Creating a vote entry for a new voter
+ * - Vote Change - Updating a vote for an existing voter
  */
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.AverageTime))
@@ -22,7 +26,7 @@ class FrequenciesPerf:
     incremented("Scala")
 
   @Benchmark
-  def newVoteBaseline(): Map[Int, Iterable[String]] =
+  def newVote_baseline(): Map[Int, Iterable[String]] =
     val updatedVotes: Map[String, String] =
       existingVotes.updated("Charlie", "Scala")
     updatedVotes.
@@ -32,7 +36,7 @@ class FrequenciesPerf:
       groupMap(_._2)(_._1)
 
   @Benchmark
-  def newVoteUsingFrequencies(): Map[Int, Iterable[String]] =
+  def newVote_implementation(): Map[Int, Iterable[String]] =
     val updatedVotes: Map[String, String] =
       existingVotes.updated("Charlie", "Scala")
     val removed: Option[String] = existingVotes.get("Charlie")
@@ -43,7 +47,7 @@ class FrequenciesPerf:
     updatedFrequencies.itemsByCount
 
   @Benchmark
-  def changedVoteBaseline(): Map[Int, Iterable[String]] =
+  def voteChange_baseline(): Map[Int, Iterable[String]] =
     val updatedVotes: Map[String, String] =
       existingVotes.updated("Alice", "Elm")
     updatedVotes.
@@ -53,7 +57,7 @@ class FrequenciesPerf:
       groupMap(_._2)(_._1)
 
   @Benchmark
-  def changedVoteUsingFrequencies(): Map[Int, Iterable[String]] =
+  def voteChange_implementation(): Map[Int, Iterable[String]] =
     val updatedVotes: Map[String, String] =
       existingVotes.updated("Alice", "Elm")
     val removed: Option[String] = existingVotes.get("Alice")
