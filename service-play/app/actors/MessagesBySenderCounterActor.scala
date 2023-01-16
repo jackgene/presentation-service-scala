@@ -27,7 +27,7 @@ private class MessagesBySenderCounterActor(chatActor: ActorRef)
     case ChatMessageActor.New(msg: ChatMessage) =>
       val sender: String = msg.sender
       val newSenderFrequencies: Frequencies[String] =
-        senderFrequencies.updated(sender, 1)
+        senderFrequencies.incremented(sender)
       for (listener: ActorRef <- listeners) {
         listener ! Counts(newSenderFrequencies.itemsByCount)
       }

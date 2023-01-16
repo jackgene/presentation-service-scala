@@ -4,65 +4,59 @@ import common.CommonProp
 import org.scalacheck.Gen
 
 class FrequenciesProp extends CommonProp {
+  property("counts by items and items by counts must reciprocate") {
+    forAll(
+      "increments" |: Gen.nonEmptyListOf(Gen.asciiStr),
+      "decrements" |: Gen.nonEmptyListOf(Gen.asciiStr)
+    ) { (increments: Seq[String], decrements: Seq[String]) =>
+      // Test
+      val instance: Frequencies[String] = decrements.foldLeft(
+        increments.foldLeft(Frequencies[String]()) {
+          (accum: Frequencies[String], increment: String) => accum.incremented(increment)
+        }
+      ) {
+        (accum: Frequencies[String], decrement: String) => accum.decremented(decrement)
+      }
+
+      // Verify
+      assert(instance.countsByItem.size == instance.itemsByCount.values.flatten.size)
+      assert(instance.countsByItem.values.forall { instance.itemsByCount.isDefinedAt })
+    }
+  }
+
   property("never record a negative count") {
     forAll(
-      "deltas" |: Gen.nonEmptyListOf(Gen.chooseNum[Int](Int.MinValue, Int.MaxValue))
-    ) { (deltas: Seq[Int]) =>
+      "incrementNotDecrements" |: Gen.nonEmptyListOf(Gen.oneOf(true, false))
+    ) { (incrementNotDecrements: Seq[Boolean]) =>
       // Test
-      val instance: Frequencies[Unit] = deltas.foldLeft(Frequencies[Unit]()) {
-        (accum: Frequencies[Unit], delta: Int) => accum.updated((), delta)
+      val instance: Frequencies[Unit] = incrementNotDecrements.foldLeft(Frequencies[Unit]()) {
+        (accum: Frequencies[Unit], incrementNotDecrements: Boolean) =>
+          if (incrementNotDecrements) accum.incremented(())
+          else accum.decremented(())
       }
 
       // Verify
       assert(instance.countsByItem.getOrElse((), 0) >= 0)
-      assert(instance.itemsByCount.values.forall { _.size == 1})
-      assert(instance.itemsByCount.keySet.forall { _ >= 0})
+      assert(instance.itemsByCount.values.forall { _.size == 1 })
+      assert(instance.itemsByCount.keySet.forall { _ >= 0 })
     }
   }
 
-  property("incrementing never decreases count") {
+  property("never record a greater count than the number of operations") {
     forAll(
-      "initialCount"  |: Gen.chooseNum[Int](0, Int.MaxValue),
-      "delta"         |: Gen.chooseNum[Int](1, Int.MaxValue)
-    ) { (initialCount: Int, delta: Int) =>
-      whenever(initialCount >= 0 && delta >= 1) {
-        // Set up
-        val initialInstance: Frequencies[Unit] = Frequencies[Unit]().updated((), initialCount)
-
-        // Test
-        val finalInstance: Frequencies[Unit] = initialInstance.updated((), delta)
-
-        // Verify
-        assert(finalInstance.countsByItem.getOrElse((), 0) >= initialInstance.countsByItem.getOrElse((), 0))
-        assert(finalInstance.itemsByCount.values.forall { _.size == 1})
-        assert(
-          finalInstance.itemsByCount.keys.headOption.getOrElse(0) >=
-          initialInstance.itemsByCount.keys.headOption.getOrElse(0)
-        )
+      "incrementNotDecrements" |: Gen.nonEmptyListOf(Gen.oneOf(true, false))
+    ) { (incrementNotDecrements: Seq[Boolean]) =>
+      // Test
+      val instance: Frequencies[Unit] = incrementNotDecrements.foldLeft(Frequencies[Unit]()) {
+        (accum: Frequencies[Unit], incrementNotDecrements: Boolean) =>
+          if (incrementNotDecrements) accum.incremented(())
+          else accum.decremented(())
       }
-    }
-  }
 
-  property("decrementing never increases count") {
-    forAll(
-      "initialCount"  |: Gen.chooseNum[Int](0, Int.MaxValue),
-      "delta"         |: Gen.chooseNum[Int](Int.MinValue, -1)
-    ) { (initialCount: Int, delta: Int) =>
-      whenever(initialCount >= 0 && delta <= -1) {
-        // Set up
-        val initialInstance: Frequencies[Unit] = Frequencies[Unit]().updated((), initialCount)
-
-        // Test
-        val finalInstance: Frequencies[Unit] = initialInstance.updated((), delta)
-
-        // Verify
-        assert(finalInstance.countsByItem.getOrElse((), 0) <= initialInstance.countsByItem.getOrElse((), 0))
-        assert(finalInstance.itemsByCount.values.forall { _.size == 1 })
-        assert(
-          finalInstance.itemsByCount.keys.headOption.getOrElse(0) <=
-          initialInstance.itemsByCount.keys.headOption.getOrElse(0)
-        )
-      }
+      // Verify
+      assert(instance.countsByItem.getOrElse((), 0) <= incrementNotDecrements.size)
+      assert(instance.itemsByCount.values.forall { _.size == 1 })
+      assert(instance.itemsByCount.keySet.forall { _ <= incrementNotDecrements.size })
     }
   }
 }

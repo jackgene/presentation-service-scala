@@ -16,55 +16,68 @@ object Frequencies {
  * @param itemsByCount mapping of count -> items
  * @tparam T type of item being counted
  */
-class Frequencies[T] private (
+class Frequencies[T] private[counter] (
   private[counter] val countsByItem: Map[T, Int],
   val itemsByCount: Map[Int, Seq[T]]
 ) {
-  def increment(item: T): Frequencies[T] = updated(item, 1)
-
-  def decrement(item: T): Frequencies[T] = updated(item, -1)
-
   /**
-   * Updates the counts of a single item by incrementing
-   * (positive-delta) or decrementing (negative-delta) by the given
-   * value.
+   * Updated [[Frequencies]] with `item` incremented.
    *
-   * @param item the item whose count is to be updated
-   * @param delta the amount to change the count
+   * @param item  the item whose count is to be updated
    * @return updated copy
    */
-  def updated(item: T, delta: Int): Frequencies[T] = {
-    if (delta == 0) this
-    else {
-      val oldCount: Int = countsByItem.getOrElse(item, 0)
-      val newCountUnbounded: Int = oldCount + delta
-      val newCount: Int =
-        if (newCountUnbounded >= 0) newCountUnbounded
-        else if (delta > 0) Int.MaxValue else 0
-      val newCountItems: Seq[T] =
-        itemsByCount.getOrElse(newCount, IndexedSeq())
+  def incremented(item: T): Frequencies[T] = countsByItem.getOrElse(item, 0) match {
+    case Int.MaxValue => this
+
+    case oldCount: Int =>
+      val newCount: Int = oldCount + 1
 
       new Frequencies(
-        if (newCount <= 0) countsByItem.removed(item)
-        else countsByItem.updated(item, newCount),
-        itemsByCount.
-          updated(
-            oldCount,
+        countsByItem.updated(item, newCount),
+        {
+          val newCountItems: Seq[T] =
+            itemsByCount.getOrElse(newCount, IndexedSeq())
+          val oldCountItems: Seq[T] =
             itemsByCount.getOrElse(oldCount, IndexedSeq()).diff(Seq(item))
-          ).
-          updated(
-            newCount,
-            if (delta < 0) newCountItems.prepended(item)
-            else
-              if (newCount == oldCount) newCountItems
-              else newCountItems.appended(item)
-          ).
-          filter {
-            case (count: Int, items: Seq[T]) =>
-              count > 0 && items.nonEmpty
-          }
+
+          (
+            if (oldCountItems.isEmpty) itemsByCount.removed(oldCount)
+            else itemsByCount.updated(oldCount, oldCountItems)
+          ).updated(newCount, newCountItems.appended(item))
+        }
       )
-    }
+  }
+
+  /**
+   * Updated [[Frequencies]] with `item` decremented.
+   *
+   * @param item the item whose count is to be updated
+   * @return updated copy
+   */
+  def decremented(item: T): Frequencies[T] = countsByItem.get(item) match {
+    case None => this
+
+    case Some(oldCount: Int) =>
+      val newCount: Int = oldCount - 1
+
+      new Frequencies(
+        if (newCount == 0) countsByItem.removed(item)
+        else countsByItem.updated(item, newCount),
+        {
+          val newCountItems: Seq[T] =
+            itemsByCount.getOrElse(newCount, IndexedSeq())
+          val oldCountItems: Seq[T] =
+            itemsByCount.getOrElse(oldCount, IndexedSeq()).diff(Seq(item))
+          val itemsByCountOldCountUpdated =
+            if (oldCountItems.isEmpty) itemsByCount.removed(oldCount)
+            else itemsByCount.updated(oldCount, oldCountItems)
+
+          if (newCount == 0) itemsByCountOldCountUpdated
+          else itemsByCountOldCountUpdated.updated(
+            newCount, newCountItems.prepended(item)
+          )
+        }
+      )
   }
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[Frequencies[?]]

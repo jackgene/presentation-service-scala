@@ -181,10 +181,10 @@ private class SendersByTokenCounterActor(
             val newTokenFrequencies: Frequencies[String] = addedTokens.
               foldLeft(
                 removedTokens.foldLeft(tokenFrequencies) { (freqs: Frequencies[String], oldToken: String) =>
-                  freqs.updated(oldToken, -1)
+                  freqs.decremented(oldToken)
                 }
               ) { (freqs: Frequencies[String], newToken: String) =>
-                freqs.updated(newToken, 1)
+                freqs.incremented(newToken)
               }
 
             (newChatMessagesAndTokens, newTokensBySender, newTokenFrequencies)
