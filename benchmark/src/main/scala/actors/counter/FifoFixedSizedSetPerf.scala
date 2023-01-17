@@ -79,11 +79,13 @@ class FifoFixedSizedSetPerf:
 
   @Benchmark
   def addAll_implementation(): Seq[Int] =
-    val (instance: FifoFixedSizedSet[Int], _: Seq[FifoFixedSizedSet.Effect[Int]]) =
+    val (instance: FifoFixedSizedSet[Int], updates: Seq[FifoFixedSizedSet.Effect[Int]]) =
       emptyInstance.addAll(Seq(0, 1))
 
-    // TODO
-    instance.insertionOrder
+    (updates(0), updates(1)) match
+      case (FifoFixedSizedSet.Added(), FifoFixedSizedSet.Added()) =>
+        instance.insertionOrder
+      case _ => throw new IllegalStateException("additions expected")
 
   @Benchmark
   def addEvicting_baseline(): Seq[Int] =
@@ -113,11 +115,13 @@ class FifoFixedSizedSetPerf:
 
   @Benchmark
   def addAllEvicting_implementation(): Seq[Int] =
-    val (instance: FifoFixedSizedSet[Int], _: Seq[FifoFixedSizedSet.Effect[Int]]) =
+    val (instance: FifoFixedSizedSet[Int], updates: Seq[FifoFixedSizedSet.Effect[Int]]) =
       fullInstance.addAll(Seq(4, 5))
 
-    // TODO
-    instance.insertionOrder
+    (updates(0), updates(1)) match
+      case (FifoFixedSizedSet.AddedEvicting(_: Int), FifoFixedSizedSet.AddedEvicting(_: Int)) =>
+        instance.insertionOrder
+      case _ => throw new IllegalStateException("no-op expected")
 
   @Benchmark
   def addReordering_baseline(): Seq[Int] =
@@ -147,8 +151,10 @@ class FifoFixedSizedSetPerf:
 
   @Benchmark
   def addAllReordering_implementation(): Seq[Int] =
-    val (instance: FifoFixedSizedSet[Int], _: Seq[FifoFixedSizedSet.Effect[Int]]) =
+    val (instance: FifoFixedSizedSet[Int], updates: Seq[FifoFixedSizedSet.Effect[Int]]) =
       fullInstance.addAll(Seq(1, 2))
 
-    // TODO
-    instance.insertionOrder
+    (updates(0), updates(1)) match
+      case (FifoFixedSizedSet.NotAdded(), FifoFixedSizedSet.NotAdded()) =>
+        instance.insertionOrder
+      case _ => throw new IllegalStateException("no-op expected")
