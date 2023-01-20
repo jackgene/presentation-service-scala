@@ -6,24 +6,24 @@ import java.util.concurrent.TimeUnit
 
 object FifoFixedSizedSetPerf:
   private def naiveAdd[T](
-    item: T, itemsReversed: List[T], fixedSize: Int
+    elem: T, elemsReversed: List[T], fixedSize: Int
   ): (List[T], Option[(T, Option[T])]) =
-    val preTruncate: List[T] = (item :: itemsReversed).distinct
+    val preTruncate: List[T] = (elem :: elemsReversed).distinct
 
     (
       preTruncate.take(fixedSize),
-      if (itemsReversed.size == preTruncate.size) None
-      else Some((item, preTruncate.drop(fixedSize).headOption))
+      if (elemsReversed.size == preTruncate.size) None
+      else Some((elem, preTruncate.drop(fixedSize).headOption))
     )
 
   private def naiveAddAll[T](
-    items: List[T], itemsReversed: List[T], fixedSize: Int
+    elems: List[T], elemsReversed: List[T], fixedSize: Int
   ): (List[T], Set[T], Set[T]) =
-    val preTruncate: List[T] = (items ++ itemsReversed).distinct
+    val preTruncate: List[T] = (elems ++ elemsReversed).distinct
 
     (
       preTruncate.take(fixedSize),
-      preTruncate.toSet -- itemsReversed.toSet,
+      preTruncate.toSet -- elemsReversed.toSet,
       preTruncate.drop(fixedSize).toSet
     )
 
@@ -46,18 +46,18 @@ object FifoFixedSizedSetPerf:
 class FifoFixedSizedSetPerf:
   import FifoFixedSizedSetPerf.*
 
-  private val itemsReversed: List[Int] = List(3, 2, 1)
+  private val elemsReversed: List[Int] = List(3, 2, 1)
   private val emptyInstance: FifoFixedSizedSet[Int] = FifoFixedSizedSet(3)
   private val fullInstance: FifoFixedSizedSet[Int] =
-    emptyInstance.addAll(itemsReversed.reverse)._1
+    emptyInstance.addAll(elemsReversed.reverse)._1
 
   @Benchmark
   def add_baseline(): Seq[Int] =
-    val (newItemsReversed: List[Int], update: Option[(Int,Option[Int])]) =
+    val (newElemsReversed: List[Int], update: Option[(Int,Option[Int])]) =
       naiveAdd(0, List(), 3)
 
     update match
-      case Some(_, None) => newItemsReversed
+      case Some(_, None) => newElemsReversed
       case _ => throw new IllegalStateException("addition expected")
 
   @Benchmark
@@ -71,10 +71,10 @@ class FifoFixedSizedSetPerf:
 
   @Benchmark
   def addAll_baseline(): Seq[Int] =
-    val (newItemsReversed: List[Int], additions: Set[Int], removals: Set[Int]) =
+    val (newElemsReversed: List[Int], additions: Set[Int], removals: Set[Int]) =
       naiveAddAll(List(0, 1), List(), 3)
 
-    if (additions.nonEmpty && removals.isEmpty) newItemsReversed
+    if (additions.nonEmpty && removals.isEmpty) newElemsReversed
     else throw new IllegalStateException("additions expected")
 
   @Benchmark
@@ -89,11 +89,11 @@ class FifoFixedSizedSetPerf:
 
   @Benchmark
   def addEvicting_baseline(): Seq[Int] =
-    val (newItemsReversed: List[Int], update: Option[(Int,Option[Int])]) =
-      naiveAdd(4, itemsReversed, 3)
+    val (newElemsReversed: List[Int], update: Option[(Int,Option[Int])]) =
+      naiveAdd(4, elemsReversed, 3)
 
     update match
-      case Some(_, Some(_)) => newItemsReversed
+      case Some(_, Some(_)) => newElemsReversed
       case _ => throw new IllegalStateException("eviction expected")
 
   @Benchmark
@@ -107,10 +107,10 @@ class FifoFixedSizedSetPerf:
 
   @Benchmark
   def addAllEvicting_baseline(): Seq[Int] =
-    val (newItemsReversed: List[Int], additions: Set[Int], removals: Set[Int]) =
-      naiveAddAll(List(4, 5), itemsReversed, 3)
+    val (newElemsReversed: List[Int], additions: Set[Int], removals: Set[Int]) =
+      naiveAddAll(List(4, 5), elemsReversed, 3)
 
-    if (additions.size == 2 && removals.size == 2) newItemsReversed
+    if (additions.size == 2 && removals.size == 2) newElemsReversed
     else throw new IllegalStateException("evictions expected")
 
   @Benchmark
@@ -125,11 +125,11 @@ class FifoFixedSizedSetPerf:
 
   @Benchmark
   def addReordering_baseline(): Seq[Int] =
-    val (newItemsReversed: List[Int], update: Option[(Int,Option[Int])]) =
-      naiveAdd(1, itemsReversed, 3)
+    val (newElemsReversed: List[Int], update: Option[(Int,Option[Int])]) =
+      naiveAdd(1, elemsReversed, 3)
 
     update match
-      case None => newItemsReversed
+      case None => newElemsReversed
       case _ => throw new IllegalStateException("no-op expected")
 
   @Benchmark
@@ -143,10 +143,10 @@ class FifoFixedSizedSetPerf:
 
   @Benchmark
   def addAllReordering_baseline(): Seq[Int] =
-    val (newItemsReversed: List[Int], additions: Set[Int], removals: Set[Int]) =
-      naiveAddAll(List(1, 2), itemsReversed, 3)
+    val (newElemsReversed: List[Int], additions: Set[Int], removals: Set[Int]) =
+      naiveAddAll(List(1, 2), elemsReversed, 3)
 
-    if (additions.isEmpty && removals.isEmpty) newItemsReversed
+    if (additions.isEmpty && removals.isEmpty) newElemsReversed
     else throw new IllegalStateException("no-op expected")
 
   @Benchmark

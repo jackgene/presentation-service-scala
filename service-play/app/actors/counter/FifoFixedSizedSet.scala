@@ -6,49 +6,52 @@ object FifoFixedSizedSet {
   /**
    * The effect of adding a value to the set:
    */
-  sealed trait Effect[T]
+  sealed trait Effect[A]
   /**
-   * Indicates that an item was added to the set without evicting
+   * Indicates that an element was added to the set without evicting
    * anything from the set.
    *
-   * This happens when adding a new item to a set that is not full.
+   * This happens when adding a new element to a set that is not full.
    */
-  case class Added[T]() extends Effect[T]
+  case class Added[A]() extends Effect[A]
   /**
-   * Indicates that an item was added to the set evicting an existing
-   * item from the set.
+   * Indicates that an element was added to the set evicting an
+   * existing element from the set.
    *
-   * This happens when adding a new item to a set that is full.
+   * This happens when adding a new element to a set that is full.
    */
-  case class AddedEvicting[T](value: T) extends Effect[T]
+  case class AddedEvicting[A](value: A) extends Effect[A]
   /**
-   * Indicates that an item was not added to the set.
+   * Indicates that an element was not added to the set.
    *
    * Note that while the contents of the set would remaing the same,
    * the insertion order may change.
    *
-   * This happens when adding an existing item to a set.
+   * This happens when adding an existing element to a set.
    */
-  case class NotAdded[T]() extends Effect[T]
+  case class NotAdded[A]() extends Effect[A]
 
-  def apply[T](maxSize: Int): FifoFixedSizedSet[T] = new FifoFixedSizedSet[T](maxSize)
+  def apply[A](maxSize: Int): FifoFixedSizedSet[A] =
+    new FifoFixedSizedSet[A](maxSize)
 
-  implicit def writes[T](implicit itemWrites: Writes[T]): Writes[FifoFixedSizedSet[T]] =
-    (set: FifoFixedSizedSet[T]) => Json.arr(set.toSeq.map(itemWrites.writes))
+  implicit def writes[A](
+    implicit elemWrites: Writes[A]
+  ): Writes[FifoFixedSizedSet[A]] =
+    (set: FifoFixedSizedSet[A]) => Json.arr(set.toSeq.map(elemWrites.writes))
 }
 
 /**
  * First-In, First-Out fixed sized set.
  *
- * This is basically an LRU-cache that returns evictions as items are
- * added.
+ * This is basically an LRU-cache that returns evictions as elements
+ * are added.
  *
- * @tparam T the element type
+ * @tparam A the element type
  */
-class FifoFixedSizedSet[T] private(
+class FifoFixedSizedSet[A] private(
   val maxSize: Int,
-  val uniques: Set[T] = Set[T](),
-  val insertionOrder: IndexedSeq[T] = Vector[T]()
+  val uniques: Set[A] = Set[A](),
+  val insertionOrder: IndexedSeq[A] = Vector[A]()
 ) {
   import FifoFixedSizedSet.*
 
@@ -57,65 +60,70 @@ class FifoFixedSizedSet[T] private(
   }
 
   private def copy(
-      uniques: Set[T] = uniques, insertionOrder: IndexedSeq[T]):
-      FifoFixedSizedSet[T] =
+      uniques: Set[A] = uniques, insertionOrder: IndexedSeq[A]):
+      FifoFixedSizedSet[A] =
     new FifoFixedSizedSet(maxSize, uniques, insertionOrder)
 
   /**
-   * Adds a single item to this set, returning its effect.
+   * Adds a single element to this set, returning its effect.
    *
    * See [[FifoFixedSizedSet.Effect]] for details.
    *
-   * @param item item to add
+   * @param elem element to add
    * @return updated copy of this set, and effects of the addition
    */
-  def add(item: T): (FifoFixedSizedSet[T], Effect[T]) =
-    if (uniques.contains(item))
-      if (item == insertionOrder.last) (this, NotAdded())
+  def add(elem: A): (FifoFixedSizedSet[A], Effect[A]) =
+    if (uniques.contains(elem))
+      if (elem == insertionOrder.last) (this, NotAdded())
       else
         (
-          copy(insertionOrder = insertionOrder.filterNot(_ == item) :+ item),
+          copy(insertionOrder = insertionOrder.filterNot(_ == elem) :+ elem),
           NotAdded()
         )
     else
       if (uniques.size < maxSize)
         (
           copy(
-            uniques = uniques + item,
-            insertionOrder = insertionOrder :+ item
+            uniques = uniques + elem,
+            insertionOrder = insertionOrder :+ elem
           ),
           Added()
         )
       else
         (
           copy(
-            uniques = uniques + item - insertionOrder.head,
-            insertionOrder = insertionOrder.tail :+ item
+            uniques = uniques + elem - insertionOrder.head,
+            insertionOrder = insertionOrder.tail :+ elem
           ),
           AddedEvicting(insertionOrder.head)
         )
 
   /**
-   * Adds the items to this set, returning the effect of each addition.
+   * Adds the elements to this set, returning the effect of each addition.
    *
    * See [[FifoFixedSizedSet.Effect]] for details.
    *
-   * @param items items to add
+   * @param elems elements to add
    * @return updated copy of this set, and effects of each addition
    */
-  def addAll(items: Seq[T]): (FifoFixedSizedSet[T], Seq[Effect[T]]) =
-    items.foldLeft((this, IndexedSeq[Effect[T]]())) {
-      (accum: (FifoFixedSizedSet[T], IndexedSeq[Effect[T]]), item: T) =>
+  def addAll(elems: Seq[A]): (FifoFixedSizedSet[A], Seq[Effect[A]]) =
+    elems.foldLeft((this, IndexedSeq[Effect[A]]())) {
+      (accum: (FifoFixedSizedSet[A], IndexedSeq[Effect[A]]), elem: A) =>
 
-      val (accumSet: FifoFixedSizedSet[T], accumUpdates: IndexedSeq[Effect[T]]) = accum
-      val (nextAccumSet: FifoFixedSizedSet[T], update: Effect[T]) = accumSet.add(item)
+      val (
+        accumSet: FifoFixedSizedSet[A], accumUpdates: IndexedSeq[Effect[A]]
+      ) = accum
+      val (
+        nextAccumSet: FifoFixedSizedSet[A], update: Effect[A]
+      ) = accumSet.add(elem)
 
       (nextAccumSet, accumUpdates :+ update)
     }
 
-  def toSeq: Seq[T] = insertionOrder
+  def toSeq: Seq[A] = insertionOrder
 
-  private def canEqual(other: Any): Boolean = other.isInstanceOf[FifoFixedSizedSet[?]]
+  private def canEqual(other: Any): Boolean =
+    other.isInstanceOf[FifoFixedSizedSet[?]]
 
   override def equals(other: Any): Boolean = other match {
     case that: FifoFixedSizedSet[?] =>
