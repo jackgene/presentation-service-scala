@@ -1,6 +1,6 @@
 package actors
 
-import actors.counter.{FifoFixedSizedSet, Frequencies}
+import actors.counter.{FifoFixedSizedSet, MultiSet}
 import actors.tokenizing.Tokenizer
 import akka.actor.{Actor, ActorLogging, ActorRef, Props, Terminated}
 import model.ChatMessage
@@ -24,7 +24,7 @@ object SendersByTokenCounterActor {
   case class Counts(
     chatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens],
     tokensBySender: Map[String, FifoFixedSizedSet[String]],
-    tokensByCount: Frequencies[String]
+    tokens: MultiSet[String]
   )
 
   // JSON
@@ -37,7 +37,7 @@ object SendersByTokenCounterActor {
     (counts: Counts) => Json.obj(
       "chatMessagesAndTokens" -> counts.chatMessagesAndTokens,
       "tokensBySender" -> counts.tokensBySender.view.mapValues(_.toSeq),
-      "tokensAndCounts" -> counts.tokensByCount.itemsByCount.toSeq // JSON keys must be strings
+      "tokensAndCounts" -> counts.tokens.elementsByCount.toSeq // JSON keys must be strings
     )
 
   def props(
@@ -99,22 +99,22 @@ private class SendersByTokenCounterActor(
 
   private def paused(
     chatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens],
-    tokensBySender: Map[String, FifoFixedSizedSet[String]], tokenCount: Frequencies[String]
+    tokensBySender: Map[String, FifoFixedSizedSet[String]], tokens: MultiSet[String]
   ): Receive = {
     case Reset =>
       context.become(
-        paused(IndexedSeq(), emptyTokensBySender, Frequencies[String]())
+        paused(IndexedSeq(), emptyTokensBySender, MultiSet[String]())
       )
 
     case Register(listener: ActorRef) =>
       chatMessageActor ! ChatMessageActor.Register(self)
       listener ! Counts(
-        chatMessagesAndTokens, tokensBySender, tokenCount
+        chatMessagesAndTokens, tokensBySender, tokens
       )
       context.watch(listener)
       context.become(
         running(
-          chatMessagesAndTokens, tokensBySender, tokenCount, Set(listener)
+          chatMessagesAndTokens, tokensBySender, tokens, Set(listener)
         )
       )
       log.info(
@@ -124,7 +124,7 @@ private class SendersByTokenCounterActor(
 
   private def running(
     chatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens],
-    tokensBySender: Map[String, FifoFixedSizedSet[String]], tokenFrequencies: Frequencies[String],
+    tokensBySender: Map[String, FifoFixedSizedSet[String]], tokens: MultiSet[String],
     listeners: Set[ActorRef]
   ): Receive = {
     case event@ChatMessageActor.New(msg: ChatMessage) =>
@@ -136,7 +136,7 @@ private class SendersByTokenCounterActor(
       val (
         newChatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens],
         newTokensBySender: Map[String, FifoFixedSizedSet[String]],
-        newTokenFrequencies: Frequencies[String]
+        newTokens: MultiSet[String]
       ) =
         extractedTokens match {
           case Nil =>
@@ -144,7 +144,7 @@ private class SendersByTokenCounterActor(
             rejectedMessageActor ! event
             (
               chatMessagesAndTokens :+ ChatMessageAndTokens(msg, Nil),
-              tokensBySender, tokenFrequencies
+              tokensBySender, tokens
             )
 
           case extractedTokens =>
@@ -178,45 +178,45 @@ private class SendersByTokenCounterActor(
 
               case None => (tokensBySender, extractedTokens.toSet, Set.empty)
             }
-            val newTokenFrequencies: Frequencies[String] = addedTokens.
+            val newTokens: MultiSet[String] = addedTokens.
               foldLeft(
-                removedTokens.foldLeft(tokenFrequencies) { (freqs: Frequencies[String], oldToken: String) =>
-                  freqs.decremented(oldToken)
+                removedTokens.foldLeft(tokens) { (accum: MultiSet[String], oldToken: String) =>
+                  accum.decremented(oldToken)
                 }
-              ) { (freqs: Frequencies[String], newToken: String) =>
-                freqs.incremented(newToken)
+              ) { (accum: MultiSet[String], newToken: String) =>
+                accum.incremented(newToken)
               }
 
-            (newChatMessagesAndTokens, newTokensBySender, newTokenFrequencies)
+            (newChatMessagesAndTokens, newTokensBySender, newTokens)
         }
 
       for (listener: ActorRef <- listeners) {
         listener ! Counts(
-          newChatMessagesAndTokens, newTokensBySender, newTokenFrequencies
+          newChatMessagesAndTokens, newTokensBySender, newTokens
         )
       }
       context.become(
         running(
-          newChatMessagesAndTokens, newTokensBySender, newTokenFrequencies, listeners
+          newChatMessagesAndTokens, newTokensBySender, newTokens, listeners
         )
       )
 
     case Reset =>
       for (listener: ActorRef <- listeners) {
-        listener ! Counts(IndexedSeq(), emptyTokensBySender, Frequencies[String]())
+        listener ! Counts(IndexedSeq(), emptyTokensBySender, MultiSet[String]())
       }
       context.become(
         running(
-          IndexedSeq(), emptyTokensBySender, Frequencies[String](), listeners
+          IndexedSeq(), emptyTokensBySender, MultiSet[String](), listeners
         )
       )
 
     case Register(listener: ActorRef) =>
-      listener ! Counts(chatMessagesAndTokens, tokensBySender, tokenFrequencies)
+      listener ! Counts(chatMessagesAndTokens, tokensBySender, tokens)
       context.watch(listener)
       context.become(
         running(
-          chatMessagesAndTokens, tokensBySender, tokenFrequencies,
+          chatMessagesAndTokens, tokensBySender, tokens,
           listeners + listener
         )
       )
@@ -227,20 +227,20 @@ private class SendersByTokenCounterActor(
       if (remainingListeners.nonEmpty) {
         context.become(
           running(
-            chatMessagesAndTokens, tokensBySender, tokenFrequencies,
+            chatMessagesAndTokens, tokensBySender, tokens,
             remainingListeners
           )
         )
       } else {
         chatMessageActor ! ChatMessageActor.Unregister(self)
         context.become(
-          paused(chatMessagesAndTokens, tokensBySender, tokenFrequencies)
+          paused(chatMessagesAndTokens, tokensBySender, tokens)
         )
       }
       log.info(s"-1 ${self.path.name} listener (=${listeners.size - 1})")
   }
 
   override def receive: Receive = paused(
-    IndexedSeq(), emptyTokensBySender, Frequencies[String]()
+    IndexedSeq(), emptyTokensBySender, MultiSet[String]()
   )
 }

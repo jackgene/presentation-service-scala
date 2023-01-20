@@ -5,10 +5,10 @@ import org.openjdk.jmh.annotations.*
 import java.util.concurrent.TimeUnit
 
 /**
- * Benchmark comparing implementations using [[Frequencies]] against
+ * Benchmark comparing implementations using [[MultiSet]] against
  * a baseline of naïve implementations using only Scala collections.
  *
- * Naïve implementation does not correctly maintain item order.
+ * Naïve implementation does not correctly maintain element order.
  * 
  * Use cases:
  * - New Vote - Creating a vote entry for a new voter
@@ -17,11 +17,11 @@ import java.util.concurrent.TimeUnit
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
-class FrequenciesPerf:
+class MultiSetPerf:
   private val existingVotes: Map[String, String] = Map(
     "Alice" -> "Java", "Bob" -> "Scala"
   )
-  private val existingFrequencies: Frequencies[String] = Frequencies().
+  private val existingFrequencies: MultiSet[String] = MultiSet().
     incremented("Java").
     incremented("Scala")
 
@@ -30,9 +30,9 @@ class FrequenciesPerf:
     val updatedVotes: Map[String, String] =
       existingVotes.updated("Charlie", "Scala")
     updatedVotes.
-      // Counts by item
+      // Counts by element
       groupMap(_._2)(_._1).map { case (key, value) => key -> value.size }.
-      // Items by count - note no prepend/append rule considered
+      // Elements by count - note no prepend/append rule considered
       groupMap(_._2)(_._1)
 
   @Benchmark
@@ -40,20 +40,20 @@ class FrequenciesPerf:
     val updatedVotes: Map[String, String] =
       existingVotes.updated("Charlie", "Scala")
     val removed: Option[String] = existingVotes.get("Charlie")
-    val updatedFrequencies: Frequencies[String] = removed match
+    val updatedFrequencies: MultiSet[String] = removed match
       case Some(_: String) => throw new IllegalStateException("removal not expected")
       case None => existingFrequencies.incremented(updatedVotes("Charlie"))
 
-    updatedFrequencies.itemsByCount
+    updatedFrequencies.elementsByCount
 
   @Benchmark
   def voteChange_baseline(): Map[Int, Iterable[String]] =
     val updatedVotes: Map[String, String] =
       existingVotes.updated("Alice", "Elm")
     updatedVotes.
-      // Counts by item
+      // Counts by element
       groupMap(_._2)(_._1).map { case (key, value) => key -> value.size }.
-      // Items by count - note no prepend/append rule considered
+      // Elements by count - note no prepend/append rule considered
       groupMap(_._2)(_._1)
 
   @Benchmark
@@ -61,10 +61,10 @@ class FrequenciesPerf:
     val updatedVotes: Map[String, String] =
       existingVotes.updated("Alice", "Elm")
     val removed: Option[String] = existingVotes.get("Alice")
-    val updatedFrequencies: Frequencies[String] = removed match
-      case Some(item: String) => existingFrequencies.
+    val updatedFrequencies: MultiSet[String] = removed match
+      case Some(elem: String) => existingFrequencies.
         incremented(updatedVotes("Alice")).
-        decremented(item)
+        decremented(elem)
       case None => throw new IllegalStateException("removal expected")
 
-    updatedFrequencies.itemsByCount
+    updatedFrequencies.elementsByCount

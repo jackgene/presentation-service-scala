@@ -1,6 +1,6 @@
 package actors
 
-import actors.counter.Frequencies
+import actors.counter.MultiSet
 import akka.actor.{Actor, ActorLogging, ActorRef, Props, Terminated}
 import model.ChatMessage
 
@@ -22,33 +22,33 @@ private class MessagesBySenderCounterActor(chatActor: ActorRef)
   chatActor ! ChatMessageActor.Register(self)
 
   private def running(
-    senderFrequencies: Frequencies[String], listeners: Set[ActorRef]
+    senders: MultiSet[String], listeners: Set[ActorRef]
   ): Receive = {
     case ChatMessageActor.New(msg: ChatMessage) =>
       val sender: String = msg.sender
-      val newSenderFrequencies: Frequencies[String] =
-        senderFrequencies.incremented(sender)
+      val newSenders: MultiSet[String] =
+        senders.incremented(sender)
       for (listener: ActorRef <- listeners) {
-        listener ! Counts(newSenderFrequencies.itemsByCount)
+        listener ! Counts(newSenders.elementsByCount)
       }
       context.become(
-        running(newSenderFrequencies, listeners)
+        running(newSenders, listeners)
       )
 
     case Register(listener: ActorRef) =>
-      listener ! Counts(senderFrequencies.itemsByCount)
+      listener ! Counts(senders.elementsByCount)
       context.watch(listener)
       context.become(
-        running(senderFrequencies, listeners + listener)
+        running(senders, listeners + listener)
       )
       log.info(s"+1 ${self.path.name} listener (=${listeners.size + 1})")
 
     case Terminated(listener: ActorRef) if listeners.contains(listener) =>
       context.become(
-        running(senderFrequencies, listeners - listener)
+        running(senders, listeners - listener)
       )
       log.info(s"-1 ${self.path.name} listener (=${listeners.size - 1})")
   }
 
-  override def receive: Receive = running(Frequencies[String](), Set())
+  override def receive: Receive = running(MultiSet[String](), Set())
 }
