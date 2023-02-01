@@ -36,14 +36,14 @@ class MultiSet[A] private[counter] (
         countsByElement.updated(elem, newCount),
         {
           val newCountElems: Seq[A] =
-            elementsByCount.getOrElse(newCount, IndexedSeq())
+            elementsByCount.getOrElse(newCount, IndexedSeq()).appended(elem)
           val oldCountElems: Seq[A] =
             elementsByCount.getOrElse(oldCount, IndexedSeq()).diff(Seq(elem))
 
           (
             if (oldCountElems.isEmpty) elementsByCount.removed(oldCount)
             else elementsByCount.updated(oldCount, oldCountElems)
-          ).updated(newCount, newCountElems.appended(elem))
+          ).updated(newCount, newCountElems)
         }
       )
   }
