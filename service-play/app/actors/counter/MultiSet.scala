@@ -95,5 +95,5 @@ class MultiSet[A] private[counter] (
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }
 
-  override def toString = s"Frequencies($elementsByCount)"
+  override def toString = s"MultiSet($elementsByCount)"
 }
