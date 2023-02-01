@@ -26,7 +26,7 @@ class MultiSet[A] private[counter] (
    * @param elem the element whose count is to be updated
    * @return updated copy
    */
-  def incremented(elem: A): MultiSet[A] = countsByElement.getOrElse(elem, 0) match {
+  def +(elem: A): MultiSet[A] = countsByElement.getOrElse(elem, 0) match {
     case Int.MaxValue => this
 
     case oldCount: Int =>
@@ -54,7 +54,7 @@ class MultiSet[A] private[counter] (
    * @param elem the element whose count is to be updated
    * @return updated copy
    */
-  def decremented(elem: A): MultiSet[A] = countsByElement.get(elem) match {
+  def -(elem: A): MultiSet[A] = countsByElement.get(elem) match {
     case None => this
 
     case Some(oldCount: Int) =>

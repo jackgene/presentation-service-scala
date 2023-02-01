@@ -54,7 +54,7 @@ object SendersByTokenCounterActor {
   object WebSocketActor {
     object Send
 
-    private val BatchPeriod: FiniteDuration = 250.milliseconds
+    private val BatchPeriod: FiniteDuration = 100.milliseconds
 
     def props(webSocketClient: ActorRef, counts: ActorRef): Props =
       Props(new WebSocketActor(webSocketClient, counts))
@@ -181,10 +181,10 @@ private class SendersByTokenCounterActor(
             val newTokens: MultiSet[String] = addedTokens.
               foldLeft(
                 removedTokens.foldLeft(tokens) { (accum: MultiSet[String], oldToken: String) =>
-                  accum.decremented(oldToken)
+                  accum - oldToken
                 }
               ) { (accum: MultiSet[String], newToken: String) =>
-                accum.incremented(newToken)
+                accum + newToken
               }
 
             (newChatMessagesAndTokens, newTokensBySender, newTokens)
