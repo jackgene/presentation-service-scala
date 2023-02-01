@@ -12,10 +12,10 @@ class MultiSetProp extends CommonProp {
       // Test
       val instance: MultiSet[String] = decrements.foldLeft(
         increments.foldLeft(MultiSet[String]()) {
-          (accum: MultiSet[String], increment: String) => accum.incremented(increment)
+          (accum: MultiSet[String], increment: String) => accum + increment
         }
       ) {
-        (accum: MultiSet[String], decrement: String) => accum.decremented(decrement)
+        (accum: MultiSet[String], decrement: String) => accum - decrement
       }
 
       // Verify

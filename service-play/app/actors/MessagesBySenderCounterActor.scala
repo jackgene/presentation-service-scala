@@ -27,7 +27,7 @@ private class MessagesBySenderCounterActor(chatActor: ActorRef)
     case ChatMessageActor.New(msg: ChatMessage) =>
       val sender: String = msg.sender
       val newSenders: MultiSet[String] =
-        senders.incremented(sender)
+        senders + sender
       for (listener: ActorRef <- listeners) {
         listener ! Counts(newSenders.elementsByCount)
       }

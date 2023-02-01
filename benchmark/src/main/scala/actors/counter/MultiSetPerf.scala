@@ -21,9 +21,7 @@ class MultiSetPerf:
   private val existingVotes: Map[String, String] = Map(
     "Alice" -> "Java", "Bob" -> "Scala"
   )
-  private val existingFrequencies: MultiSet[String] = MultiSet().
-    incremented("Java").
-    incremented("Scala")
+  private val existingFrequencies: MultiSet[String] = MultiSet() + "Java" + "Scala"
 
   @Benchmark
   def newVote_baseline(): Map[Int, Iterable[String]] =
@@ -42,7 +40,7 @@ class MultiSetPerf:
     val removed: Option[String] = existingVotes.get("Charlie")
     val updatedFrequencies: MultiSet[String] = removed match
       case Some(_: String) => throw new IllegalStateException("removal not expected")
-      case None => existingFrequencies.incremented(updatedVotes("Charlie"))
+      case None => existingFrequencies + updatedVotes("Charlie")
 
     updatedFrequencies.elementsByCount
 
@@ -62,9 +60,7 @@ class MultiSetPerf:
       existingVotes.updated("Alice", "Elm")
     val removed: Option[String] = existingVotes.get("Alice")
     val updatedFrequencies: MultiSet[String] = removed match
-      case Some(elem: String) => existingFrequencies.
-        incremented(updatedVotes("Alice")).
-        decremented(elem)
+      case Some(elem: String) => existingFrequencies + updatedVotes("Alice") - elem
       case None => throw new IllegalStateException("removal expected")
 
     updatedFrequencies.elementsByCount
