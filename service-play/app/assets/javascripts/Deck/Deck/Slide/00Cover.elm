@@ -13,7 +13,7 @@ import Css exposing
   )
 import Deck.Slide.Common exposing (..)
 import Deck.Slide.Graphics exposing (coverBackgroundGraphic)
-import Html.Styled exposing (Html, div, h1, p, text)
+import Html.Styled exposing (Html, br, div, h1, p, text)
 import Html.Styled.Attributes exposing (css)
 
 
@@ -27,15 +27,21 @@ cover =
       , div
         [ css
           [ position absolute
-          , top (vw 20), left (vw 35), width (vw 58)
+          , top (vw 17), left (vw 35), width (vw 58)
           ]
         ]
-        [ h1 [ css [ margin zero, headerFontFamily, fontSize (vw 4.2) ] ]
-          [ text "Template"
+        [ h1 [ css [ margin zero, headerFontFamily, fontSize (vw 4.5) ] ]
+          [ text "Kafka as the"
+          , br [] []
+          , text "Source of Truth"
+          , br [] []
+          , text "in Event Driven Systems"
           ]
         , p
-          [ css [ margin2 (em 2.5) zero, fontSize (vw 2.5) ] ]
-          [ text "Jack Leow" ]
+          [ css [ margin2 (em 2.5) zero, fontSize (em 0.875) ] ]
+          [ text "Jack Leow"
+          , br [] []
+          , text "October 15, 2022"]
         ]
       ]
     )

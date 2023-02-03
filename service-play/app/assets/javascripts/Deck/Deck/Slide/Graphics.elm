@@ -1,12 +1,14 @@
 module Deck.Slide.Graphics exposing
   ( coverBackgroundGraphic, numberedDisc
   , logosByLanguage
-  , languageElmLogo, languageGoLogo, languageKotlinLogo, languagePythonLogo
-  , languageScalaLogo, languageSwiftLogo, languageTypeScriptLogo
+  , languageGoLogo, languageKotlinLogo, languagePythonLogo
+  , languageSwiftLogo, languageTypeScriptLogo
   )
 
 import Css exposing (fontSize, px, vw)
-import Deck.Slide.Common exposing (black, numberFontFamily, primary)
+import Deck.Slide.Common exposing
+  ( themeBackgroundColor, themeForegroundColor, black, numberFontFamily
+  )
 import Dict exposing (Dict)
 import Html.Styled exposing (span)
 import Svg.Styled exposing (..)
@@ -39,39 +41,19 @@ coverBackgroundGraphic =
   [ css [ Css.width (vw (coverBackgroundViewBox * 100 / 160)) ]
   , viewBox ("0 0 " ++ (toString coverBackgroundViewBox) ++ " 90")
   ]
-  [ rect [ width "52", height "90", css [ Css.fill primary ] ] [] ]
+  [ rect [ width "52", height "90", css [ Css.fill themeForegroundColor ] ] [] ]
 
 
 numberedDisc : String -> Float -> List (Attribute msg) -> Svg msg
 numberedDisc num fontSizePct attributes =
   svg
   ( viewBox "-50 -50 100 100" :: attributes )
-  [ circle [ r "50", css [ Css.fill primary ] ] []
+  [ circle [ r "50", css [ Css.fill themeBackgroundColor ] ] []
   , text_
     [ alignmentBaseline "middle", textAnchor "middle", y "5"
     , css [ numberFontFamily, Css.fill black, fontSize (px fontSizePct) ]
     ]
     [ text num ]
-  ]
-
-
-languageElmLogo : Svg msg
-languageElmLogo =
-  svg [ height "2.4vw", viewBox "0 0 355 322.95" ]
-  [ g []
-    [ polygon [ fill "#F0AD00", points "161.649,152.782 231.514,82.916 91.783,82.916" ] []
-    , polygon [ fill "#7FD13B", points "8.867,0 79.241,70.375 232.213,70.375 161.838,0" ] []
-    , rect
-      [ fill "#7FD13B", x "192.99", y "107.392"
-      , transform "matrix(0.7071 0.7071 -0.7071 0.7071 186.4727 -127.2386)"
-      , width "107.676", height "108.167"
-      ]
-      []
-    , polygon [ fill "#60B5CC", points "323.298,143.724 323.298,0 179.573,0" ] []
-    , polygon [ fill "#5A6378", points "152.781,161.649 0,8.868 0,314.432" ] []
-    , polygon [ fill "#F0AD00", points "255.522,246.655 323.298,314.432 323.298,178.879" ] []
-    , polygon [ fill "#60B5CC", points "161.649,170.517 8.869,323.298 314.43,323.298" ] []
-    ]
   ]
 
 
@@ -188,7 +170,8 @@ languageKotlinLogo =
 
 languagePythonLogo : Svg msg
 languagePythonLogo =
-  svg [ height "2.5vw", viewBox "0 0 256 255" ]
+  svg
+  [ height "2.5vw", viewBox "0 0 256 255" ]
   [ defs []
     [ linearGradient
       [ x1 "12.9593594%", y1 "12.0393928%", x2 "79.6388325%", y2 "78.2008538%", id "pythonLinearGradient-1" ]
@@ -205,52 +188,6 @@ languagePythonLogo =
     , path
       [ d "M128.757101,254.126271 C193.589403,254.126271 189.540839,226.011081 189.540839,226.011081 L189.468564,196.884035 L127.600692,196.884035 L127.600692,188.138693 L214.042251,188.138693 C214.042251,188.138693 255.528417,192.843589 255.528417,127.427208 C255.52844,62.0108566 219.318366,64.3306589 219.318366,64.3306589 L197.707976,64.3306589 L197.707976,94.6863832 C197.707976,94.6863832 198.87285,130.896434 162.07613,130.896434 L100.714182,130.896434 C100.714182,130.896434 66.238745,130.339138 66.238745,164.215486 L66.238745,220.229038 C66.238745,220.229038 61.0044225,254.126271 128.757101,254.126271 L128.757101,254.126271 L128.757101,254.126271 Z M162.87116,234.539597 C156.715759,234.539597 151.740726,229.564564 151.740726,223.409162 C151.740726,217.253759 156.715759,212.278727 162.87116,212.278727 C169.026563,212.278727 174.001595,217.253759 174.001595,223.409162 C174.001618,229.564564 169.026563,234.539597 162.87116,234.539597 L162.87116,234.539597 L162.87116,234.539597 Z"
       , fill "url(#pythonLinearGradient-2)"
-      ]
-      []
-    ]
-  ]
-
-
-languageScalaLogo : Svg msg
-languageScalaLogo =
-  svg [ width "2.5vw", height "2.5vw", viewBox "0 0 256 416" ]
-  [ defs []
-    [ linearGradient
-      [ x1 "0%", y1 "50%", x2 "100%", y2 "50%", id "scalaLinearGradient-1" ]
-      [ stop [ stopColor "#4F4F4F", offset "0%" ] [], stop [ stopColor "#000000", offset "100%" ] [] ]
-    , linearGradient
-      [ x1 "0%", y1 "50%", x2 "100%", y2 "50%", id "scalaLinearGradient-2" ]
-      [ stop [ stopColor "#C40000", offset "0%" ] [], stop [ stopColor "#FF0000", offset "100%" ] [] ]
-    ]
-  , g []
-    [ path
-      [ d "M0,288 L0,256 C0,250.606222 116.376889,241.571556 192.199111,224 L192.199111,224 C228.828444,232.490667 256,242.968889 256,256 L256,256 L256,288 C256,301.024 228.828444,311.509333 192.199111,320 L192.199111,320 C116.376889,302.424889 0,293.390222 0,288"
-      , fill "url(#scalaLinearGradient-1)"
-      , transform "translate(128.000000, 272.000000) scale(1, -1) translate(-128.000000, -272.000000) "
-      ]
-      []
-    , path
-      [ d "M0,160 L0,128 C0,122.606222 116.376889,113.571556 192.199111,96 L192.199111,96 C228.828444,104.490667 256,114.968889 256,128 L256,128 L256,160 C256,173.024 228.828444,183.509333 192.199111,192 L192.199111,192 C116.376889,174.424889 0,165.390222 0,160"
-      , fill "url(#scalaLinearGradient-1)"
-      , transform "translate(128.000000, 144.000000) scale(1, -1) translate(-128.000000, -144.000000) "
-      ]
-      []
-    , path
-      [ d "M0,224 L0,128 C0,136 256,152 256,192 L256,192 L256,288 C256,248 0,232 0,224"
-      , fill "url(#scalaLinearGradient-2)"
-      , transform "translate(128.000000, 208.000000) scale(1, -1) translate(-128.000000, -208.000000) "
-      ]
-      []
-    , path
-      [ d "M0,96 L0,0 C0,8 256,24 256,64 L256,64 L256,160 C256,120 0,104 0,96"
-      , fill "url(#scalaLinearGradient-2)"
-      , transform "translate(128.000000, 80.000000) scale(1, -1) translate(-128.000000, -80.000000) "
-      ]
-      []
-    , path
-      [ d "M0,352 L0,256 C0,264 256,280 256,320 L256,320 L256,416 C256,376 0,360 0,352"
-      , fill "url(#scalaLinearGradient-2)"
-      , transform "translate(128.000000, 336.000000) scale(1, -1) translate(-128.000000, -336.000000) "
       ]
       []
     ]
@@ -397,7 +334,6 @@ logosByLanguage =
         []
       ]
     )
-  , ( "Elm", languageElmLogo ) -- Not used for poll, where Elm maps to ML
   , ( "Go", languageGoLogo )
   , ( "Java"
     , svg [ height "2.6vw", viewBox "0 0 304 346" ]
@@ -527,7 +463,23 @@ logosByLanguage =
     )
   , ( "ML"
     , span []
-      [ languageElmLogo
+      [ -- Elm
+        svg [ height "2.4vw", viewBox "0 0 355 322.95" ]
+        [ g []
+          [ polygon [ fill "#F0AD00", points "161.649,152.782 231.514,82.916 91.783,82.916" ] []
+          , polygon [ fill "#7FD13B", points "8.867,0 79.241,70.375 232.213,70.375 161.838,0" ] []
+          , rect
+            [ fill "#7FD13B", x "192.99", y "107.392"
+            , transform "matrix(0.7071 0.7071 -0.7071 0.7071 186.4727 -127.2386)"
+            , width "107.676", height "108.167"
+            ]
+            []
+          , polygon [ fill "#60B5CC", points "323.298,143.724 323.298,0 179.573,0" ] []
+          , polygon [ fill "#5A6378", points "152.781,161.649 0,8.868 0,314.432" ] []
+          , polygon [ fill "#F0AD00", points "255.522,246.655 323.298,314.432 323.298,178.879" ] []
+          , polygon [ fill "#60B5CC", points "161.649,170.517 8.869,323.298 314.43,323.298" ] []
+          ]
+        ]
       , -- Haskell
         svg [ height "2.4vw", viewBox "0 0 175 120" ]
         [ g [ Attributes.style "fill: rgb(102,102,102);" ]
@@ -1007,7 +959,50 @@ logosByLanguage =
         ]
       ]
     )
-  , ( "Scala", languageScalaLogo )
+  , ( "Scala"
+    , svg [ width "2.5vw", height "2.5vw", viewBox "0 0 256 416" ]
+      [ defs []
+        [ linearGradient
+          [ x1 "0%", y1 "50%", x2 "100%", y2 "50%", id "scalaLinearGradient-1" ]
+          [ stop [ stopColor "#4F4F4F", offset "0%" ] [], stop [ stopColor "#000000", offset "100%" ] [] ]
+        , linearGradient
+          [ x1 "0%", y1 "50%", x2 "100%", y2 "50%", id "scalaLinearGradient-2" ]
+          [ stop [ stopColor "#C40000", offset "0%" ] [], stop [ stopColor "#FF0000", offset "100%" ] [] ]
+        ]
+      , g []
+        [ path
+          [ d "M0,288 L0,256 C0,250.606222 116.376889,241.571556 192.199111,224 L192.199111,224 C228.828444,232.490667 256,242.968889 256,256 L256,256 L256,288 C256,301.024 228.828444,311.509333 192.199111,320 L192.199111,320 C116.376889,302.424889 0,293.390222 0,288"
+          , fill "url(#scalaLinearGradient-1)"
+          , transform "translate(128.000000, 272.000000) scale(1, -1) translate(-128.000000, -272.000000) "
+          ]
+          []
+        , path
+          [ d "M0,160 L0,128 C0,122.606222 116.376889,113.571556 192.199111,96 L192.199111,96 C228.828444,104.490667 256,114.968889 256,128 L256,128 L256,160 C256,173.024 228.828444,183.509333 192.199111,192 L192.199111,192 C116.376889,174.424889 0,165.390222 0,160"
+          , fill "url(#scalaLinearGradient-1)"
+          , transform "translate(128.000000, 144.000000) scale(1, -1) translate(-128.000000, -144.000000) "
+          ]
+          []
+        , path
+          [ d "M0,224 L0,128 C0,136 256,152 256,192 L256,192 L256,288 C256,248 0,232 0,224"
+          , fill "url(#scalaLinearGradient-2)"
+          , transform "translate(128.000000, 208.000000) scale(1, -1) translate(-128.000000, -208.000000) "
+          ]
+          []
+        , path
+          [ d "M0,96 L0,0 C0,8 256,24 256,64 L256,64 L256,160 C256,120 0,104 0,96"
+          , fill "url(#scalaLinearGradient-2)"
+          , transform "translate(128.000000, 80.000000) scale(1, -1) translate(-128.000000, -80.000000) "
+          ]
+          []
+        , path
+          [ d "M0,352 L0,256 C0,264 256,280 256,320 L256,320 L256,416 C256,376 0,360 0,352"
+          , fill "url(#scalaLinearGradient-2)"
+          , transform "translate(128.000000, 336.000000) scale(1, -1) translate(-128.000000, -336.000000) "
+          ]
+          []
+        ]
+      ]
+    )
   , ( "Swift", languageSwiftLogo )
   , ( "TypeScript", languageTypeScriptLogo )
   ]
