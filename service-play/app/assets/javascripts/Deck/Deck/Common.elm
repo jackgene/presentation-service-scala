@@ -1,6 +1,7 @@
 module Deck.Common exposing (..)
 
 import Array exposing (Array)
+import Dict exposing (Dict)
 import Html.Styled exposing (Html)
 import Navigation exposing (Location)
 import Time exposing (Time)
@@ -44,19 +45,32 @@ type alias Navigation =
   }
 
 
+type alias ChatMessage =
+  { sender : String
+  , recipient : String
+  , text : String
+  }
+
+
+type alias ChatMessageAndTokens =
+  { chatMessage : ChatMessage
+  , tokens : List String
+  }
+
+
+type alias TokenCounts =
+  { tokensAndCounts : List (String, Int)
+  , tokensBySender : Dict String (List String)
+  , chatMessagesAndTokens : List ChatMessageAndTokens
+  }
+
+
 type alias Model =
   { eventsWsUrl : Maybe String
   , activeNavigation : Array Navigation
   , currentSlide : Slide
   , animationFramesRemaining : Int
-  , languagesAndCounts : List (String, Int)
-  , typeScriptVsJavaScript :
-    { typeScriptFraction : Float
-    , lastVoteTypeScript : Bool
-    }
+  , wordCloud : TokenCounts
   , questions : Array String
-  , transcription :
-    { text : String
-    , updated : Time
-    }
+  , transcription : { text : String, updated : Time }
   }

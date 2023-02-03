@@ -11,10 +11,17 @@ introduction =
   }
 
 
+typeSystemProperties : UnindexedSlideModel
+typeSystemProperties =
+  { baseSlideModel
+  | view = ( \_ _ -> sectionCoverSlideView 2 "Type System Properties" )
+  }
+
+
 conclusion : UnindexedSlideModel
 conclusion =
   { baseSlideModel
-  | view = ( \_ _ -> sectionCoverSlideView 3 "Conclusion" )
+  | view = ( \_ _ -> sectionCoverSlideView 3 "Strong Typing & Quality Software" )
   }
 
 

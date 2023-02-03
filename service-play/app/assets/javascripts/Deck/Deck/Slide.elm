@@ -16,15 +16,13 @@ import Css exposing
   )
 import Deck.Common exposing (Model, Msg, Navigation, Slide(Slide), SlideModel)
 import Deck.Font exposing (..)
-import Deck.Slide.Common exposing
-  ( UnindexedSlideModel, black, languages, paragraphFontFamily, white )
-import Deck.Slide.Cover as Cover
-import Deck.Slide.Introduction as Introduction
+import Deck.Slide.Common exposing (UnindexedSlideModel, black, paragraphFontFamily, white)
 import Deck.Slide.QuestionAnswer as QuestionAnswer
+import Deck.Slide.Cover as Cover
+import Deck.Slide.WordCloud as WordCloud
 import Deck.Slide.SectionCover as SectionCover
 import Html.Styled exposing (Html, div, node, text)
 import Html.Styled.Attributes exposing (css, type_)
-import Set
 
 
 -- Common
@@ -40,47 +38,45 @@ indexSlide index unindexedSlide =
   }
 
 
-unindexedSlideModelForLang : String -> UnindexedSlideModel -> Maybe UnindexedSlideModel
-unindexedSlideModelForLang language unindexedSlideModel =
-  if not (Set.member language languages) then Nothing
-  else Just unindexedSlideModel
+preQuestionSlides : List UnindexedSlideModel
+preQuestionSlides =
+  [ Cover.cover
+  , WordCloud.wordCloud
+  , WordCloud.implementation1EventSource
+  , WordCloud.implementation2ExtractWords
+  , WordCloud.implementation3RetainLastNWords
+  , WordCloud.implementation4CountSendersByWord
+  , WordCloud.implementation5Complete
+  , WordCloud.implementation6CountSendersByWord
+  , WordCloud.implementation7RetainLastNWords
+  , WordCloud.implementation8ExtractWords
+
+  -- Q & A
+  , SectionCover.questions
+  ]
 
 
-unindexedSlideModels : List UnindexedSlideModel
-unindexedSlideModels =
-  ( [ Cover.cover
+questionSlides : List UnindexedSlideModel
+questionSlides =
+  [ QuestionAnswer.slide 0
+  , QuestionAnswer.slide 1
+  , QuestionAnswer.slide 2
+  , QuestionAnswer.slide 3
+  , QuestionAnswer.slide 4
+  , QuestionAnswer.slide 5
+  , QuestionAnswer.slide 6
+  , QuestionAnswer.slide 7
+  , QuestionAnswer.slide 8
+  , QuestionAnswer.slide 9
 
-    -- Introduction
-    , SectionCover.introduction
-    , Introduction.introduction
-    ]
-
-    -- Conclusion
-  ++[ SectionCover.conclusion
-    ]
-
-    -- Q & A
-  ++[ SectionCover.questions
-    , QuestionAnswer.slide 0
-    , QuestionAnswer.slide 1
-    , QuestionAnswer.slide 2
-    , QuestionAnswer.slide 3
-    , QuestionAnswer.slide 4
-    , QuestionAnswer.slide 5
-    , QuestionAnswer.slide 6
-    , QuestionAnswer.slide 7
-    , QuestionAnswer.slide 8
-    , QuestionAnswer.slide 9
-
-    -- Thank you
-    , SectionCover.thankYou
-    ]
-  )
+  -- Thank you
+  , SectionCover.thankYou
+  ]
 
 
 slidesList : List Slide
 slidesList =
-  List.indexedMap indexSlide unindexedSlideModels
+  List.indexedMap indexSlide (preQuestionSlides ++ questionSlides)
 
 
 slides : Array Slide
@@ -146,7 +142,7 @@ slideFromLocationHash hash =
 
 
 firstQuestionIndex : Int
-firstQuestionIndex = List.length unindexedSlideModels
+firstQuestionIndex = List.length preQuestionSlides
 
 
 -- View
