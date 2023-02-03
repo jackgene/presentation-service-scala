@@ -1,10 +1,10 @@
 module Deck.Common exposing (..)
 
 import Array exposing (Array)
+import Dict exposing (Dict)
 import Html.Styled exposing (Html)
 import Navigation exposing (Location)
 import Time exposing (Time)
-import WordCloud
 
 
 -- Constants
@@ -18,7 +18,6 @@ type Msg
   | Last
   | NewLocation Location
   | Event String
-  | NewWordCounts WordCloud.WordCounts
   | TranscriptionText String
   | TranscriptionUpdated Time
   | TranscriptionClearingTick Time
@@ -46,12 +45,32 @@ type alias Navigation =
   }
 
 
+type alias ChatMessage =
+  { sender : String
+  , recipient : String
+  , text : String
+  }
+
+
+type alias ChatMessageAndTokens =
+  { chatMessage : ChatMessage
+  , tokens : List String
+  }
+
+
+type alias TokenCounts =
+  { tokensAndCounts : List (String, Int)
+  , tokensBySender : Dict String (List String)
+  , chatMessagesAndTokens : List ChatMessageAndTokens
+  }
+
+
 type alias Model =
   { eventsWsUrl : Maybe String
   , activeNavigation : Array Navigation
   , currentSlide : Slide
   , animationFramesRemaining : Int
-  , wordCloud : WordCloud.WordCounts
+  , wordCloud : TokenCounts
   , questions : Array String
   , transcription : { text : String, updated : Time }
   }
