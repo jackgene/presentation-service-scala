@@ -1,5 +1,4 @@
-module Deck.Slide exposing
-  ( activeNavigationOf, slideFromLocationHash, slideView, firstQuestionIndex )
+module Deck.Slide exposing (activeNavigationOf, slideFromLocationHash, slideView, firstQuestionIndex)
 
 import Array exposing (Array)
 import Css exposing
@@ -17,13 +16,9 @@ import Css exposing
   )
 import Deck.Common exposing (Model, Msg, Navigation, Slide(Slide), SlideModel)
 import Deck.Font exposing (..)
-import Deck.Slide.AdditionalConsiderations as AdditionalConsiderations
 import Deck.Slide.Common exposing (UnindexedSlideModel, black, paragraphFontFamily, white)
-import Deck.Slide.Cover as Cover
-import Deck.Slide.ExampleApplication as ExampleApplication
-import Deck.Slide.Operators as Operators
-import Deck.Slide.Overview as Overview
 import Deck.Slide.QuestionAnswer as QuestionAnswer
+import Deck.Slide.Cover as Cover
 import Deck.Slide.WordCloud as WordCloud
 import Deck.Slide.SectionCover as SectionCover
 import Html.Styled exposing (Html, div, node, text)
@@ -46,21 +41,13 @@ indexSlide index unindexedSlide =
 preQuestionSlides : List UnindexedSlideModel
 preQuestionSlides =
   [ Cover.cover
-  , WordCloud.wordCloud "Audience Word Cloud" "Words You Associate With Functional Reactive Streaming"
-  , SectionCover.introduction
-  ] ++
-  Overview.slides ++
-  [ SectionCover.operators ] ++
-  Operators.slides ++
-  [ SectionCover.application ] ++
-  ExampleApplication.slides ++
-  [ WordCloud.wordCloud ExampleApplication.heading "Visualizing the Word Counts as a Word Cloud"
-  , SectionCover.additionalConsiderations
-  , AdditionalConsiderations.distributedDeployment
-  , ExampleApplication.implementationCompleteDistribution False
-  , AdditionalConsiderations.eventSourcing
-  , ExampleApplication.implementationCompleteEventSourcing False
-  , WordCloud.wordCloud "Additional Considerations" "The New Word Cloud"
+  , WordCloud.wordCloud
+  , WordCloud.implementation1EventSource
+  , WordCloud.implementation2ExtractWords
+  , WordCloud.implementation3RetainLastNWords
+  , WordCloud.implementation4CountSendersByWord
+  , WordCloud.implementationComplete
+
   -- Q & A
   , SectionCover.questions
   ]
