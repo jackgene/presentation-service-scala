@@ -17,7 +17,6 @@ import Css exposing
 import Deck.Common exposing (Model, Msg)
 import Html.Styled as Html exposing (Attribute, Html, text)
 import Html.Styled.Attributes exposing (css)
-import Set exposing (Set)
 
 
 -- Model
@@ -45,11 +44,6 @@ baseSlideModel =
   }
 
 
-languages : Set String
-languages =
-  Set.fromList ["Elm", "Go", "Python", "TypeScript", "Scala", "Kotlin", "Swift"]
-
-
 -- Styles
 white : Color
 white = rgb 255 255 255
@@ -59,8 +53,12 @@ black : Color
 black = rgb 0 0 0
 
 
-primary : Color
-primary = rgb 224 229 249
+themeForegroundColor : Color
+themeForegroundColor = rgb 167 188 249
+
+
+themeBackgroundColor : Color
+themeBackgroundColor = rgb 224 229 249
 
 
 blackTranslucent : Color
@@ -71,8 +69,8 @@ darkGray : Color
 darkGray = rgb 192 192 192
 
 
-lightGray : Color
-lightGray = rgb 238 238 238
+lightGrey : Color
+lightGrey = rgb 238 238 238
 
 
 consoleText : Color
@@ -104,7 +102,7 @@ headerStyle =
     , display block, float left
     , width (em 0.2), height (em 1.2)
     , marginRight (em 1.875)
-    , backgroundColor primary
+    , backgroundColor themeForegroundColor
     ]
   ]
 
