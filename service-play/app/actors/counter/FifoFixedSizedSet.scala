@@ -60,9 +60,11 @@ class FifoFixedSizedSet[A] private(
   }
 
   private def copy(
-      uniques: Set[A] = uniques, insertionOrder: IndexedSeq[A]):
-      FifoFixedSizedSet[A] =
-    new FifoFixedSizedSet(maxSize, uniques, insertionOrder)
+    uniques: Set[A] = uniques,
+    insertionOrder: IndexedSeq[A] = insertionOrder
+  ): FifoFixedSizedSet[A] = new FifoFixedSizedSet(
+    maxSize, uniques, insertionOrder
+  )
 
   /**
    * Adds a single element to this set, returning its effect.
