@@ -21,10 +21,21 @@ object SendersByTokenCounterActor {
   ) {
     override def toString: String = s"$chatMessage -> ${tokens.mkString("[", ",", "]")}"
   }
+  object Counts {
+    def apply(
+      chatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens],
+      tokensBySender: Map[String, FifoFixedSizedSet[String]],
+      tokens: MultiSet[String]
+    ): Counts = new Counts(
+      chatMessagesAndTokens,
+      tokensBySender.view.mapValues(_.toSeq).toMap,
+      tokens.elementsByCount.toSeq // JSON keys must be strings
+    )
+  }
   case class Counts(
     chatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens],
-    tokensBySender: Map[String, FifoFixedSizedSet[String]],
-    tokens: MultiSet[String]
+    tokensBySender: Map[String, Seq[String]],
+    tokensAndCounts: Seq[(Int, Seq[String])]
   )
 
   // JSON
@@ -36,8 +47,8 @@ object SendersByTokenCounterActor {
   private implicit val countsWrites: Writes[Counts] =
     (counts: Counts) => Json.obj(
       "chatMessagesAndTokens" -> counts.chatMessagesAndTokens,
-      "tokensBySender" -> counts.tokensBySender.view.mapValues(_.toSeq),
-      "tokensAndCounts" -> counts.tokens.elementsByCount.toSeq // JSON keys must be strings
+      "tokensBySender" -> counts.tokensBySender,
+      "tokensAndCounts" -> counts.tokensAndCounts
     )
 
   def props(
