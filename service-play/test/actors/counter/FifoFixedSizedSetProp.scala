@@ -96,7 +96,7 @@ class FifoFixedSizedSetProp extends CommonProp {
     }
   }
 
-  property("add and addAll produces identical events given identical input") {
+  property("add and addAll produces identical effects given identical input") {
     forAll(
       "fixedSize" |: Gen.posNum[Int],
       "elements"  |: Gen.listOf(Gen.posNum[Int])
