@@ -4,7 +4,6 @@ import actors.*
 import actors.tokenizing.{mappedKeywordsTokenizer, normalizedWordsTokenizer}
 import akka.actor.{ActorRef, ActorSystem}
 import akka.stream.Materializer
-import javax.inject.*
 import model.ChatMessage
 import play.api.Configuration
 import play.api.libs.json.JsValue
