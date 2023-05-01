@@ -21,5 +21,10 @@ object PresentationServiceApplicationLoader {
 class PresentationServiceApplicationLoader extends ApplicationLoader {
   import PresentationServiceApplicationLoader.*
 
-  def load(context: Context): Application = new Components(context).application
+  def load(context: Context): Application = {
+    LoggerConfigurator(context.environment.classLoader).foreach {
+      _.configure(context.environment, context.initialConfiguration, Map.empty)
+    }
+    new Components(context).application
+  }
 }
