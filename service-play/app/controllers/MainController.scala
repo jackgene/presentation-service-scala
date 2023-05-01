@@ -4,7 +4,7 @@ import actors.*
 import actors.tokenizing.{mappedKeywordsTokenizer, normalizedWordsTokenizer}
 import akka.actor.{ActorRef, ActorSystem}
 import akka.stream.Materializer
-import javax.inject._
+import javax.inject.*
 import model.ChatMessage
 import play.api.Configuration
 import play.api.libs.json.JsValue
@@ -15,8 +15,7 @@ import play.api.mvc.*
  * This controller creates an `Action` to handle HTTP requests to the
  * application's home page.
  */
-@Singleton
-class MainController @Inject() (cc: ControllerComponents, cfg: Configuration)
+class MainController (cc: ControllerComponents, cfg: Configuration)
     (implicit system: ActorSystem, mat: Materializer)
     extends AbstractController(cc) {
   private val RoutePattern = """(.*) to (Everyone|Me)(?: \(Direct Message\))?""".r
