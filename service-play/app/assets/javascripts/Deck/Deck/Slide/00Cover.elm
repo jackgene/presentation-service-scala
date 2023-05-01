@@ -4,12 +4,13 @@ import Css exposing
   -- Container
   ( left, position, top, width, margin, margin2
   -- Content
-  , fontSize
+  , backgroundColor, fontSize, fontWeight
   -- Units
-  , em, vw, zero
+  , em, int, vw, zero
   -- Alignments & Positions
   , absolute
   -- Other values
+  , normal
   )
 import Deck.Slide.Common exposing (..)
 import Deck.Slide.Graphics exposing (coverBackgroundGraphic)
@@ -31,7 +32,7 @@ cover =
           ]
         ]
         [ h1 [ css [ margin zero, headerFontFamily, fontSize (vw 4.2) ] ]
-          [ text "Template"
+          [ text "Strong Typing and the Errors It Prevents"
           ]
         , p
           [ css [ margin2 (em 2.5) zero, fontSize (vw 2.5) ] ]

@@ -5,7 +5,7 @@ import Css exposing
   ( borderTop3, bottom, display, height, left, margin, margin4
   , padding2, position, right, top, width
   -- Content
-  , color, fontSize, fontWeight, verticalAlign
+  , backgroundColor, color, fontSize, fontWeight, verticalAlign
   -- Units
   , em, vw, zero
   -- Alignments & Positions
