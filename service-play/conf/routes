@@ -6,6 +6,7 @@
 GET         /                           controllers.Assets.at(path="/public", file="html/deck.html")
 GET         /event/language-poll        controllers.MainController.languagePollEvent()
 GET         /event/word-cloud           controllers.MainController.wordCloudEvent()
+GET         /event/chattiest            controllers.MainController.chattiestEvent()
 GET         /event/question             controllers.MainController.questionEvent()
 GET         /event/transcription        controllers.MainController.transcriptionEvent()
 

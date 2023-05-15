@@ -1,9 +1,13 @@
 package controllers
 
 import actors.*
+import actors.adapter.*
 import actors.tokenizing.{mappedKeywordsTokenizer, normalizedWordsTokenizer}
-import akka.actor.{ActorRef, ActorSystem}
+import akka.actor.ActorSystem
+import akka.actor.typed.ActorRef
+import akka.actor.typed.scaladsl.adapter.*
 import akka.stream.Materializer
+import akka.stream.scaladsl.{Flow, Sink}
 import model.ChatMessage
 import play.api.Configuration
 import play.api.libs.json.JsValue
@@ -19,73 +23,104 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
     extends AbstractController(cc) {
   private val RoutePattern = """(.*) to (Everyone|Me)(?: \(Direct Message\))?""".r
   private val IgnoredRoutePattern = "Me to .*".r
-  private val chatMsgActor: ActorRef =
-    system.actorOf(ChatMessageActor.props, "chat")
-  private val rejectedMsgActor: ActorRef =
-    system.actorOf(ChatMessageActor.props, "rejected")
-  private val languagePollActor: ActorRef =
-    system.actorOf(
-      SendersByTokenCounterActor.props(
-        mappedKeywordsTokenizer(
+  private val chatMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command] =
+    system.spawn(ChatMessageBroadcaster(), "chat")
+  private val rejectedMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command] =
+    system.spawn(ChatMessageBroadcaster(), "rejected")
+  private val languagePollCounter: ActorRef[SendersByTokenCounter.Command] =
+    system.spawn(
+      SendersByTokenCounter(
+        extractTokens = mappedKeywordsTokenizer(
           cfg.get[Map[String, String]]("presentation.languagePoll.languageByKeyword")
         ),
-        chatMsgActor, rejectedMsgActor
+        tokensPerSender = 3,
+        chatMessageBroadcaster, rejectedMessageBroadcaster
       ),
       "language-poll"
     )
-  private val wordCloudActor: ActorRef =
-    system.actorOf(
-      SendersByTokenCounterActor.props(
-        normalizedWordsTokenizer(
+  private val wordCloudCounter: ActorRef[SendersByTokenCounter.Command] =
+    system.spawn(
+      SendersByTokenCounter(
+        extractTokens = normalizedWordsTokenizer(
           cfg.get[Seq[String]]("presentation.wordCloud.stopWords").toSet,
           cfg.get[Int]("presentation.wordCloud.minWordLength")
         ),
-        chatMsgActor, rejectedMsgActor
+        tokensPerSender = 7,
+        chatMessageBroadcaster, rejectedMessageBroadcaster
       ),
       "word-cloud"
     )
-  private val questionActor: ActorRef =
-    system.actorOf(
-      ApprovalRouterActor.props(chatMsgActor, rejectedMsgActor),
-      "question"
+  private val chattiestCounter: ActorRef[MessagesBySenderCounter.Command] =
+    system.spawn(
+      MessagesBySenderCounter(chatMessageBroadcaster), "chattiest"
     )
-  private val transcriptionActor: ActorRef =
-    system.actorOf(TranscriptionActor.props, "transcriptions")
+  private val questionBroadcaster: ActorRef[ApprovalRouter.Command] =
+    system.spawn(
+      ApprovalRouter(chatMessageBroadcaster, rejectedMessageBroadcaster), "question"
+    )
+  private val transcriptionBroadcaster: ActorRef[TranscriptionBroadcaster.Command] =
+    system.spawn(
+      TranscriptionBroadcaster(), "transcriptions"
+    )
 
   def languagePollEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { _: RequestHeader =>
-    ActorFlow.actorRef { webSocketClient: ActorRef =>
-      SendersByTokenCounterActor.WebSocketActor.props(webSocketClient, languagePollActor)
-    }
+    Flow.fromSinkAndSource(
+      Sink.ignore,
+      ActorFlow.sourceBehavior { webSocketClient: ActorRef[JsValue] =>
+        SendersByTokenCounter.JsonPublisher(webSocketClient, languagePollCounter)
+      }
+    )
   }
 
   def wordCloudEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { _: RequestHeader =>
-    ActorFlow.actorRef { webSocketClient: ActorRef =>
-      SendersByTokenCounterActor.WebSocketActor.props(webSocketClient, wordCloudActor)
-    }
+    Flow.fromSinkAndSource(
+      Sink.ignore,
+      ActorFlow.sourceBehavior { webSocketClient: ActorRef[JsValue] =>
+        SendersByTokenCounter.JsonPublisher(webSocketClient, wordCloudCounter)
+      }
+    )
+  }
+
+  def chattiestEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { _: RequestHeader =>
+    Flow.fromSinkAndSource(
+      Sink.ignore,
+      ActorFlow.sourceBehavior { webSocketClient: ActorRef[JsValue] =>
+        MessagesBySenderCounter.JsonPublisher(webSocketClient, chattiestCounter)
+      }
+    )
   }
 
   def questionEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { _: RequestHeader =>
-    ActorFlow.actorRef { webSocketClient: ActorRef =>
-      ApprovalRouterActor.WebSocketActor.props(webSocketClient, questionActor)
-    }
+    Flow.fromSinkAndSource(
+      Sink.ignore,
+      ActorFlow.sourceBehavior { webSocketClient: ActorRef[JsValue] =>
+        ApprovalRouter.JsonPublisher(webSocketClient, questionBroadcaster)
+      }
+    )
   }
 
-  def transcriptionEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { _: RequestHeader =>
-    ActorFlow.actorRef { webSocketClient: ActorRef =>
-      TranscriptionActor.WebSocketActor.props(webSocketClient, transcriptionActor)
-    }
+  def transcriptionEvent(): WebSocket = WebSocket.accept[JsValue, JsValue] { _: RequestHeader =>
+    Flow.fromSinkAndSource(
+      Sink.ignore,
+      ActorFlow.sourceBehavior { webSocketClient: ActorRef[JsValue] =>
+        TranscriptionBroadcaster.JsonPublisher(webSocketClient, transcriptionBroadcaster)
+      }
+    )
   }
 
   def moderationEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { _: RequestHeader =>
-    ActorFlow.actorRef { webSocketClient: ActorRef =>
-      ModerationWebSocketActor.props(webSocketClient, rejectedMsgActor)
-    }
+    Flow.fromSinkAndSource(
+      Sink.ignore,
+      ActorFlow.sourceBehavior { webSocketClient: ActorRef[JsValue] =>
+        ChatMessageBroadcaster.JsonPublisher(webSocketClient, rejectedMessageBroadcaster)
+      }
+    )
   }
 
   def chat(route: String, text: String): Action[Unit] = Action(parse.empty) { _: Request[Unit] =>
     route match {
       case RoutePattern(sender, recipient) =>
-        chatMsgActor ! ChatMessageActor.New(ChatMessage(sender, recipient, text))
+        chatMessageBroadcaster ! ChatMessageBroadcaster.Record(ChatMessage(sender, recipient, text))
         NoContent
       case IgnoredRoutePattern() => NoContent
       case _ => BadRequest
@@ -93,14 +128,15 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
   }
 
   def reset(): Action[Unit] = Action(parse.empty) { _: Request[Unit] =>
-    languagePollActor ! SendersByTokenCounterActor.Reset
-    wordCloudActor ! SendersByTokenCounterActor.Reset
-    questionActor ! ApprovalRouterActor.Reset
+    languagePollCounter ! SendersByTokenCounter.Reset
+    wordCloudCounter ! SendersByTokenCounter.Reset
+    chattiestCounter ! MessagesBySenderCounter.Reset
+    questionBroadcaster ! ApprovalRouter.Reset
     NoContent
   }
 
   def transcription(text: String): Action[Unit] = Action(parse.empty) { _: Request[Unit] =>
-    transcriptionActor ! TranscriptionActor.NewTranscriptionText(text)
+    transcriptionBroadcaster ! TranscriptionBroadcaster.NewTranscriptionText(text)
     NoContent
   }
 }

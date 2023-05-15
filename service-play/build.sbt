@@ -40,6 +40,7 @@ libraryDependencies += "com.google.inject" % "guice" % "5.1.0"
 libraryDependencies += "com.google.inject.extensions" % "guice-assistedinject" % "5.1.0"
 libraryDependencies += "org.scalatestplus" %% "scalacheck-1-14" % "3.1.1.0" % Test
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
+libraryDependencies += "com.typesafe.akka" %% "akka-stream-typed" % "2.6.20"
 
 // Forward all system properties to forked tests
 Test / javaOptions ++= {
