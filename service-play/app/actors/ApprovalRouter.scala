@@ -1,100 +1,153 @@
 package actors
 
-import akka.actor.{Actor, ActorLogging, ActorRef, Props, Terminated}
+import actors.common.JsonWriter
+import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
+import akka.actor.typed.{ActorRef, Behavior}
 import model.ChatMessage
-import play.api.libs.json.*
+import play.api.libs.json.{JsValue, Json, Writes}
 
-object ApprovalRouterActor {
-  // Incoming messages
-  case class Register(listener: ActorRef)
-  case object Reset
+/**
+ * Actor that accepts messages only from the moderation tool.
+ *
+ * Specifically, accepts messages where the sender is an emptpy string.
+ */
+object ApprovalRouter {
+  sealed trait Command
+  final case class Subscribe(subscriber: ActorRef[Event]) extends Command
+  final case class Unsubscribe(subscriber: ActorRef[Event]) extends Command
+  final case class Record(chatMessage: ChatMessage) extends Command
+  final case object Reset extends Command
 
-  // Outgoing messages
-  case class ChatMessages(text: Seq[String])
+  sealed trait Event
+  private final case class ChatMessages(chatText: Seq[String]) extends Event
 
   // JSON
-  private implicit val chatMessagesWrites: Writes[ChatMessages] =
-    (chatMessages: ChatMessages) => Json.obj("chatText" -> chatMessages.text)
-
-  def props(chatMessageActor: ActorRef, rejectedMessageActor: ActorRef): Props =
-    Props(new ApprovalRouterActor(chatMessageActor, rejectedMessageActor: ActorRef))
-
-  // WebSocket actor
-  object WebSocketActor {
-    def props(webSocketClient: ActorRef, messages: ActorRef): Props =
-      Props(new WebSocketActor(webSocketClient, messages))
+  private implicit val eventWrites: Writes[Event] = {
+    case chatMessages: ChatMessages =>
+      Json.obj("chatText" -> chatMessages.chatText)
   }
-  class WebSocketActor(webSocketClient: ActorRef, messages: ActorRef)
-      extends Actor with ActorLogging {
-    messages ! ApprovalRouterActor.Register(listener = self)
 
-    override def receive: Receive = {
-      case chatMsgs: ApprovalRouterActor.ChatMessages =>
-        webSocketClient ! Json.toJson(chatMsgs)
+  def apply(
+    chatMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command],
+    rejectedMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command]
+  ): Behavior[Command] =
+    new ApprovalRouter(chatMessageBroadcaster, rejectedMessageBroadcaster).initial()
+
+  /**
+   * Publishes broadcast as JSON
+   */
+  object JsonPublisher {
+    def apply(
+      subscriber: ActorRef[JsValue], approvalRouter: ActorRef[Command]
+    ): Behavior[Event] = Behaviors.setup { ctx: ActorContext[Event] =>
+      ctx.watch(approvalRouter)
+      approvalRouter ! Subscribe(ctx.self)
+
+      JsonWriter(subscriber)
+    }
+  }
+
+  /**
+   * Translates [[ChatMessageBroadcaster.Event]]s to [[Event]]s.
+   */
+  private object ChatBroadcastAdapter {
+    private type BroadcastEvent = ChatMessageBroadcaster.Event
+    private type BroadcastCommand = ChatMessageBroadcaster.Command
+
+    def apply(
+      source: ActorRef[BroadcastCommand], destination: ActorRef[Command]
+    ): Behavior[BroadcastEvent] = Behaviors.setup { ctx: ActorContext[BroadcastEvent] =>
+      source ! ChatMessageBroadcaster.Subscribe(ctx.self)
+
+      Behaviors.receive {
+        case (_, ChatMessageBroadcaster.New(chatMessage: ChatMessage)) =>
+          destination ! Record(chatMessage)
+          Behaviors.same
+      }
     }
   }
 }
-private class ApprovalRouterActor(
-    chatMessageActor: ActorRef, rejectedMessageActor: ActorRef)
-    extends Actor with ActorLogging {
-  import ApprovalRouterActor.*
+private class ApprovalRouter(
+  chatMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command],
+  rejectedMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command]
+) {
+  import ApprovalRouter.*
 
-  private def paused(text: IndexedSeq[String]): Receive = {
-    case Reset =>
-      context.become(paused(IndexedSeq()))
+  private def paused(
+    text: IndexedSeq[String]
+  ): Behavior[Command] = Behaviors.receive { (ctx: ActorContext[Command], cmd: Command) =>
+    cmd match {
+      case Reset => paused(IndexedSeq())
 
-    case Register(listener: ActorRef) =>
-      chatMessageActor ! ChatMessageActor.Register(self)
-      listener ! ChatMessages(text)
-      context.watch(listener)
-      context.become(
-        running(text, Set(listener))
-      )
-      log.info(s"+1 ${self.path.name} listener (=1)")
+      case Subscribe(subscriber: ActorRef[Event]) =>
+        ctx.log.info(s"+1 ${ctx.self.path.name} subscriber (=1)")
+        subscriber ! ChatMessages(text)
+        ctx.watchWith(subscriber, Unsubscribe(subscriber))
+        val adapter: ActorRef[ChatMessageBroadcaster.Event] = ctx.spawn(
+          ChatBroadcastAdapter(chatMessageBroadcaster, ctx.self), "adapter"
+        )
+        running(text, Set(subscriber), adapter)
+
+      // These are not expected during paused state
+      case Record(chatMessage: ChatMessage) =>
+        ctx.log.warn(s"received unexpected record in paused state - $chatMessage")
+        Behaviors.unhandled
+
+      case Unsubscribe(subscriber: ActorRef[Event]) =>
+        ctx.log.warn(s"received unexpected unsubscription in paused state - ${subscriber.path}")
+        Behaviors.unhandled
+    }
   }
 
-  private def running(text: IndexedSeq[String], listeners: Set[ActorRef]): Receive = {
-    case event @ ChatMessageActor.New(msg: ChatMessage) =>
-      if (msg.sender != "") {
-        rejectedMessageActor ! event
-      } else {
-        val newText: IndexedSeq[String] = text :+ msg.text
-        for (listener: ActorRef <- listeners) {
-          listener ! ChatMessages(newText)
+  private def running(
+    text: IndexedSeq[String], subscribers: Set[ActorRef[Event]],
+    adapter: ActorRef[ChatMessageBroadcaster.Event]
+  ): Behavior[Command] = Behaviors.receive { (ctx: ActorContext[Command], cmd: Command) =>
+    cmd match {
+      case Record(chatMessage: ChatMessage) =>
+        if (chatMessage.sender != "") {
+          rejectedMessageBroadcaster ! ChatMessageBroadcaster.Record(chatMessage)
+          Behaviors.same
+        } else {
+          val newText: IndexedSeq[String] = text :+ chatMessage.text
+          for (subscriber: ActorRef[Event] <- subscribers) {
+            subscriber ! ChatMessages(newText)
+          }
+          running(newText, subscribers, adapter)
         }
-        context.become(running(newText, listeners))
-      }
 
-    case Reset =>
-      for (listener: ActorRef <- listeners) {
-        listener ! ChatMessages(IndexedSeq())
-      }
-      context.become(
-        running(IndexedSeq(), listeners)
-      )
+      case Reset =>
+        for (subscriber: ActorRef[Event] <- subscribers) {
+          subscriber ! ChatMessages(IndexedSeq())
+        }
+        running(IndexedSeq(), subscribers, adapter)
 
-    case Register(listener: ActorRef) =>
-      listener ! ChatMessages(text)
-      context.watch(listener)
-      context.become(
-        running(text, listeners + listener)
-      )
-      log.info(s"+1 ${self.path.name} listener (=${listeners.size + 1})")
+      case Subscribe(subscriber: ActorRef[Event]) if !subscribers.contains(subscriber) =>
+        ctx.log.info(s"+1 ${ctx.self.path.name} subscriber (=${subscribers.size + 1})")
+        subscriber ! ChatMessages(text)
+        ctx.watchWith(subscriber, Unsubscribe(subscriber))
+        running(text, subscribers + subscriber, adapter)
 
-    case Terminated(listener: ActorRef) if listeners.contains(listener) =>
-      val remainingListeners: Set[ActorRef] = listeners - listener
-      if (remainingListeners.nonEmpty) {
-        context.become(
-          running(text, remainingListeners)
-        )
-      } else {
-        chatMessageActor ! ChatMessageActor.Unregister(self)
-        context.become(
+      case Subscribe(subscriber: ActorRef[Event]) =>
+        ctx.log.warn(s"attempted to subscribe duplicate ${ctx.self.path.name} subscriber - ${subscriber.path}")
+        Behaviors.unhandled
+
+      case Unsubscribe(subscriber: ActorRef[Event]) if subscribers.contains(subscriber) =>
+        ctx.log.info(s"-1 ${ctx.self.path.name} subscriber (=${subscribers.size - 1})")
+        ctx.unwatch(subscriber)
+        val remainingSubscribers: Set[ActorRef[Event]] = subscribers - subscriber
+        if (remainingSubscribers.nonEmpty) {
+          running(text, remainingSubscribers, adapter)
+        } else {
+          ctx.stop(adapter)
           paused(text)
-        )
-      }
-      log.info(s"-1 ${self.path.name} listener (=${listeners.size - 1})")
+        }
+
+      case Unsubscribe(subscriber: ActorRef[Event]) =>
+        ctx.log.warn(s"attempted to unsubscribe unknown ${ctx.self.path.name} subscriber - ${subscriber.path}")
+        Behaviors.unhandled
+    }
   }
 
-  override def receive: Receive = paused(IndexedSeq())
+  def initial(): Behavior[Command] =  paused(IndexedSeq())
 }

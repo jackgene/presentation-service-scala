@@ -1,48 +1,76 @@
 package actors
 
-import akka.actor.{Actor, ActorLogging, ActorRef, Props, Terminated}
+import actors.common.JsonWriter
+import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
+import akka.actor.typed.{ActorRef, Behavior}
 import model.ChatMessage
+import play.api.libs.json.{JsValue, Json, Writes}
 
-object ChatMessageActor {
-  // Incoming messages
-  case class Register(listener: ActorRef)
-  case class Unregister(listener: ActorRef)
+/**
+ * Broadcasts chat messages to any subscriber.
+ *
+ * Subscribers can then use the chat messages to drive:
+ * - Polls
+ * - Word Clouds
+ * - Statistics on chat messages
+ * - Q&A questions
+ * - Etc
+ */
+object ChatMessageBroadcaster {
+  sealed trait Command
+  final case class Subscribe(subscriber: ActorRef[Event]) extends Command
+  final case class Unsubscribe(subscriber: ActorRef[Event]) extends Command
+  final case class Record(chatMessage: ChatMessage) extends Command
 
-  // Incoming and Outgoing messages
-  case class New(chatMessage: ChatMessage)
+  sealed trait Event
+  final case class New(chatMessage: ChatMessage) extends Event
 
-  val props: Props = Props(new ChatMessageActor)
-}
-private class ChatMessageActor extends Actor with ActorLogging {
-  import ChatMessageActor.*
-
-  private def running(listeners: Set[ActorRef]): Receive = {
-    case event @ New(chatMessage: ChatMessage) =>
-      log.info(s"Received ${self.path.name} message - $chatMessage")
-      for (listener: ActorRef <- listeners) {
-        listener ! event
-      }
-
-    case Register(listener: ActorRef) =>
-      context.watch(listener)
-      context.become(
-        running(listeners + listener)
-      )
-      log.info(
-        s"+1 ${self.path.name} message listener (=${listeners.size + 1})"
-      )
-
-    case Unregister(listener: ActorRef) =>
-      context.become(
-        running(listeners - listener)
-      )
-      log.info(
-        s"-1 ${self.path.name} message listener (=${listeners.size - 1})"
-      )
-
-    case Terminated(listener: ActorRef) if listeners.contains(listener) =>
-      self ! Unregister(listener)
+  // JSON
+  private implicit val eventWrites: Writes[Event] = {
+    case New(chatMessage: ChatMessage) => Json.toJson(chatMessage)
   }
 
-  override val receive: Receive = running(Set())
+  private def running(
+    subscribers: Set[ActorRef[Event]]
+  ): Behavior[Command] = Behaviors.receive { (ctx: ActorContext[Command], cmd: Command) =>
+    cmd match {
+      case Record(chatMessage: ChatMessage) =>
+        ctx.log.info(s"Received ${ctx.self.path.name} message - $chatMessage")
+        for (subscriber: ActorRef[Event] <- subscribers) {
+          subscriber ! New(chatMessage)
+        }
+        Behaviors.same
+
+      case Subscribe(subscriber: ActorRef[Event]) if !subscribers.contains(subscriber) =>
+        ctx.log.info(s"+1 ${ctx.self.path.name} subscriber (=${subscribers.size + 1})")
+        ctx.watchWith(subscriber, Unsubscribe(subscriber))
+        running(subscribers + subscriber)
+
+      case Subscribe(subscriber: ActorRef[Event]) =>
+        ctx.log.warn(s"attempted to subscribe duplicate ${ctx.self.path.name} subscriber - ${subscriber.path}")
+        Behaviors.unhandled
+
+      case Unsubscribe(subscriber: ActorRef[Event]) if subscribers.contains(subscriber) =>
+        ctx.log.info(s"-1 ${ctx.self.path.name} subscriber (=${subscribers.size - 1})")
+        ctx.unwatch(subscriber)
+        running(subscribers - subscriber)
+
+      case Unsubscribe(subscriber: ActorRef[Event]) =>
+        ctx.log.warn(s"attempted to unsubscribe unknown ${ctx.self.path.name} subscriber - ${subscriber.path}")
+        Behaviors.unhandled
+    }
+  }
+
+  def apply(): Behavior[Command] = running(Set())
+
+  object JsonPublisher {
+    def apply(
+      subscriber: ActorRef[JsValue], broadcaster: ActorRef[Command]
+    ): Behavior[Event] = Behaviors.setup { ctx: ActorContext[Event] =>
+      ctx.watch(broadcaster)
+      broadcaster ! Subscribe(ctx.self)
+
+      JsonWriter(subscriber)
+    }
+  }
 }

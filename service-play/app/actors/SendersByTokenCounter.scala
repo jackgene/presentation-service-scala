@@ -1,21 +1,25 @@
 package actors
 
+import actors.common.{JsonWriter, RateLimiter}
 import actors.counter.{FifoFixedSizedSet, MultiSet}
 import actors.tokenizing.Tokenizer
-import akka.actor.{Actor, ActorLogging, ActorRef, Props, Terminated}
+import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
+import akka.actor.typed.{ActorRef, Behavior}
 import model.ChatMessage
-import play.api.libs.json.*
 import play.api.libs.functional.syntax.*
+import play.api.libs.json.{JsPath, JsValue, Json, Writes}
 
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 
-object SendersByTokenCounterActor {
-  // Incoming messages
-  case class Register(listener: ActorRef)
-  case object Reset
+object SendersByTokenCounter {
+  sealed trait Command
+  final case class Subscribe(subscriber: ActorRef[Event]) extends Command
+  final case class Unsubscribe(subscriber: ActorRef[Event]) extends Command
+  final case class Record(chatMessage: ChatMessage) extends Command
+  final case object Reset extends Command
 
-  // Outgoing messages
-  case class ChatMessageAndTokens(
+  sealed trait Event
+  final case class ChatMessageAndTokens(
     chatMessage: ChatMessage,
     tokens: Seq[String]
   ) {
@@ -32,11 +36,11 @@ object SendersByTokenCounterActor {
       tokens.elementsByCount.toSeq // JSON keys must be strings
     )
   }
-  case class Counts(
+  final case class Counts(
     chatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens],
     tokensBySender: Map[String, Seq[String]],
     tokensAndCounts: Seq[(Int, Seq[String])]
-  )
+  ) extends Event
 
   // JSON
   private implicit val chatMessageAndTokensWrites: Writes[ChatMessageAndTokens] =
@@ -44,214 +48,207 @@ object SendersByTokenCounterActor {
       (JsPath \ "chatMessage").write[ChatMessage] and
       (JsPath \ "tokens").write[Seq[String]]
     )(unlift(ChatMessageAndTokens.unapply))
-  private implicit val countsWrites: Writes[Counts] =
-    (counts: Counts) => Json.obj(
-      "chatMessagesAndTokens" -> counts.chatMessagesAndTokens,
-      "tokensBySender" -> counts.tokensBySender,
-      "tokensAndCounts" -> counts.tokensAndCounts
-    )
-
-  def props(
-    extractToken: String => Seq[String],
-    chatMessageActor: ActorRef, rejectedMessageActor: ActorRef
-  ): Props =
-    Props(
-      new SendersByTokenCounterActor(
-        extractToken, chatMessageActor, rejectedMessageActor
+  private implicit val eventWrites: Writes[Event] = {
+    case counts: Counts =>
+      Json.obj(
+        "chatMessagesAndTokens" -> counts.chatMessagesAndTokens,
+        "tokensBySender" -> counts.tokensBySender,
+        "tokensAndCounts" -> counts.tokensAndCounts
       )
-    )
-
-  // WebSocket actor
-  object WebSocketActor {
-    object Send
-
-    private val BatchPeriod: FiniteDuration = 100.milliseconds
-
-    def props(webSocketClient: ActorRef, counts: ActorRef): Props =
-      Props(new WebSocketActor(webSocketClient, counts))
   }
 
-  class WebSocketActor(
-    webSocketClient: ActorRef, counts: ActorRef
-  ) extends Actor with ActorLogging {
-    import WebSocketActor.*
-    import context.dispatcher
+  def apply(
+    extractTokens: Tokenizer, tokensPerSender: Int,
+    chatMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command],
+    rejectedMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command]
+  ): Behavior[Command] =
+    new SendersByTokenCounter(
+      extractTokens, tokensPerSender, chatMessageBroadcaster, rejectedMessageBroadcaster
+    ).initial()
 
-    counts ! SendersByTokenCounterActor.Register(listener = self)
+  /**
+   * Publishes broadcast as JSON - Rate Limited
+   */
+  object JsonPublisher {
+    private val MinPeriodBetweenMessages: FiniteDuration = 100.milliseconds
 
-    private val idle: Receive = {
-      case counts: SendersByTokenCounterActor.Counts =>
-        context.system.scheduler.scheduleOnce(BatchPeriod, self, Send)
-        context.become(awaitingSend(counts))
+    def apply(
+      subscriber: ActorRef[JsValue], counter: ActorRef[Command]
+    ): Behavior[Event] = Behaviors.setup { ctx: ActorContext[Event] =>
+      ctx.watch(counter)
+      val rateLimitedCounter = ctx.spawn(
+        RateLimiter(ctx.self, MinPeriodBetweenMessages), "rate-limiter"
+      )
+      counter ! Subscribe(rateLimitedCounter)
+
+      JsonWriter(subscriber)
     }
+  }
 
-    private def awaitingSend(counts: SendersByTokenCounterActor.Counts): Receive = {
-      case counts: SendersByTokenCounterActor.Counts =>
-        context.become(awaitingSend(counts))
+  /**
+   * Translates [[ChatMessageBroadcaster.Event]]s to [[Event]]s.
+   */
+  private object ChatBroadcastAdapter {
+    private type BroadcastEvent = ChatMessageBroadcaster.Event
+    private type BroadcastCommand = ChatMessageBroadcaster.Command
 
-      case Send =>
-        webSocketClient ! Json.toJson(counts)
-        context.become(idle)
+    def apply(
+      source: ActorRef[BroadcastCommand], destination: ActorRef[Command]
+    ): Behavior[BroadcastEvent] = Behaviors.setup { ctx: ActorContext[BroadcastEvent] =>
+      source ! ChatMessageBroadcaster.Subscribe(ctx.self)
+
+      Behaviors.receive {
+        case (_, ChatMessageBroadcaster.New(chatMessage: ChatMessage)) =>
+          destination ! Record(chatMessage)
+          Behaviors.same
+      }
     }
-
-    override val receive: Receive = idle
   }
 }
+private class SendersByTokenCounter(
+  extractTokens: Tokenizer, tokensPerSender: Int,
+  chatMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command],
+  rejectedMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command]
+) {
+  import SendersByTokenCounter.*
 
-private class SendersByTokenCounterActor(
-  tokenize: Tokenizer,
-  chatMessageActor: ActorRef, rejectedMessageActor: ActorRef
-) extends Actor with ActorLogging {
-  import SendersByTokenCounterActor.*
-
-  private val maxTokensPerSender: Int = 3
   private val emptyTokensBySender: Map[String, FifoFixedSizedSet[String]] =
-    Map().withDefaultValue(FifoFixedSizedSet(maxTokensPerSender))
+    Map().withDefaultValue(FifoFixedSizedSet(tokensPerSender))
 
   private def paused(
     chatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens],
     tokensBySender: Map[String, FifoFixedSizedSet[String]], tokens: MultiSet[String]
-  ): Receive = {
-    case Reset =>
-      context.become(
+  ): Behavior[Command] = Behaviors.receive { (ctx: ActorContext[Command], cmd: Command) =>
+    cmd match {
+      case Reset =>
         paused(IndexedSeq(), emptyTokensBySender, MultiSet[String]())
-      )
 
-    case Register(listener: ActorRef) =>
-      chatMessageActor ! ChatMessageActor.Register(self)
-      listener ! Counts(
-        chatMessagesAndTokens, tokensBySender, tokens
-      )
-      context.watch(listener)
-      context.become(
-        running(
-          chatMessagesAndTokens, tokensBySender, tokens, Set(listener)
+      case Subscribe(subscriber: ActorRef[Event]) =>
+        ctx.log.info(s"+1 ${ctx.self.path.name} subscriber (=1)")
+        subscriber ! Counts(chatMessagesAndTokens, tokensBySender, tokens)
+        ctx.watchWith(subscriber, Unsubscribe(subscriber))
+        val adapter: ActorRef[ChatMessageBroadcaster.Event] = ctx.spawn(
+          ChatBroadcastAdapter(chatMessageBroadcaster, ctx.self), "adapter"
         )
-      )
-      log.info(
-        "+1 senders by token count listener (=1)"
-      )
+        running(chatMessagesAndTokens, tokensBySender, tokens, Set(subscriber), adapter)
+
+      // These are not expected during paused state
+      case Record(chatMessage: ChatMessage) =>
+        ctx.log.warn(s"received unexpected record in paused state - $chatMessage")
+        Behaviors.unhandled
+
+      case Unsubscribe(subscriber: ActorRef[Event]) =>
+        ctx.log.warn(s"received unexpected unsubscription in paused state - ${subscriber.path}")
+        Behaviors.unhandled
+    }
   }
 
   private def running(
     chatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens],
     tokensBySender: Map[String, FifoFixedSizedSet[String]], tokens: MultiSet[String],
-    listeners: Set[ActorRef]
-  ): Receive = {
-    case event@ChatMessageActor.New(msg: ChatMessage) =>
-      val senderOpt: Option[String] = Option(msg.sender).filter {
-        _ != ""
-      }
-      val extractedTokens: Seq[String] = tokenize(msg.text)
+    subscribers: Set[ActorRef[Event]], adapter: ActorRef[ChatMessageBroadcaster.Event]
+  ): Behavior[Command] = Behaviors.receive { (ctx: ActorContext[Command], cmd: Command) =>
+    cmd match {
+      case Record(chatMessage: ChatMessage) =>
+        val senderOpt: Option[String] = Option(chatMessage.sender).filter(_ != "")
+        val extractedTokens: Seq[String] = extractTokens(chatMessage.text)
 
-      val (
-        newChatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens],
-        newTokensBySender: Map[String, FifoFixedSizedSet[String]],
-        newTokens: MultiSet[String]
-      ) =
-        extractedTokens match {
-          case Nil =>
-            log.info("No token extracted")
-            rejectedMessageActor ! event
-            (
-              chatMessagesAndTokens :+ ChatMessageAndTokens(msg, Nil),
-              tokensBySender, tokens
-            )
+        val (
+          newChatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens],
+          newTokensBySender: Map[String, FifoFixedSizedSet[String]],
+          newTokens: MultiSet[String]
+        ) =
+          extractedTokens match {
+            case Nil =>
+              ctx.log.info("No token extracted")
+              rejectedMessageBroadcaster ! ChatMessageBroadcaster.Record(chatMessage)
+              (
+                chatMessagesAndTokens :+ ChatMessageAndTokens(chatMessage, Nil),
+                tokensBySender, tokens
+              )
 
-          case extractedTokens =>
-            log.info(s"Extracted tokens ${extractedTokens.mkString("\"", "\", \"", "\"")}")
-            val newChatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens] =
-              chatMessagesAndTokens :+ ChatMessageAndTokens(msg, extractedTokens)
-            val (
-              newTokensBySender: Map[String, FifoFixedSizedSet[String]],
-              addedTokens: Set[String],
-              removedTokens: Set[String]
-            ) = senderOpt match {
-              case Some(sender: String) =>
-                val (tokens: FifoFixedSizedSet[String], updates: Seq[FifoFixedSizedSet.Effect[String]]) =
-                  tokensBySender(sender).addAll(extractedTokens)
-                val addedTokens: Set[String] = extractedTokens.zip(updates).
-                  collect {
-                    case (token: String, FifoFixedSizedSet.Added()) => token
-                    case (token: String, FifoFixedSizedSet.AddedEvicting(_)) => token
-                  }.
-                  toSet
-                val removedTokens: Set[String] = updates.
-                  collect {
-                    case FifoFixedSizedSet.AddedEvicting(token: String) => token
-                  }.
-                  toSet
-                (
-                  tokensBySender.updated(sender, tokens),
-                  addedTokens -- removedTokens,
-                  removedTokens -- addedTokens
-                )
+            case extractedTokens =>
+              ctx.log.info(s"Extracted tokens ${extractedTokens.mkString("\"", "\", \"", "\"")}")
+              val newChatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens] =
+                chatMessagesAndTokens :+ ChatMessageAndTokens(chatMessage, extractedTokens)
+              val (
+                newTokensBySender: Map[String, FifoFixedSizedSet[String]],
+                addedTokens: Set[String],
+                removedTokens: Set[String]
+                ) = senderOpt match {
+                case Some(sender: String) =>
+                  val (tokens: FifoFixedSizedSet[String], updates: Seq[FifoFixedSizedSet.Effect[String]]) =
+                    tokensBySender(sender).addAll(extractedTokens)
+                  val addedTokens: Set[String] = extractedTokens.zip(updates).
+                    collect {
+                      case (token: String, FifoFixedSizedSet.Added()) => token
+                      case (token: String, FifoFixedSizedSet.AddedEvicting(_)) => token
+                    }.
+                    toSet
+                  val removedTokens: Set[String] = updates.
+                    collect {
+                      case FifoFixedSizedSet.AddedEvicting(token: String) => token
+                    }.
+                    toSet
+                  (
+                    tokensBySender.updated(sender, tokens),
+                    addedTokens -- removedTokens,
+                    removedTokens -- addedTokens
+                  )
 
-              case None => (tokensBySender, extractedTokens.toSet, Set.empty)
-            }
-            val newTokens: MultiSet[String] = addedTokens.
-              foldLeft(
-                removedTokens.foldLeft(tokens) { (accum: MultiSet[String], oldToken: String) =>
-                  accum - oldToken
-                }
-              ) { (accum: MultiSet[String], newToken: String) =>
-                accum + newToken
+                case None => (tokensBySender, extractedTokens.toSet, Set.empty)
               }
+              val newTokens: MultiSet[String] = addedTokens.
+                foldLeft(
+                  removedTokens.foldLeft(tokens) { (accum: MultiSet[String], oldToken: String) =>
+                    accum - oldToken
+                  }
+                ) { (accum: MultiSet[String], newToken: String) =>
+                  accum + newToken
+                }
 
-            (newChatMessagesAndTokens, newTokensBySender, newTokens)
+              (newChatMessagesAndTokens, newTokensBySender, newTokens)
+          }
+
+        for (subscriber: ActorRef[Event] <- subscribers) {
+          subscriber ! Counts(newChatMessagesAndTokens, newTokensBySender, newTokens)
+        }
+        running(newChatMessagesAndTokens, newTokensBySender, newTokens, subscribers, adapter)
+
+      case Reset =>
+        for (subscriber: ActorRef[Event] <- subscribers) {
+          subscriber ! Counts(IndexedSeq(), emptyTokensBySender, MultiSet[String]())
+        }
+        running(IndexedSeq(), emptyTokensBySender, MultiSet[String](), subscribers, adapter)
+
+      case Subscribe(subscriber: ActorRef[Event]) if !subscribers.contains(subscriber) =>
+        ctx.log.info(s"+1 ${ctx.self.path.name} subscriber (=${subscribers.size + 1})")
+        subscriber ! Counts(chatMessagesAndTokens, tokensBySender, tokens)
+        ctx.watchWith(subscriber, Unsubscribe(subscriber))
+        running(chatMessagesAndTokens, tokensBySender, tokens, subscribers + subscriber, adapter)
+
+      case Subscribe(subscriber: ActorRef[Event]) =>
+        ctx.log.warn(s"attempted to subscribe duplicate ${ctx.self.path.name} subscriber - ${subscriber.path}")
+        Behaviors.unhandled
+
+      case Unsubscribe(subscriber: ActorRef[Event]) if subscribers.contains(subscriber) =>
+        ctx.log.info(s"-1 ${ctx.self.path.name} subscriber (=${subscribers.size - 1})")
+        ctx.unwatch(subscriber)
+        val remainingSubscribers: Set[ActorRef[Event]] = subscribers - subscriber
+        if (remainingSubscribers.nonEmpty) {
+          running(chatMessagesAndTokens, tokensBySender, tokens, remainingSubscribers, adapter)
+        } else {
+          ctx.stop(adapter)
+          paused(chatMessagesAndTokens, tokensBySender, tokens)
         }
 
-      for (listener: ActorRef <- listeners) {
-        listener ! Counts(
-          newChatMessagesAndTokens, newTokensBySender, newTokens
-        )
-      }
-      context.become(
-        running(
-          newChatMessagesAndTokens, newTokensBySender, newTokens, listeners
-        )
-      )
-
-    case Reset =>
-      for (listener: ActorRef <- listeners) {
-        listener ! Counts(IndexedSeq(), emptyTokensBySender, MultiSet[String]())
-      }
-      context.become(
-        running(
-          IndexedSeq(), emptyTokensBySender, MultiSet[String](), listeners
-        )
-      )
-
-    case Register(listener: ActorRef) =>
-      listener ! Counts(chatMessagesAndTokens, tokensBySender, tokens)
-      context.watch(listener)
-      context.become(
-        running(
-          chatMessagesAndTokens, tokensBySender, tokens,
-          listeners + listener
-        )
-      )
-      log.info(s"+1 ${self.path.name} listener (=${listeners.size + 1})")
-
-    case Terminated(listener: ActorRef) if listeners.contains(listener) =>
-      val remainingListeners: Set[ActorRef] = listeners - listener
-      if (remainingListeners.nonEmpty) {
-        context.become(
-          running(
-            chatMessagesAndTokens, tokensBySender, tokens,
-            remainingListeners
-          )
-        )
-      } else {
-        chatMessageActor ! ChatMessageActor.Unregister(self)
-        context.become(
-          paused(chatMessagesAndTokens, tokensBySender, tokens)
-        )
-      }
-      log.info(s"-1 ${self.path.name} listener (=${listeners.size - 1})")
+      case Unsubscribe(subscriber: ActorRef[Event]) =>
+        ctx.log.warn(s"attempted to unsubscribe unknown ${ctx.self.path.name} subscriber - ${subscriber.path}")
+        Behaviors.unhandled
+    }
   }
 
-  override def receive: Receive = paused(
+  def initial(): Behavior[Command] =  paused(
     IndexedSeq(), emptyTokensBySender, MultiSet[String]()
   )
 }
