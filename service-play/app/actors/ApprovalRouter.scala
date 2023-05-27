@@ -30,8 +30,14 @@ object ApprovalRouter {
   def apply(
     chatMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command],
     rejectedMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command]
-  ): Behavior[Command] =
-    new ApprovalRouter(chatMessageBroadcaster, rejectedMessageBroadcaster).initial()
+  ): Behavior[Command] = Behaviors.setup { ctx =>
+    new ApprovalRouter(
+      chatMessageBroadcaster, rejectedMessageBroadcaster,
+      ctx.messageAdapter[ChatMessageBroadcaster.Event] {
+        case ChatMessageBroadcaster.New(chatMessage: ChatMessage) => Record(chatMessage)
+      }
+    ).initial()
+  }
 
   /**
    * Publishes broadcast as JSON
@@ -46,30 +52,11 @@ object ApprovalRouter {
       JsonWriter(subscriber)
     }
   }
-
-  /**
-   * Translates [[ChatMessageBroadcaster.Event]]s to [[Event]]s.
-   */
-  private object ChatBroadcastAdapter {
-    private type BroadcastEvent = ChatMessageBroadcaster.Event
-    private type BroadcastCommand = ChatMessageBroadcaster.Command
-
-    def apply(
-      source: ActorRef[BroadcastCommand], destination: ActorRef[Command]
-    ): Behavior[BroadcastEvent] = Behaviors.setup { ctx: ActorContext[BroadcastEvent] =>
-      source ! ChatMessageBroadcaster.Subscribe(ctx.self)
-
-      Behaviors.receive {
-        case (_, ChatMessageBroadcaster.New(chatMessage: ChatMessage)) =>
-          destination ! Record(chatMessage)
-          Behaviors.same
-      }
-    }
-  }
 }
 private class ApprovalRouter(
   chatMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command],
-  rejectedMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command]
+  rejectedMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command],
+  adapter: ActorRef[ChatMessageBroadcaster.Event]
 ) {
   import ApprovalRouter.*
 
@@ -83,10 +70,8 @@ private class ApprovalRouter(
         ctx.log.info(s"+1 ${ctx.self.path.name} subscriber (=1)")
         subscriber ! ChatMessages(text)
         ctx.watchWith(subscriber, Unsubscribe(subscriber))
-        val adapter: ActorRef[ChatMessageBroadcaster.Event] = ctx.spawn(
-          ChatBroadcastAdapter(chatMessageBroadcaster, ctx.self), "adapter"
-        )
-        running(text, Set(subscriber), adapter)
+        chatMessageBroadcaster ! ChatMessageBroadcaster.Subscribe(adapter)
+        running(text, Set(subscriber))
 
       // These are not expected during paused state
       case Record(chatMessage: ChatMessage) =>
@@ -100,8 +85,7 @@ private class ApprovalRouter(
   }
 
   private def running(
-    text: IndexedSeq[String], subscribers: Set[ActorRef[Event]],
-    adapter: ActorRef[ChatMessageBroadcaster.Event]
+    text: IndexedSeq[String], subscribers: Set[ActorRef[Event]]
   ): Behavior[Command] = Behaviors.receive { (ctx: ActorContext[Command], cmd: Command) =>
     cmd match {
       case Record(chatMessage: ChatMessage) =>
@@ -113,20 +97,20 @@ private class ApprovalRouter(
           for (subscriber: ActorRef[Event] <- subscribers) {
             subscriber ! ChatMessages(newText)
           }
-          running(newText, subscribers, adapter)
+          running(newText, subscribers)
         }
 
       case Reset =>
         for (subscriber: ActorRef[Event] <- subscribers) {
           subscriber ! ChatMessages(IndexedSeq())
         }
-        running(IndexedSeq(), subscribers, adapter)
+        running(IndexedSeq(), subscribers)
 
       case Subscribe(subscriber: ActorRef[Event]) if !subscribers.contains(subscriber) =>
         ctx.log.info(s"+1 ${ctx.self.path.name} subscriber (=${subscribers.size + 1})")
         subscriber ! ChatMessages(text)
         ctx.watchWith(subscriber, Unsubscribe(subscriber))
-        running(text, subscribers + subscriber, adapter)
+        running(text, subscribers + subscriber)
 
       case Subscribe(subscriber: ActorRef[Event]) =>
         ctx.log.warn(s"attempted to subscribe duplicate ${ctx.self.path.name} subscriber - ${subscriber.path}")
@@ -137,9 +121,9 @@ private class ApprovalRouter(
         ctx.unwatch(subscriber)
         val remainingSubscribers: Set[ActorRef[Event]] = subscribers - subscriber
         if (remainingSubscribers.nonEmpty) {
-          running(text, remainingSubscribers, adapter)
+          running(text, remainingSubscribers)
         } else {
-          ctx.stop(adapter)
+          chatMessageBroadcaster ! ChatMessageBroadcaster.Unsubscribe(adapter)
           paused(text)
         }
 

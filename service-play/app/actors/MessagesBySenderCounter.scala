@@ -70,8 +70,10 @@ object MessagesBySenderCounter {
   def apply(
     chatMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command]
   ): Behavior[Command] = Behaviors.setup { ctx: ActorContext[Command] =>
-    ctx.spawn(
-      ChatBroadcastAdapter(chatMessageBroadcaster, ctx.self), "adapter"
+    chatMessageBroadcaster ! ChatMessageBroadcaster.Subscribe(
+      ctx.messageAdapter {
+        case ChatMessageBroadcaster.New(chatMessage: ChatMessage) => Record(chatMessage)
+      }
     )
 
     running(MultiSet[String](), Set())
@@ -93,26 +95,6 @@ object MessagesBySenderCounter {
       counter ! Subscribe(rateLimitedCounter)
 
       JsonWriter(subscriber)
-    }
-  }
-
-  /**
-   * Translates [[ChatMessageBroadcaster.Event]]s to [[Event]]s.
-   */
-  private object ChatBroadcastAdapter {
-    private type BroadcastEvent = ChatMessageBroadcaster.Event
-    private type BroadcastCommand = ChatMessageBroadcaster.Command
-
-    def apply(
-      source: ActorRef[BroadcastCommand], destination: ActorRef[Command]
-    ): Behavior[BroadcastEvent] = Behaviors.setup { ctx: ActorContext[BroadcastEvent] =>
-      source ! ChatMessageBroadcaster.Subscribe(ctx.self)
-
-      Behaviors.receive {
-        case (_, ChatMessageBroadcaster.New(chatMessage: ChatMessage)) =>
-          destination ! Record(chatMessage)
-          Behaviors.same
-      }
     }
   }
 }

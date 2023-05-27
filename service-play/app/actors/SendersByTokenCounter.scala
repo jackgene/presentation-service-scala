@@ -61,10 +61,15 @@ object SendersByTokenCounter {
     extractTokens: Tokenizer, tokensPerSender: Int,
     chatMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command],
     rejectedMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command]
-  ): Behavior[Command] =
+  ): Behavior[Command] = Behaviors.setup { ctx =>
     new SendersByTokenCounter(
-      extractTokens, tokensPerSender, chatMessageBroadcaster, rejectedMessageBroadcaster
+      extractTokens, tokensPerSender,
+      chatMessageBroadcaster, rejectedMessageBroadcaster,
+      ctx.messageAdapter[ChatMessageBroadcaster.Event] {
+        case ChatMessageBroadcaster.New(chatMessage: ChatMessage) => Record(chatMessage)
+      }
     ).initial()
+  }
 
   /**
    * Publishes broadcast as JSON - Rate Limited
@@ -84,31 +89,12 @@ object SendersByTokenCounter {
       JsonWriter(subscriber)
     }
   }
-
-  /**
-   * Translates [[ChatMessageBroadcaster.Event]]s to [[Event]]s.
-   */
-  private object ChatBroadcastAdapter {
-    private type BroadcastEvent = ChatMessageBroadcaster.Event
-    private type BroadcastCommand = ChatMessageBroadcaster.Command
-
-    def apply(
-      source: ActorRef[BroadcastCommand], destination: ActorRef[Command]
-    ): Behavior[BroadcastEvent] = Behaviors.setup { ctx: ActorContext[BroadcastEvent] =>
-      source ! ChatMessageBroadcaster.Subscribe(ctx.self)
-
-      Behaviors.receive {
-        case (_, ChatMessageBroadcaster.New(chatMessage: ChatMessage)) =>
-          destination ! Record(chatMessage)
-          Behaviors.same
-      }
-    }
-  }
 }
 private class SendersByTokenCounter(
   extractTokens: Tokenizer, tokensPerSender: Int,
   chatMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command],
-  rejectedMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command]
+  rejectedMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command],
+  adapter: ActorRef[ChatMessageBroadcaster.Event]
 ) {
   import SendersByTokenCounter.*
 
@@ -127,10 +113,8 @@ private class SendersByTokenCounter(
         ctx.log.info(s"+1 ${ctx.self.path.name} subscriber (=1)")
         subscriber ! Counts(chatMessagesAndTokens, tokensBySender, tokens)
         ctx.watchWith(subscriber, Unsubscribe(subscriber))
-        val adapter: ActorRef[ChatMessageBroadcaster.Event] = ctx.spawn(
-          ChatBroadcastAdapter(chatMessageBroadcaster, ctx.self), "adapter"
-        )
-        running(chatMessagesAndTokens, tokensBySender, tokens, Set(subscriber), adapter)
+        chatMessageBroadcaster ! ChatMessageBroadcaster.Subscribe(adapter)
+        running(chatMessagesAndTokens, tokensBySender, tokens, Set(subscriber))
 
       // These are not expected during paused state
       case Record(chatMessage: ChatMessage) =>
@@ -146,7 +130,7 @@ private class SendersByTokenCounter(
   private def running(
     chatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens],
     tokensBySender: Map[String, FifoFixedSizedSet[String]], tokens: MultiSet[String],
-    subscribers: Set[ActorRef[Event]], adapter: ActorRef[ChatMessageBroadcaster.Event]
+    subscribers: Set[ActorRef[Event]]
   ): Behavior[Command] = Behaviors.receive { (ctx: ActorContext[Command], cmd: Command) =>
     cmd match {
       case Record(chatMessage: ChatMessage) =>
@@ -213,19 +197,19 @@ private class SendersByTokenCounter(
         for (subscriber: ActorRef[Event] <- subscribers) {
           subscriber ! Counts(newChatMessagesAndTokens, newTokensBySender, newTokens)
         }
-        running(newChatMessagesAndTokens, newTokensBySender, newTokens, subscribers, adapter)
+        running(newChatMessagesAndTokens, newTokensBySender, newTokens, subscribers)
 
       case Reset =>
         for (subscriber: ActorRef[Event] <- subscribers) {
           subscriber ! Counts(IndexedSeq(), emptyTokensBySender, MultiSet[String]())
         }
-        running(IndexedSeq(), emptyTokensBySender, MultiSet[String](), subscribers, adapter)
+        running(IndexedSeq(), emptyTokensBySender, MultiSet[String](), subscribers)
 
       case Subscribe(subscriber: ActorRef[Event]) if !subscribers.contains(subscriber) =>
         ctx.log.info(s"+1 ${ctx.self.path.name} subscriber (=${subscribers.size + 1})")
         subscriber ! Counts(chatMessagesAndTokens, tokensBySender, tokens)
         ctx.watchWith(subscriber, Unsubscribe(subscriber))
-        running(chatMessagesAndTokens, tokensBySender, tokens, subscribers + subscriber, adapter)
+        running(chatMessagesAndTokens, tokensBySender, tokens, subscribers + subscriber)
 
       case Subscribe(subscriber: ActorRef[Event]) =>
         ctx.log.warn(s"attempted to subscribe duplicate ${ctx.self.path.name} subscriber - ${subscriber.path}")
@@ -236,9 +220,9 @@ private class SendersByTokenCounter(
         ctx.unwatch(subscriber)
         val remainingSubscribers: Set[ActorRef[Event]] = subscribers - subscriber
         if (remainingSubscribers.nonEmpty) {
-          running(chatMessagesAndTokens, tokensBySender, tokens, remainingSubscribers, adapter)
+          running(chatMessagesAndTokens, tokensBySender, tokens, remainingSubscribers)
         } else {
-          ctx.stop(adapter)
+          chatMessageBroadcaster ! ChatMessageBroadcaster.Unsubscribe(adapter)
           paused(chatMessagesAndTokens, tokensBySender, tokens)
         }
 
