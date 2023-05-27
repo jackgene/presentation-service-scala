@@ -14,6 +14,8 @@ import play.api.libs.json.JsValue
 import play.api.libs.streams.ActorFlow
 import play.api.mvc.*
 
+import scala.util.matching.Regex
+
 /**
  * This controller creates an `Action` to handle HTTP requests to the
  * application's home page.
@@ -21,8 +23,8 @@ import play.api.mvc.*
 class MainController (cc: ControllerComponents, cfg: Configuration)
     (implicit system: ActorSystem, mat: Materializer)
     extends AbstractController(cc) {
-  private val RoutePattern = """(.*) to (Everyone|Me)(?: \(Direct Message\))?""".r
-  private val IgnoredRoutePattern = "Me to .*".r
+  private val RoutePattern: Regex = """(.*) to (Everyone|Me)(?: \(Direct Message\))?""".r
+  private val IgnoredRoutePattern: Regex = "Me to .*".r
   private val chatMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command] =
     system.spawn(ChatMessageBroadcaster(), "chat")
   private val rejectedMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command] =
@@ -33,7 +35,7 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
         extractTokens = mappedKeywordsTokenizer(
           cfg.get[Map[String, String]]("presentation.languagePoll.languageByKeyword")
         ),
-        tokensPerSender = 3,
+        tokensPerSender = cfg.get[Int]("presentation.languagePoll.maxVotesPerPerson"),
         chatMessageBroadcaster, rejectedMessageBroadcaster
       ),
       "language-poll"
@@ -45,7 +47,7 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
           cfg.get[Seq[String]]("presentation.wordCloud.stopWords").toSet,
           cfg.get[Int]("presentation.wordCloud.minWordLength")
         ),
-        tokensPerSender = 7,
+        tokensPerSender = cfg.get[Int]("presentation.wordCloud.maxWordsPerPerson"),
         chatMessageBroadcaster, rejectedMessageBroadcaster
       ),
       "word-cloud"
