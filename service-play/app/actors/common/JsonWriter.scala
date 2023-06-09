@@ -6,7 +6,7 @@ import play.api.libs.json.{JsValue, Json, Writes}
 
 /**
  * Receives messages and forwards them to the destination as JSON,
- * converted using the provided implicit JSON [[Writes]].
+ * converted using the provided implicit JSON `Writes`.
  */
 object JsonWriter {
   def apply[T](destination: ActorRef[JsValue])(
