@@ -48051,7 +48051,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$unsafeGo = function ()
 				}),
 			_1: {ctor: '[]'}
 		},
-		'\npackage exhaustiveness\nimport \"strongly-typed-go/exhaustiveness/status\"\n\nfunc DoWork(s status.AccountStatus) string {\n    switch s.(type) {\n    case status.Active: return \"Perform API calls, ...\"\n    case status.Inactive: return \"Skipping processing...\"\n    }\n}\n');
+		'\npackage exhaustiveness\nimport \"strongly-typed-go/exhaustiveness/status\"\n\nfunc DoWork(s status.AccountStatus) string {\n    switch s.(type) {\n    case status.Active: return \"Perform API calls...\"\n    case status.Inactive: return \"Skipping processing...\"\n    }\n}\n');
 	return _elm_lang$core$Native_Utils.update(
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
@@ -48106,7 +48106,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safePython = function 
 		_elm_lang$core$Dict$empty,
 		_elm_lang$core$Dict$empty,
 		{ctor: '[]'},
-		'\nfrom enum import Enum\n\nclass AccountStatus(Enum):\n    Active = 1\n    Inactive = 2\n\ndef do_work(status: AccountStatus):\n    match status:\n        case AccountStatus.Active: print(\"Perform API calls, ...\")\n        case AccountStatus.Inactive: print(\"Skipping...\")\n');
+		'\nfrom enum import Enum\n\nclass AccountStatus(Enum):\n    Active = 1\n    Inactive = 2\n\ndef do_work(status: AccountStatus):\n    match status:\n        case AccountStatus.Active: print(\"Perform API calls...\")\n        case AccountStatus.Inactive: print(\"Skipping...\")\n');
 	return _elm_lang$core$Native_Utils.update(
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
@@ -48220,7 +48220,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safePythonInvalid = fu
 				}),
 			_1: {ctor: '[]'}
 		},
-		'\nfrom enum import Enum\n\nclass AccountStatus(Enum):\n    Active = 1\n    Inactive = 2\n    Terminated = 3\n\ndef do_work(status: AccountStatus):\n    match status:\n        case AccountStatus.Active: print(\"Perform API calls, ...\")\n        case AccountStatus.Inactive: print(\"Skipping...\")\n');
+		'\nfrom enum import Enum\n\nclass AccountStatus(Enum):\n    Active = 1\n    Inactive = 2\n    Terminated = 3\n\ndef do_work(status: AccountStatus):\n    match status:\n        case AccountStatus.Active: print(\"Perform API calls...\")\n        case AccountStatus.Inactive: print(\"Skipping...\")\n');
 	return _elm_lang$core$Native_Utils.update(
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
@@ -48283,7 +48283,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeTypeScript = funct
 		_elm_lang$core$Dict$empty,
 		_elm_lang$core$Dict$empty,
 		{ctor: '[]'},
-		'\nenum AccountStatus {\n  ACTIVE,\n  INACTIVE,\n}\nfunction doWork(status: AccountStatus): string {\n  switch(status) {\n    case AccountStatus.ACTIVE: return \"Perform API calls, ...\";\n    case AccountStatus.INACTIVE: return \"Skipping...\";\n  }\n}\n');
+		'\nenum AccountStatus {\n  ACTIVE,\n  INACTIVE,\n}\nfunction doWork(status: AccountStatus): string {\n  switch(status) {\n    case AccountStatus.ACTIVE: return \"Perform API calls...\";\n    case AccountStatus.INACTIVE: return \"Skipping...\";\n  }\n}\n');
 	return _elm_lang$core$Native_Utils.update(
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
@@ -48367,7 +48367,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeTypeScriptInvalid 
 				}),
 			_1: {ctor: '[]'}
 		},
-		'\nenum AccountStatus {\n  ACTIVE,\n  INACTIVE,\n  TERMINATED,\n}\nfunction doWork(status: AccountStatus): string {\n  switch(status) {\n    case AccountStatus.ACTIVE: return \"Perform API calls, ...\";\n    case AccountStatus.INACTIVE: return \"Skipping...\";\n  }\n}\n');
+		'\nenum AccountStatus {\n  ACTIVE,\n  INACTIVE,\n  TERMINATED,\n}\nfunction doWork(status: AccountStatus): string {\n  switch(status) {\n    case AccountStatus.ACTIVE: return \"Perform API calls...\";\n    case AccountStatus.INACTIVE: return \"Skipping...\";\n  }\n}\n');
 	return _elm_lang$core$Native_Utils.update(
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
@@ -48485,7 +48485,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeScala = function (
 		_elm_lang$core$Dict$empty,
 		_elm_lang$core$Dict$empty,
 		{ctor: '[]'},
-		'\nimport Status._\nimport Membership._\n\ndef doWork(status: Status, membership: Membership): String =\n  (status, membership) match\n    case (Active, Basic) => \"Perform basic API calls, ...\"\n    case (Active, Premium) => \"Perform premium API calls, ...\"\n    case (Inactive, Basic) => \"Skipping...\"\n    case (Inactive, Premium) => \"Skipping...\"\n');
+		'\nimport Status._\nimport Membership._\n\ndef doWork(status: Status, membership: Membership): String =\n  (status, membership) match\n    case (Active, Basic) => \"Perform basic API calls...\"\n    case (Active, Premium) => \"Perform premium API calls...\"\n    case (Inactive, Basic) => \"Skipping...\"\n    case (Inactive, Premium) => \"Skipping...\"\n');
 	return _elm_lang$core$Native_Utils.update(
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
@@ -48595,7 +48595,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeScalaInvalid = fun
 				}),
 			_1: {ctor: '[]'}
 		},
-		'\nimport Status._\nimport Membership._\n\ndef doWork(status: Status, membership: Membership): String =\n  (status, membership) match\n    case (Active, Basic) => \"Perform basic API calls, ...\"\n    case (Active, Premium) => \"Perform premium API calls, ...\"\n    case (Inactive, Basic) => \"Skipping...\"\n    case (Inactive, Premium) => \"Skipping...\"\n');
+		'\nimport Status._\nimport Membership._\n\ndef doWork(status: Status, membership: Membership): String =\n  (status, membership) match\n    case (Active, Basic) => \"Perform basic API calls...\"\n    case (Active, Premium) => \"Perform premium API calls...\"\n    case (Inactive, Basic) => \"Skipping...\"\n    case (Inactive, Premium) => \"Skipping...\"\n');
 	return _elm_lang$core$Native_Utils.update(
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
