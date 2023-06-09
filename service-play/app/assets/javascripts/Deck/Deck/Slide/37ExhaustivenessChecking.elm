@@ -350,8 +350,8 @@ import Membership._
 
 def doWork(status: Status, membership: Membership): String =
   (status, membership) match
-    case (Active, Basic) => "Perform MyRx API calls, ..."
-    case (Active, Premium) => "Perform Gold API calls, ..."
+    case (Active, Basic) => "Perform basic API calls, ..."
+    case (Active, Premium) => "Perform premium API calls, ..."
     case (Inactive, Basic) => "Skipping..."
     case (Inactive, Premium) => "Skipping..."
 """
@@ -393,8 +393,8 @@ import Membership._
 
 def doWork(status: Status, membership: Membership): String =
   (status, membership) match
-    case (Active, Basic) => "Perform MyRx API calls, ..."
-    case (Active, Premium) => "Perform Gold API calls, ..."
+    case (Active, Basic) => "Perform basic API calls, ..."
+    case (Active, Premium) => "Perform premium API calls, ..."
     case (Inactive, Basic) => "Skipping..."
     case (Inactive, Premium) => "Skipping..."
 """
@@ -437,8 +437,8 @@ import Membership._
 
 def doWork(status: Status, membership: Membership): String =
   (status, membership) match
-    case (Active, Basic) => "Perform MyRx API calls, ..."
-    case (Active, Premium) => "Perform Gold API calls, ..."
+    case (Active, Basic) => "Perform basic API calls..."
+    case (Active, Premium) => "Perform premium API calls..."
     case (Inactive, Basic) => "Skipping..."
     case (Inactive, _) => "Skipping..."
 """
@@ -471,7 +471,7 @@ enum class AccountStatus {
 
 fun doWork(status: AccountStatus): String =
     when(status) {
-        AccountStatus.Active -> "Perform API calls, ..."
+        AccountStatus.Active -> "Perform API calls..."
         AccountStatus.Inactive -> "Skipping..."
     }
 """
@@ -516,7 +516,7 @@ enum class AccountStatus {
 
 fun doWork(status: AccountStatus): String =
     when(status) {
-        AccountStatus.Active -> "Perform API calls, ..."
+        AccountStatus.Active -> "Perform API calls..."
         AccountStatus.Inactive -> "Skipping..."
     }
 """
@@ -579,8 +579,8 @@ safeSwift =
       """
 func doWork(status: Status, membership: Membership) -> String {
     switch (status, membership) {
-    case (.active, .basic): return "Perform MyRx API calls, ..."
-    case (.active, .premium): return "Perform Gold API calls, ..."
+    case (.active, .basic): return "Perform basic API calls..."
+    case (.active, .premium): return "Perform premium API calls..."
     case (.inactive, .basic): return "Skipping..."
     case (.inactive, .premium): return "Skipping..."
     }
@@ -622,8 +622,8 @@ safeSwiftInvalid =
       """
 func doWork(status: Status, membership: Membership) -> String {
     switch (status, membership) {
-    case (.active, .basic): return "Perform MyRx API calls, ..."
-    case (.active, .premium): return "Perform Gold API calls, ..."
+    case (.active, .basic): return "Perform basic API calls..."
+    case (.active, .premium): return "Perform premium API calls..."
     case (.inactive, .basic): return "Skipping..."
     case (.inactive, .premium): return "Skipping..."
     }
@@ -660,8 +660,8 @@ safeSwiftAlt =
       """
 func doWork(status: Status, membership: Membership) -> String {
     switch (status, membership) {
-    case (.active, .basic): return "Perform MyRx API calls, ..."
-    case (.active, .premium): return "Perform Gold API calls, ..."
+    case (.active, .basic): return "Perform basic API calls..."
+    case (.active, .premium): return "Perform premium API calls..."
     case (.inactive, .basic): return "Skipping..."
     case (.inactive, _): return "Skipping..."
     }
