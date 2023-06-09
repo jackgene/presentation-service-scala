@@ -60,7 +60,8 @@ elmMakeDeck := {
   import com.typesafe.sbt.web.LineBasedProblem
   import play.sbt.PlayExceptions.CompilationException
 
-  val outputPath: String = "public/html/deck.html"
+  val baseDir: File = file(baseDirectory.value.getName)
+  val output: File = baseDir / "public" / "html" / "deck.html"
   val debugFlag: String = "--debug"
   var outErrLines: List[String] = Nil
   var srcFilePath: Option[String] = None
@@ -69,10 +70,10 @@ elmMakeDeck := {
   Seq(
     "bash", "-c",
     "elm-make " +
-      (file("app/assets/javascripts/Deck") ** "*.elm").get.mkString(" ") +
+      ((baseDir / "app" / "assets" / "javascripts" / "Deck") ** "*.elm").get.mkString(" ") +
       " " +
-      (file("app/assets/javascripts/SyntaxHighlight") ** "*.elm").get.mkString(" ") +
-      s" --output ${outputPath} " +
+      ((baseDir / "app" / "assets" / "javascripts" / "SyntaxHighlight") ** "*.elm").get.mkString(" ") +
+      s" --output ${output} " +
       s"--yes ${debugFlag} --warn"
   ).!(
     new ProcessLogger {
@@ -103,8 +104,8 @@ elmMakeDeck := {
   ) match {
     case 0 =>
       streams.value.log.success("elm-make (for Deck) completed.")
-      //      file(outputPath) +: (file("elm-stuff/build-artifacts") ** "*").get()
-      Seq(file(outputPath))
+      //      output +: (file("elm-stuff/build-artifacts") ** "*").get()
+      Seq(output)
 
     case 127 =>
       streams.value.log.warn("elm-make not found in PATH. Skipping Elm build.")
@@ -134,7 +135,8 @@ elmMakeModerator := {
   import com.typesafe.sbt.web.LineBasedProblem
   import play.sbt.PlayExceptions.CompilationException
 
-  val outputPath: String = "public/html/moderator.html"
+  val baseDir: File = file(baseDirectory.value.getName)
+  val output: File = baseDir / "public" / "html" / "moderator.html"
   val debugFlag: String =
     if (sys.props.getOrElse("elm.debug", "false").toLowerCase != "true") ""
     else "--debug"
@@ -145,8 +147,8 @@ elmMakeModerator := {
   Seq(
     "bash", "-c",
     "elm-make " +
-    (file("app/assets/javascripts/Moderator") ** "*.elm").get.mkString(" ") +
-    s" --output ${outputPath} " +
+    ((baseDir / "app" / "assets" / "javascripts" / "Moderator") ** "*.elm").get.mkString(" ") +
+    s" --output ${output} " +
     s"--yes ${debugFlag} --warn"
   ).!(
     new ProcessLogger {
@@ -177,8 +179,8 @@ elmMakeModerator := {
   ) match {
     case 0 =>
       streams.value.log.success("elm-make (for Moderator) completed.")
-//      file(outputPath) +: (file("elm-stuff/build-artifacts") ** "*").get()
-      Seq(file(outputPath))
+//      output +: (file("elm-stuff/build-artifacts") ** "*").get()
+      Seq(output)
 
     case 127 =>
       streams.value.log.warn("elm-make not found in PATH. Skipping Elm build.")
@@ -208,7 +210,8 @@ elmMakeTranscriber := {
   import com.typesafe.sbt.web.LineBasedProblem
   import play.sbt.PlayExceptions.CompilationException
 
-  val outputPath: String = "public/html/transcriber.html"
+  val baseDir: File = file(baseDirectory.value.getName)
+  val output: File = baseDir / "public" / "html" / "transcriber.html"
   val debugFlag: String =
     if (sys.props.getOrElse("elm.debug", "false").toLowerCase != "true") ""
     else "--debug"
@@ -216,11 +219,12 @@ elmMakeTranscriber := {
   var srcFilePath: Option[String] = None
   var lineNum: Option[String] = None
   var offset: Option[String] = None
+
   Seq(
     "bash", "-c",
     "elm-make " +
-      (file("app/assets/javascripts/Transcriber") ** "*.elm").get.mkString(" ") +
-      s" --output ${outputPath} " +
+      ((baseDir / "app" / "assets" / "javascripts" / "Transcriber") ** "*.elm").get.mkString(" ") +
+      s" --output ${output} " +
       s"--yes ${debugFlag} --warn"
   ).!(
     new ProcessLogger {
@@ -251,8 +255,8 @@ elmMakeTranscriber := {
   ) match {
     case 0 =>
       streams.value.log.success("elm-make (for Transcriber) completed.")
-      //      file(outputPath) +: (file("elm-stuff/build-artifacts") ** "*").get()
-      Seq(file(outputPath))
+      //      output +: (file("elm-stuff/build-artifacts") ** "*").get()
+      Seq(output)
 
     case 127 =>
       streams.value.log.warn("elm-make not found in PATH. Skipping Elm build.")
