@@ -116,7 +116,7 @@ import "strongly-typed-go/exhaustiveness/status"
 
 func DoWork(s status.AccountStatus) string {
     switch s.(type) {
-    case status.Active: return "Perform API calls, ..."
+    case status.Active: return "Perform API calls..."
     case status.Inactive: return "Skipping processing..."
     }
 }
@@ -154,7 +154,7 @@ class AccountStatus(Enum):
 
 def do_work(status: AccountStatus):
     match status:
-        case AccountStatus.Active: print("Perform API calls, ...")
+        case AccountStatus.Active: print("Perform API calls...")
         case AccountStatus.Inactive: print("Skipping...")
 """
   in
@@ -203,7 +203,7 @@ class AccountStatus(Enum):
 
 def do_work(status: AccountStatus):
     match status:
-        case AccountStatus.Active: print("Perform API calls, ...")
+        case AccountStatus.Active: print("Perform API calls...")
         case AccountStatus.Inactive: print("Skipping...")
 """
   in
@@ -239,7 +239,7 @@ enum AccountStatus {
 }
 function doWork(status: AccountStatus): string {
   switch(status) {
-    case AccountStatus.ACTIVE: return "Perform API calls, ...";
+    case AccountStatus.ACTIVE: return "Perform API calls...";
     case AccountStatus.INACTIVE: return "Skipping...";
   }
 }
@@ -282,7 +282,7 @@ enum AccountStatus {
 }
 function doWork(status: AccountStatus): string {
   switch(status) {
-    case AccountStatus.ACTIVE: return "Perform API calls, ...";
+    case AccountStatus.ACTIVE: return "Perform API calls...";
     case AccountStatus.INACTIVE: return "Skipping...";
   }
 }
@@ -350,8 +350,8 @@ import Membership._
 
 def doWork(status: Status, membership: Membership): String =
   (status, membership) match
-    case (Active, Basic) => "Perform basic API calls, ..."
-    case (Active, Premium) => "Perform premium API calls, ..."
+    case (Active, Basic) => "Perform basic API calls..."
+    case (Active, Premium) => "Perform premium API calls..."
     case (Inactive, Basic) => "Skipping..."
     case (Inactive, Premium) => "Skipping..."
 """
@@ -393,8 +393,8 @@ import Membership._
 
 def doWork(status: Status, membership: Membership): String =
   (status, membership) match
-    case (Active, Basic) => "Perform basic API calls, ..."
-    case (Active, Premium) => "Perform premium API calls, ..."
+    case (Active, Basic) => "Perform basic API calls..."
+    case (Active, Premium) => "Perform premium API calls..."
     case (Inactive, Basic) => "Skipping..."
     case (Inactive, Premium) => "Skipping..."
 """

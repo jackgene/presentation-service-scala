@@ -233,6 +233,10 @@ elmMakeTranscriber := {
 
 Assets / sourceGenerators += elmMakeTranscriber.taskValue
 
+(Compile / stage) := (
+  (Compile / stage) dependsOn (elmMakeDeck, elmMakeModerator, elmMakeTranscriber)
+).value
+
 // Docker configuration
 import com.typesafe.sbt.packager.docker.DockerChmodType
 import com.typesafe.sbt.packager.docker.DockerPermissionStrategy
