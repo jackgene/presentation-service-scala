@@ -266,6 +266,7 @@ unindexedSlideModels =
       , errorPreventionReport "Scala"
       , errorPreventionReport "Kotlin"
       , errorPreventionReport "Swift"
+      , errorPreventionReport "Elm"
       , Just Conclusion.introduction
       , Just Conclusion.enableStricterTypeChecking
       , Just Conclusion.codeGeneration
