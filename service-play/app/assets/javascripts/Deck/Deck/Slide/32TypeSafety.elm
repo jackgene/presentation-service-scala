@@ -32,9 +32,6 @@ import SyntaxHighlight.Model exposing
 heading : String
 heading = TypeSystemProperties.heading ++ ": Type Safety"
 
-subheadingElm : String
-subheadingElm = "Elm Is Type Safe"
-
 subheadingGo : String
 subheadingGo = "Go Is Type Safe"
 
@@ -52,6 +49,9 @@ subheadingKotlin = "Kotlin Is Type Safe"
 
 subheadingSwift : String
 subheadingSwift = "Swift Is Type Safe"
+
+subheadingElm : String
+subheadingElm = "Elm Is Type Safe"
 
 
 -- Slides
