@@ -1,7 +1,7 @@
 module Deck.Slide.Graphics exposing
   ( coverBackgroundGraphic, numberedDisc
   , logosByLanguage
-  , languageGoLogo, languageKotlinLogo, languagePythonLogo
+  , languageElmLogo, languageGoLogo, languageKotlinLogo, languagePythonLogo
   , languageScalaLogo, languageSwiftLogo, languageTypeScriptLogo
   )
 
