@@ -86,7 +86,7 @@ unindexedSlideModels =
       , Just (TypeSystemProperties.tableOfContent (Just 0))
       , Just TypeSafety.introduction
       , unindexedSlideModelForLang "Go" TypeSafety.safeGo
-      , unindexedSlideModelForLang "Go" TypeSafety.invalidSafeGo 
+      , unindexedSlideModelForLang "Go" TypeSafety.invalidSafeGo
       , unindexedSlideModelForLang "Go" TypeSafety.invalidUnsafeGo 
       , unindexedSlideModelForLang "Go" TypeSafety.unsafeGo 
       , unindexedSlideModelForLang "Python" TypeSafety.safePython 
@@ -113,6 +113,10 @@ unindexedSlideModels =
       , unindexedSlideModelForLang "Swift" TypeSafety.invalidSafeSwift 
       , unindexedSlideModelForLang "Swift" TypeSafety.invalidUnsafeSwift 
       , unindexedSlideModelForLang "Swift" TypeSafety.unsafeSwift 
+      , unindexedSlideModelForLang "Elm" TypeSafety.safeElm
+      , unindexedSlideModelForLang "Elm" TypeSafety.invalidSafeElm1
+      , unindexedSlideModelForLang "Elm" TypeSafety.invalidSafeElm2
+      , unindexedSlideModelForLang "Elm" TypeSafety.unsafeElm
       , Just (TypeSystemProperties.languageReport 0)
 
       , Just (TypeSystemProperties.tableOfContent (Just 1))

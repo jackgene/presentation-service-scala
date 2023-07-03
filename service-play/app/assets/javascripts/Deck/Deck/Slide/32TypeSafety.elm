@@ -7,6 +7,7 @@ module Deck.Slide.TypeSafety exposing
   , safeScala, invalidSafeScala, invalidUnsafeScala, unsafeScala
   , safeKotlin, invalidSafeKotlin, invalidUnsafeKotlin, unsafeKotlin
   , safeSwift, invalidSafeSwift, invalidUnsafeSwift, unsafeSwift
+  , safeElm, invalidSafeElm1, invalidSafeElm2, unsafeElm
   )
 
 import Css exposing
@@ -21,7 +22,7 @@ import Deck.Slide.SyntaxHighlight exposing (..)
 import Deck.Slide.Template exposing (standardSlideView)
 import Deck.Slide.TypeSystemProperties as TypeSystemProperties
 import Dict exposing (Dict)
-import Html.Styled exposing (Html, div, em, p, text)
+import Html.Styled exposing (Html, code, div, em, p, text, u)
 import Html.Styled.Attributes exposing (css)
 import SyntaxHighlight.Model exposing
   ( ColumnEmphasis, ColumnEmphasisType(..), LineEmphasis(..) )
@@ -30,6 +31,9 @@ import SyntaxHighlight.Model exposing
 -- Constants
 heading : String
 heading = TypeSystemProperties.heading ++ ": Type Safety"
+
+subheadingElm : String
+subheadingElm = "Elm Is Type Safe"
 
 subheadingGo : String
 subheadingGo = "Go Is Type Safe"
@@ -115,7 +119,7 @@ invalidSafeGo =
     codeBlock =
       syntaxHighlightedCodeBlock Go
       ( Dict.fromList [ (6, Deletion), (7, Addition) ] )
-      ( Dict.fromList [ (7, [ ColumnEmphasis Error 31 4,  ColumnEmphasis Error 37 4 ] ) ] )
+      ( Dict.fromList [ (7, [ ColumnEmphasis Error 31 4, ColumnEmphasis Error 37 4 ] ) ] )
       [ CodeBlockError 7 23
         [ div []
           [ text """cannot use "42" (type untyped string) as type float64 in argument to Multiply""" ]
@@ -519,7 +523,7 @@ invalidSafeTypeScript =
     codeBlock =
       syntaxHighlightedCodeBlock TypeScript
       ( Dict.fromList [ (4, Deletion), (5, Addition) ] )
-      ( Dict.fromList [ (5, [ ColumnEmphasis Error 33 4,  ColumnEmphasis Error 39 4 ] ) ] )
+      ( Dict.fromList [ (5, [ ColumnEmphasis Error 33 4, ColumnEmphasis Error 39 4 ] ) ] )
       [ CodeBlockError 5 19
         [ div []
           [ text "TS2345: Argument of type 'string' is not assignable to parameter of type 'number'." ]
@@ -697,7 +701,7 @@ invalidSafeScala =
     codeBlock =
       syntaxHighlightedCodeBlock Scala
       ( Dict.fromList [ (2, Deletion), (3, Addition) ] )
-      ( Dict.fromList [ (3, [ ColumnEmphasis Error 31 4,  ColumnEmphasis Error 37 4 ] ) ] )
+      ( Dict.fromList [ (3, [ ColumnEmphasis Error 31 4, ColumnEmphasis Error 37 4 ] ) ] )
       [ CodeBlockError 3 29
         [ div []
           [ text """Found:    ("42" : String)""" ]
@@ -840,7 +844,7 @@ invalidSafeKotlin =
     codeBlock =
       syntaxHighlightedCodeBlock Kotlin
       ( Dict.fromList [ (2, Deletion), (3, Addition) ] )
-      ( Dict.fromList [ (3, [ ColumnEmphasis Error 31 4,  ColumnEmphasis Error 37 4 ] ) ] )
+      ( Dict.fromList [ (3, [ ColumnEmphasis Error 31 4, ColumnEmphasis Error 37 4 ] ) ] )
       [ CodeBlockError 3 29
         [ div []
           [ text "type mismatch: inferred type is String but Double was expected" ]
@@ -984,7 +988,7 @@ invalidSafeSwift =
     codeBlock =
       syntaxHighlightedCodeBlock Swift
       ( Dict.fromList [ (4, Deletion), (5, Addition) ] )
-      ( Dict.fromList [ (5, [ ColumnEmphasis Error 31 4,  ColumnEmphasis Error 37 4 ] ) ] )
+      ( Dict.fromList [ (5, [ ColumnEmphasis Error 31 4, ColumnEmphasis Error 37 4 ] ) ] )
       [ CodeBlockError 5 25
         [ div []
           [ text "cannot convert value of type 'String' to expected argument type 'Double'" ]
@@ -1087,6 +1091,174 @@ let product: Double? = multiply("42", true)
           [ text "Defeating Swift's type safety takes effort:" ]
         , div [] [] -- Skip transition animation
         , div [] [ codeBlock ]
+        ]
+      )
+    )
+  }
+
+
+safeElm : UnindexedSlideModel
+safeElm =
+  let
+    codeBlock : Html msg
+    codeBlock =
+      syntaxHighlightedCodeBlock Elm Dict.empty Dict.empty []
+      """
+module TypeSafety exposing (..)
+
+multiply : Float -> Float -> Float
+multiply num1 num2 = num1 * num2
+
+product : Float
+product = multiply 42 2.718
+"""
+  in
+  { baseSlideModel
+  | view =
+    ( \page _ ->
+      standardSlideView page heading subheadingElm
+      ( div []
+        [ p []
+          [ text "Function parameters and return values "
+          , em [] [ text "must " ]
+          , text "have declared types, and must be called with those types:" ]
+        , div [] [ codeBlock ]
+        ]
+      )
+    )
+  }
+
+
+invalidSafeElm1 : UnindexedSlideModel
+invalidSafeElm1 =
+  let
+    codeBlock : Html msg
+    codeBlock =
+      syntaxHighlightedCodeBlock Elm
+      ( Dict.fromList [ (6, Deletion), (7, Addition) ] )
+      ( Dict.fromList [ (7, [ ColumnEmphasis Error 19 4, ColumnEmphasis Error 24 4 ] ) ] )
+      [ CodeBlockError 7 20
+        [ div []
+          [ text "The 1st argument to "
+          , code [] [ text "multiply" ]
+          , text " is not what I expect:"
+          ]
+        , div [] [ text "This argument is a string of type: String" ]
+        , div []
+          [ text "But "
+          , code [] [ text "multiply" ]
+          , text " needs the 1st argument to be: Float"
+          ]
+        , div []
+          [ u [] [ text "Hint" ]
+          , text ": Want to convert a String into a Float? Use the "
+          , code [] [ text "String.toFloat" ]
+          , text " function!"
+          ]
+        ]
+      ]
+      """
+module TypeSafety exposing (..)
+
+multiply : Float -> Float -> Float
+multiply num1 num2 = num1 * num2
+
+product : Float
+product = multiply 42 2.718
+product = multiply "42" True
+\xAD
+\xAD
+\xAD
+\xAD
+"""
+  in
+  { baseSlideModel
+  | view =
+    ( \page _ ->
+      standardSlideView page heading subheadingElm
+      ( div []
+        [ p []
+          [ text "Compilation fails if a function is called with non-matching parameter types:" ]
+        , div [] [ codeBlock ]
+        ]
+      )
+    )
+  }
+
+
+invalidSafeElm2 : UnindexedSlideModel
+invalidSafeElm2 =
+  let
+    codeBlock : Html msg
+    codeBlock =
+      syntaxHighlightedCodeBlock Elm
+      ( Dict.fromList [ (6, Deletion), (7, Addition) ] )
+      ( Dict.fromList [ (7, [ ColumnEmphasis Error 19 4, ColumnEmphasis Error 24 4 ] ) ] )
+      [ CodeBlockError 7 25
+        [ div []
+          [ text "The 2nd argument to "
+          , code [] [ text "multiply" ]
+          , text " is not what I expect:"
+          ]
+        , div []
+          [ text "This "
+          , code [] [ text "True" ]
+          , text " value is a: Bool"
+          ]
+        , div []
+          [ text "But "
+          , code [] [ text "multiply" ]
+          , text " needs the 2nd argument to be: Float"
+          ]
+        , div []
+          [ u [] [ text "Hint" ]
+          , text ": ..."
+          ]
+        ]
+      ]
+      """
+module TypeSafety exposing (..)
+
+multiply : Float -> Float -> Float
+multiply num1 num2 = num1 * num2
+
+product : Float
+product = multiply 42 2.718
+product = multiply "42" True
+\xAD
+\xAD
+\xAD
+\xAD
+"""
+  in
+  { baseSlideModel
+  | view =
+    ( \page _ ->
+      standardSlideView page heading subheadingElm
+      ( div []
+        [ p []
+          [ text "Compilation fails if a function is called with non-matching parameter types:" ]
+        , div [] [ codeBlock ]
+        ]
+      )
+    )
+  }
+
+
+unsafeElm : UnindexedSlideModel
+unsafeElm =
+  { baseSlideModel
+  | view =
+    ( \page _ ->
+      standardSlideView page heading subheadingElm
+      ( div []
+        [ p []
+          [ text "Elm does not have a top/universal type (like an "
+          , syntaxHighlightedCodeSnippet Elm "any"
+          , text " in other languages) as such you cannot defeat type safety in it."
+          ]
+        , p []
+          [ text "In that respect, you could argue that Elm is the only truly type-safe language in this list: The only language that deserves a 1.0 lower-bound score." ]
         ]
       )
     )
