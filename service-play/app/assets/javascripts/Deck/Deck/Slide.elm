@@ -240,6 +240,9 @@ unindexedSlideModels =
       , unindexedSlideModelForLang "Swift" ExhaustivenessChecking.safeSwift 
       , unindexedSlideModelForLang "Swift" ExhaustivenessChecking.safeSwiftInvalid 
       , unindexedSlideModelForLang "Swift" ExhaustivenessChecking.safeSwiftAlt 
+      , unindexedSlideModelForLang "Elm" ExhaustivenessChecking.safeElm
+      , unindexedSlideModelForLang "Elm" ExhaustivenessChecking.safeElmInvalid
+      , unindexedSlideModelForLang "Elm" ExhaustivenessChecking.safeElmAlt
       , Just (TypeSystemProperties.languageReport 5)
 
       , Just (TypeSystemProperties.tableOfContent (Just 6))
