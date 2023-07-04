@@ -141,13 +141,18 @@ unindexedSlideModels =
       , unindexedSlideModelForLang "Swift" NullSafety.safeSwiftNullable 
       , unindexedSlideModelForLang "Swift" NullSafety.safeSwiftNullableFun 
       , unindexedSlideModelForLang "Swift" NullSafety.unsafeSwift 
+      , unindexedSlideModelForLang "Elm" NullSafety.safeElmNonNull
+      , unindexedSlideModelForLang "Elm" NullSafety.safeElmNullableInvalid
+      , unindexedSlideModelForLang "Elm" NullSafety.safeElmNullable
+      , unindexedSlideModelForLang "Elm" NullSafety.safeElmNullableFun
+      , unindexedSlideModelForLang "Elm" NullSafety.unsafeElm
       , Just (TypeSystemProperties.languageReport 1)
 
       , Just (TypeSystemProperties.tableOfContent (Just 2))
       , Just SafeArrayAccess.introduction
       , unindexedSlideModelForLang "Go" SafeArrayAccess.unsafeGo 
       , unindexedSlideModelForLang "Go" SafeArrayAccess.unsafeGoRun 
-      , unindexedSlideModelForLang "Python" SafeArrayAccess.unsafePython 
+      , unindexedSlideModelForLang "Python" SafeArrayAccess.unsafePython
       , unindexedSlideModelForLang "Python" SafeArrayAccess.safePython 
       , unindexedSlideModelForLang "TypeScript" SafeArrayAccess.unsafeTypeScript 
       , unindexedSlideModelForLang "TypeScript" SafeArrayAccess.safeTypeScriptInvalid 
