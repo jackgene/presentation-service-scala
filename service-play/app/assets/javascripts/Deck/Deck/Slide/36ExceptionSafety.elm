@@ -1056,7 +1056,6 @@ safeElmInvalid =
       ( Dict.fromList [ (7, [ ColumnEmphasis Error 10 4 ] ) ] )
       [ CodeBlockError 5 16
         [ div []
-        [ div []
           [ text "This "
           , code [] [ text "case" ]
           , text " does not have branches for all possibilities:"
@@ -1072,7 +1071,6 @@ safeElmInvalid =
           [ u [] [ text "Hint" ]
           , text ": ..."
           ]
-        ]
         ]
       ]
       """
