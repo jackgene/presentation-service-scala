@@ -248,12 +248,14 @@ unindexedSlideModels =
       , Just (TypeSystemProperties.tableOfContent (Just 6))
       , Just Encapsulation.introduction
       , unindexedSlideModelForLang "Go" Encapsulation.safeGoPrep 
-      , unindexedSlideModelForLang "Go" Encapsulation.safeGo 
-      , unindexedSlideModelForLang "Python" Encapsulation.safePython 
-      , unindexedSlideModelForLang "TypeScript" Encapsulation.safeTypeScript 
-      , unindexedSlideModelForLang "Scala" Encapsulation.safeScala 
-      , unindexedSlideModelForLang "Kotlin" Encapsulation.safeKotlin 
-      , unindexedSlideModelForLang "Swift" Encapsulation.safeSwift 
+      , unindexedSlideModelForLang "Go" Encapsulation.safeGoInvalid
+      , unindexedSlideModelForLang "Python" Encapsulation.safePythonInvalid
+      , unindexedSlideModelForLang "TypeScript" Encapsulation.safeTypeScriptInvalid
+      , unindexedSlideModelForLang "Scala" Encapsulation.safeScalaInvalid
+      , unindexedSlideModelForLang "Kotlin" Encapsulation.safeKotlinInvalid
+      , unindexedSlideModelForLang "Swift" Encapsulation.safeSwiftInvalid
+      , unindexedSlideModelForLang "Elm" Encapsulation.safeElmPrep
+      , unindexedSlideModelForLang "Elm" Encapsulation.safeElmInvalid
       , Just (TypeSystemProperties.languageReport 6)
 
       , Just (TypeSystemProperties.tableOfContent (Just 7))
