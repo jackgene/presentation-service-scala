@@ -163,6 +163,8 @@ unindexedSlideModels =
       , unindexedSlideModelForLang "Kotlin" SafeArrayAccess.safeKotlin 
       , unindexedSlideModelForLang "Swift" SafeArrayAccess.unsafeSwift 
       , unindexedSlideModelForLang "Swift" SafeArrayAccess.safeSwift 
+      , unindexedSlideModelForLang "Elm" SafeArrayAccess.safeElm
+      , unindexedSlideModelForLang "Elm" SafeArrayAccess.unsafeElm
       , Just (TypeSystemProperties.languageReport 2)
 
       , Just (TypeSystemProperties.tableOfContent (Just 3))
