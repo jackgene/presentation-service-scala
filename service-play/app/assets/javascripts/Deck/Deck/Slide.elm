@@ -191,6 +191,7 @@ unindexedSlideModels =
       , unindexedSlideModelForLang "Kotlin" SafeTypeConversion.unsafeKotlin 
       , unindexedSlideModelForLang "Swift" SafeTypeConversion.safeSwift 
       , unindexedSlideModelForLang "Swift" SafeTypeConversion.unsafeSwift 
+      , unindexedSlideModelForLang "Elm" SafeTypeConversion.safeElm
       , Just (TypeSystemProperties.languageReport 3)
 
       , Just (TypeSystemProperties.tableOfContent (Just 4))
