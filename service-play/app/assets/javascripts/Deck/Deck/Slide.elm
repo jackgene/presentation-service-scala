@@ -218,6 +218,8 @@ unindexedSlideModels =
       , unindexedSlideModelForLang "Swift" ExceptionSafety.unsafeSwift 
       , unindexedSlideModelForLang "Swift" ExceptionSafety.safeSwiftMonadic 
       , unindexedSlideModelForLang "Swift" ExceptionSafety.safeSwiftMonadicInvalid 
+      , unindexedSlideModelForLang "Elm" ExceptionSafety.safeElm
+      , unindexedSlideModelForLang "Elm" ExceptionSafety.safeElmInvalid
       , Just (TypeSystemProperties.languageReport 4)
 
       , Just (TypeSystemProperties.tableOfContent (Just 5))
