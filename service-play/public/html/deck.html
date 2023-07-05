@@ -52006,8 +52006,23 @@ var _jackgene$live_deck$Deck_Slide_Immutability$safeElmInvalid = function () {
 									{ctor: '[]'},
 									{
 										ctor: '::',
-										_0: _rtfeldman$elm_css$Html_Styled$text('Elm has no concept of mutability. No syntax for mutating state:'),
-										_1: {ctor: '[]'}
+										_0: _rtfeldman$elm_css$Html_Styled$text('In contrast to some languages that have no concept of immutability, '),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_rtfeldman$elm_css$Html_Styled$i,
+												{ctor: '[]'},
+												{
+													ctor: '::',
+													_0: _rtfeldman$elm_css$Html_Styled$text('Elm has no concept of mutability, no syntax for mutating state'),
+													_1: {ctor: '[]'}
+												}),
+											_1: {
+												ctor: '::',
+												_0: _rtfeldman$elm_css$Html_Styled$text(':'),
+												_1: {ctor: '[]'}
+											}
+										}
 									}),
 								_1: {
 									ctor: '::',
@@ -52026,21 +52041,14 @@ var _jackgene$live_deck$Deck_Slide_Immutability$safeElmInvalid = function () {
 											{ctor: '[]'},
 											{
 												ctor: '::',
-												_0: _rtfeldman$elm_css$Html_Styled$text('Note the error: The compiler does not consider this mutating a variable. It sees it as declaring a value twice.'),
-												_1: {ctor: '[]'}
-											}),
-										_1: {
-											ctor: '::',
-											_0: A2(
-												_rtfeldman$elm_css$Html_Styled$p,
-												{ctor: '[]'},
-												{
+												_0: _rtfeldman$elm_css$Html_Styled$text('State mutation happens external to an Elm application, or within the framework. '),
+												_1: {
 													ctor: '::',
-													_0: _rtfeldman$elm_css$Html_Styled$text('Also, when using records, fields cannot be mutated. Instead, Elm provides syntax for creating copies of records, with certain fields updated.'),
+													_0: _rtfeldman$elm_css$Html_Styled$text('This eliminates classes of problems related to mutable data, freeing the programmer to focus on solving application problems.'),
 													_1: {ctor: '[]'}
-												}),
-											_1: {ctor: '[]'}
-										}
+												}
+											}),
+										_1: {ctor: '[]'}
 									}
 								}
 							}));
