@@ -1,13 +1,13 @@
 module Deck.Slide.TypeSafety exposing
   ( introduction
-  , safeGo, invalidSafeGo, invalidUnsafeGo, unsafeGo
-  , safePython, invalidSafePython, unsafePythonUnannotated, unsafePythonRun
+  , safeGo, safeGoInvalid, unsafeGoInvalid, unsafeGo
+  , safePython, safePythonInvalid, unsafePythonUnannotated, unsafePythonRun
   , pythonTypeHintUnannotated, pythonTypeHintWrong, pythonTypeHintWrongRun
-  , safeTypeScript, invalidSafeTypeScript, unsafeTypeScriptAny, unsafeTypeScriptUnannotated, unsafeTypeScriptFuncParam
-  , safeScala, invalidSafeScala, invalidUnsafeScala, unsafeScala
-  , safeKotlin, invalidSafeKotlin, invalidUnsafeKotlin, unsafeKotlin
-  , safeSwift, invalidSafeSwift, invalidUnsafeSwift, unsafeSwift
-  , safeElm, invalidSafeElm1, invalidSafeElm2, unsafeElm
+  , safeTypeScript, safeTypeScriptInvalid, unsafeTypeScriptAny, unsafeTypeScriptUnannotated, unsafeTypeScriptFuncParam
+  , safeScala, safeScalaInvalid, unsafeScalaInvalid, unsafeScala
+  , safeKotlin, safeKotlinInvalid, unsafeKotlinInvalid, unsafeKotlin
+  , safeSwift, safeSwiftInvalid, unsafeSwiftInvalid, unsafeSwift
+  , safeElm, safeElmInvalid1, safeElmInvalid2, unsafeElm
   )
 
 import Css exposing
@@ -112,8 +112,8 @@ var product float64 = Multiply(42, 2.718)
   }
 
 
-invalidSafeGo : UnindexedSlideModel
-invalidSafeGo =
+safeGoInvalid : UnindexedSlideModel
+safeGoInvalid =
   let
     codeBlock : Html msg
     codeBlock =
@@ -154,8 +154,8 @@ var product float64 = Multiply("42", true)
   }
 
 
-invalidUnsafeGo : UnindexedSlideModel
-invalidUnsafeGo =
+unsafeGoInvalid : UnindexedSlideModel
+unsafeGoInvalid =
   let
     codeBlock : Html msg
     codeBlock =
@@ -262,8 +262,8 @@ product: float = multiply(42, 2.718)
   }
 
 
-invalidSafePython : UnindexedSlideModel
-invalidSafePython =
+safePythonInvalid : UnindexedSlideModel
+safePythonInvalid =
   let
     codeBlock : Html msg
     codeBlock =
@@ -516,8 +516,8 @@ const product: number = multiply(42, 2.718);
   }
 
 
-invalidSafeTypeScript : UnindexedSlideModel
-invalidSafeTypeScript =
+safeTypeScriptInvalid : UnindexedSlideModel
+safeTypeScriptInvalid =
   let
     codeBlock : Html msg
     codeBlock =
@@ -694,8 +694,8 @@ val product: Double = multiply(42.0, 2.718)
   }
 
 
-invalidSafeScala : UnindexedSlideModel
-invalidSafeScala =
+safeScalaInvalid : UnindexedSlideModel
+safeScalaInvalid =
   let
     codeBlock : Html msg
     codeBlock =
@@ -738,8 +738,8 @@ val product: Double = multiply("42", true)
   }
 
 
-invalidUnsafeScala : UnindexedSlideModel
-invalidUnsafeScala =
+unsafeScalaInvalid : UnindexedSlideModel
+unsafeScalaInvalid =
   let
     codeBlock : Html msg
     codeBlock =
@@ -837,8 +837,8 @@ val product: Double = multiply(42.0, 2.718)
   }
 
 
-invalidSafeKotlin : UnindexedSlideModel
-invalidSafeKotlin =
+safeKotlinInvalid : UnindexedSlideModel
+safeKotlinInvalid =
   let
     codeBlock : Html msg
     codeBlock =
@@ -875,8 +875,8 @@ val product: Double = multiply("42", true)
   }
 
 
-invalidUnsafeKotlin : UnindexedSlideModel
-invalidUnsafeKotlin =
+unsafeKotlinInvalid : UnindexedSlideModel
+unsafeKotlinInvalid =
   let
     codeBlock : Html msg
     codeBlock =
@@ -981,8 +981,8 @@ let product: Double = multiply(42, 2.718)
   }
 
 
-invalidSafeSwift : UnindexedSlideModel
-invalidSafeSwift =
+safeSwiftInvalid : UnindexedSlideModel
+safeSwiftInvalid =
   let
     codeBlock : Html msg
     codeBlock =
@@ -1021,8 +1021,8 @@ let product: Double = multiply("42", true)
   }
 
 
-invalidUnsafeSwift : UnindexedSlideModel
-invalidUnsafeSwift =
+unsafeSwiftInvalid : UnindexedSlideModel
+unsafeSwiftInvalid =
   let
     codeBlock : Html msg
     codeBlock =
@@ -1129,8 +1129,8 @@ product = multiply 42 2.718
   }
 
 
-invalidSafeElm1 : UnindexedSlideModel
-invalidSafeElm1 =
+safeElmInvalid1 : UnindexedSlideModel
+safeElmInvalid1 =
   let
     codeBlock : Html msg
     codeBlock =
@@ -1186,8 +1186,8 @@ product = multiply "42" True
   }
 
 
-invalidSafeElm2 : UnindexedSlideModel
-invalidSafeElm2 =
+safeElmInvalid2 : UnindexedSlideModel
+safeElmInvalid2 =
   let
     codeBlock : Html msg
     codeBlock =
