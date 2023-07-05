@@ -263,15 +263,16 @@ unindexedSlideModels =
       , unindexedSlideModelForLang "Go" Immutability.unsafeGoPrep 
       , unindexedSlideModelForLang "Go" Immutability.unsafeGo 
       , unindexedSlideModelForLang "Go" Immutability.safeGoPrep 
-      , unindexedSlideModelForLang "Go" Immutability.safeGo 
+      , unindexedSlideModelForLang "Go" Immutability.safeGoInvalid
       , unindexedSlideModelForLang "Python" Immutability.safePythonPrep 
-      , unindexedSlideModelForLang "Python" Immutability.safePython 
+      , unindexedSlideModelForLang "Python" Immutability.safePythonInvalid
       , unindexedSlideModelForLang "Python" Immutability.unsafePythonFrozenMutation 
       , unindexedSlideModelForLang "Python" Immutability.unsafePythonConstantMutation 
-      , unindexedSlideModelForLang "TypeScript" Immutability.safeTypeScript 
-      , unindexedSlideModelForLang "Scala" Immutability.safeScala 
-      , unindexedSlideModelForLang "Kotlin" Immutability.safeKotlin 
-      , unindexedSlideModelForLang "Swift" Immutability.safeSwift 
+      , unindexedSlideModelForLang "TypeScript" Immutability.safeTypeScriptInvalid
+      , unindexedSlideModelForLang "Scala" Immutability.safeScalaInvalid
+      , unindexedSlideModelForLang "Kotlin" Immutability.safeKotlinInvalid
+      , unindexedSlideModelForLang "Swift" Immutability.safeSwiftInvalid
+      , unindexedSlideModelForLang "Elm" Immutability.safeElmInvalid
       , Just (TypeSystemProperties.languageReport 7)
       ]
     )
