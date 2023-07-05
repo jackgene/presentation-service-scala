@@ -387,11 +387,11 @@ getCount (PrivateCounter count) = count
       standardSlideView page heading subheadingElm
       ( div []
         [ p []
-          [ text "Consider the following counter (Notice we exposed "
+          [ text "Consider the following counter, noting we exposed "
           , syntaxHighlightedCodeSnippet Elm "Counter"
           , text ", not "
           , syntaxHighlightedCodeSnippet Elm "Counter(..)"
-          , text "):"
+          , text ":"
           ]
         , div [] [ codeBlock ]
         ]
