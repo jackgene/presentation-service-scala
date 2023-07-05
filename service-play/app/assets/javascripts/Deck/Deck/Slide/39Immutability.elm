@@ -15,7 +15,7 @@ import Deck.Slide.SyntaxHighlight exposing (..)
 import Deck.Slide.Template exposing (standardSlideView)
 import Deck.Slide.TypeSystemProperties as TypeSystemProperties
 import Dict exposing (Dict)
-import Html.Styled exposing (Html, div, p, text)
+import Html.Styled exposing (Html, div, i, p, text)
 import Html.Styled.Attributes exposing (css)
 import SyntaxHighlight.Model exposing
   ( ColumnEmphasis, ColumnEmphasisType(..), LineEmphasis(..) )
@@ -615,14 +615,14 @@ answer = 123
       standardSlideView page heading subheadingElm
       ( div []
         [ p []
-          [ text "Elm has no concept of mutability. No syntax for mutating state:"
+          [ text "In contrast to some languages that have no concept of immutability, "
+          , i [] [ text "Elm has no concept of mutability, no syntax for mutating state" ]
+          , text ":"
           ]
         , div [] [ codeBlock ]
         , p []
-          [ text "Note the error: The compiler does not consider this mutating a variable. It sees it as declaring a value twice."
-          ]
-        , p []
-          [ text "Also, when using records, fields cannot be mutated. Instead, Elm provides syntax for creating copies of records, with certain fields updated."
+          [ text "State mutation happens external to an Elm application, or within the framework. "
+          , text "This eliminates classes of problems related to mutable data, freeing the programmer to focus on solving application problems."
           ]
         ]
       )
