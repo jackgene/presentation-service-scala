@@ -6,25 +6,25 @@ import java.util.concurrent.TimeUnit
 
 object FifoBoundedSetPerf:
   private def naiveAdd[T](
-    elem: T, elemsReversed: List[T], fixedSize: Int
+    elem: T, elemsReversed: List[T], maxSize: Int
   ): (List[T], Option[(T, Option[T])]) =
     val preTruncate: List[T] = (elem :: elemsReversed).distinct
 
     (
-      preTruncate.take(fixedSize),
+      preTruncate.take(maxSize),
       if (elemsReversed.size == preTruncate.size) None
-      else Some((elem, preTruncate.drop(fixedSize).headOption))
+      else Some((elem, preTruncate.drop(maxSize).headOption))
     )
 
   private def naiveAddAll[T](
-    elems: List[T], elemsReversed: List[T], fixedSize: Int
+    elems: List[T], elemsReversed: List[T], maxSize: Int
   ): (List[T], Set[T], Set[T]) =
     val preTruncate: List[T] = (elems ++ elemsReversed).distinct
 
     (
-      preTruncate.take(fixedSize),
+      preTruncate.take(maxSize),
       preTruncate.toSet -- elemsReversed.toSet,
-      preTruncate.drop(fixedSize).toSet
+      preTruncate.drop(maxSize).toSet
     )
 
 
