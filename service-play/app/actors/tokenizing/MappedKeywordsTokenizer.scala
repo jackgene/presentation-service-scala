@@ -3,7 +3,7 @@ package actors.tokenizing
 import scala.util.matching.Regex
 
 object MappedKeywordsTokenizer {
-  private val WordSeparatorPattern: Regex = """[\s,./|?!]""".r
+  private val WordSeparatorPattern: Regex = """[\s!"&,./?|]""".r
 }
 
 class MappedKeywordsTokenizer private[tokenizing](
