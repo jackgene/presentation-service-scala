@@ -4,45 +4,45 @@ import common.CommonProp
 import org.scalacheck.Gen
 
 class FifoBoundedSetProp extends CommonProp {
-  property("never contain more elements than fixed limit") {
+  property("never contain more elements than max size") {
     forAll(
-      "fixedSize" |: Gen.posNum[Int],
+      "maxSize" |: Gen.posNum[Int],
       "elements"  |: Gen.listOf(Gen.posNum[Int])
-    ) { (fixedSize: Int, elements: Seq[Int]) =>
-      whenever(fixedSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
+    ) { (maxSize: Int, elements: Seq[Int]) =>
+      whenever(maxSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
         // Set up & Test
-        val (instance, _) = FifoBoundedSet[Int](fixedSize).addAll(elements)
+        val (instance, _) = FifoBoundedSet[Int](maxSize).addAll(elements)
 
         // Verify
-        assert(instance.toSeq.size <= fixedSize)
+        assert(instance.toSeq.size <= maxSize)
       }
     }
   }
 
   property("always include the most recently added elements") {
     forAll(
-      "fixedSize" |: Gen.posNum[Int],
+      "maxSize" |: Gen.posNum[Int],
       "elements"  |: Gen.nonEmptyListOf(Gen.posNum[Int])
-    ) { (fixedSize: Int, elements: Seq[Int]) =>
-      whenever(fixedSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
+    ) { (maxSize: Int, elements: Seq[Int]) =>
+      whenever(maxSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
         // Set up & Test
-        val (instance, _) = FifoBoundedSet[Int](fixedSize).addAll(elements)
+        val (instance, _) = FifoBoundedSet[Int](maxSize).addAll(elements)
 
         // Verify
-        assert(elements.takeRight(fixedSize).toSet subsetOf instance.toSeq.toSet)
+        assert(elements.takeRight(maxSize).toSet subsetOf instance.toSeq.toSet)
       }
     }
   }
 
   property("only evict the least recently added elements") {
     forAll(
-      "fixedSize" |: Gen.posNum[Int],
+      "maxSize" |: Gen.posNum[Int],
       "elements"  |: Gen.nonEmptyListOf(Gen.posNum[Int])
-    ) { (fixedSize: Int, elements: Seq[Int]) =>
-      whenever(fixedSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
+    ) { (maxSize: Int, elements: Seq[Int]) =>
+      whenever(maxSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
         // Set up & Test
         val (_, actualEffects: Seq[FifoBoundedSet.Effect[Int]]) =
-          FifoBoundedSet[Int](fixedSize).addAll(elements)
+          FifoBoundedSet[Int](maxSize).addAll(elements)
         val actualEvictions: Set[Int] = actualEffects.
           collect {
             case FifoBoundedSet.AddedEvicting(value: Int) => value
@@ -50,7 +50,7 @@ class FifoBoundedSetProp extends CommonProp {
           toSet
 
         // Verify
-        assert(actualEvictions subsetOf elements.dropRight(fixedSize).toSet)
+        assert(actualEvictions subsetOf elements.dropRight(maxSize).toSet)
       }
     }
   }
@@ -74,12 +74,12 @@ class FifoBoundedSetProp extends CommonProp {
   // add/addAll Equivalence
   property("add and addAll are equivalent given identical input") {
     forAll(
-      "fixedSize" |: Gen.posNum[Int],
+      "maxSize" |: Gen.posNum[Int],
       "elements"  |: Gen.listOf(Gen.posNum[Int])
-    ) { (fixedSize: Int, elements: Seq[Int]) =>
-      whenever(fixedSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
+    ) { (maxSize: Int, elements: Seq[Int]) =>
+      whenever(maxSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
         // Set up
-        val empty: FifoBoundedSet[Int] = FifoBoundedSet[Int](fixedSize)
+        val empty: FifoBoundedSet[Int] = FifoBoundedSet[Int](maxSize)
 
         // Test
         val (instanceUsingAddAll: FifoBoundedSet[Int], _) = empty.addAll(elements)
@@ -98,12 +98,12 @@ class FifoBoundedSetProp extends CommonProp {
 
   property("add and addAll produces identical effects given identical input") {
     forAll(
-      "fixedSize" |: Gen.posNum[Int],
+      "maxSize" |: Gen.posNum[Int],
       "elements"  |: Gen.listOf(Gen.posNum[Int])
-    ) { (fixedSize: Int, elements: Seq[Int]) =>
-      whenever(fixedSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
+    ) { (maxSize: Int, elements: Seq[Int]) =>
+      whenever(maxSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
         // Set up
-        val empty: FifoBoundedSet[Int] = FifoBoundedSet[Int](fixedSize)
+        val empty: FifoBoundedSet[Int] = FifoBoundedSet[Int](maxSize)
 
         // Test
         val (_, actualEffectsAddAll: Seq[FifoBoundedSet.Effect[Int]]) = empty.addAll(elements)

@@ -3,7 +3,7 @@ package actors.counter
 import org.scalatestplus.play.PlaySpec
 
 class FifoBoundedSetSpec extends PlaySpec {
-  "A FifoFixedSizeSet of size 2" when {
+  "A FifoBoundedSet of size 2" when {
     val empty: FifoBoundedSet[String] = FifoBoundedSet[String](2)
 
     "no element has been added" must {
