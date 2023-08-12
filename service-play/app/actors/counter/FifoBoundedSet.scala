@@ -2,7 +2,7 @@ package actors.counter
 
 import play.api.libs.json.*
 
-object FifoFixedSizedSet {
+object FifoBoundedSet {
   /**
    * The effect of adding a value to the set:
    */
@@ -31,13 +31,13 @@ object FifoFixedSizedSet {
    */
   case class NotAdded[A]() extends Effect[A]
 
-  def apply[A](maxSize: Int): FifoFixedSizedSet[A] =
-    new FifoFixedSizedSet[A](maxSize)
+  def apply[A](maxSize: Int): FifoBoundedSet[A] =
+    new FifoBoundedSet[A](maxSize)
 
   implicit def writes[A](
     implicit elemWrites: Writes[A]
-  ): Writes[FifoFixedSizedSet[A]] =
-    (set: FifoFixedSizedSet[A]) => Json.arr(set.toSeq.map(elemWrites.writes))
+  ): Writes[FifoBoundedSet[A]] =
+    (set: FifoBoundedSet[A]) => Json.arr(set.toSeq.map(elemWrites.writes))
 }
 
 /**
@@ -48,12 +48,12 @@ object FifoFixedSizedSet {
  *
  * @tparam A the element type
  */
-class FifoFixedSizedSet[A] private(
+class FifoBoundedSet[A] private(
   val maxSize: Int,
   val uniques: Set[A] = Set[A](),
   val insertionOrder: IndexedSeq[A] = Vector[A]()
 ) {
-  import FifoFixedSizedSet.*
+  import FifoBoundedSet.*
 
   if (maxSize < 1) {
     throw new IllegalArgumentException("maxSize must be positive")
@@ -62,19 +62,19 @@ class FifoFixedSizedSet[A] private(
   private def copy(
     uniques: Set[A] = uniques,
     insertionOrder: IndexedSeq[A]
-  ): FifoFixedSizedSet[A] = new FifoFixedSizedSet(
+  ): FifoBoundedSet[A] = new FifoBoundedSet(
     maxSize, uniques, insertionOrder
   )
 
   /**
    * Adds a single element to this set, returning its effect.
    *
-   * See [[FifoFixedSizedSet.Effect]] for details.
+   * See [[FifoBoundedSet.Effect]] for details.
    *
    * @param elem element to add
    * @return updated copy of this set, and effects of the addition
    */
-  def add(elem: A): (FifoFixedSizedSet[A], Effect[A]) =
+  def add(elem: A): (FifoBoundedSet[A], Effect[A]) =
     if (uniques.contains(elem))
       if (elem == insertionOrder.last) (this, NotAdded())
       else
@@ -103,20 +103,20 @@ class FifoFixedSizedSet[A] private(
   /**
    * Adds the elements to this set, returning the effect of each addition.
    *
-   * See [[FifoFixedSizedSet.Effect]] for details.
+   * See [[FifoBoundedSet.Effect]] for details.
    *
    * @param elems elements to add
    * @return updated copy of this set, and effects of each addition
    */
-  def addAll(elems: Seq[A]): (FifoFixedSizedSet[A], Seq[Effect[A]]) =
+  def addAll(elems: Seq[A]): (FifoBoundedSet[A], Seq[Effect[A]]) =
     elems.foldLeft((this, IndexedSeq[Effect[A]]())) {
-      (accum: (FifoFixedSizedSet[A], IndexedSeq[Effect[A]]), elem: A) =>
+      (accum: (FifoBoundedSet[A], IndexedSeq[Effect[A]]), elem: A) =>
 
       val (
-        accumSet: FifoFixedSizedSet[A], accumUpdates: IndexedSeq[Effect[A]]
+        accumSet: FifoBoundedSet[A], accumUpdates: IndexedSeq[Effect[A]]
       ) = accum
       val (
-        nextAccumSet: FifoFixedSizedSet[A], update: Effect[A]
+        nextAccumSet: FifoBoundedSet[A], update: Effect[A]
       ) = accumSet.add(elem)
 
       (nextAccumSet, accumUpdates :+ update)
@@ -125,10 +125,10 @@ class FifoFixedSizedSet[A] private(
   def toSeq: Seq[A] = insertionOrder
 
   private def canEqual(other: Any): Boolean =
-    other.isInstanceOf[FifoFixedSizedSet[?]]
+    other.isInstanceOf[FifoBoundedSet[?]]
 
   override def equals(other: Any): Boolean = other match {
-    case that: FifoFixedSizedSet[?] =>
+    case that: FifoBoundedSet[?] =>
       (that canEqual this) &&
         maxSize == that.maxSize &&
         uniques == that.uniques &&
@@ -142,5 +142,5 @@ class FifoFixedSizedSet[A] private(
   }
 
   override def toString: String =
-    insertionOrder.mkString("FifoFixedSizedSet(", ", ", ")")
+    insertionOrder.mkString("FifoBoundedSet(", ", ", ")")
 }

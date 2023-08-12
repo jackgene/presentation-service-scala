@@ -4,7 +4,7 @@ import org.openjdk.jmh.annotations.*
 
 import java.util.concurrent.TimeUnit
 
-object FifoFixedSizedSetPerf:
+object FifoBoundedSetPerf:
   private def naiveAdd[T](
     elem: T, elemsReversed: List[T], fixedSize: Int
   ): (List[T], Option[(T, Option[T])]) =
@@ -29,7 +29,7 @@ object FifoFixedSizedSetPerf:
 
 
 /**
- * Benchmark comparing implementations using [[FifoFixedSizedSet]] against
+ * Benchmark comparing implementations using [[FifoBoundedSet]] against
  * a baseline of naïve implementations using only Scala collections.
  *
  * Use cases:
@@ -43,12 +43,12 @@ object FifoFixedSizedSetPerf:
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
-class FifoFixedSizedSetPerf:
-  import FifoFixedSizedSetPerf.*
+class FifoBoundedSetPerf:
+  import FifoBoundedSetPerf.*
 
   private val elemsReversed: List[Int] = List(3, 2, 1)
-  private val emptyInstance: FifoFixedSizedSet[Int] = FifoFixedSizedSet(3)
-  private val fullInstance: FifoFixedSizedSet[Int] =
+  private val emptyInstance: FifoBoundedSet[Int] = FifoBoundedSet(3)
+  private val fullInstance: FifoBoundedSet[Int] =
     emptyInstance.addAll(elemsReversed.reverse)._1
 
   @Benchmark
@@ -62,11 +62,11 @@ class FifoFixedSizedSetPerf:
 
   @Benchmark
   def add_implementation(): Seq[Int] =
-    val (instance: FifoFixedSizedSet[Int], update: FifoFixedSizedSet.Effect[Int]) =
+    val (instance: FifoBoundedSet[Int], update: FifoBoundedSet.Effect[Int]) =
       emptyInstance.add(0)
 
     update match
-      case FifoFixedSizedSet.Added() => instance.insertionOrder
+      case FifoBoundedSet.Added() => instance.insertionOrder
       case _ => throw new IllegalStateException("addition expected")
 
   @Benchmark
@@ -79,11 +79,11 @@ class FifoFixedSizedSetPerf:
 
   @Benchmark
   def addAll_implementation(): Seq[Int] =
-    val (instance: FifoFixedSizedSet[Int], updates: Seq[FifoFixedSizedSet.Effect[Int]]) =
+    val (instance: FifoBoundedSet[Int], updates: Seq[FifoBoundedSet.Effect[Int]]) =
       emptyInstance.addAll(Seq(0, 1))
 
     (updates(0), updates(1)) match
-      case (FifoFixedSizedSet.Added(), FifoFixedSizedSet.Added()) =>
+      case (FifoBoundedSet.Added(), FifoBoundedSet.Added()) =>
         instance.insertionOrder
       case _ => throw new IllegalStateException("additions expected")
 
@@ -98,11 +98,11 @@ class FifoFixedSizedSetPerf:
 
   @Benchmark
   def addEvicting_implementation(): Seq[Int] =
-    val (instance: FifoFixedSizedSet[Int], update: FifoFixedSizedSet.Effect[Int]) =
+    val (instance: FifoBoundedSet[Int], update: FifoBoundedSet.Effect[Int]) =
       fullInstance.add(4)
 
     update match
-      case FifoFixedSizedSet.AddedEvicting(_: Int) => instance.insertionOrder
+      case FifoBoundedSet.AddedEvicting(_: Int) => instance.insertionOrder
       case _ => throw new IllegalStateException("eviction expected")
 
   @Benchmark
@@ -115,11 +115,11 @@ class FifoFixedSizedSetPerf:
 
   @Benchmark
   def addAllEvicting_implementation(): Seq[Int] =
-    val (instance: FifoFixedSizedSet[Int], updates: Seq[FifoFixedSizedSet.Effect[Int]]) =
+    val (instance: FifoBoundedSet[Int], updates: Seq[FifoBoundedSet.Effect[Int]]) =
       fullInstance.addAll(Seq(4, 5))
 
     (updates(0), updates(1)) match
-      case (FifoFixedSizedSet.AddedEvicting(_: Int), FifoFixedSizedSet.AddedEvicting(_: Int)) =>
+      case (FifoBoundedSet.AddedEvicting(_: Int), FifoBoundedSet.AddedEvicting(_: Int)) =>
         instance.insertionOrder
       case _ => throw new IllegalStateException("no-op expected")
 
@@ -134,11 +134,11 @@ class FifoFixedSizedSetPerf:
 
   @Benchmark
   def addReordering_implementation(): Seq[Int] =
-    val (instance: FifoFixedSizedSet[Int], update: FifoFixedSizedSet.Effect[Int]) =
+    val (instance: FifoBoundedSet[Int], update: FifoBoundedSet.Effect[Int]) =
       fullInstance.add(1)
 
     update match
-      case FifoFixedSizedSet.NotAdded() => instance.insertionOrder
+      case FifoBoundedSet.NotAdded() => instance.insertionOrder
       case _ => throw new IllegalStateException("no-op expected")
 
   @Benchmark
@@ -151,10 +151,10 @@ class FifoFixedSizedSetPerf:
 
   @Benchmark
   def addAllReordering_implementation(): Seq[Int] =
-    val (instance: FifoFixedSizedSet[Int], updates: Seq[FifoFixedSizedSet.Effect[Int]]) =
+    val (instance: FifoBoundedSet[Int], updates: Seq[FifoBoundedSet.Effect[Int]]) =
       fullInstance.addAll(Seq(1, 2))
 
     (updates(0), updates(1)) match
-      case (FifoFixedSizedSet.NotAdded(), FifoFixedSizedSet.NotAdded()) =>
+      case (FifoBoundedSet.NotAdded(), FifoBoundedSet.NotAdded()) =>
         instance.insertionOrder
       case _ => throw new IllegalStateException("no-op expected")
