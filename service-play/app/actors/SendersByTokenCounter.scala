@@ -11,6 +11,9 @@ import play.api.libs.json.{JsPath, JsValue, Json, Writes}
 
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 
+/**
+ * Count senders grouping by (filtered and transformed) message text.
+ */
 object SendersByTokenCounter {
   sealed trait Command
   final case class Subscribe(subscriber: ActorRef[Event]) extends Command
