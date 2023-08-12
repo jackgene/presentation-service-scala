@@ -4,7 +4,7 @@ import common.CommonProp
 import org.scalacheck.Gen
 
 class FifoBoundedSetProp extends CommonProp {
-  property("never contain more elements than max size") {
+  property("never contain more elements than maxSize") {
     forAll(
       "maxSize" |: Gen.posNum[Int],
       "elements"  |: Gen.listOf(Gen.posNum[Int])
