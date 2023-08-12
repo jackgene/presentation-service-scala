@@ -56,9 +56,9 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
     system.spawn(
       MessagesBySenderCounter(chatMessageBroadcaster), "chattiest"
     )
-  private val questionBroadcaster: ActorRef[ApprovalRouter.Command] =
+  private val questionBroadcaster: ActorRef[ModeratedTextCollector.Command] =
     system.spawn(
-      ApprovalRouter(chatMessageBroadcaster, rejectedMessageBroadcaster), "question"
+      ModeratedTextCollector(chatMessageBroadcaster, rejectedMessageBroadcaster), "question"
     )
   private val transcriptionBroadcaster: ActorRef[TranscriptionBroadcaster.Command] =
     system.spawn(
@@ -96,7 +96,7 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
     Flow.fromSinkAndSource(
       Sink.ignore,
       ActorFlow.sourceBehavior { webSocketClient: ActorRef[JsValue] =>
-        ApprovalRouter.JsonPublisher(webSocketClient, questionBroadcaster)
+        ModeratedTextCollector.JsonPublisher(webSocketClient, questionBroadcaster)
       }
     )
   }
@@ -133,7 +133,7 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
     languagePollCounter ! SendersByTokenCounter.Reset
     wordCloudCounter ! SendersByTokenCounter.Reset
     chattiestCounter ! MessagesBySenderCounter.Reset
-    questionBroadcaster ! ApprovalRouter.Reset
+    questionBroadcaster ! ModeratedTextCollector.Reset
     NoContent
   }
 

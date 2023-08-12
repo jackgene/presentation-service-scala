@@ -7,11 +7,11 @@ import model.ChatMessage
 import play.api.libs.json.{JsValue, Json, Writes}
 
 /**
- * Actor that accepts messages only from the moderation tool.
+ * Actor that collects text from the moderation tool.
  *
- * Specifically, accepts messages where the sender is an emptpy string.
+ * Specifically, accepts text for messages where the sender is an empty string.
  */
-object ApprovalRouter {
+object ModeratedTextCollector {
   sealed trait Command
   final case class Subscribe(subscriber: ActorRef[Event]) extends Command
   final case class Unsubscribe(subscriber: ActorRef[Event]) extends Command
@@ -31,7 +31,7 @@ object ApprovalRouter {
     chatMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command],
     rejectedMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command]
   ): Behavior[Command] = Behaviors.setup { ctx =>
-    new ApprovalRouter(
+    new ModeratedTextCollector(
       chatMessageBroadcaster, rejectedMessageBroadcaster,
       ctx.messageAdapter[ChatMessageBroadcaster.Event] {
         case ChatMessageBroadcaster.New(chatMessage: ChatMessage) => Record(chatMessage)
@@ -53,12 +53,12 @@ object ApprovalRouter {
     }
   }
 }
-private class ApprovalRouter(
+private class ModeratedTextCollector(
   chatMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command],
   rejectedMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command],
   adapter: ActorRef[ChatMessageBroadcaster.Event]
 ) {
-  import ApprovalRouter.*
+  import ModeratedTextCollector.*
 
   private def paused(
     text: IndexedSeq[String]
