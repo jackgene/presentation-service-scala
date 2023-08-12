@@ -25,22 +25,22 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
     extends AbstractController(cc) {
   private val RoutePattern: Regex = """(.*) to (Everyone|Me)(?: \(Direct Message\))?""".r
   private val IgnoredRoutePattern: Regex = "Me to .*".r
-  private val chatMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command] =
+  private val chatMessages: ActorRef[ChatMessageBroadcaster.Command] =
     system.spawn(ChatMessageBroadcaster(), "chat")
-  private val rejectedMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command] =
+  private val rejectedMessages: ActorRef[ChatMessageBroadcaster.Command] =
     system.spawn(ChatMessageBroadcaster(), "rejected")
-  private val languagePollCounter: ActorRef[SendersByTokenCounter.Command] =
+  private val languagePoll: ActorRef[SendersByTokenCounter.Command] =
     system.spawn(
       SendersByTokenCounter(
         extractTokens = mappedKeywordsTokenizer(
           cfg.get[Map[String, String]]("presentation.languagePoll.languageByKeyword")
         ),
         tokensPerSender = cfg.get[Int]("presentation.languagePoll.maxVotesPerPerson"),
-        chatMessageBroadcaster, rejectedMessageBroadcaster
+        chatMessages, rejectedMessages
       ),
       "language-poll"
     )
-  private val wordCloudCounter: ActorRef[SendersByTokenCounter.Command] =
+  private val wordCloud: ActorRef[SendersByTokenCounter.Command] =
     system.spawn(
       SendersByTokenCounter(
         extractTokens = normalizedWordsTokenizer(
@@ -48,19 +48,19 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
           cfg.get[Int]("presentation.wordCloud.minWordLength")
         ),
         tokensPerSender = cfg.get[Int]("presentation.wordCloud.maxWordsPerPerson"),
-        chatMessageBroadcaster, rejectedMessageBroadcaster
+        chatMessages, rejectedMessages
       ),
       "word-cloud"
     )
-  private val chattiestCounter: ActorRef[MessagesBySenderCounter.Command] =
+  private val chattiest: ActorRef[MessagesBySenderCounter.Command] =
     system.spawn(
-      MessagesBySenderCounter(chatMessageBroadcaster), "chattiest"
+      MessagesBySenderCounter(chatMessages), "chattiest"
     )
-  private val questionBroadcaster: ActorRef[ModeratedTextCollector.Command] =
+  private val questions: ActorRef[ModeratedTextCollector.Command] =
     system.spawn(
-      ModeratedTextCollector(chatMessageBroadcaster, rejectedMessageBroadcaster), "question"
+      ModeratedTextCollector(chatMessages, rejectedMessages), "question"
     )
-  private val transcriptionBroadcaster: ActorRef[TranscriptionBroadcaster.Command] =
+  private val transcriptions: ActorRef[TranscriptionBroadcaster.Command] =
     system.spawn(
       TranscriptionBroadcaster(), "transcriptions"
     )
@@ -69,7 +69,7 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
     Flow.fromSinkAndSource(
       Sink.ignore,
       ActorFlow.sourceBehavior { webSocketClient: ActorRef[JsValue] =>
-        SendersByTokenCounter.JsonPublisher(webSocketClient, languagePollCounter)
+        SendersByTokenCounter.JsonPublisher(webSocketClient, languagePoll)
       }
     )
   }
@@ -78,7 +78,7 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
     Flow.fromSinkAndSource(
       Sink.ignore,
       ActorFlow.sourceBehavior { webSocketClient: ActorRef[JsValue] =>
-        SendersByTokenCounter.JsonPublisher(webSocketClient, wordCloudCounter)
+        SendersByTokenCounter.JsonPublisher(webSocketClient, wordCloud)
       }
     )
   }
@@ -87,7 +87,7 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
     Flow.fromSinkAndSource(
       Sink.ignore,
       ActorFlow.sourceBehavior { webSocketClient: ActorRef[JsValue] =>
-        MessagesBySenderCounter.JsonPublisher(webSocketClient, chattiestCounter)
+        MessagesBySenderCounter.JsonPublisher(webSocketClient, chattiest)
       }
     )
   }
@@ -96,7 +96,7 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
     Flow.fromSinkAndSource(
       Sink.ignore,
       ActorFlow.sourceBehavior { webSocketClient: ActorRef[JsValue] =>
-        ModeratedTextCollector.JsonPublisher(webSocketClient, questionBroadcaster)
+        ModeratedTextCollector.JsonPublisher(webSocketClient, questions)
       }
     )
   }
@@ -105,7 +105,7 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
     Flow.fromSinkAndSource(
       Sink.ignore,
       ActorFlow.sourceBehavior { webSocketClient: ActorRef[JsValue] =>
-        TranscriptionBroadcaster.JsonPublisher(webSocketClient, transcriptionBroadcaster)
+        TranscriptionBroadcaster.JsonPublisher(webSocketClient, transcriptions)
       }
     )
   }
@@ -114,7 +114,7 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
     Flow.fromSinkAndSource(
       Sink.ignore,
       ActorFlow.sourceBehavior { webSocketClient: ActorRef[JsValue] =>
-        ChatMessageBroadcaster.JsonPublisher(webSocketClient, rejectedMessageBroadcaster)
+        ChatMessageBroadcaster.JsonPublisher(webSocketClient, rejectedMessages)
       }
     )
   }
@@ -122,7 +122,7 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
   def chat(route: String, text: String): Action[Unit] = Action(parse.empty) { _: Request[Unit] =>
     route match {
       case RoutePattern(sender, recipient) =>
-        chatMessageBroadcaster ! ChatMessageBroadcaster.Record(ChatMessage(sender, recipient, text))
+        chatMessages ! ChatMessageBroadcaster.Record(ChatMessage(sender, recipient, text))
         NoContent
       case IgnoredRoutePattern() => NoContent
       case _ => BadRequest
@@ -130,15 +130,15 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
   }
 
   def reset(): Action[Unit] = Action(parse.empty) { _: Request[Unit] =>
-    languagePollCounter ! SendersByTokenCounter.Reset
-    wordCloudCounter ! SendersByTokenCounter.Reset
-    chattiestCounter ! MessagesBySenderCounter.Reset
-    questionBroadcaster ! ModeratedTextCollector.Reset
+    languagePoll ! SendersByTokenCounter.Reset
+    wordCloud ! SendersByTokenCounter.Reset
+    chattiest ! MessagesBySenderCounter.Reset
+    questions ! ModeratedTextCollector.Reset
     NoContent
   }
 
   def transcription(text: String): Action[Unit] = Action(parse.empty) { _: Request[Unit] =>
-    transcriptionBroadcaster ! TranscriptionBroadcaster.NewTranscriptionText(text)
+    transcriptions ! TranscriptionBroadcaster.NewTranscriptionText(text)
     NoContent
   }
 }
