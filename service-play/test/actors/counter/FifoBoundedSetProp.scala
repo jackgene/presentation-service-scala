@@ -3,7 +3,7 @@ package actors.counter
 import common.CommonProp
 import org.scalacheck.Gen
 
-class FifoFixedSizedSetProp extends CommonProp {
+class FifoBoundedSetProp extends CommonProp {
   property("never contain more elements than fixed limit") {
     forAll(
       "fixedSize" |: Gen.posNum[Int],
@@ -11,7 +11,7 @@ class FifoFixedSizedSetProp extends CommonProp {
     ) { (fixedSize: Int, elements: Seq[Int]) =>
       whenever(fixedSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
         // Set up & Test
-        val (instance, _) = FifoFixedSizedSet[Int](fixedSize).addAll(elements)
+        val (instance, _) = FifoBoundedSet[Int](fixedSize).addAll(elements)
 
         // Verify
         assert(instance.toSeq.size <= fixedSize)
@@ -26,7 +26,7 @@ class FifoFixedSizedSetProp extends CommonProp {
     ) { (fixedSize: Int, elements: Seq[Int]) =>
       whenever(fixedSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
         // Set up & Test
-        val (instance, _) = FifoFixedSizedSet[Int](fixedSize).addAll(elements)
+        val (instance, _) = FifoBoundedSet[Int](fixedSize).addAll(elements)
 
         // Verify
         assert(elements.takeRight(fixedSize).toSet subsetOf instance.toSeq.toSet)
@@ -41,11 +41,11 @@ class FifoFixedSizedSetProp extends CommonProp {
     ) { (fixedSize: Int, elements: Seq[Int]) =>
       whenever(fixedSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
         // Set up & Test
-        val (_, actualEffects: Seq[FifoFixedSizedSet.Effect[Int]]) =
-          FifoFixedSizedSet[Int](fixedSize).addAll(elements)
+        val (_, actualEffects: Seq[FifoBoundedSet.Effect[Int]]) =
+          FifoBoundedSet[Int](fixedSize).addAll(elements)
         val actualEvictions: Set[Int] = actualEffects.
           collect {
-            case FifoFixedSizedSet.AddedEvicting(value: Int) => value
+            case FifoBoundedSet.AddedEvicting(value: Int) => value
           }.
           toSet
 
@@ -60,12 +60,12 @@ class FifoFixedSizedSetProp extends CommonProp {
       "elements" |: Gen.nonEmptyListOf(Gen.posNum[Int])
     ) { (elements: Seq[Int]) =>
       // Set up & Test
-      val (instance, actualEffects: Seq[FifoFixedSizedSet.Effect[Int]]) =
-        FifoFixedSizedSet[Int](elements.size).addAll(elements)
+      val (instance, actualEffects: Seq[FifoBoundedSet.Effect[Int]]) =
+        FifoBoundedSet[Int](elements.size).addAll(elements)
 
       // Verify
-      val actualEvictions: Seq[FifoFixedSizedSet.Effect[Int]] =
-        actualEffects.filter(_.isInstanceOf[FifoFixedSizedSet.AddedEvicting[Int]])
+      val actualEvictions: Seq[FifoBoundedSet.Effect[Int]] =
+        actualEffects.filter(_.isInstanceOf[FifoBoundedSet.AddedEvicting[Int]])
       assert(instance.toSeq.toSet == elements.toSet)
       assert(actualEvictions.isEmpty)
     }
@@ -79,13 +79,13 @@ class FifoFixedSizedSetProp extends CommonProp {
     ) { (fixedSize: Int, elements: Seq[Int]) =>
       whenever(fixedSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
         // Set up
-        val empty: FifoFixedSizedSet[Int] = FifoFixedSizedSet[Int](fixedSize)
+        val empty: FifoBoundedSet[Int] = FifoBoundedSet[Int](fixedSize)
 
         // Test
-        val (instanceUsingAddAll: FifoFixedSizedSet[Int], _) = empty.addAll(elements)
-        val instanceUsingAdd: FifoFixedSizedSet[Int] =
-          elements.foldLeft(empty) { (accum: FifoFixedSizedSet[Int], elem: Int) =>
-            val (accumNext: FifoFixedSizedSet[Int], _) = accum.add(elem)
+        val (instanceUsingAddAll: FifoBoundedSet[Int], _) = empty.addAll(elements)
+        val instanceUsingAdd: FifoBoundedSet[Int] =
+          elements.foldLeft(empty) { (accum: FifoBoundedSet[Int], elem: Int) =>
+            val (accumNext: FifoBoundedSet[Int], _) = accum.add(elem)
 
             accumNext
           }
@@ -103,14 +103,14 @@ class FifoFixedSizedSetProp extends CommonProp {
     ) { (fixedSize: Int, elements: Seq[Int]) =>
       whenever(fixedSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
         // Set up
-        val empty: FifoFixedSizedSet[Int] = FifoFixedSizedSet[Int](fixedSize)
+        val empty: FifoBoundedSet[Int] = FifoBoundedSet[Int](fixedSize)
 
         // Test
-        val (_, actualEffectsAddAll: Seq[FifoFixedSizedSet.Effect[Int]]) = empty.addAll(elements)
-        val (_, actualEffectsAdd: Seq[FifoFixedSizedSet.Effect[Int]]) =
-          elements.foldLeft((empty, Seq[FifoFixedSizedSet.Effect[Int]]())) {
-            case ((accum: FifoFixedSizedSet[Int], effects: Seq[FifoFixedSizedSet.Effect[Int]]), elem: Int) =>
-              val (accumNext: FifoFixedSizedSet[Int], effect: FifoFixedSizedSet.Effect[Int]) = accum.add(elem)
+        val (_, actualEffectsAddAll: Seq[FifoBoundedSet.Effect[Int]]) = empty.addAll(elements)
+        val (_, actualEffectsAdd: Seq[FifoBoundedSet.Effect[Int]]) =
+          elements.foldLeft((empty, Seq[FifoBoundedSet.Effect[Int]]())) {
+            case ((accum: FifoBoundedSet[Int], effects: Seq[FifoBoundedSet.Effect[Int]]), elem: Int) =>
+              val (accumNext: FifoBoundedSet[Int], effect: FifoBoundedSet.Effect[Int]) = accum.add(elem)
 
               (accumNext, effects :+ effect)
           }
