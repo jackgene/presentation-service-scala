@@ -162,7 +162,7 @@ private class SendersByTokenCounter(
                 newTokensBySender: Map[String, FifoBoundedSet[String]],
                 addedTokens: Set[String],
                 removedTokens: Set[String]
-                ) = senderOpt match {
+              ) = senderOpt match {
                 case Some(sender: String) =>
                   val (tokens: FifoBoundedSet[String], updates: Seq[FifoBoundedSet.Effect[String]]) =
                     tokensBySender(sender).addAll(extractedTokens)
@@ -235,7 +235,7 @@ private class SendersByTokenCounter(
     }
   }
 
-  def initial(): Behavior[Command] =  paused(
+  def initial(): Behavior[Command] = paused(
     IndexedSeq(), emptyTokensBySender, MultiSet[String]()
   )
 }
