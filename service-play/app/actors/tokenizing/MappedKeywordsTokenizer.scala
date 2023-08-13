@@ -32,6 +32,6 @@ class MappedKeywordsTokenizer private[tokenizing](
     }
 
   override def apply(text: String): Seq[String] = WordSeparatorPattern.
-    split(text.trim.toLowerCase).reverse.to(LazyList).
+    split(text.trim.toLowerCase).to(LazyList).
     flatMap(keywordsByLowerCasedToken.get)
 }
