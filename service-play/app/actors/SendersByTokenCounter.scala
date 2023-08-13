@@ -156,8 +156,9 @@ private class SendersByTokenCounter(
 
             case extractedTokens =>
               ctx.log.info(s"Extracted tokens ${extractedTokens.mkString("\"", "\", \"", "\"")}")
+              val prioritizedTokens: Seq[String] = extractedTokens.reverse
               val newChatMessagesAndTokens: IndexedSeq[ChatMessageAndTokens] =
-                chatMessagesAndTokens :+ ChatMessageAndTokens(chatMessage, extractedTokens)
+                chatMessagesAndTokens :+ ChatMessageAndTokens(chatMessage, prioritizedTokens)
               val (
                 newTokensBySender: Map[String, FifoBoundedSet[String]],
                 addedTokens: Set[String],
@@ -165,8 +166,8 @@ private class SendersByTokenCounter(
               ) = senderOpt match {
                 case Some(sender: String) =>
                   val (tokens: FifoBoundedSet[String], updates: Seq[FifoBoundedSet.Effect[String]]) =
-                    tokensBySender(sender).addAll(extractedTokens)
-                  val addedTokens: Set[String] = extractedTokens.zip(updates).
+                    tokensBySender(sender).addAll(prioritizedTokens)
+                  val addedTokens: Set[String] = prioritizedTokens.zip(updates).
                     collect {
                       case (token: String, FifoBoundedSet.Added()) => token
                       case (token: String, FifoBoundedSet.AddedEvicting(_)) => token
@@ -183,7 +184,7 @@ private class SendersByTokenCounter(
                     removedTokens -- addedTokens
                   )
 
-                case None => (tokensBySender, extractedTokens.toSet, Set.empty)
+                case None => (tokensBySender, prioritizedTokens.toSet, Set.empty)
               }
               val newTokens: MultiSet[String] = addedTokens.
                 foldLeft(
