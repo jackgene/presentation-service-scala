@@ -1,25 +1,23 @@
 import _root_.controllers.*
 import play.api.*
 import play.api.ApplicationLoader.Context
-import play.api.mvc.EssentialFilter
+import play.api.http.{HttpErrorHandler, JsonHttpErrorHandler}
 import play.api.routing.Router
-import play.filters.HttpFiltersComponents
 import router.Routes
 
 object PresentationServiceApplicationLoader {
   private class Components(context: Context)
       extends BuiltInComponentsFromContext(context)
-      with HttpFiltersComponents
+      with NoHttpFiltersComponents
       with AssetsComponents {
-    // Get rid of Content-Security-Policy header
-    override lazy val httpFilters: Seq[EssentialFilter] = Seq()
+    override lazy val httpErrorHandler: HttpErrorHandler =
+      new JsonHttpErrorHandler(environment, devContext.map(_.sourceMapper))
 
     private lazy val mainController: MainController = new MainController(
       controllerComponents, configuration
     )(actorSystem, materializer)
-    override lazy val router: Router = new Routes(
-      httpErrorHandler, assets, mainController
-    )
+    override lazy val router: Router =
+      new Routes(httpErrorHandler, assets, mainController)
   }
 }
 class PresentationServiceApplicationLoader extends ApplicationLoader {
