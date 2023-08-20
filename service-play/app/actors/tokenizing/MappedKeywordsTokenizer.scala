@@ -11,19 +11,17 @@ class MappedKeywordsTokenizer private[tokenizing](
 ) extends Tokenizer {
   import MappedKeywordsTokenizer.*
 
-  if (keywordsByRawToken.isEmpty) {
-    throw new IllegalArgumentException("keywordsByRawToken must not be empty")
-  }
+  require(keywordsByRawToken.nonEmpty, "keywordsByRawToken must not be empty")
+
   {
     val invalidRawTokens: Set[String] = keywordsByRawToken.keySet.
       filter {
         WordSeparatorPattern.findFirstIn(_).nonEmpty
       }
-    if (invalidRawTokens.nonEmpty) {
-      throw new IllegalArgumentException(
-        s"some keyword mappings have invalid raw tokens: ${invalidRawTokens.mkString("{", ",", "}")}"
-      )
-    }
+    require(
+      invalidRawTokens.isEmpty,
+      s"some keyword mappings have invalid raw tokens: ${invalidRawTokens.mkString("{", ",", "}")}"
+    )
   }
 
   private val keywordsByLowerCasedToken: Map[String, String] = keywordsByRawToken.

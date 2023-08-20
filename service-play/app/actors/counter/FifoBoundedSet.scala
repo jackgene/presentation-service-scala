@@ -55,9 +55,7 @@ class FifoBoundedSet[A] private(
 ) {
   import FifoBoundedSet.*
 
-  if (maxSize < 1) {
-    throw new IllegalArgumentException("maxSize must be positive")
-  }
+  require(maxSize >= 1, "maxSize must be positive")
 
   private def copy(
     uniques: Set[A] = uniques,

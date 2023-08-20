@@ -11,16 +11,14 @@ class NormalizedWordsTokenizer private[tokenizing](
 ) extends Tokenizer {
   import NormalizedWordsTokenizer.*
 
-  if (minWordLength < 1) {
-    throw new IllegalArgumentException(s"minWordLength must be at least 1")
-  }
+  require(minWordLength >= 1, "minWordLength must be at least 1")
+
   {
     val invalidStopWords: Set[String] = stopWords.filterNot(ValidWordPattern.matches)
-    if (invalidStopWords.nonEmpty) {
-      throw new IllegalArgumentException(
-        s"some stop words are invalid: ${invalidStopWords.mkString("{", ",", "}")}"
-      )
-    }
+    require(
+      invalidStopWords.isEmpty,
+      s"some stop words are invalid: ${invalidStopWords.mkString("{", ",", "}")}"
+    )
   }
 
   private val lowerCasedStopWords: Set[String] = stopWords.map(_.toLowerCase)
