@@ -4,6 +4,7 @@ import scala.util.matching.Regex
 
 object NormalizedWordsTokenizer {
   private val ValidWordPattern: Regex = """(\p{L}+(?:-\p{L}+)*)""".r
+  private val WordSeparatorPattern: Regex = """[^\p{L}\-]+""".r
 }
 
 class NormalizedWordsTokenizer private[tokenizing](
@@ -23,14 +24,14 @@ class NormalizedWordsTokenizer private[tokenizing](
 
   private val lowerCasedStopWords: Set[String] = stopWords.map(_.toLowerCase)
 
-  override def apply(text: String): Seq[String] = text.trim.
-    split("""[^\p{L}\-]+""").toSeq.
+  override def apply(text: String): Seq[String] = WordSeparatorPattern.
+    split(text.trim).
     map {
       _.toLowerCase
     }.
     collect {
       case ValidWordPattern(word: String)
-        if word.length >= minWordLength && !lowerCasedStopWords.contains(word) =>
+          if word.length >= minWordLength && !lowerCasedStopWords.contains(word) =>
 
         word
     }
