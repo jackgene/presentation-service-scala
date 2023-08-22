@@ -45,7 +45,8 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
       SendersByTokenCounter(
         extractTokens = normalizedWordsTokenizer(
           cfg.get[Seq[String]]("presentation.wordCloud.stopWords").toSet,
-          cfg.get[Int]("presentation.wordCloud.minWordLength")
+          cfg.get[Int]("presentation.wordCloud.minWordLength"),
+          cfg.get[Int]("presentation.wordCloud.maxWordLength")
         ),
         tokensPerSender = cfg.get[Int]("presentation.wordCloud.maxWordsPerPerson"),
         chatMessages, rejectedMessages

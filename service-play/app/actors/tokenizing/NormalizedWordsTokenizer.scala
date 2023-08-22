@@ -8,7 +8,7 @@ object NormalizedWordsTokenizer {
 }
 
 class NormalizedWordsTokenizer private[tokenizing](
-  stopWords: Set[String], minWordLength: Int
+  stopWords: Set[String], minWordLength: Int, maxWordLength: Int
 ) extends Tokenizer {
   import NormalizedWordsTokenizer.*
 
@@ -30,9 +30,9 @@ class NormalizedWordsTokenizer private[tokenizing](
       _.toLowerCase
     }.
     collect {
-      case ValidWordPattern(word: String)
-          if word.length >= minWordLength && !lowerCasedStopWords.contains(word) =>
-
-        word
+      case ValidWordPattern(word: String) if
+        minWordLength  <= word.length && word.length <= maxWordLength &&
+          !lowerCasedStopWords.contains(word)
+      => word
     }
 }
