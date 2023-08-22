@@ -7,6 +7,7 @@ package object tokenizing {
     if (keywordsByRawToken.isEmpty) NoOpTokenizer
     else new MappedKeywordsTokenizer(keywordsByRawToken)
 
-  def normalizedWordsTokenizer(stopWords: Set[String] = Set(), minWordLength: Int = 1): Tokenizer =
-    new NormalizedWordsTokenizer(stopWords, minWordLength)
+  def normalizedWordsTokenizer(
+    stopWords: Set[String] = Set(), minWordLength: Int, maxWordLength: Int
+  ): Tokenizer = new NormalizedWordsTokenizer(stopWords, minWordLength, maxWordLength)
 }
