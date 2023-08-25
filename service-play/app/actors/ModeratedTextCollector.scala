@@ -44,10 +44,10 @@ object ModeratedTextCollector {
    */
   object JsonPublisher {
     def apply(
-      subscriber: ActorRef[JsValue], approvalRouter: ActorRef[Command]
+      subscriber: ActorRef[JsValue], moderatedTextCollector: ActorRef[Command]
     ): Behavior[Event] = Behaviors.setup { ctx: ActorContext[Event] =>
-      ctx.watch(approvalRouter)
-      approvalRouter ! Subscribe(ctx.self)
+      ctx.watch(moderatedTextCollector)
+      moderatedTextCollector ! Subscribe(ctx.self)
 
       JsonWriter(subscriber)
     }
