@@ -3,7 +3,7 @@ package actors.tokenizing
 import org.scalatestplus.play.PlaySpec
 
 class MappedKeywordsTokenizerSpec extends PlaySpec {
-  val testText = "Lorem ipsum dolor sit amet!"
+  val testText: String = "Lorem ipsum dolor sit amet!"
 
   "A MappedKeywordsTokenizer" when {
     "configured with lower-case keyed mapping" must {
