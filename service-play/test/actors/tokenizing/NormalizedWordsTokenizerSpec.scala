@@ -286,10 +286,10 @@ class NormalizedWordsTokenizerSpec extends PlaySpec {
         }
       }
 
-      "fail on maximum word length less than 1" in {
+      "fail on maximum word length less than minimum word length" in {
         // Test
         assertThrows[IllegalArgumentException] {
-          new NormalizedWordsTokenizer(Set(), 1, 0)
+          new NormalizedWordsTokenizer(Set(), 5, 4)
         }
       }
     }
