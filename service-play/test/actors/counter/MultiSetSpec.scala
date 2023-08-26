@@ -3,7 +3,7 @@ package actors.counter
 import org.scalatestplus.play.PlaySpec
 
 class MultiSetSpec extends PlaySpec {
-  "Frequencies" must {
+  "A MultiSet" must {
     val empty = MultiSet[String]()
 
     "be initially empty" in {
