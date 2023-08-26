@@ -9,7 +9,7 @@ class NormalizedWordsTokenizerProp extends CommonProp {
       "text" |: Gen.asciiStr
     ) { (text: String) =>
       // Set up
-      val instance = new NormalizedWordsTokenizer(Set(), 1)
+      val instance = new NormalizedWordsTokenizer(Set(), 1, maxWordLength = Int.MaxValue)
 
       // Test
       val actualTokens: Seq[String] = instance(text)
@@ -25,7 +25,7 @@ class NormalizedWordsTokenizerProp extends CommonProp {
       "text"      |: Gen.asciiStr
     ) { (stopWords: Set[String], text: String) =>
       // Set up
-      val instance = new NormalizedWordsTokenizer(stopWords, 1)
+      val instance = new NormalizedWordsTokenizer(stopWords, 1, maxWordLength = Int.MaxValue)
 
       // Test
       val actualTokens: Seq[String] = instance(text)
@@ -41,13 +41,29 @@ class NormalizedWordsTokenizerProp extends CommonProp {
       "text"          |: Gen.asciiStr
     ) { (minWordLength: Int, text: String) =>
       // Set up
-      val instance = new NormalizedWordsTokenizer(Set(), minWordLength)
+      val instance = new NormalizedWordsTokenizer(Set(), minWordLength, maxWordLength = Int.MaxValue)
 
       // Test
       val actualTokens: Seq[String] = instance(text)
 
       // Verify
       assert(actualTokens.forall { _.length >= minWordLength })
+    }
+  }
+
+  property("only extract words shorter than maxWordLength") {
+    forAll(
+      "maxWordLength" |: Gen.posNum[Int],
+      "text"          |: Gen.asciiStr
+    ) { (maxWordLength: Int, text: String) =>
+      // Set up
+      val instance = new NormalizedWordsTokenizer(Set(), 1, maxWordLength = maxWordLength)
+
+      // Test
+      val actualTokens: Seq[String] = instance(text)
+
+      // Verify
+      assert(actualTokens.forall { _.length <= maxWordLength })
     }
   }
 }

@@ -3,14 +3,14 @@ package actors.tokenizing
 import org.scalatestplus.play.PlaySpec
 
 class NormalizedWordsTokenizerSpec extends PlaySpec {
-  val testAsciiText = "#hashtag hyphenated-word  invalid_symbols?! YOLO Yo!"
-  val testUnicodeText = "Schrödinger's little 🐱 (小猫)!"
+  val testAsciiText = "#hashtag hyphenated-word  invalid_symbols?! YOLO Yo!fomo"
+  val testUnicodeText = "Schrödinger's smol little 🐱 (小猫)!"
   val testWordLengthText = "i am not your large teapot"
 
   "A NormalizedWordsTokenizer" when {
-    "configured with no stop words or minimum word length" must {
+    "configured with no stop words, minimum, or maximum word length" must {
       val instance = new NormalizedWordsTokenizer(
-        stopWords = Set(), minWordLength = 1
+        stopWords = Set(), minWordLength = 1, maxWordLength = Int.MaxValue
       )
 
       "correctly tokenize ASCII text" in {
@@ -25,6 +25,7 @@ class NormalizedWordsTokenizerSpec extends PlaySpec {
           "symbols",          // ? and ! are not valid (consider whitespace)
           "yolo",             // lower-cased
           "yo",               // ! is not valid (considered whitespace)
+          "fomo",             // after !
         )
         assert(actualTokens === expectedTokens)
       }
@@ -37,6 +38,7 @@ class NormalizedWordsTokenizerSpec extends PlaySpec {
         val expectedTokens: Seq[String] = Seq(
           "schrödinger",  // ' is not valid (considered whitespace)
           "s",
+          "smol",
           "little",       // 🐱 is not valid (considered whitespace)
           "小猫",          // () are not valid (considered whitespace)
         )
@@ -53,9 +55,9 @@ class NormalizedWordsTokenizerSpec extends PlaySpec {
       }
     }
 
-    "configured with no stop words and a minimum word length of 3" must {
+    "configured with no stop words, a minimum word length of 3, and no maximum word length" must {
       val instance = new NormalizedWordsTokenizer(
-        stopWords = Set(), minWordLength = 3
+        stopWords = Set(), minWordLength = 3, maxWordLength = Int.MaxValue
       )
 
       "omit short words tokenizing ASCII text" in {
@@ -70,6 +72,7 @@ class NormalizedWordsTokenizerSpec extends PlaySpec {
           "symbols",
           "yolo",
           // "yo", too short
+          "fomo",
         )
         assert(actualTokens === expectedTokens)
       }
@@ -81,14 +84,16 @@ class NormalizedWordsTokenizerSpec extends PlaySpec {
         // Verify
         val expectedTokens: Seq[String] = Seq(
           "schrödinger",
-          // "s", too short
+          // "s",   too short
+          "smol",
           "little",
-          // "小猫" too short
+          // "🐱"   not a letter
+          // "小猫"  too short
         )
         assert(actualTokens === expectedTokens)
       }
 
-      "omit short words tokenizing text" in {
+      "omit short words tokenizing variable word length text" in {
         // Test
         val actualTokens: Seq[String] = instance(testWordLengthText)
 
@@ -98,9 +103,58 @@ class NormalizedWordsTokenizerSpec extends PlaySpec {
       }
     }
 
-    "configured with stop words and no minimum word length" must {
+    "configured with no stop words, no minimum word length, and a maximum word length of 4" must {
       val instance = new NormalizedWordsTokenizer(
-        stopWords = Set("yolo", "large", "schrödinger"), minWordLength = 1
+        stopWords = Set(), minWordLength = 1, maxWordLength = 4
+      )
+
+      "omit long words tokenizing ASCII text" in {
+        // Test
+        val actualTokens: Seq[String] = instance(testAsciiText)
+
+        // Verify
+        val expectedTokens: Seq[String] = Seq(
+          // "hashtag",         too long
+          // "hyphenated-word", too long
+          // "invalid",         too long
+          // "symbols",         too long
+          "yolo",
+          "yo",
+          "fomo",
+        )
+        assert(actualTokens === expectedTokens)
+      }
+
+      "omit long words tokenizing Unicode text" in {
+        // Test
+        val actualTokens: Seq[String] = instance(testUnicodeText)
+
+        // Verify
+        val expectedTokens: Seq[String] = Seq(
+          // "schrödinger",  too long
+          "s",
+          "smol",
+          // "little",       too long
+          // "🐱"            not a letter
+           "小猫"
+        )
+        assert(actualTokens === expectedTokens)
+      }
+
+      "omit long words tokenizing variable word length text" in {
+        // Test
+        val actualTokens: Seq[String] = instance(testWordLengthText)
+
+        // Verify
+        val expectedTokens: Seq[String] = Seq("i", "am", "not", "your")
+        assert(actualTokens === expectedTokens)
+      }
+    }
+
+    "configured with stop words and no minimum or maximum word length" must {
+      val instance = new NormalizedWordsTokenizer(
+        stopWords = Set("yolo", "large", "schrödinger"),
+        minWordLength = 1, maxWordLength = Int.MaxValue
       )
 
       "omit stop words tokenizing ASCII text" in {
@@ -115,6 +169,7 @@ class NormalizedWordsTokenizerSpec extends PlaySpec {
           "symbols",
           // "yolo", stop word
           "yo",
+          "fomo",
         )
         assert(actualTokens === expectedTokens)
       }
@@ -125,9 +180,11 @@ class NormalizedWordsTokenizerSpec extends PlaySpec {
 
         // Verify
         val expectedTokens: Seq[String] = Seq(
-          //"schrödinger", stop word
+          //"schrödinger",  stop word
           "s",
+          "smol",
           "little",
+          // "🐱"           not a letter
           "小猫",
         )
         assert(actualTokens === expectedTokens)
@@ -143,48 +200,52 @@ class NormalizedWordsTokenizerSpec extends PlaySpec {
       }
     }
 
-    "configured with stop words and a minimum word length of 5" must {
+    "configured with stop words, a minimum word length of 3, and a maximum word length of 5" must {
       val instance = new NormalizedWordsTokenizer(
         stopWords = Set("yolo", "large", "schrödinger"),
-        minWordLength = 5
+        minWordLength = 3,
+        maxWordLength = 5
       )
 
-      "omit short words and stop words tokenizing ASCII text" in {
+      "omit short, long, and stop words tokenizing ASCII text" in {
         // Test
         val actualTokens: Seq[String] = instance(testAsciiText)
 
         // Verify
         val expectedTokens: Seq[String] = Seq(
-          "hashtag",
-          "hyphenated-word",
-          "invalid",
-          "symbols",
-          // "yolo", stop word
-          // "yo", too short
+          // "hashtag",          too long
+          // "hyphenated-word",  too long
+          // "invalid",          too long
+          // "symbols",          too long
+          // "yolo",             stop word
+          // "yo",               too short
+          "fomo",
         )
         assert(actualTokens === expectedTokens)
       }
 
-      "omit short words and stop words tokenizing Unicode text" in {
+      "omit short, long, and stop words tokenizing Unicode text" in {
         // Test
         val actualTokens: Seq[String] = instance(testUnicodeText)
 
         // Verify
         val expectedTokens: Seq[String] = Seq(
-          // "schrödinger", stop word
-          // "s", too short
-          "little",
-          // "小猫" too short
+          // "schrödinger",  stop word
+          // "s",            too short
+          "smol",
+          // "little",       too long
+          // "🐱"            not a letter
+          // "小猫"           too short
         )
         assert(actualTokens === expectedTokens)
       }
 
-      "omit short words and stop words tokenizing variable word length text" in {
+      "omit short, long, and stop words tokenizing variable word length text" in {
         // Test
         val actualTokens: Seq[String] = instance(testWordLengthText)
 
         // Verify
-        val expectedTokens: Seq[String] = Seq("teapot")
+        val expectedTokens: Seq[String] = Seq("not", "your")
         assert(actualTokens === expectedTokens)
       }
     }
@@ -193,35 +254,42 @@ class NormalizedWordsTokenizerSpec extends PlaySpec {
       "fail on stop word of an empty string" in {
         // Test
         assertThrows[IllegalArgumentException] {
-          new NormalizedWordsTokenizer(Set(""), 1)
+          new NormalizedWordsTokenizer(Set(""), 1, maxWordLength = Int.MaxValue)
         }
       }
 
       "fail on stop word of a blank word" in {
         // Test
         assertThrows[IllegalArgumentException] {
-          new NormalizedWordsTokenizer(Set(" "), 1)
+          new NormalizedWordsTokenizer(Set(" "), 1, maxWordLength = Int.MaxValue)
         }
       }
 
       "fail on stop word of a numeric string" in {
         // Test
         assertThrows[IllegalArgumentException] {
-          new NormalizedWordsTokenizer(Set("1"), 1)
+          new NormalizedWordsTokenizer(Set("1"), 1, maxWordLength = Int.MaxValue)
         }
       }
 
       "fail on stop word containing non-letter symbols" in {
         // Test
         assertThrows[IllegalArgumentException] {
-          new NormalizedWordsTokenizer(Set("$_"), 1)
+          new NormalizedWordsTokenizer(Set("$_"), 1, maxWordLength = Int.MaxValue)
         }
       }
 
       "fail on minimum word length less than 1" in {
         // Test
         assertThrows[IllegalArgumentException] {
-          new NormalizedWordsTokenizer(Set(), 0)
+          new NormalizedWordsTokenizer(Set(), 0, maxWordLength = Int.MaxValue)
+        }
+      }
+
+      "fail on maximum word length less than 1" in {
+        // Test
+        assertThrows[IllegalArgumentException] {
+          new NormalizedWordsTokenizer(Set(), 1, 0)
         }
       }
     }
