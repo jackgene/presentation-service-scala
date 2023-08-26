@@ -14,7 +14,7 @@ class NormalizedWordsTokenizer private[tokenizing](
   import NormalizedWordsTokenizer.*
 
   require(minWordLength >= 1, "minWordLength must be at least 1")
-  require(maxWordLength >= minWordLength, "maxWordLength must be at least minWordLength")
+  require(maxWordLength >= minWordLength, "maxWordLength must be no less than minWordLength")
 
   {
     val invalidStopWords: Set[String] = stopWords.filterNot(ValidWordPattern.matches)
