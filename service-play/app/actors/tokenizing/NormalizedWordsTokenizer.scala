@@ -6,6 +6,10 @@ import scala.util.matching.Regex
 object NormalizedWordsTokenizer {
   private val ValidWordPattern: Regex = """(\p{L}+(?:-\p{L}+)*)""".r
   private val WordSeparatorPattern: Regex = """[^\p{L}\-]+""".r
+
+  def apply(
+    stopWords: Set[String] = Set(), minWordLength: Int, maxWordLength: Int
+  ): Tokenizer = new NormalizedWordsTokenizer(stopWords, minWordLength, maxWordLength)
 }
 
 class NormalizedWordsTokenizer private[tokenizing](

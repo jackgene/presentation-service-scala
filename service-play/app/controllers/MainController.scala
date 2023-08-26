@@ -2,7 +2,7 @@ package controllers
 
 import actors.*
 import actors.adapter.*
-import actors.tokenizing.{mappedKeywordsTokenizer, normalizedWordsTokenizer}
+import actors.tokenizing.{MappedKeywordsTokenizer, NormalizedWordsTokenizer}
 import akka.actor.ActorSystem
 import akka.actor.typed.ActorRef
 import akka.actor.typed.scaladsl.adapter.*
@@ -32,7 +32,7 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
   private val languagePoll: ActorRef[SendersByTokenCounter.Command] =
     system.spawn(
       SendersByTokenCounter(
-        extractTokens = mappedKeywordsTokenizer(
+        extractTokens = MappedKeywordsTokenizer(
           cfg.get[Map[String, String]]("presentation.languagePoll.languageByKeyword")
         ),
         tokensPerSender = cfg.get[Int]("presentation.languagePoll.maxVotesPerPerson"),
@@ -43,7 +43,7 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
   private val wordCloud: ActorRef[SendersByTokenCounter.Command] =
     system.spawn(
       SendersByTokenCounter(
-        extractTokens = normalizedWordsTokenizer(
+        extractTokens = NormalizedWordsTokenizer(
           cfg.get[Seq[String]]("presentation.wordCloud.stopWords").toSet,
           cfg.get[Int]("presentation.wordCloud.minWordLength"),
           cfg.get[Int]("presentation.wordCloud.maxWordLength")

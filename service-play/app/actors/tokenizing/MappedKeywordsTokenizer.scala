@@ -5,6 +5,9 @@ import scala.util.matching.Regex
 
 object MappedKeywordsTokenizer {
   private val WordSeparatorPattern: Regex = """[\s!"&,./?|]""".r
+
+  def apply(keywordsByRawToken: Map[String, String]): Tokenizer =
+    new MappedKeywordsTokenizer(keywordsByRawToken)
 }
 
 class MappedKeywordsTokenizer private[tokenizing](

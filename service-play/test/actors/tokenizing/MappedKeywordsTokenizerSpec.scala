@@ -57,56 +57,56 @@ class MappedKeywordsTokenizerSpec extends PlaySpec {
       "fail on mapping with space in raw token" in {
         // Test
         assertThrows[IllegalArgumentException] {
-          new MappedKeywordsTokenizer(Map(" " -> "Mock-1"))
+          new MappedKeywordsTokenizer(Map("mock token" -> "Mock-1"))
         }
       }
 
       "fail on mapping with tab in raw token" in {
         // Test
         assertThrows[IllegalArgumentException] {
-          new MappedKeywordsTokenizer(Map("\t" -> "Mock-1"))
+          new MappedKeywordsTokenizer(Map("mock\ttoken" -> "Mock-1"))
         }
       }
 
       "fail on mapping with comma in raw token" in {
         // Test
         assertThrows[IllegalArgumentException] {
-          new MappedKeywordsTokenizer(Map("," -> "Mock-1"))
+          new MappedKeywordsTokenizer(Map("mock,token" -> "Mock-1"))
         }
       }
 
       "fail on mapping with period in raw token" in {
         // Test
         assertThrows[IllegalArgumentException] {
-          new MappedKeywordsTokenizer(Map("." -> "Mock-1"))
+          new MappedKeywordsTokenizer(Map("mock.token" -> "Mock-1"))
         }
       }
 
       "fail on mapping with slash in raw token" in {
         // Test
         assertThrows[IllegalArgumentException] {
-          new MappedKeywordsTokenizer(Map("/" -> "Mock-1"))
+          new MappedKeywordsTokenizer(Map("mock/token" -> "Mock-1"))
         }
       }
 
       "fail on mapping with pipe in raw token" in {
         // Test
         assertThrows[IllegalArgumentException] {
-          new MappedKeywordsTokenizer(Map("|" -> "Mock-1"))
+          new MappedKeywordsTokenizer(Map("mock|token" -> "Mock-1"))
         }
       }
 
       "fail on mapping with question mark in raw token" in {
         // Test
         assertThrows[IllegalArgumentException] {
-          new MappedKeywordsTokenizer(Map("?" -> "Mock-1"))
+          new MappedKeywordsTokenizer(Map("mock?token" -> "Mock-1"))
         }
       }
 
       "fail on mapping with exclamation mark in raw token" in {
         // Test
         assertThrows[IllegalArgumentException] {
-          new MappedKeywordsTokenizer(Map("!" -> "Mock-1"))
+          new MappedKeywordsTokenizer(Map("mock!token" -> "Mock-1"))
         }
       }
     }
