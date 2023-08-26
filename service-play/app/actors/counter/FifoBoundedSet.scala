@@ -50,8 +50,8 @@ object FifoBoundedSet {
  */
 class FifoBoundedSet[A] private(
   val maxSize: Int,
-  val uniques: Set[A] = Set[A](),
-  val insertionOrder: IndexedSeq[A] = Vector[A]()
+  val insertionOrder: IndexedSeq[A] = Vector[A](),
+  uniques: Set[A] = Set[A]()
 ) {
   import FifoBoundedSet.*
 
@@ -61,7 +61,7 @@ class FifoBoundedSet[A] private(
     uniques: Set[A] = uniques,
     insertionOrder: IndexedSeq[A]
   ): FifoBoundedSet[A] = new FifoBoundedSet(
-    maxSize, uniques, insertionOrder
+    maxSize, insertionOrder, uniques
   )
 
   /**
@@ -120,7 +120,7 @@ class FifoBoundedSet[A] private(
       (nextAccumSet, accumUpdates :+ update)
     }
 
-  def toSeq: Seq[A] = insertionOrder
+  val toSeq: Seq[A] = insertionOrder
 
   private def canEqual(other: Any): Boolean =
     other.isInstanceOf[FifoBoundedSet[?]]
@@ -129,13 +129,12 @@ class FifoBoundedSet[A] private(
     case that: FifoBoundedSet[?] =>
       (that canEqual this) &&
         maxSize == that.maxSize &&
-        uniques == that.uniques &&
         insertionOrder == that.insertionOrder
     case _ => false
   }
 
   override def hashCode(): Int = {
-    val state = Seq[Any](maxSize, uniques, insertionOrder)
+    val state = Seq[Any](maxSize, insertionOrder)
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }
 
