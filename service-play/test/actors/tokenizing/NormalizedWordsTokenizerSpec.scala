@@ -3,9 +3,9 @@ package actors.tokenizing
 import org.scalatestplus.play.PlaySpec
 
 class NormalizedWordsTokenizerSpec extends PlaySpec {
-  val testAsciiText = "#hashtag hyphenated-word  invalid_symbols?! YOLO Yo!fomo"
-  val testUnicodeText = "Schrödinger's smol little 🐱 (小猫)!"
-  val testWordLengthText = "i am not your large teapot"
+  val testAsciiText: String = "#hashtag hyphenated-word  invalid_symbols?! YOLO Yo!fomo"
+  val testUnicodeText: String = "Schrödinger's smol little 🐱 (小猫)!"
+  val testWordLengthText: String = "i am not your large teapot"
 
   "A NormalizedWordsTokenizer" when {
     "configured with no stop words, minimum, or maximum word length" must {
