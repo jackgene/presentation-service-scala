@@ -1,5 +1,6 @@
 package actors.tokenizing
 
+import scala.collection.immutable.ArraySeq
 import scala.util.matching.Regex
 
 object MappedKeywordsTokenizer {
@@ -29,7 +30,12 @@ class MappedKeywordsTokenizer private[tokenizing](
       keyword.toLowerCase -> token
     }
 
-  override def apply(text: String): Seq[String] = WordSeparatorPattern.
-    split(text.trim.toLowerCase).
+  override def apply(text: String): Seq[String] = ArraySeq.
+    unsafeWrapArray(
+      WordSeparatorPattern.split(text.trim)
+    ).
+    map {
+      _.toLowerCase
+    }.
     flatMap(keywordsByLowerCasedToken.get)
 }

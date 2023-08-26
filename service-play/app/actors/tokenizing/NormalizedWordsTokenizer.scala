@@ -1,5 +1,6 @@
 package actors.tokenizing
 
+import scala.collection.immutable.ArraySeq
 import scala.util.matching.Regex
 
 object NormalizedWordsTokenizer {
@@ -13,6 +14,7 @@ class NormalizedWordsTokenizer private[tokenizing](
   import NormalizedWordsTokenizer.*
 
   require(minWordLength >= 1, "minWordLength must be at least 1")
+  require(maxWordLength >= 1, "maxWordLength must be at least 1")
 
   {
     val invalidStopWords: Set[String] = stopWords.filterNot(ValidWordPattern.matches)
@@ -24,8 +26,10 @@ class NormalizedWordsTokenizer private[tokenizing](
 
   private val lowerCasedStopWords: Set[String] = stopWords.map(_.toLowerCase)
 
-  override def apply(text: String): Seq[String] = WordSeparatorPattern.
-    split(text.trim).
+  override def apply(text: String): Seq[String] = ArraySeq.
+    unsafeWrapArray(
+      WordSeparatorPattern.split(text.trim)
+    ).
     map {
       _.toLowerCase
     }.
