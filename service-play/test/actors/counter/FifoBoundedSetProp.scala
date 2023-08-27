@@ -1,13 +1,13 @@
 package actors.counter
 
 import common.CommonProp
-import org.scalacheck.Gen
+import org.scalacheck.{Arbitrary, Gen}
 
 class FifoBoundedSetProp extends CommonProp {
   property("never contain more elements than maxSize") {
     forAll(
-      "maxSize" |: Gen.posNum[Int],
-      "elements"  |: Gen.listOf(Gen.posNum[Int])
+      "maxSize"  |: Gen.posNum[Int],
+      "elements" |: Arbitrary.arbitrary[Seq[Int]]
     ) { (maxSize: Int, elements: Seq[Int]) =>
       whenever(maxSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
         // Set up & Test
@@ -21,8 +21,8 @@ class FifoBoundedSetProp extends CommonProp {
 
   property("always include the most recently added elements") {
     forAll(
-      "maxSize" |: Gen.posNum[Int],
-      "elements"  |: Gen.nonEmptyListOf(Gen.posNum[Int])
+      "maxSize"  |: Gen.posNum[Int],
+      "elements" |: Arbitrary.arbitrary[Seq[Int]]
     ) { (maxSize: Int, elements: Seq[Int]) =>
       whenever(maxSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
         // Set up & Test
@@ -36,8 +36,8 @@ class FifoBoundedSetProp extends CommonProp {
 
   property("only evict the least recently added elements") {
     forAll(
-      "maxSize" |: Gen.posNum[Int],
-      "elements"  |: Gen.nonEmptyListOf(Gen.posNum[Int])
+      "maxSize"  |: Gen.posNum[Int],
+      "elements" |: Arbitrary.arbitrary[Seq[Int]]
     ) { (maxSize: Int, elements: Seq[Int]) =>
       whenever(maxSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
         // Set up & Test
@@ -57,7 +57,7 @@ class FifoBoundedSetProp extends CommonProp {
 
   property("never evict when not full") {
     forAll(
-      "elements" |: Gen.nonEmptyListOf(Gen.posNum[Int])
+      "elements" |: Gen.nonEmptyListOf(Arbitrary.arbitrary[Int])
     ) { (elements: Seq[Int]) =>
       // Set up & Test
       val (instance, actualEffects: Seq[FifoBoundedSet.Effect[Int]]) =
@@ -74,8 +74,8 @@ class FifoBoundedSetProp extends CommonProp {
   // add/addAll Equivalence
   property("add and addAll are equivalent given identical input") {
     forAll(
-      "maxSize" |: Gen.posNum[Int],
-      "elements"  |: Gen.listOf(Gen.posNum[Int])
+      "maxSize"  |: Gen.posNum[Int],
+      "elements" |: Arbitrary.arbitrary[Seq[Int]]
     ) { (maxSize: Int, elements: Seq[Int]) =>
       whenever(maxSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
         // Set up
@@ -98,8 +98,8 @@ class FifoBoundedSetProp extends CommonProp {
 
   property("add and addAll produces identical effects given identical input") {
     forAll(
-      "maxSize" |: Gen.posNum[Int],
-      "elements"  |: Gen.listOf(Gen.posNum[Int])
+      "maxSize"  |: Gen.posNum[Int],
+      "elements" |: Gen.listOf(Gen.posNum[Int])
     ) { (maxSize: Int, elements: Seq[Int]) =>
       whenever(maxSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
         // Set up
