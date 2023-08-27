@@ -3,7 +3,7 @@ package actors.tokenizing
 import org.scalatestplus.play.PlaySpec
 
 class NormalizedWordsTokenizerSpec extends PlaySpec {
-  val testAsciiText: String = "#hashtag hyphenated-word  invalid_symbols?! YOLO Yo!fomo"
+  val testAsciiText: String = "#hashtag hyphenated-word-  invalid_symbols?! YOLO Yo!fomo"
   val testUnicodeText: String = "Schrödinger's smol little 🐱 (小猫)!"
   val testWordLengthText: String = "i am not your large teapot"
 
