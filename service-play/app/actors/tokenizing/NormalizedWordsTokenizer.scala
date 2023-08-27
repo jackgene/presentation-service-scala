@@ -38,7 +38,7 @@ class NormalizedWordsTokenizer private[tokenizing](
       WordSeparatorPattern.split(text.trim)
     ).
     map {
-      _.toLowerCase
+      _.toLowerCase.replaceAll("^-+", "").replaceAll("-+$", "")
     }.
     collect {
       case ValidWordPattern(word: String) if
