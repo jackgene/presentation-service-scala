@@ -4,7 +4,7 @@ import org.scalatestplus.play.PlaySpec
 
 class MultiSetSpec extends PlaySpec {
   "A MultiSet" must {
-    val empty = MultiSet[String]()
+    val empty: MultiSet[String] = MultiSet()
 
     "be initially empty" in {
       // Set up & Test

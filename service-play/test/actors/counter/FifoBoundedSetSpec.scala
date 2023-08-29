@@ -4,7 +4,7 @@ import org.scalatestplus.play.PlaySpec
 
 class FifoBoundedSetSpec extends PlaySpec {
   "A FifoBoundedSet of size 2" when {
-    val empty: FifoBoundedSet[String] = FifoBoundedSet[String](2)
+    val empty: FifoBoundedSet[String] = FifoBoundedSet(2)
 
     "no element has been added" must {
       // Set up
@@ -16,7 +16,7 @@ class FifoBoundedSetSpec extends PlaySpec {
       }
 
       "accept 1 new element without evicting" in {
-        // Set up & Test
+        // Test
         val (actualUpdatedInstance, actualEffect) = instance.add("test")
 
         // Verify
@@ -25,7 +25,7 @@ class FifoBoundedSetSpec extends PlaySpec {
       }
 
       "accept 2 new elements without evicting" in {
-        // Set up & Test
+        // Test
         val (actualUpdatedInstance, actualEffects) =
           instance.addAll(Seq("test-1", "test-2"))
 
@@ -35,7 +35,7 @@ class FifoBoundedSetSpec extends PlaySpec {
       }
 
       "accept 3 new elements evicting the first" in {
-        // Set up & Test
+        // Test
         val (actualUpdatedInstance, actualEffects) =
           instance.addAll(Seq("test-1", "test-2", "test-3"))
 
@@ -61,7 +61,7 @@ class FifoBoundedSetSpec extends PlaySpec {
       }
 
       "accept 1 new element without evicting" in {
-        // Set up & Test
+        // Test
         val (actualUpdatedInstance, actualEffect) = instance.add("test-2")
 
         // Verify
@@ -70,7 +70,7 @@ class FifoBoundedSetSpec extends PlaySpec {
       }
 
       "not accept the existing element again" in {
-        // Set up & Test
+        // Test
         val (actualUpdatedInstance, actualEffect) = instance.add("test-1")
 
         // Verify
@@ -78,8 +78,8 @@ class FifoBoundedSetSpec extends PlaySpec {
         assert(actualUpdatedInstance.toSeq == Seq("test-1"))
       }
 
-      "accept 2 new elements evicting the existing elements" in {
-        // Set up & Test
+      "accept 2 new elements evicting the existing element" in {
+        // Test
         val (actualUpdatedInstance, actualEffects) =
           instance.addAll(Seq("test-2", "test-3"))
 
@@ -104,7 +104,7 @@ class FifoBoundedSetSpec extends PlaySpec {
       }
 
       "accept 1 new element evicting the first existing element" in {
-        // Set up & Test
+        // Test
         val (actualUpdatedInstance, actualEffect) = instance.add("test-3")
 
         // Verify
@@ -113,7 +113,7 @@ class FifoBoundedSetSpec extends PlaySpec {
       }
 
       "not accept an existing element again, but update its insertion order" in {
-        // Set up & Test
+        // Test
         val (actualUpdatedInstance, actualEffect) = instance.add("test-1")
 
         // Verify
@@ -122,7 +122,7 @@ class FifoBoundedSetSpec extends PlaySpec {
       }
 
       "accept 2 new elements evicting all existing elements" in {
-        // Set up & Test
+        // Test
         val (actualUpdatedInstance, actualEffects) =
           instance.addAll(Seq("test-3", "test-4"))
 
@@ -137,7 +137,7 @@ class FifoBoundedSetSpec extends PlaySpec {
       }
 
       "not accept 2 existing elements, but update their insertion order" in {
-        // Set up & Test
+        // Test
         val (actualUpdatedInstance, actualEffects) =
           instance.addAll(Seq("test-2", "test-1"))
 
@@ -152,7 +152,7 @@ class FifoBoundedSetSpec extends PlaySpec {
       }
 
       "accept a new element, but not an existing element, updating the insertion order of the existing element" in {
-        // Set up & Test
+        // Test
         val (actualUpdatedInstance, actualEffects) =
           instance.addAll(Seq("test-1", "test-3"))
 
