@@ -6,13 +6,13 @@ import org.scalacheck.Gen
 import scala.util.Random
 
 class MultiSetProp extends CommonProp {
-  val elementAndCount: Gen[(String, Int)] =
-    for {
-      element: String <- Gen.alphaLowerStr
-      count: Int <- Gen.posNum[Int]
-    } yield (element, count)
   val duplicativeElements: Gen[Seq[String]] =
-    Gen.nonEmptyListOf(elementAndCount).map { elementsAndCounts: List[(String, Int)] =>
+    Gen.nonEmptyListOf(
+      for {
+        element: String <- Gen.alphaLowerStr
+        count: Int <- Gen.posNum[Int]
+      } yield (element, count)
+    ).map { elementsAndCounts: List[(String, Int)] =>
       Random.shuffle(
         for {
           (value: String, count: Int) <- elementsAndCounts
