@@ -65,21 +65,21 @@ class FifoBoundedSetProp extends CommonProp {
 
       // Verify
       val actualEvictions: Seq[FifoBoundedSet.Effect[Int]] =
-        actualEffects.filter(_.isInstanceOf[FifoBoundedSet.AddedEvicting[Int]])
+        actualEffects.filter { _.isInstanceOf[FifoBoundedSet.AddedEvicting[Int]] }
       assert(instance.toSeq.toSet == elements.toSet)
       assert(actualEvictions.isEmpty)
     }
   }
 
   // add/addAll Equivalence
-  property("add and addAll are equivalent given identical input") {
+  property("add and addAll are equal given identical input") {
     forAll(
       "maxSize"  |: Gen.posNum[Int],
       "elements" |: Arbitrary.arbitrary[Seq[Int]]
     ) { (maxSize: Int, elements: Seq[Int]) =>
       whenever(maxSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
         // Set up
-        val empty: FifoBoundedSet[Int] = FifoBoundedSet[Int](maxSize)
+        val empty = FifoBoundedSet[Int](maxSize)
 
         // Test
         val (instanceUsingAddAll: FifoBoundedSet[Int], _) = empty.addAll(elements)
@@ -103,7 +103,7 @@ class FifoBoundedSetProp extends CommonProp {
     ) { (maxSize: Int, elements: Seq[Int]) =>
       whenever(maxSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
         // Set up
-        val empty: FifoBoundedSet[Int] = FifoBoundedSet[Int](maxSize)
+        val empty = FifoBoundedSet[Int](maxSize)
 
         // Test
         val (_, actualEffectsAddAll: Seq[FifoBoundedSet.Effect[Int]]) = empty.addAll(elements)
