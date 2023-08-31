@@ -9,9 +9,7 @@ class NormalizedWordsTokenizerSpec extends PlaySpec {
 
   "A NormalizedWordsTokenizer" when {
     "configured with no stop words, minimum, or maximum word length" must {
-      val instance = new NormalizedWordsTokenizer(
-        stopWords = Set(), minWordLength = 1, maxWordLength = Int.MaxValue
-      )
+      val instance = new NormalizedWordsTokenizer()
 
       "correctly tokenize ASCII text" in {
         // Test
@@ -56,9 +54,7 @@ class NormalizedWordsTokenizerSpec extends PlaySpec {
     }
 
     "configured with no stop words, a minimum word length of 3, and no maximum word length" must {
-      val instance = new NormalizedWordsTokenizer(
-        stopWords = Set(), minWordLength = 3, maxWordLength = Int.MaxValue
-      )
+      val instance = new NormalizedWordsTokenizer(minWordLength = 3)
 
       "omit short words tokenizing ASCII text" in {
         // Test
@@ -104,9 +100,7 @@ class NormalizedWordsTokenizerSpec extends PlaySpec {
     }
 
     "configured with no stop words, no minimum word length, and a maximum word length of 4" must {
-      val instance = new NormalizedWordsTokenizer(
-        stopWords = Set(), minWordLength = 1, maxWordLength = 4
-      )
+      val instance = new NormalizedWordsTokenizer(maxWordLength = 4)
 
       "omit long words tokenizing ASCII text" in {
         // Test
@@ -152,10 +146,7 @@ class NormalizedWordsTokenizerSpec extends PlaySpec {
     }
 
     "configured with stop words and no minimum or maximum word length" must {
-      val instance = new NormalizedWordsTokenizer(
-        stopWords = Set("yolo", "large", "schrödinger"),
-        minWordLength = 1, maxWordLength = Int.MaxValue
-      )
+      val instance = new NormalizedWordsTokenizer(stopWords = Set("yolo", "large", "schrödinger"))
 
       "omit stop words tokenizing ASCII text" in {
         // Test
