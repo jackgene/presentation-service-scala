@@ -9,7 +9,7 @@ class NormalizedWordsTokenizerProp extends CommonProp {
       "text" |: Gen.asciiStr
     ) { (text: String) =>
       // Set up
-      val instance = new NormalizedWordsTokenizer(Set(), 1, maxWordLength = Int.MaxValue)
+      val instance = new NormalizedWordsTokenizer()
 
       // Test
       val actualTokens: Seq[String] = instance(text)
@@ -25,7 +25,7 @@ class NormalizedWordsTokenizerProp extends CommonProp {
       "text"      |: Gen.asciiStr
     ) { (stopWords: Set[String], text: String) =>
       // Set up
-      val instance = new NormalizedWordsTokenizer(stopWords, 1, maxWordLength = Int.MaxValue)
+      val instance = new NormalizedWordsTokenizer(stopWords)
 
       // Test
       val actualTokens: Seq[String] = instance(text)
@@ -41,7 +41,7 @@ class NormalizedWordsTokenizerProp extends CommonProp {
       "text"          |: Gen.asciiStr
     ) { (minWordLength: Int, text: String) =>
       // Set up
-      val instance = new NormalizedWordsTokenizer(Set(), minWordLength, maxWordLength = Int.MaxValue)
+      val instance = new NormalizedWordsTokenizer(minWordLength = minWordLength)
 
       // Test
       val actualTokens: Seq[String] = instance(text)
@@ -57,7 +57,7 @@ class NormalizedWordsTokenizerProp extends CommonProp {
       "text"          |: Gen.asciiStr
     ) { (maxWordLength: Int, text: String) =>
       // Set up
-      val instance = new NormalizedWordsTokenizer(Set(), 1, maxWordLength = maxWordLength)
+      val instance = new NormalizedWordsTokenizer(maxWordLength = maxWordLength)
 
       // Test
       val actualTokens: Seq[String] = instance(text)
