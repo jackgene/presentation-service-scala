@@ -22,7 +22,7 @@ object FifoBoundedSet {
    *
    * This happens when adding a new element to a set that is full.
    */
-  case class AddedEvicting[A](added: A, evicted: A) extends Effect[A]
+  case class AddedEvicting[A](added: A, evicting: A) extends Effect[A]
 
   def apply[A](maxSize: Int): FifoBoundedSet[A] =
     new FifoBoundedSet[A](maxSize)
