@@ -98,7 +98,7 @@ class FifoBoundedSetProp extends CommonProp {
     }
   }
 
-  property("add and addAll produces identical effects given identical input") {
+  property("add and addAll produces equivalent effects given identical input") {
     forAll(
       "maxSize" |: Gen.posNum[Int],
       "elements" |: Gen.listOf(Gen.posNum[Int])
