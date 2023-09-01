@@ -119,8 +119,10 @@ class FifoBoundedSetProp extends CommonProp {
 
         // Verify
         assert(actualEffectsAddAll.size <= actualEffectsAdd.size)
-        actualEffectsAddAll.zip(actualEffectsAdd.takeRight(maxSize)).collect {
-          case (actualEffectAddAll: FifoBoundedSet.AddedEvicting[Int], actualEffectAdd: FifoBoundedSet.Effect[Int]) =>
+        actualEffectsAddAll.zip(actualEffectsAdd.takeRight(maxSize)).foreach {
+          case (FifoBoundedSet.Added(elementAddAll: Int), FifoBoundedSet.AddedEvicting(elementAdd: Int, _)) =>
+            assert(elementAddAll == elementAdd)
+          case (actualEffectAddAll, actualEffectAdd) =>
             assert(actualEffectAddAll == actualEffectAdd)
         }
       }
