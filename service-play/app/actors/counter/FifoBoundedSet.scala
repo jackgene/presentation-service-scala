@@ -2,6 +2,8 @@ package actors.counter
 
 import play.api.libs.json.*
 
+import scala.util.chaining.scalaUtilChainingOps
+
 object FifoBoundedSet {
   /**
    * The effect of adding a value to the set:
@@ -21,15 +23,6 @@ object FifoBoundedSet {
    * This happens when adding a new element to a set that is full.
    */
   case class AddedEvicting[A](value: A) extends Effect[A]
-  /**
-   * Indicates that an element was not added to the set.
-   *
-   * Note that while the contents of the set would remaing the same,
-   * the insertion order may change.
-   *
-   * This happens when adding an existing element to a set.
-   */
-  case class NotAdded[A]() extends Effect[A]
 
   def apply[A](maxSize: Int): FifoBoundedSet[A] =
     new FifoBoundedSet[A](maxSize)
@@ -69,16 +62,19 @@ class FifoBoundedSet[A] private(
    *
    * See [[FifoBoundedSet.Effect]] for details.
    *
+   * Note that while not returning an effect means the contents of the
+   * set remains the same, the insertion order may have changed.
+   *
    * @param elem element to add
-   * @return updated copy of this set, and effects of the addition
+   * @return updated copy of this set, and effect of the addition
    */
-  def add(elem: A): (FifoBoundedSet[A], Effect[A]) =
+  def add(elem: A): (FifoBoundedSet[A], Option[Effect[A]]) =
     if (uniques.contains(elem))
-      if (elem == insertionOrder.last) (this, NotAdded())
+      if (elem == insertionOrder.last) (this, None)
       else
         (
           copy(insertionOrder = insertionOrder.filterNot(_ == elem) :+ elem),
-          NotAdded()
+          None
         )
     else
       if (uniques.size < maxSize)
@@ -87,7 +83,7 @@ class FifoBoundedSet[A] private(
             uniques = uniques + elem,
             insertionOrder = insertionOrder :+ elem
           ),
-          Added()
+          Some(Added())
         )
       else
         (
@@ -95,7 +91,7 @@ class FifoBoundedSet[A] private(
             uniques = uniques + elem - insertionOrder.head,
             insertionOrder = insertionOrder.tail :+ elem
           ),
-          AddedEvicting(insertionOrder.head)
+          Some(AddedEvicting(insertionOrder.head))
         )
 
   /**
@@ -106,18 +102,38 @@ class FifoBoundedSet[A] private(
    * @param elems elements to add
    * @return updated copy of this set, and effects of each addition
    */
-  def addAll(elems: Seq[A]): (FifoBoundedSet[A], Seq[Effect[A]]) =
-    elems.foldLeft((this, IndexedSeq[Effect[A]]())) {
-      (accum: (FifoBoundedSet[A], IndexedSeq[Effect[A]]), elem: A) =>
+  def addAll(elems: Seq[A]): (FifoBoundedSet[A], Seq[Effect[A]]) = elems.
+    foldLeft((this, List[Effect[A]]())) {
+      (accum: (FifoBoundedSet[A], List[Effect[A]]), elem: A) =>
 
       val (
-        accumSet: FifoBoundedSet[A], accumUpdates: IndexedSeq[Effect[A]]
+        accumSet: FifoBoundedSet[A], accumUpdates: List[Effect[A]]
       ) = accum
       val (
-        nextAccumSet: FifoBoundedSet[A], update: Effect[A]
+        nextAccumSet: FifoBoundedSet[A], updateOpt: Option[Effect[A]]
       ) = accumSet.add(elem)
 
-      (nextAccumSet, accumUpdates :+ update)
+      (
+        nextAccumSet,
+        updateOpt match {
+          case Some(update) => update :: accumUpdates
+          case None => accumUpdates
+
+        }
+      )
+    }.
+    pipe {
+      case (set: FifoBoundedSet[A], effects: Seq[Effect[A]]) =>
+        (
+          set,
+          effects.take(maxSize).reverse.
+            collect {
+              case AddedEvicting(evicted) if !uniques.contains(evicted) =>
+                // Evicted value may be part of elems, and effectively never added, and hence not evicted
+                Added()
+              case other => other
+            }
+        )
     }
 
   val toSeq: Seq[A] = insertionOrder

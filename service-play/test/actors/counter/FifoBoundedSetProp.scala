@@ -6,7 +6,7 @@ import org.scalacheck.{Arbitrary, Gen}
 class FifoBoundedSetProp extends CommonProp {
   property("never contain more elements than maxSize") {
     forAll(
-      "maxSize"  |: Gen.posNum[Int],
+      "maxSize" |: Gen.posNum[Int],
       "elements" |: Arbitrary.arbitrary[Seq[Int]]
     ) { (maxSize: Int, elements: Seq[Int]) =>
       whenever(maxSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
@@ -21,7 +21,7 @@ class FifoBoundedSetProp extends CommonProp {
 
   property("always include the most recently added elements") {
     forAll(
-      "maxSize"  |: Gen.posNum[Int],
+      "maxSize" |: Gen.posNum[Int],
       "elements" |: Arbitrary.arbitrary[Seq[Int]]
     ) { (maxSize: Int, elements: Seq[Int]) =>
       whenever(maxSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
@@ -36,7 +36,7 @@ class FifoBoundedSetProp extends CommonProp {
 
   property("only evict the least recently added elements") {
     forAll(
-      "maxSize"  |: Gen.posNum[Int],
+      "maxSize" |: Gen.posNum[Int],
       "elements" |: Arbitrary.arbitrary[Seq[Int]]
     ) { (maxSize: Int, elements: Seq[Int]) =>
       whenever(maxSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
@@ -65,7 +65,9 @@ class FifoBoundedSetProp extends CommonProp {
 
       // Verify
       val actualEvictions: Seq[FifoBoundedSet.Effect[Int]] =
-        actualEffects.filter { _.isInstanceOf[FifoBoundedSet.AddedEvicting[Int]] }
+        actualEffects.filter {
+          _.isInstanceOf[FifoBoundedSet.AddedEvicting[Int]]
+        }
       assert(instance.toSeq.toSet == elements.toSet)
       assert(actualEvictions.isEmpty)
     }
@@ -74,7 +76,7 @@ class FifoBoundedSetProp extends CommonProp {
   // add/addAll Equivalence
   property("add and addAll are equal given identical input") {
     forAll(
-      "maxSize"  |: Gen.posNum[Int],
+      "maxSize" |: Gen.posNum[Int],
       "elements" |: Arbitrary.arbitrary[Seq[Int]]
     ) { (maxSize: Int, elements: Seq[Int]) =>
       whenever(maxSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
@@ -98,7 +100,7 @@ class FifoBoundedSetProp extends CommonProp {
 
   property("add and addAll produces identical effects given identical input") {
     forAll(
-      "maxSize"  |: Gen.posNum[Int],
+      "maxSize" |: Gen.posNum[Int],
       "elements" |: Gen.listOf(Gen.posNum[Int])
     ) { (maxSize: Int, elements: Seq[Int]) =>
       whenever(maxSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
@@ -110,13 +112,17 @@ class FifoBoundedSetProp extends CommonProp {
         val (_, actualEffectsAdd: Seq[FifoBoundedSet.Effect[Int]]) =
           elements.foldLeft((empty, Seq[FifoBoundedSet.Effect[Int]]())) {
             case ((accum: FifoBoundedSet[Int], effects: Seq[FifoBoundedSet.Effect[Int]]), elem: Int) =>
-              val (accumNext: FifoBoundedSet[Int], effect: FifoBoundedSet.Effect[Int]) = accum.add(elem)
+              val (accumNext: FifoBoundedSet[Int], effect: Option[FifoBoundedSet.Effect[Int]]) = accum.add(elem)
 
-              (accumNext, effects :+ effect)
+              (accumNext, effects ++ effect)
           }
 
         // Verify
-        assert(actualEffectsAddAll == actualEffectsAdd)
+        assert(actualEffectsAddAll.size <= actualEffectsAdd.size)
+        actualEffectsAddAll.zip(actualEffectsAdd.takeRight(maxSize)).collect {
+          case (actualEffectAddAll: FifoBoundedSet.AddedEvicting[Int], actualEffectAdd: FifoBoundedSet.Effect[Int]) =>
+            assert(actualEffectAddAll == actualEffectAdd)
+        }
       }
     }
   }
