@@ -15,14 +15,14 @@ object FifoBoundedSet {
    *
    * This happens when adding a new element to a set that is not full.
    */
-  case class Added[A]() extends Effect[A]
+  case class Added[A](added: A) extends Effect[A]
   /**
    * Indicates that an element was added to the set evicting an
    * existing element from the set.
    *
    * This happens when adding a new element to a set that is full.
    */
-  case class AddedEvicting[A](value: A) extends Effect[A]
+  case class AddedEvicting[A](added: A, evicted: A) extends Effect[A]
 
   def apply[A](maxSize: Int): FifoBoundedSet[A] =
     new FifoBoundedSet[A](maxSize)
@@ -83,7 +83,7 @@ class FifoBoundedSet[A] private(
             uniques = uniques + elem,
             insertionOrder = insertionOrder :+ elem
           ),
-          Some(Added())
+          Some(Added(elem))
         )
       else
         (
@@ -91,7 +91,7 @@ class FifoBoundedSet[A] private(
             uniques = uniques + elem - insertionOrder.head,
             insertionOrder = insertionOrder.tail :+ elem
           ),
-          Some(AddedEvicting(insertionOrder.head))
+          Some(AddedEvicting(elem, insertionOrder.head))
         )
 
   /**
@@ -127,9 +127,9 @@ class FifoBoundedSet[A] private(
         (
           set,
           effects.take(maxSize).reverse.map {
-            case AddedEvicting(evicted) if !uniques.contains(evicted) =>
+            case AddedEvicting(added, evicted) if !uniques.contains(evicted) =>
               // Evicted value may be part of elems, and effectively never added, and hence not evicted
-              Added()
+              Added(added)
             case other => other
           }
         )

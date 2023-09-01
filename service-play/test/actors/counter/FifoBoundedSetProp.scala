@@ -45,7 +45,7 @@ class FifoBoundedSetProp extends CommonProp {
           FifoBoundedSet[Int](maxSize).addAll(elements)
         val actualEvictions: Set[Int] = actualEffects.
           collect {
-            case FifoBoundedSet.AddedEvicting(value: Int) => value
+            case FifoBoundedSet.AddedEvicting(_, evicted: Int) => evicted
           }.
           toSet
 
