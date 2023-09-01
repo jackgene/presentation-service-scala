@@ -126,13 +126,12 @@ class FifoBoundedSet[A] private(
       case (set: FifoBoundedSet[A], effects: Seq[Effect[A]]) =>
         (
           set,
-          effects.take(maxSize).reverse.
-            collect {
-              case AddedEvicting(evicted) if !uniques.contains(evicted) =>
-                // Evicted value may be part of elems, and effectively never added, and hence not evicted
-                Added()
-              case other => other
-            }
+          effects.take(maxSize).reverse.map {
+            case AddedEvicting(evicted) if !uniques.contains(evicted) =>
+              // Evicted value may be part of elems, and effectively never added, and hence not evicted
+              Added()
+            case other => other
+          }
         )
     }
 
