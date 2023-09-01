@@ -39,7 +39,7 @@ class FifoBoundedSetSpec extends PlaySpec {
         assert(actualUpdatedInstance.toSeq == Seq("test-1", "test-2"))
       }
 
-      "accept 3 new elements evicting the first" in {
+      "accept 3 new elements ignoring the first" in {
         // Test
         val (actualUpdatedInstance, actualEffects) =
           instance.addAll(
