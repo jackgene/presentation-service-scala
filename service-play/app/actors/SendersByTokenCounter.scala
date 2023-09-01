@@ -165,15 +165,15 @@ private class SendersByTokenCounter(
                 case Some(sender: String) =>
                   val (tokens: FifoBoundedSet[String], updates: Seq[FifoBoundedSet.Effect[String]]) =
                     tokensBySender(sender).addAll(prioritizedTokens)
-                  val addedTokens: Set[String] = extractedTokens.zip(updates.reverse).
-                    collect {
-                      case (token: String, FifoBoundedSet.Added()) => token
-                      case (token: String, FifoBoundedSet.AddedEvicting(_)) => token
+                  val addedTokens: Set[String] = updates.reverse.
+                    map {
+                      case FifoBoundedSet.Added(token: String) => token
+                      case FifoBoundedSet.AddedEvicting(token: String, _) => token
                     }.
                     toSet
                   val removedTokens: Set[String] = updates.
                     collect {
-                      case FifoBoundedSet.AddedEvicting(token: String) => token
+                      case FifoBoundedSet.AddedEvicting(_, token: String) => token
                     }.
                     toSet
                   (

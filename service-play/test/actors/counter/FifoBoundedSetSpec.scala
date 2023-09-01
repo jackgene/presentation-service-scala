@@ -20,7 +20,7 @@ class FifoBoundedSetSpec extends PlaySpec {
         val (actualUpdatedInstance, actualEffect) = instance.add("test")
 
         // Verify
-        assert(actualEffect.contains(FifoBoundedSet.Added[String]()))
+        assert(actualEffect.contains(FifoBoundedSet.Added[String]("test")))
         assert(actualUpdatedInstance.toSeq == Seq("test"))
       }
 
@@ -30,7 +30,12 @@ class FifoBoundedSetSpec extends PlaySpec {
           instance.addAll(Seq("test-1", "test-2"))
 
         // Verify
-        assert(actualEffects == Seq(FifoBoundedSet.Added(), FifoBoundedSet.Added()))
+        assert(
+          actualEffects == Seq(
+            FifoBoundedSet.Added("test-1"),
+            FifoBoundedSet.Added("test-2")
+          )
+        )
         assert(actualUpdatedInstance.toSeq == Seq("test-1", "test-2"))
       }
 
@@ -48,8 +53,8 @@ class FifoBoundedSetSpec extends PlaySpec {
         // Verify
         assert(
           actualEffects == Seq(
-            FifoBoundedSet.Added(),
-            FifoBoundedSet.Added()
+            FifoBoundedSet.Added("test-2"),
+            FifoBoundedSet.Added("test-3")
           )
         )
         assert(actualUpdatedInstance.toSeq == Seq("test-2", "test-3"))
@@ -70,7 +75,7 @@ class FifoBoundedSetSpec extends PlaySpec {
         val (actualUpdatedInstance, actualEffect) = instance.add("test-2")
 
         // Verify
-        assert(actualEffect.contains(FifoBoundedSet.Added[String]()))
+        assert(actualEffect.contains(FifoBoundedSet.Added[String]("test-2")))
         assert(actualUpdatedInstance.toSeq == Seq("test-1", "test-2"))
       }
 
@@ -91,8 +96,8 @@ class FifoBoundedSetSpec extends PlaySpec {
         // Verify
         assert(
           actualEffects == Seq(
-            FifoBoundedSet.Added(),
-            FifoBoundedSet.AddedEvicting("test-1")
+            FifoBoundedSet.Added("test-2"),
+            FifoBoundedSet.AddedEvicting("test-3", "test-1")
           )
         )
         assert(actualUpdatedInstance.toSeq == Seq("test-2", "test-3"))
@@ -113,7 +118,7 @@ class FifoBoundedSetSpec extends PlaySpec {
         val (actualUpdatedInstance, actualEffect) = instance.add("test-3")
 
         // Verify
-        assert(actualEffect.contains(FifoBoundedSet.AddedEvicting("test-1")))
+        assert(actualEffect.contains(FifoBoundedSet.AddedEvicting("test-3", "test-1")))
         assert(actualUpdatedInstance.toSeq == Seq("test-2", "test-3"))
       }
 
@@ -134,8 +139,8 @@ class FifoBoundedSetSpec extends PlaySpec {
         // Verify
         assert(
           actualEffects == Seq(
-            FifoBoundedSet.AddedEvicting("test-1"),
-            FifoBoundedSet.AddedEvicting("test-2")
+            FifoBoundedSet.AddedEvicting("test-3", "test-1"),
+            FifoBoundedSet.AddedEvicting("test-4", "test-2")
           )
         )
         assert(actualUpdatedInstance.toSeq == Seq("test-3", "test-4"))
@@ -162,7 +167,7 @@ class FifoBoundedSetSpec extends PlaySpec {
           )
 
         // Verify
-        assert(actualEffects == Seq(FifoBoundedSet.AddedEvicting("test-2")))
+        assert(actualEffects == Seq(FifoBoundedSet.AddedEvicting("test-3", "test-2")))
         assert(actualUpdatedInstance.toSeq == Seq("test-1", "test-3"))
       }
     }
