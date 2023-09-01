@@ -128,7 +128,7 @@ class FifoBoundedSet[A] private(
           set,
           effects.take(maxSize).reverse.map {
             case AddedEvicting(added, evicted) if !uniques.contains(evicted) =>
-              // Evicted value may be part of elems, and effectively never added, and hence not evicted
+              // Evicted value was part of elems, and effectively never added, and hence not evicted
               Added(added)
             case other => other
           }
