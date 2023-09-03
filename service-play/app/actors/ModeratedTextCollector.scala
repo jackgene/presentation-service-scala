@@ -1,9 +1,9 @@
 package actors
 
+import actors.ChatMessageBroadcaster.ChatMessage
 import actors.common.JsonWriter
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, Behavior}
-import model.ChatMessage
 import play.api.libs.json.{JsValue, Json, Writes}
 
 /**
