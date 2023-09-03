@@ -3,8 +3,8 @@ package actors
 import actors.common.JsonWriter
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, Behavior}
-import model.ChatMessage
-import play.api.libs.json.{JsValue, Json, Writes}
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 
 /**
  * Broadcasts chat messages to any subscriber.
@@ -17,6 +17,14 @@ import play.api.libs.json.{JsValue, Json, Writes}
  * - Etc
  */
 object ChatMessageBroadcaster {
+  case class ChatMessage(
+    sender: String,
+    recipient: String,
+    text: String
+  ) {
+    override def toString: String = s"$sender to $recipient: $text"
+  }
+
   sealed trait Command
   final case class Subscribe(subscriber: ActorRef[Event]) extends Command
   final case class Unsubscribe(subscriber: ActorRef[Event]) extends Command
@@ -26,6 +34,11 @@ object ChatMessageBroadcaster {
   final case class New(chatMessage: ChatMessage) extends Event
 
   // JSON
+  implicit val writes: Writes[ChatMessage] = (
+    (JsPath \ "s").write[String] and
+    (JsPath \ "r").write[String] and
+    (JsPath \ "t").write[String]
+  )(unlift(ChatMessage.unapply))
   private implicit val eventWrites: Writes[Event] = {
     case New(chatMessage: ChatMessage) => Json.toJson(chatMessage)
   }

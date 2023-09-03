@@ -1,11 +1,11 @@
 package actors
 
+import actors.ChatMessageBroadcaster.ChatMessage
 import actors.common.{JsonWriter, RateLimiter}
 import actors.counter.{FifoBoundedSet, MultiSet}
 import actors.tokenizing.Tokenizer
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, Behavior}
-import model.ChatMessage
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, JsValue, Json, Writes}
 
