@@ -100,26 +100,23 @@ class FifoBoundedSetProp extends CommonProp {
 
   property("add and addAll produces identical effects given up to maxSize identical input") {
     forAll(
-      "maxSize"  |: Gen.posNum[Int],
-      "elements" |: Arbitrary.arbitrary[Seq[Int]]
-    ) { (maxSize: Int, elements: Seq[Int]) =>
-      whenever(maxSize > 0 && elements.size <= maxSize) { // When shrinking ScalaCheck can go beyond "posNum" range
-        // Set up
-        val empty = FifoBoundedSet[Int](maxSize)
+      "elements" |: Gen.nonEmptyListOf(Arbitrary.arbitrary[Int])
+    ) { elements: Seq[Int] =>
+      // Set up
+      val empty = FifoBoundedSet[Int](elements.size)
 
-        // Test
-        val (_, actualEffectsAddAll: Seq[FifoBoundedSet.Effect[Int]]) = empty.addAll(elements)
-        val (_, actualEffectsAdd: Seq[FifoBoundedSet.Effect[Int]]) =
-          elements.foldLeft((empty, Seq[FifoBoundedSet.Effect[Int]]())) {
-            case ((accum: FifoBoundedSet[Int], effects: Seq[FifoBoundedSet.Effect[Int]]), elem: Int) =>
-              val (accumNext: FifoBoundedSet[Int], effect: Option[FifoBoundedSet.Effect[Int]]) = accum.add(elem)
+      // Test
+      val (_, actualEffectsAddAll: Seq[FifoBoundedSet.Effect[Int]]) = empty.addAll(elements)
+      val (_, actualEffectsAdd: Seq[FifoBoundedSet.Effect[Int]]) =
+        elements.foldLeft((empty, Seq[FifoBoundedSet.Effect[Int]]())) {
+          case ((accum: FifoBoundedSet[Int], effects: Seq[FifoBoundedSet.Effect[Int]]), elem: Int) =>
+            val (accumNext: FifoBoundedSet[Int], effect: Option[FifoBoundedSet.Effect[Int]]) = accum.add(elem)
 
-              (accumNext, effects ++ effect)
-          }
+            (accumNext, effects ++ effect)
+        }
 
-        // Verify
-        assert(actualEffectsAddAll == actualEffectsAdd)
-      }
+      // Verify
+      assert(actualEffectsAddAll == actualEffectsAdd)
     }
   }
 }

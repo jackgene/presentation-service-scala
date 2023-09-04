@@ -122,19 +122,24 @@ class FifoBoundedSet[A] private(
         }
       )
     }.
-    pipe { case (updated: FifoBoundedSet[A], adds: Seq[A]) =>
-      val removedSet: Set[A] = this.uniques -- updated.uniques
-      val removeds: Seq[A] = this.insertionOrder.filter(removedSet.contains)
-      val addedSet: Set[A] = updated.uniques -- this.uniques
-      val addeds: Seq[A] = adds.filter(addedSet.contains).distinct.reverse
-      val addOnlys: Int = addeds.size - removeds.size
-      val addedEffects: Seq[Added[A]] = addeds.take(addOnlys).map { Added(_) }
-      val addedEvictingEffects: Seq[AddedEvicting[A]] =
-        addeds.drop(addOnlys).zip(removeds).map {
+    pipe { case (updated: FifoBoundedSet[A], additions: Seq[A]) =>
+      val effectiveEvictions: Seq[A] = {
+        val evictionSet: Set[A] = this.uniques -- updated.uniques
+        this.insertionOrder.filter(evictionSet.contains)
+      }
+      val effectiveAdditions: Seq[A] = {
+        val additionSet: Set[A] = updated.uniques -- this.uniques
+        additions.filter(additionSet.contains).distinct.reverse
+      }
+      val nonEvictAdds: Int = effectiveAdditions.size - effectiveEvictions.size
+      val effectiveAddeds: Seq[Added[A]] =
+        effectiveAdditions.take(nonEvictAdds).map { Added(_) }
+      val effectiveAddedEvictings: Seq[AddedEvicting[A]] =
+        effectiveAdditions.drop(nonEvictAdds).zip(effectiveEvictions).map {
           case (added, removed) => AddedEvicting(added, removed)
         }
 
-      (updated, addedEffects ++ addedEvictingEffects)
+      (updated, effectiveAddeds ++ effectiveAddedEvictings)
     }
 
   val toSeq: Seq[A] = insertionOrder

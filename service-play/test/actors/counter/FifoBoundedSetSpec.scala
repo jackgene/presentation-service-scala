@@ -176,8 +176,8 @@ class FifoBoundedSetSpec extends PlaySpec {
         val (actualUpdatedInstance, actualEffects) =
           instance.addAll(
             Seq(
-              "test-3", // skipped
-              "test-4", // skipped
+              "test-3", // skipped - overwritten
+              "test-4", // skipped - overwritten
               "test-5", // test-1 evicted
               "test-6"  // test-2 evicted
             )
@@ -198,8 +198,8 @@ class FifoBoundedSetSpec extends PlaySpec {
         val (actualUpdatedInstance, actualEffects) =
           instance.addAll(
             Seq(
-              "test-3", // skipped
-              "test-4", // skipped
+              "test-3", // skipped - overwritten
+              "test-4", // skipped - overwritten
               "test-1", // skipped - identical to existing
               "test-2"  // skipped - identical to existing
             )
