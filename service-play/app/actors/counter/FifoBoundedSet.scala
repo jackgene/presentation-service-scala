@@ -44,7 +44,7 @@ object FifoBoundedSet {
 class FifoBoundedSet[A] private(
   val maxSize: Int,
   val insertionOrder: IndexedSeq[A] = Vector[A](),
-  uniques: Set[A] = Set[A]()
+  private val uniques: Set[A] = Set[A]()
 ) {
   import FifoBoundedSet.*
 
@@ -103,11 +103,11 @@ class FifoBoundedSet[A] private(
    * @return updated copy of this set, and effects of each addition
    */
   def addAll(elems: Seq[A]): (FifoBoundedSet[A], Seq[Effect[A]]) = elems.
-    foldLeft((this, List[Effect[A]]())) {
-      (accum: (FifoBoundedSet[A], List[Effect[A]]), elem: A) =>
+    foldLeft((this, List[A]())) {
+      (accum: (FifoBoundedSet[A], List[A]), elem: A) =>
 
       val (
-        accumSet: FifoBoundedSet[A], accumUpdates: List[Effect[A]]
+        accumSet: FifoBoundedSet[A], accumAdds: List[A]
       ) = accum
       val (
         nextAccumSet: FifoBoundedSet[A], updateOpt: Option[Effect[A]]
@@ -116,23 +116,25 @@ class FifoBoundedSet[A] private(
       (
         nextAccumSet,
         updateOpt match {
-          case Some(update) => update :: accumUpdates
-          case None => accumUpdates
-
+          case Some(Added(elem)) => elem :: accumAdds
+          case Some(AddedEvicting(elem, _)) => elem :: accumAdds
+          case None => accumAdds
         }
       )
     }.
-    pipe {
-      case (set: FifoBoundedSet[A], effects: Seq[Effect[A]]) =>
-        (
-          set,
-          effects.take(maxSize).reverse.map {
-            case AddedEvicting(added, evicted) if !uniques.contains(evicted) =>
-              // Evicted value was part of elems, and effectively never added, and hence not evicted
-              Added(added)
-            case other => other
-          }
-        )
+    pipe { case (updated: FifoBoundedSet[A], adds: Seq[A]) =>
+      val removedSet: Set[A] = this.uniques -- updated.uniques
+      val removeds: Seq[A] = this.insertionOrder.filter(removedSet.contains)
+      val addedSet: Set[A] = updated.uniques -- this.uniques
+      val addeds: Seq[A] = adds.filter(addedSet.contains).distinct.reverse
+      val addOnlys: Int = addeds.size - removeds.size
+      val addedEffects: Seq[Added[A]] = addeds.take(addOnlys).map { Added(_) }
+      val addedEvictingEffects: Seq[AddedEvicting[A]] =
+        addeds.drop(addOnlys).zip(removeds).map {
+          case (added, removed) => AddedEvicting(added, removed)
+        }
+
+      (updated, addedEffects ++ addedEvictingEffects)
     }
 
   val toSeq: Seq[A] = insertionOrder
