@@ -170,6 +170,45 @@ class FifoBoundedSetSpec extends PlaySpec {
         assert(actualEffects == Seq(FifoBoundedSet.AddedEvicting("test-3", "test-2")))
         assert(actualUpdatedInstance.toSeq == Seq("test-1", "test-3"))
       }
+
+      "accept only the last two of four elements, evicting all existing elements" in {
+        // Test
+        val (actualUpdatedInstance, actualEffects) =
+          instance.addAll(
+            Seq(
+              "test-3", // skipped
+              "test-4", // skipped
+              "test-5", // test-1 evicted
+              "test-6"  // test-2 evicted
+            )
+          )
+
+        // Verify
+        assert(
+          actualEffects == Seq(
+            FifoBoundedSet.AddedEvicting("test-5", "test-1"),
+            FifoBoundedSet.AddedEvicting("test-6", "test-2")
+          )
+        )
+        assert(actualUpdatedInstance.toSeq == Seq("test-5", "test-6"))
+      }
+
+      "not accept when the last two of four elements are identical to existing elements" in {
+        // Test
+        val (actualUpdatedInstance, actualEffects) =
+          instance.addAll(
+            Seq(
+              "test-3", // skipped
+              "test-4", // skipped
+              "test-1", // skipped - identical to existing
+              "test-2"  // skipped - identical to existing
+            )
+          )
+
+        // Verify
+        assert(actualEffects.isEmpty)
+        assert(actualUpdatedInstance.toSeq == Seq("test-1", "test-2"))
+      }
     }
   }
 }
