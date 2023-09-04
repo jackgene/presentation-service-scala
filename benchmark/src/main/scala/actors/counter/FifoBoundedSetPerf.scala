@@ -62,11 +62,11 @@ class FifoBoundedSetPerf:
 
   @Benchmark
   def add_implementation(): Seq[Int] =
-    val (instance: FifoBoundedSet[Int], update: FifoBoundedSet.Effect[Int]) =
+    val (instance: FifoBoundedSet[Int], update: Option[FifoBoundedSet.Effect[Int]]) =
       emptyInstance.add(0)
 
     update match
-      case FifoBoundedSet.Added() => instance.insertionOrder
+      case Some(FifoBoundedSet.Added(_)) => instance.insertionOrder
       case _ => throw new IllegalStateException("addition expected")
 
   @Benchmark
@@ -83,7 +83,7 @@ class FifoBoundedSetPerf:
       emptyInstance.addAll(Seq(0, 1))
 
     updates match
-      case Seq(FifoBoundedSet.Added(), FifoBoundedSet.Added()) =>
+      case Seq(FifoBoundedSet.Added(_), FifoBoundedSet.Added(_)) =>
         instance.insertionOrder
       case _ => throw new IllegalStateException("additions expected")
 
@@ -98,11 +98,11 @@ class FifoBoundedSetPerf:
 
   @Benchmark
   def addEvicting_implementation(): Seq[Int] =
-    val (instance: FifoBoundedSet[Int], update: FifoBoundedSet.Effect[Int]) =
+    val (instance: FifoBoundedSet[Int], update: Option[FifoBoundedSet.Effect[Int]]) =
       fullInstance.add(4)
 
     update match
-      case FifoBoundedSet.AddedEvicting(_: Int) => instance.insertionOrder
+      case Some(FifoBoundedSet.AddedEvicting(_, _)) => instance.insertionOrder
       case _ => throw new IllegalStateException("eviction expected")
 
   @Benchmark
@@ -119,7 +119,7 @@ class FifoBoundedSetPerf:
       fullInstance.addAll(Seq(4, 5))
 
     updates match
-      case Seq(FifoBoundedSet.AddedEvicting(_: Int), FifoBoundedSet.AddedEvicting(_: Int)) =>
+      case Seq(FifoBoundedSet.AddedEvicting(_, _), FifoBoundedSet.AddedEvicting(_, _)) =>
         instance.insertionOrder
       case _ => throw new IllegalStateException("no-op expected")
 
@@ -134,11 +134,11 @@ class FifoBoundedSetPerf:
 
   @Benchmark
   def addReordering_implementation(): Seq[Int] =
-    val (instance: FifoBoundedSet[Int], update: FifoBoundedSet.Effect[Int]) =
+    val (instance: FifoBoundedSet[Int], update: Option[FifoBoundedSet.Effect[Int]]) =
       fullInstance.add(1)
 
     update match
-      case FifoBoundedSet.NotAdded() => instance.insertionOrder
+      case None => instance.insertionOrder
       case _ => throw new IllegalStateException("no-op expected")
 
   @Benchmark
@@ -155,6 +155,6 @@ class FifoBoundedSetPerf:
       fullInstance.addAll(Seq(1, 2))
 
     updates match
-      case Seq(FifoBoundedSet.NotAdded(), FifoBoundedSet.NotAdded()) =>
+      case Seq() =>
         instance.insertionOrder
       case _ => throw new IllegalStateException("no-op expected")
