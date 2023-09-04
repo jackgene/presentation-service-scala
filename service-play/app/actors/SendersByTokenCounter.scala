@@ -176,11 +176,8 @@ private class SendersByTokenCounter(
                       case FifoBoundedSet.AddedEvicting(_, token: String) => token
                     }.
                     toSet
-                  (
-                    tokensBySender.updated(sender, tokens),
-                    addedTokens -- removedTokens,
-                    removedTokens -- addedTokens
-                  )
+
+                  (tokensBySender.updated(sender, tokens), addedTokens, removedTokens)
 
                 case None => (tokensBySender, prioritizedTokens.toSet, Set.empty)
               }
