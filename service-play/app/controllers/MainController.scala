@@ -23,8 +23,8 @@ import scala.util.matching.Regex
 class MainController (cc: ControllerComponents, cfg: Configuration)
     (implicit system: ActorSystem, mat: Materializer)
     extends AbstractController(cc) {
-  private val RoutePattern: Regex = """(.*) to (Everyone|Me)(?: \(Direct Message\))?""".r
-  private val IgnoredRoutePattern: Regex = "Me to .*".r
+  private val RoutePattern: Regex = """(.*) to (Everyone|You)(?: \(Direct Message\))?""".r
+  private val IgnoredRoutePattern: Regex = "You to .*".r
   private val chatMessages: ActorRef[ChatMessageBroadcaster.Command] =
     system.spawn(ChatMessageBroadcaster(), "chat")
   private val rejectedMessages: ActorRef[ChatMessageBroadcaster.Command] =
