@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
+@Threads(Threads.MAX)
 class MultiSetPerf:
   private val existingVotes: Map[String, String] = Map(
     "Alice" -> "Java", "Bob" -> "Scala"

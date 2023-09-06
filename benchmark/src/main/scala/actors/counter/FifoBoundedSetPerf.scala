@@ -43,6 +43,7 @@ object FifoBoundedSetPerf:
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
+@Threads(Threads.MAX)
 class FifoBoundedSetPerf:
   import FifoBoundedSetPerf.*
 
