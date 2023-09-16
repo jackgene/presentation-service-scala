@@ -65,6 +65,15 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
     system.spawn(
       TranscriptionBroadcaster(), "transcriptions"
     )
+  private val chatMessageKafkaProducer: ActorRef[ChatMessageKafkaProducer.Command] =
+    system.spawn(
+      ChatMessageKafkaProducer(
+        chatMessages,
+        cfg.get[String]("kafka.bootstrapServers"),
+        cfg.get[String]("kafka.topicName.chatMessage")
+      ),
+      "chat-kafka-producer"
+    )
 
   def languagePollEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { _: RequestHeader =>
     Flow.fromSinkAndSource(
@@ -79,6 +88,8 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
     Flow.fromSinkAndSource(
       Sink.ignore,
       ActorFlow.sourceBehavior { webSocketClient: ActorRef[JsValue] =>
+        // Produce ChatMessage in Kafka
+        chatMessageKafkaProducer ! ChatMessageKafkaProducer.Subscribe(webSocketClient)
         SendersByTokenCounter.JsonPublisher(webSocketClient, wordCloud)
       }
     )
