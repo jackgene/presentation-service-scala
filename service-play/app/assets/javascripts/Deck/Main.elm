@@ -3,13 +3,11 @@ module Deck exposing (main)
 import AnimationFrame
 import Array exposing (Array)
 import Deck.Common exposing
-  ( ChatMessage, ChatMessageAndTokens, Model
-  , Msg(..), Navigation, Slide(Slide), SlideModel
+  ( Model, Msg(..), Navigation, Slide(Slide), SlideModel
   , typingSpeedMultiplier
   )
 import Deck.Slide exposing
   ( activeNavigationOf, slideFromLocationHash, slideView, firstQuestionIndex )
-import Dict exposing (Dict)
 import Html.Styled exposing (Html)
 import Json.Decode as Decode exposing (Decoder)
 import Keyboard
@@ -17,13 +15,17 @@ import Navigation exposing (Location)
 import Task
 import Time exposing (Time)
 import WebSocket
+import WordCloud
 
 
 -- Init
 webSocketBaseUrl : Location -> Maybe String
 webSocketBaseUrl location =
-  if location.protocol /= "http:" || location.hostname /= "localhost" then Nothing
-  else Just ("ws" ++ (String.dropLeft 4 location.protocol) ++ "//" ++ location.host)
+  if location.protocol /= "http:" || location.hostname /= "localhost" then
+    Nothing
+  else
+    Just
+    ("ws" ++ (String.dropLeft 4 location.protocol) ++ "//" ++ location.host)
 
 
 updateModelWithLocationHash : String -> Model -> Model
@@ -56,11 +58,7 @@ init location =
         , activeNavigation = Array.empty
         , currentSlide = slideFromLocationHash "#"
         , animationFramesRemaining = 0
-        , wordCloud =
-          { tokensAndCounts = []
-          , tokensBySender = Dict.empty
-          , chatMessagesAndTokens = []
-          }
+        , wordCloud = WordCloud.empty
         , questions = Array.empty
         , transcription = { text = "", updated = 0 }
         }
@@ -77,23 +75,8 @@ init location =
 
 -- Update
 type EventBody
-  = Tokens (List ChatMessageAndTokens) (Dict String (List String)) (List (Int, (List String)))
+  = Tokens (List (Int, (List String)))
   | Questions (List String)
-
-
-chatMessageDecoder : Decoder ChatMessage
-chatMessageDecoder =
-  Decode.map3 ChatMessage
-  ( Decode.field "s" Decode.string )
-  ( Decode.field "r" Decode.string )
-  ( Decode.field "t" Decode.string )
-
-
-chatMessageAndTokensDecoder : Decoder ChatMessageAndTokens
-chatMessageAndTokensDecoder =
-  Decode.map2 ChatMessageAndTokens
-  ( Decode.field "chatMessage" chatMessageDecoder )
-  ( Decode.field "tokens" (Decode.list Decode.string) )
 
 
 eventBodyDecoder : Decoder EventBody
@@ -103,13 +86,7 @@ eventBodyDecoder =
     ( Decode.field "chatText"
       ( Decode.list Decode.string )
     )
-  , Decode.map3 Tokens
-    ( Decode.field "chatMessagesAndTokens"
-      ( Decode.list chatMessageAndTokensDecoder )
-    )
-    ( Decode.field "tokensBySender"
-      ( Decode.dict (Decode.list Decode.string) )
-    )
+  , Decode.map Tokens
     ( Decode.field "tokensAndCounts"
       ( Decode.list
         ( Decode.map2 (\l r -> (l, r))
@@ -191,38 +168,6 @@ update msg model =
 
     Event body ->
       case Decode.decodeString eventBodyDecoder body of
-        Ok (Tokens chatMessagesAndTokens wordsBySender wordsByCount) ->
-          let
-            wordsAndCounts : List (String, Int)
-            wordsAndCounts =
-              Dict.foldr
-              ( \count tokens accum ->
-                accum ++ (
-                  List.map
-                  ( \token -> (token, count) )
-                  tokens
-                )
-              )
-              []
-              ( Dict.fromList wordsByCount ) -- Sorts by count
-
-            statsUpdatedModel : Model
-            statsUpdatedModel =
-              { model
-              | wordCloud =
-                { tokensAndCounts = wordsAndCounts
-                , tokensBySender = wordsBySender
-                , chatMessagesAndTokens = chatMessagesAndTokens
-                }
-              }
-
-            activeNavigation : Array Navigation
-            activeNavigation = activeNavigationOf statsUpdatedModel
-          in
-          ( { statsUpdatedModel | activeNavigation = activeNavigation }
-          , Cmd.none
-          )
-
         Ok (Questions questions) ->
           let
             -- Event updates slide being displayed
@@ -230,7 +175,8 @@ update msg model =
             isCurrentQuestion =
               case model.currentSlide of
                 Slide slideModel ->
-                  (slideModel.index - firstQuestionIndex + 1) == List.length questions
+                  (slideModel.index - firstQuestionIndex + 1) ==
+                  List.length questions
 
             questionUpdatedModel : Model
             questionUpdatedModel =
@@ -254,10 +200,20 @@ update msg model =
           , Cmd.none
           )
 
+        Ok _ -> (model, Cmd.none)
+
         Err jsonErr ->
           let
-            _ = Debug.log ("Error parsing JSON: " ++ jsonErr ++ " for event") body
+            _ =
+              Debug.log
+              ("Error parsing JSON: " ++ jsonErr ++ " for event")
+              body
           in (model, Cmd.none)
+
+    NewWordCounts wordCounts ->
+      ( { model | wordCloud = wordCounts }
+      , Cmd.none
+      )
 
     TranscriptionText body ->
       case Decode.decodeString transcriptionDecoder body of
@@ -274,7 +230,10 @@ update msg model =
 
         Err jsonErr ->
           let
-            _ = Debug.log ("Error parsing JSON: " ++ jsonErr ++ " for transcription") body
+            _ =
+              Debug.log
+              ("Error parsing JSON: " ++ jsonErr ++ " for transcription")
+              body
           in (model, Cmd.none)
 
     TranscriptionUpdated updated ->
@@ -311,7 +270,9 @@ update msg model =
       )
 
     AnimationTick ->
-      ( { model | animationFramesRemaining = model.animationFramesRemaining - 1 }
+      ( { model
+        | animationFramesRemaining = model.animationFramesRemaining - 1
+        }
       , Cmd.none
       )
 
@@ -343,7 +304,11 @@ subscriptions model =
           in
           case eventsWsPath of
             Just path ->
-              WebSocket.listen (url ++ "/" ++ path) Event
+              Sub.batch
+              [ WebSocket.listen (url ++ "/" ++ path) Event
+              , WordCloud.wordCounts
+                (Maybe.withDefault NoOp << Maybe.map NewWordCounts)
+              ]
             _ -> Sub.none
         ]
       _ -> Sub.none
