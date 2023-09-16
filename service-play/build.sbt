@@ -26,9 +26,11 @@ elmMakeDeck := {
   Seq(
     "bash", "-c",
     "elm-make " +
-      ((baseDir / "app" / "assets" / "javascripts" / "Deck") ** "*.elm").get.mkString(" ") +
-      " " +
-      ((baseDir / "app" / "assets" / "javascripts" / "SyntaxHighlight") ** "*.elm").get.mkString(" ") +
+      (
+        ((baseDir / "app" / "assets" / "javascripts" / "Deck") ** "*.elm").get ++
+        ((baseDir / "app" / "assets" / "javascripts" / "SyntaxHighlight") ** "*.elm").get ++
+        ((baseDir / "app" / "assets" / "javascripts" / "WordCloud") ** "*.elm").get
+      ).mkString(" ") +
       s" --output ${output} " +
       s"--yes ${debugFlag} --warn"
   ).!(
