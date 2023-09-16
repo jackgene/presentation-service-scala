@@ -36,7 +36,7 @@ object ModeratedTextCollector {
       ctx.messageAdapter[ChatMessageBroadcaster.Event] {
         case ChatMessageBroadcaster.New(chatMessage: ChatMessage) => Record(chatMessage)
       }
-    ).initial()
+    ).initial
   }
 
   /**
@@ -133,5 +133,5 @@ private class ModeratedTextCollector(
     }
   }
 
-  def initial(): Behavior[Command] =  paused(IndexedSeq())
+  val initial: Behavior[Command] = paused(IndexedSeq())
 }

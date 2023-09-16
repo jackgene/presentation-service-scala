@@ -43,7 +43,7 @@ object SendersByTokenCounter {
       ctx.messageAdapter[ChatMessageBroadcaster.Event] {
         case ChatMessageBroadcaster.New(chatMessage: ChatMessage) => Record(chatMessage)
       }
-    ).initial()
+    ).initial
   }
 
   /**
@@ -197,5 +197,5 @@ private class SendersByTokenCounter(
     }
   }
 
-  def initial(): Behavior[Command] = paused(emptyTokensBySender, MultiSet[String]())
+  val initial: Behavior[Command] = paused(emptyTokensBySender, MultiSet[String]())
 }
