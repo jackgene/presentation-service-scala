@@ -19924,6 +19924,88 @@ var _rtfeldman$elm_css$Html_Styled$details = _rtfeldman$elm_css$Html_Styled$node
 var _rtfeldman$elm_css$Html_Styled$summary = _rtfeldman$elm_css$Html_Styled$node('summary');
 var _rtfeldman$elm_css$Html_Styled$menuitem = _rtfeldman$elm_css$Html_Styled$node('menuitem');
 var _rtfeldman$elm_css$Html_Styled$menu = _rtfeldman$elm_css$Html_Styled$node('menu');
+var _jackgene$live_deck$WordCloud$topWords = F2(
+	function (n, wordCounts) {
+		return A2(
+			_elm_lang$core$List$take,
+			n,
+			A2(
+				_elm_lang$core$List$sortBy,
+				function (_p0) {
+					var _p1 = _p0;
+					return 0 - _p1._1;
+				},
+				_elm_lang$core$Dict$toList(wordCounts.countsByWord)));
+	});
+var _jackgene$live_deck$WordCloud$empty = {
+	chatMessagesAndWords: {ctor: '[]'},
+	wordsBySender: _elm_lang$core$Dict$empty,
+	countsByWord: _elm_lang$core$Dict$empty
+};
+var _jackgene$live_deck$WordCloud$webSocketUrl = 'ws://localhost:9673?debug=true';
+var _jackgene$live_deck$WordCloud$ChatMessage = F3(
+	function (a, b, c) {
+		return {sender: a, recipient: b, text: c};
+	});
+var _jackgene$live_deck$WordCloud$chatMessageDecoder = A4(
+	_elm_lang$core$Json_Decode$map3,
+	_jackgene$live_deck$WordCloud$ChatMessage,
+	A2(_elm_lang$core$Json_Decode$field, 's', _elm_lang$core$Json_Decode$string),
+	A2(_elm_lang$core$Json_Decode$field, 'r', _elm_lang$core$Json_Decode$string),
+	A2(_elm_lang$core$Json_Decode$field, 't', _elm_lang$core$Json_Decode$string));
+var _jackgene$live_deck$WordCloud$ExtractedWord = F2(
+	function (a, b) {
+		return {word: a, isValid: b};
+	});
+var _jackgene$live_deck$WordCloud$extractedWordDecoder = A3(
+	_elm_lang$core$Json_Decode$map2,
+	_jackgene$live_deck$WordCloud$ExtractedWord,
+	A2(_elm_lang$core$Json_Decode$field, 'word', _elm_lang$core$Json_Decode$string),
+	A2(_elm_lang$core$Json_Decode$field, 'isValid', _elm_lang$core$Json_Decode$bool));
+var _jackgene$live_deck$WordCloud$ChatMessageAndWords = F2(
+	function (a, b) {
+		return {chatMessage: a, words: b};
+	});
+var _jackgene$live_deck$WordCloud$chatMessageAndTokensDecoder = A3(
+	_elm_lang$core$Json_Decode$map2,
+	_jackgene$live_deck$WordCloud$ChatMessageAndWords,
+	A2(_elm_lang$core$Json_Decode$field, 'chatMessage', _jackgene$live_deck$WordCloud$chatMessageDecoder),
+	A2(
+		_elm_lang$core$Json_Decode$field,
+		'words',
+		_elm_lang$core$Json_Decode$list(_jackgene$live_deck$WordCloud$extractedWordDecoder)));
+var _jackgene$live_deck$WordCloud$WordCounts = F3(
+	function (a, b, c) {
+		return {chatMessagesAndWords: a, wordsBySender: b, countsByWord: c};
+	});
+var _jackgene$live_deck$WordCloud$wordCountsDecoder = A4(
+	_elm_lang$core$Json_Decode$map3,
+	_jackgene$live_deck$WordCloud$WordCounts,
+	A2(
+		_elm_lang$core$Json_Decode$field,
+		'chatMessagesAndWords',
+		_elm_lang$core$Json_Decode$list(_jackgene$live_deck$WordCloud$chatMessageAndTokensDecoder)),
+	A2(
+		_elm_lang$core$Json_Decode$field,
+		'wordsBySender',
+		_elm_lang$core$Json_Decode$dict(
+			_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string))),
+	A2(
+		_elm_lang$core$Json_Decode$field,
+		'countsByWord',
+		_elm_lang$core$Json_Decode$dict(_elm_lang$core$Json_Decode$int)));
+var _jackgene$live_deck$WordCloud$wordCounts = function (tagger) {
+	return A2(
+		_elm_lang$core$Platform_Sub$map,
+		function (_p2) {
+			return tagger(
+				_elm_lang$core$Result$toMaybe(_p2));
+		},
+		A2(
+			_elm_lang$websocket$WebSocket$listen,
+			_jackgene$live_deck$WordCloud$webSocketUrl,
+			_elm_lang$core$Json_Decode$decodeString(_jackgene$live_deck$WordCloud$wordCountsDecoder)));
+};
 var _jackgene$live_deck$Deck_Common$typingSpeedMultiplier = 3;
 var _jackgene$live_deck$Deck_Common$SlideModel = F6(
 	function (a, b, c, d, e, f) {
@@ -19932,18 +20014,6 @@ var _jackgene$live_deck$Deck_Common$SlideModel = F6(
 var _jackgene$live_deck$Deck_Common$Navigation = F2(
 	function (a, b) {
 		return {nextSlideIndex: a, lastSlideIndex: b};
-	});
-var _jackgene$live_deck$Deck_Common$ChatMessage = F3(
-	function (a, b, c) {
-		return {sender: a, recipient: b, text: c};
-	});
-var _jackgene$live_deck$Deck_Common$ChatMessageAndTokens = F2(
-	function (a, b) {
-		return {chatMessage: a, tokens: b};
-	});
-var _jackgene$live_deck$Deck_Common$TokenCounts = F3(
-	function (a, b, c) {
-		return {tokensAndCounts: a, tokensBySender: b, chatMessagesAndTokens: c};
 	});
 var _jackgene$live_deck$Deck_Common$Model = F7(
 	function (a, b, c, d, e, f, g) {
@@ -19959,6 +20029,9 @@ var _jackgene$live_deck$Deck_Common$TranscriptionUpdated = function (a) {
 };
 var _jackgene$live_deck$Deck_Common$TranscriptionText = function (a) {
 	return {ctor: 'TranscriptionText', _0: a};
+};
+var _jackgene$live_deck$Deck_Common$NewWordCounts = function (a) {
+	return {ctor: 'NewWordCounts', _0: a};
 };
 var _jackgene$live_deck$Deck_Common$Event = function (a) {
 	return {ctor: 'Event', _0: a};
@@ -29150,7 +29223,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 										A3(
 											_elm_lang$core$List$foldr,
 											F2(
-												function (chatMessageAndTokens, _p0) {
+												function (chatMessageAndWords, _p0) {
 													var _p1 = _p0;
 													var _p3 = _p1._1;
 													var _p2 = _p1._0;
@@ -29308,7 +29381,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																									{ctor: '[]'},
 																									{
 																										ctor: '::',
-																										_0: _rtfeldman$elm_css$Html_Styled$text(chatMessageAndTokens.chatMessage.sender),
+																										_0: _rtfeldman$elm_css$Html_Styled$text(chatMessageAndWords.chatMessage.sender),
 																										_1: {ctor: '[]'}
 																									}),
 																								_1: {ctor: '[]'}
@@ -29349,7 +29422,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																										{ctor: '[]'},
 																										{
 																											ctor: '::',
-																											_0: _rtfeldman$elm_css$Html_Styled$text(chatMessageAndTokens.chatMessage.recipient),
+																											_0: _rtfeldman$elm_css$Html_Styled$text(chatMessageAndWords.chatMessage.recipient),
 																											_1: {ctor: '[]'}
 																										}),
 																									_1: {ctor: '[]'}
@@ -29390,7 +29463,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																											{ctor: '[]'},
 																											{
 																												ctor: '::',
-																												_0: _rtfeldman$elm_css$Html_Styled$text(chatMessageAndTokens.chatMessage.text),
+																												_0: _rtfeldman$elm_css$Html_Styled$text(chatMessageAndWords.chatMessage.text),
 																												_1: {ctor: '[]'}
 																											}),
 																										_1: {ctor: '[]'}
@@ -29530,7 +29603,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																												{ctor: '[]'},
 																												{
 																													ctor: '::',
-																													_0: _rtfeldman$elm_css$Html_Styled$text(chatMessageAndTokens.chatMessage.sender),
+																													_0: _rtfeldman$elm_css$Html_Styled$text(chatMessageAndWords.chatMessage.sender),
 																													_1: {ctor: '[]'}
 																												}),
 																											_1: {ctor: '[]'}
@@ -29581,7 +29654,13 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																								}
 																							});
 																					},
-																					_elm_lang$core$List$reverse(chatMessageAndTokens.tokens))),
+																					_elm_lang$core$List$reverse(
+																						A2(
+																							_elm_lang$core$List$map,
+																							function (_) {
+																								return _.word;
+																							},
+																							chatMessageAndWords.words)))),
 																			_1: {ctor: '[]'}
 																		}
 																	}
@@ -29593,7 +29672,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																_elm_lang$core$Basics$max,
 																_jackgene$live_deck$Deck_Slide_WordCloud$chatMessageEventHeightEm,
 																_elm_lang$core$Basics$toFloat(
-																	_elm_lang$core$List$length(chatMessageAndTokens.tokens)) * _jackgene$live_deck$Deck_Slide_WordCloud$tokenEventHeightEm);
+																	_elm_lang$core$List$length(chatMessageAndWords.words)) * _jackgene$live_deck$Deck_Slide_WordCloud$tokenEventHeightEm);
 															return _p3 + rowHeightEm;
 														}()
 													};
@@ -29637,7 +29716,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 												},
 												_1: -0.3
 											},
-											counts.chatMessagesAndTokens))),
+											counts.chatMessagesAndWords))),
 								_1: {
 									ctor: '::',
 									_0: A2(
@@ -29657,7 +29736,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 												}),
 											_1: {ctor: '[]'}
 										},
-										_elm_lang$core$List$isEmpty(counts.chatMessagesAndTokens) ? {ctor: '[]'} : {
+										_elm_lang$core$List$isEmpty(counts.chatMessagesAndWords) ? {ctor: '[]'} : {
 											ctor: '::',
 											_0: A2(
 												_rtfeldman$elm_css$Html_Styled$table,
@@ -29719,11 +29798,11 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 															A3(
 																_elm_lang$core$List$foldr,
 																F2(
-																	function (chatMessageAndTokens, _p4) {
+																	function (chatMessagesAndWords, _p4) {
 																		var _p5 = _p4;
 																		var _p7 = _p5._1;
 																		var _p6 = _p5._0;
-																		var sender = chatMessageAndTokens.chatMessage.sender;
+																		var sender = chatMessagesAndWords.chatMessage.sender;
 																		return A2(_elm_lang$core$Set$member, sender, _p7) ? {ctor: '_Tuple2', _0: _p6, _1: _p7} : {
 																			ctor: '_Tuple2',
 																			_0: {
@@ -29781,7 +29860,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																											A2(
 																												_elm_lang$core$Maybe$withDefault,
 																												{ctor: '[]'},
-																												A2(_elm_lang$core$Dict$get, sender, counts.tokensBySender)))),
+																												A2(_elm_lang$core$Dict$get, sender, counts.wordsBySender)))),
 																									_1: {ctor: '[]'}
 																								}),
 																							_1: {ctor: '[]'}
@@ -29797,7 +29876,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																	_0: {ctor: '[]'},
 																	_1: _elm_lang$core$Set$empty
 																},
-																counts.chatMessagesAndTokens)))
+																counts.chatMessagesAndWords)))
 												}),
 											_1: {ctor: '[]'}
 										}),
@@ -29820,7 +29899,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 													}),
 												_1: {ctor: '[]'}
 											},
-											_elm_lang$core$List$isEmpty(counts.chatMessagesAndTokens) ? {ctor: '[]'} : {
+											_elm_lang$core$List$isEmpty(counts.chatMessagesAndWords) ? {ctor: '[]'} : {
 												ctor: '::',
 												_0: A2(
 													_rtfeldman$elm_css$Html_Styled$table,
@@ -29879,12 +29958,16 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 															}),
 														_1: function () {
 															var words = A2(
-																_elm_lang$core$List$concatMap,
+																_elm_lang$core$List$map,
 																function (_) {
-																	return _.tokens;
+																	return _.word;
 																},
-																counts.chatMessagesAndTokens);
-															var countsByWord = _elm_lang$core$Dict$fromList(counts.tokensAndCounts);
+																A2(
+																	_elm_lang$core$List$concatMap,
+																	function (_) {
+																		return _.words;
+																	},
+																	counts.chatMessagesAndWords));
 															return _elm_lang$core$List$reverse(
 																_elm_lang$core$Tuple$first(
 																	A3(
@@ -29897,7 +29980,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																				var count = A2(
 																					_elm_lang$core$Maybe$withDefault,
 																					0,
-																					A2(_elm_lang$core$Dict$get, word, countsByWord));
+																					A2(_elm_lang$core$Dict$get, word, counts.countsByWord));
 																				return (_elm_lang$core$Native_Utils.eq(count, 0) || A2(_elm_lang$core$Set$member, word, _p10)) ? {ctor: '_Tuple2', _0: _p11, _1: _p10} : {
 																					ctor: '_Tuple2',
 																					_0: {
@@ -30045,7 +30128,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$wordCloud = _elm_lang$core$Native_U
 											ctor: '::',
 											_0: _rtfeldman$elm_css$Css$height(
 												_rtfeldman$elm_css$Css$vw(
-													_elm_lang$core$List$isEmpty(model.wordCloud.tokensAndCounts) ? 20 : 0)),
+													_elm_lang$core$Dict$isEmpty(model.wordCloud.countsByWord) ? 20 : 0)),
 											_1: {
 												ctor: '::',
 												_0: _rtfeldman$elm_css$Css$overflow(_rtfeldman$elm_css$Css$hidden),
@@ -30115,7 +30198,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$wordCloud = _elm_lang$core$Native_U
 									{
 										ctor: '::',
 										_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
-											_elm_lang$core$List$isEmpty(model.wordCloud.tokensAndCounts) ? {
+											_elm_lang$core$Dict$isEmpty(model.wordCloud.countsByWord) ? {
 												ctor: '::',
 												_0: _rtfeldman$elm_css$Css$display(_rtfeldman$elm_css$Css$none),
 												_1: {ctor: '[]'}
@@ -30175,6 +30258,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$wordCloud = _elm_lang$core$Native_U
 												_1: {ctor: '[]'}
 											},
 											function () {
+												var topWordsAndCounts = A2(_jackgene$live_deck$WordCloud$topWords, _jackgene$live_deck$Deck_Slide_WordCloud$maxWordDisplayCount, model.wordCloud);
 												var maxCount = A2(
 													_elm_lang$core$Maybe$withDefault,
 													0.0,
@@ -30184,7 +30268,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$wordCloud = _elm_lang$core$Native_U
 															return _elm_lang$core$Basics$toFloat(
 																_elm_lang$core$Tuple$second(_p12));
 														},
-														_elm_lang$core$List$head(model.wordCloud.tokensAndCounts)));
+														_elm_lang$core$List$head(topWordsAndCounts)));
 												return A2(
 													_elm_lang$core$List$map,
 													function (_p13) {
@@ -30247,8 +30331,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$wordCloud = _elm_lang$core$Native_U
 																_1: {ctor: '[]'}
 															});
 													},
-													_elm_lang$core$List$sort(
-														A2(_elm_lang$core$List$take, _jackgene$live_deck$Deck_Slide_WordCloud$maxWordDisplayCount, model.wordCloud.tokensAndCounts)));
+													topWordsAndCounts);
 											}()),
 										_1: {ctor: '[]'}
 									}),
@@ -31037,13 +31120,13 @@ var _jackgene$live_deck$Deck$subscriptions = function (model) {
 				_0: function () {
 					var _p0 = model.eventsWsUrl;
 					if (_p0.ctor === 'Just') {
-						var _p3 = _p0._0;
+						var _p4 = _p0._0;
 						return _elm_lang$core$Platform_Sub$batch(
 							{
 								ctor: '::',
 								_0: A2(
 									_elm_lang$websocket$WebSocket$listen,
-									A2(_elm_lang$core$Basics_ops['++'], _p3, '/transcription'),
+									A2(_elm_lang$core$Basics_ops['++'], _p4, '/transcription'),
 									_jackgene$live_deck$Deck_Common$TranscriptionText),
 								_1: {
 									ctor: '::',
@@ -31054,13 +31137,28 @@ var _jackgene$live_deck$Deck$subscriptions = function (model) {
 										}();
 										var _p2 = eventsWsPath;
 										if (_p2.ctor === 'Just') {
-											return A2(
-												_elm_lang$websocket$WebSocket$listen,
-												A2(
-													_elm_lang$core$Basics_ops['++'],
-													_p3,
-													A2(_elm_lang$core$Basics_ops['++'], '/', _p2._0)),
-												_jackgene$live_deck$Deck_Common$Event);
+											return _elm_lang$core$Platform_Sub$batch(
+												{
+													ctor: '::',
+													_0: A2(
+														_elm_lang$websocket$WebSocket$listen,
+														A2(
+															_elm_lang$core$Basics_ops['++'],
+															_p4,
+															A2(_elm_lang$core$Basics_ops['++'], '/', _p2._0)),
+														_jackgene$live_deck$Deck_Common$Event),
+													_1: {
+														ctor: '::',
+														_0: _jackgene$live_deck$WordCloud$wordCounts(
+															function (_p3) {
+																return A2(
+																	_elm_lang$core$Maybe$withDefault,
+																	_jackgene$live_deck$Deck_Common$NoOp,
+																	A2(_elm_lang$core$Maybe$map, _jackgene$live_deck$Deck_Common$NewWordCounts, _p3));
+															}),
+														_1: {ctor: '[]'}
+													}
+												});
 										} else {
 											return _elm_lang$core$Platform_Sub$none;
 										}
@@ -31080,8 +31178,8 @@ var _jackgene$live_deck$Deck$subscriptions = function (model) {
 						ctor: '::',
 						_0: _elm_lang$keyboard$Keyboard$ups(
 							function (keyCode) {
-								var _p4 = keyCode;
-								switch (_p4) {
+								var _p5 = keyCode;
+								switch (_p5) {
 									case 13:
 										return _jackgene$live_deck$Deck_Common$Next;
 									case 32:
@@ -31105,24 +31203,10 @@ var _jackgene$live_deck$Deck$subscriptions = function (model) {
 		});
 };
 var _jackgene$live_deck$Deck$view = function (model) {
-	var _p5 = model.currentSlide;
-	return A2(_jackgene$live_deck$Deck_Slide$slideView, model, _p5._0);
+	var _p6 = model.currentSlide;
+	return A2(_jackgene$live_deck$Deck_Slide$slideView, model, _p6._0);
 };
 var _jackgene$live_deck$Deck$transcriptionDecoder = A2(_elm_lang$core$Json_Decode$field, 'transcriptionText', _elm_lang$core$Json_Decode$string);
-var _jackgene$live_deck$Deck$chatMessageDecoder = A4(
-	_elm_lang$core$Json_Decode$map3,
-	_jackgene$live_deck$Deck_Common$ChatMessage,
-	A2(_elm_lang$core$Json_Decode$field, 's', _elm_lang$core$Json_Decode$string),
-	A2(_elm_lang$core$Json_Decode$field, 'r', _elm_lang$core$Json_Decode$string),
-	A2(_elm_lang$core$Json_Decode$field, 't', _elm_lang$core$Json_Decode$string));
-var _jackgene$live_deck$Deck$chatMessageAndTokensDecoder = A3(
-	_elm_lang$core$Json_Decode$map2,
-	_jackgene$live_deck$Deck_Common$ChatMessageAndTokens,
-	A2(_elm_lang$core$Json_Decode$field, 'chatMessage', _jackgene$live_deck$Deck$chatMessageDecoder),
-	A2(
-		_elm_lang$core$Json_Decode$field,
-		'tokens',
-		_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string)));
 var _jackgene$live_deck$Deck$updateModelWithLocationHash = F2(
 	function (hash, model) {
 		var newSlide = _jackgene$live_deck$Deck_Slide$slideFromLocationHash(hash);
@@ -31133,8 +31217,8 @@ var _jackgene$live_deck$Deck$updateModelWithLocationHash = F2(
 			newModel,
 			{
 				animationFramesRemaining: function () {
-					var _p6 = newSlide;
-					return _p6._0.animationFrames(newModel);
+					var _p7 = newSlide;
+					return _p7._0.animationFrames(newModel);
 				}()
 			});
 	});
@@ -31165,11 +31249,7 @@ var _jackgene$live_deck$Deck$init = function (location) {
 					activeNavigation: _elm_lang$core$Array$empty,
 					currentSlide: _jackgene$live_deck$Deck_Slide$slideFromLocationHash('#'),
 					animationFramesRemaining: 0,
-					wordCloud: {
-						tokensAndCounts: {ctor: '[]'},
-						tokensBySender: _elm_lang$core$Dict$empty,
-						chatMessagesAndTokens: {ctor: '[]'}
-					},
+					wordCloud: _jackgene$live_deck$WordCloud$empty,
 					questions: _elm_lang$core$Array$empty,
 					transcription: {text: '', updated: 0}
 				});
@@ -31184,10 +31264,9 @@ var _jackgene$live_deck$Deck$init = function (location) {
 var _jackgene$live_deck$Deck$Questions = function (a) {
 	return {ctor: 'Questions', _0: a};
 };
-var _jackgene$live_deck$Deck$Tokens = F3(
-	function (a, b, c) {
-		return {ctor: 'Tokens', _0: a, _1: b, _2: c};
-	});
+var _jackgene$live_deck$Deck$Tokens = function (a) {
+	return {ctor: 'Tokens', _0: a};
+};
 var _jackgene$live_deck$Deck$eventBodyDecoder = _elm_lang$core$Json_Decode$oneOf(
 	{
 		ctor: '::',
@@ -31200,18 +31279,9 @@ var _jackgene$live_deck$Deck$eventBodyDecoder = _elm_lang$core$Json_Decode$oneOf
 				_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string))),
 		_1: {
 			ctor: '::',
-			_0: A4(
-				_elm_lang$core$Json_Decode$map3,
+			_0: A2(
+				_elm_lang$core$Json_Decode$map,
 				_jackgene$live_deck$Deck$Tokens,
-				A2(
-					_elm_lang$core$Json_Decode$field,
-					'chatMessagesAndTokens',
-					_elm_lang$core$Json_Decode$list(_jackgene$live_deck$Deck$chatMessageAndTokensDecoder)),
-				A2(
-					_elm_lang$core$Json_Decode$field,
-					'tokensBySender',
-					_elm_lang$core$Json_Decode$dict(
-						_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string))),
 				A2(
 					_elm_lang$core$Json_Decode$field,
 					'tokensAndCounts',
@@ -31232,16 +31302,16 @@ var _jackgene$live_deck$Deck$eventBodyDecoder = _elm_lang$core$Json_Decode$oneOf
 	});
 var _jackgene$live_deck$Deck$update = F2(
 	function (msg, model) {
-		var _p7 = msg;
-		switch (_p7.ctor) {
+		var _p8 = msg;
+		switch (_p8.ctor) {
 			case 'Next':
 				return {
 					ctor: '_Tuple2',
 					_0: model,
 					_1: function () {
 						var curSlideIdx = function () {
-							var _p8 = model.currentSlide;
-							return _p8._0.index;
+							var _p9 = model.currentSlide;
+							return _p9._0.index;
 						}();
 						var newSlideIdx = A2(
 							_elm_lang$core$Maybe$withDefault,
@@ -31265,8 +31335,8 @@ var _jackgene$live_deck$Deck$update = F2(
 					_0: model,
 					_1: function () {
 						var curSlideIdx = function () {
-							var _p9 = model.currentSlide;
-							return _p9._0.index;
+							var _p10 = model.currentSlide;
+							return _p10._0.index;
 						}();
 						var newSlideIdx = A2(
 							_elm_lang$core$Maybe$withDefault,
@@ -31288,7 +31358,7 @@ var _jackgene$live_deck$Deck$update = F2(
 				return {
 					ctor: '_Tuple2',
 					_0: function () {
-						var newSlide = _jackgene$live_deck$Deck_Slide$slideFromLocationHash(_p7._0.hash);
+						var newSlide = _jackgene$live_deck$Deck_Slide$slideFromLocationHash(_p8._0.hash);
 						var newModel = _elm_lang$core$Native_Utils.update(
 							model,
 							{currentSlide: newSlide});
@@ -31296,54 +31366,24 @@ var _jackgene$live_deck$Deck$update = F2(
 							newModel,
 							{
 								animationFramesRemaining: function () {
-									var _p10 = newSlide;
-									return _p10._0.animationFrames(newModel);
+									var _p11 = newSlide;
+									return _p11._0.animationFrames(newModel);
 								}()
 							});
 					}(),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'Event':
-				var _p15 = _p7._0;
-				var _p11 = A2(_elm_lang$core$Json_Decode$decodeString, _jackgene$live_deck$Deck$eventBodyDecoder, _p15);
-				if (_p11.ctor === 'Ok') {
-					if (_p11._0.ctor === 'Tokens') {
-						var wordsAndCounts = A3(
-							_elm_lang$core$Dict$foldr,
-							F3(
-								function (count, tokens, accum) {
-									return A2(
-										_elm_lang$core$Basics_ops['++'],
-										accum,
-										A2(
-											_elm_lang$core$List$map,
-											function (token) {
-												return {ctor: '_Tuple2', _0: token, _1: count};
-											},
-											tokens));
-								}),
-							{ctor: '[]'},
-							_elm_lang$core$Dict$fromList(_p11._0._2));
-						var statsUpdatedModel = _elm_lang$core$Native_Utils.update(
-							model,
-							{
-								wordCloud: {tokensAndCounts: wordsAndCounts, tokensBySender: _p11._0._1, chatMessagesAndTokens: _p11._0._0}
-							});
-						var activeNavigation = _jackgene$live_deck$Deck_Slide$activeNavigationOf(statsUpdatedModel);
-						return {
-							ctor: '_Tuple2',
-							_0: _elm_lang$core$Native_Utils.update(
-								statsUpdatedModel,
-								{activeNavigation: activeNavigation}),
-							_1: _elm_lang$core$Platform_Cmd$none
-						};
-					} else {
-						var _p13 = _p11._0._0;
+				var _p16 = _p8._0;
+				var _p12 = A2(_elm_lang$core$Json_Decode$decodeString, _jackgene$live_deck$Deck$eventBodyDecoder, _p16);
+				if (_p12.ctor === 'Ok') {
+					if (_p12._0.ctor === 'Questions') {
+						var _p14 = _p12._0._0;
 						var isCurrentQuestion = function () {
-							var _p12 = model.currentSlide;
+							var _p13 = model.currentSlide;
 							return _elm_lang$core$Native_Utils.eq(
-								(_p12._0.index - _jackgene$live_deck$Deck_Slide$firstQuestionIndex) + 1,
-								_elm_lang$core$List$length(_p13));
+								(_p13._0.index - _jackgene$live_deck$Deck_Slide$firstQuestionIndex) + 1,
+								_elm_lang$core$List$length(_p14));
 						}();
 						var questionUpdatedModel = _elm_lang$core$Native_Utils.update(
 							model,
@@ -31355,8 +31395,8 @@ var _jackgene$live_deck$Deck$update = F2(
 										_elm_lang$core$Maybe$map,
 										_elm_lang$core$String$length,
 										_elm_lang$core$List$head(
-											_elm_lang$core$List$reverse(_p13))))) : 0,
-								questions: _elm_lang$core$Array$fromList(_p13)
+											_elm_lang$core$List$reverse(_p14))))) : 0,
+								questions: _elm_lang$core$Array$fromList(_p14)
 							});
 						var activeNavigation = _jackgene$live_deck$Deck_Slide$activeNavigationOf(questionUpdatedModel);
 						return {
@@ -31366,21 +31406,31 @@ var _jackgene$live_deck$Deck$update = F2(
 								{activeNavigation: activeNavigation}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						};
+					} else {
+						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					}
 				} else {
-					var _p14 = A2(
+					var _p15 = A2(
 						_elm_lang$core$Debug$log,
 						A2(
 							_elm_lang$core$Basics_ops['++'],
 							'Error parsing JSON: ',
-							A2(_elm_lang$core$Basics_ops['++'], _p11._0, ' for event')),
-						_p15);
+							A2(_elm_lang$core$Basics_ops['++'], _p12._0, ' for event')),
+						_p16);
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
+			case 'NewWordCounts':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{wordCloud: _p8._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'TranscriptionText':
-				var _p18 = _p7._0;
-				var _p16 = A2(_elm_lang$core$Json_Decode$decodeString, _jackgene$live_deck$Deck$transcriptionDecoder, _p18);
-				if (_p16.ctor === 'Ok') {
+				var _p19 = _p8._0;
+				var _p17 = A2(_elm_lang$core$Json_Decode$decodeString, _jackgene$live_deck$Deck$transcriptionDecoder, _p19);
+				if (_p17.ctor === 'Ok') {
 					var transcription = model.transcription;
 					return {
 						ctor: '_Tuple2',
@@ -31389,18 +31439,18 @@ var _jackgene$live_deck$Deck$update = F2(
 							{
 								transcription: _elm_lang$core$Native_Utils.update(
 									transcription,
-									{text: _p16._0})
+									{text: _p17._0})
 							}),
 						_1: A2(_elm_lang$core$Task$perform, _jackgene$live_deck$Deck_Common$TranscriptionUpdated, _elm_lang$core$Time$now)
 					};
 				} else {
-					var _p17 = A2(
+					var _p18 = A2(
 						_elm_lang$core$Debug$log,
 						A2(
 							_elm_lang$core$Basics_ops['++'],
 							'Error parsing JSON: ',
-							A2(_elm_lang$core$Basics_ops['++'], _p16._0, ' for transcription')),
-						_p18);
+							A2(_elm_lang$core$Basics_ops['++'], _p17._0, ' for transcription')),
+						_p19);
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
 			case 'TranscriptionUpdated':
@@ -31412,7 +31462,7 @@ var _jackgene$live_deck$Deck$update = F2(
 						{
 							transcription: _elm_lang$core$Native_Utils.update(
 								transcription,
-								{updated: _p7._0})
+								{updated: _p8._0})
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
@@ -31420,14 +31470,14 @@ var _jackgene$live_deck$Deck$update = F2(
 				return {
 					ctor: '_Tuple2',
 					_0: function () {
-						if (_elm_lang$core$Native_Utils.cmp(_p7._0 - model.transcription.updated, 5 * _elm_lang$core$Time$second) < 0) {
+						if (_elm_lang$core$Native_Utils.cmp(_p8._0 - model.transcription.updated, 5 * _elm_lang$core$Time$second) < 0) {
 							return model;
 						} else {
 							var transcription = model.transcription;
 							var charsToDrop = function () {
-								var _p19 = A2(_elm_lang$core$String$indices, ' ', transcription.text);
-								if (_p19.ctor === '::') {
-									return _p19._0 + 1;
+								var _p20 = A2(_elm_lang$core$String$indices, ' ', transcription.text);
+								if (_p20.ctor === '::') {
+									return _p20._0 + 1;
 								} else {
 									return _elm_lang$core$String$length(transcription.text);
 								}
@@ -31463,9 +31513,9 @@ var _jackgene$live_deck$Deck$main = A2(
 	{
 		init: _jackgene$live_deck$Deck$init,
 		update: _jackgene$live_deck$Deck$update,
-		view: function (_p20) {
+		view: function (_p21) {
 			return _rtfeldman$elm_css$Html_Styled$toUnstyled(
-				_jackgene$live_deck$Deck$view(_p20));
+				_jackgene$live_deck$Deck$view(_p21));
 		},
 		subscriptions: _jackgene$live_deck$Deck$subscriptions
 	})();
@@ -40052,7 +40102,7 @@ var _jackgene$live_deck$Deck_Slide_Introduction$inScope = _elm_lang$core$Native_
 var Elm = {};
 Elm['Deck'] = Elm['Deck'] || {};
 if (typeof _jackgene$live_deck$Deck$main !== 'undefined') {
-    _jackgene$live_deck$Deck$main(Elm['Deck'], 'Deck', {"types":{"unions":{"Deck.Common.Msg":{"args":[],"tags":{"Event":["String"],"Next":[],"TranscriptionText":["String"],"AnimationTick":[],"Last":[],"TranscriptionClearingTick":["Time.Time"],"TranscriptionUpdated":["Time.Time"],"NoOp":[],"NewLocation":["Navigation.Location"]}}},"aliases":{"Time.Time":{"args":[],"type":"Float"},"Navigation.Location":{"args":[],"type":"{ href : String , host : String , hostname : String , protocol : String , origin : String , port_ : String , pathname : String , search : String , hash : String , username : String , password : String }"}},"message":"Deck.Common.Msg"},"versions":{"elm":"0.18.0"}});
+    _jackgene$live_deck$Deck$main(Elm['Deck'], 'Deck', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Deck.Common.Msg":{"args":[],"tags":{"Event":["String"],"Next":[],"TranscriptionText":["String"],"AnimationTick":[],"Last":[],"NewWordCounts":["WordCloud.WordCounts"],"TranscriptionClearingTick":["Time.Time"],"TranscriptionUpdated":["Time.Time"],"NoOp":[],"NewLocation":["Navigation.Location"]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}}},"aliases":{"WordCloud.ChatMessage":{"args":[],"type":"{ sender : String, recipient : String, text : String }"},"WordCloud.ChatMessageAndWords":{"args":[],"type":"{ chatMessage : WordCloud.ChatMessage , words : List WordCloud.ExtractedWord }"},"WordCloud.ExtractedWord":{"args":[],"type":"{ word : String, isValid : Bool }"},"WordCloud.WordCounts":{"args":[],"type":"{ chatMessagesAndWords : List WordCloud.ChatMessageAndWords , wordsBySender : Dict.Dict String (List String) , countsByWord : Dict.Dict String Int }"},"Time.Time":{"args":[],"type":"Float"},"Navigation.Location":{"args":[],"type":"{ href : String , host : String , hostname : String , protocol : String , origin : String , port_ : String , pathname : String , search : String , hash : String , username : String , password : String }"}},"message":"Deck.Common.Msg"},"versions":{"elm":"0.18.0"}});
 }
 Elm['Deck'] = Elm['Deck'] || {};
 Elm['Deck']['Common'] = Elm['Deck']['Common'] || {};
@@ -40247,6 +40297,10 @@ Elm['SyntaxHighlight'] = Elm['SyntaxHighlight'] || {};
 Elm['SyntaxHighlight']['View'] = Elm['SyntaxHighlight']['View'] || {};
 if (typeof _jackgene$live_deck$SyntaxHighlight_View$main !== 'undefined') {
     _jackgene$live_deck$SyntaxHighlight_View$main(Elm['SyntaxHighlight']['View'], 'SyntaxHighlight.View', {"types":null,"versions":{"elm":"0.18.0"}});
+}
+Elm['WordCloud'] = Elm['WordCloud'] || {};
+if (typeof _jackgene$live_deck$WordCloud$main !== 'undefined') {
+    _jackgene$live_deck$WordCloud$main(Elm['WordCloud'], 'WordCloud', {"types":null,"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])

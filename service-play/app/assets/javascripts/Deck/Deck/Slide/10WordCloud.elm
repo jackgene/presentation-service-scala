@@ -28,13 +28,13 @@ import Css exposing
   , block, center, hidden, linearGradient, none, solid, stop, wrap
   )
 import Css.Transitions exposing (easeInOut, transition)
-import Deck.Common exposing (TokenCounts)
 import Deck.Slide.Common exposing (..)
 import Deck.Slide.Template exposing (standardSlideView)
 import Dict exposing (Dict)
 import Html.Styled exposing (Html, div, p, table, td, text, th, tr, ul)
 import Html.Styled.Attributes exposing (css, title)
 import Set
+import WordCloud exposing (WordCounts)
 
 
 -- Constants
@@ -75,7 +75,7 @@ wordCloud =
       ( div []
         [ div
           [ css
-            [ height (vw (if List.isEmpty model.wordCloud.tokensAndCounts then 20 else 0))
+            [ height (vw (if Dict.isEmpty model.wordCloud.countsByWord then 20 else 0))
             , overflow hidden
             , transition
               [ Css.Transitions.opacity3 transitionDurationMs 0 easeInOut
@@ -91,7 +91,7 @@ wordCloud =
           ]
         , div
           [ css
-            ( if List.isEmpty model.wordCloud.tokensAndCounts then [ display none ]
+            ( if Dict.isEmpty model.wordCloud.countsByWord then [ display none ]
               else [ display block, height (vw 32), overflow hidden ]
             )
           ]
@@ -103,10 +103,13 @@ wordCloud =
               ]
             ]
             ( let
+                topWordsAndCounts : List (String, Int)
+                topWordsAndCounts = WordCloud.topWords maxWordDisplayCount model.wordCloud
+
                 maxCount : Float
                 maxCount =
                   Maybe.withDefault 0.0
-                  ( Maybe.map (toFloat << Tuple.second) (List.head model.wordCloud.tokensAndCounts) )
+                  ( Maybe.map (toFloat << Tuple.second) (List.head topWordsAndCounts) )
               in
               ( List.map
                 ( \(word, count) ->
@@ -127,7 +130,7 @@ wordCloud =
                     [ text word ]
                   ]
                 )
-                ( List.sort (List.take maxWordDisplayCount model.wordCloud.tokensAndCounts) )
+                topWordsAndCounts
               )
             )
           ]
@@ -138,7 +141,7 @@ wordCloud =
   }
 
 
-implementationDiagramView : TokenCounts -> Int -> Float -> Float -> Bool -> Html msg
+implementationDiagramView : WordCounts -> Int -> Float -> Float -> Bool -> Html msg
 implementationDiagramView counts step fromLeft scale scaleChanged =
   let
     diagramHeightEm : Float
@@ -176,7 +179,7 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
       [ div [] -- events
         ( Tuple.first
           ( List.foldr
-            ( \chatMessageAndTokens (nodes, topEm) ->
+            ( \chatMessageAndWords (nodes, topEm) ->
               if topEm > diagramHeightEm then
                 ( ( div [ css [ display none ] ] [] ) :: nodes
                 , topEm
@@ -201,15 +204,15 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
                         [ css [ width (em 24), marginBottom (em 0.625), eventBlockStyle ] ]
                         [ tr []
                           [ th [ css [ width (em 6), textAlign right, verticalAlign top ] ] [ text "sender:" ]
-                          , td [] [ text chatMessageAndTokens.chatMessage.sender ]
+                          , td [] [ text chatMessageAndWords.chatMessage.sender ]
                           ]
                         , tr []
                           [ th [ css [ textAlign right, verticalAlign top ] ] [ text "recipient:" ]
-                          , td [] [ text chatMessageAndTokens.chatMessage.recipient ]
+                          , td [] [ text chatMessageAndWords.chatMessage.recipient ]
                           ]
                         , tr []
                           [ th [ css [ textAlign right, verticalAlign top ] ] [ text "text:" ]
-                          , td [] [ text chatMessageAndTokens.chatMessage.text ]
+                          , td [] [ text chatMessageAndWords.chatMessage.text ]
                           ]
                         ]
                       ]
@@ -238,7 +241,7 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
                           [ css [ width (em 16), marginBottom (em 0.5), eventBlockStyle ] ]
                           [ tr []
                             [ th [ css [ width (em 6), textAlign right, verticalAlign top ] ] [ text "sender:" ]
-                            , td [] [ text chatMessageAndTokens.chatMessage.sender ]
+                            , td [] [ text chatMessageAndWords.chatMessage.sender ]
                             ]
                           , tr []
                             [ th [ css [ textAlign right, verticalAlign top ] ] [ text "word:" ]
@@ -246,7 +249,7 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
                             ]
                           ]
                         )
-                        ( List.reverse chatMessageAndTokens.tokens )
+                        ( List.reverse (List.map .word chatMessageAndWords.words) )
                       )
                     ]
                   ) :: nodes
@@ -255,7 +258,7 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
                     rowHeightEm =
                       max
                       chatMessageEventHeightEm
-                      (toFloat (List.length chatMessageAndTokens.tokens) * tokenEventHeightEm)
+                      (toFloat (List.length chatMessageAndWords.words) * tokenEventHeightEm)
                   in
                   topEm + rowHeightEm
                 )
@@ -273,12 +276,12 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
               ]
             , -0.3
             )
-            counts.chatMessagesAndTokens
+            counts.chatMessagesAndWords
           )
         )
       , div -- tokens by author
         [ css [ position absolute, left (em 62) ] ]
-        ( if List.isEmpty counts.chatMessagesAndTokens then []
+        ( if List.isEmpty counts.chatMessagesAndWords then []
           else
             [ table [ css [ width (em 26), eventBlockStyle ] ]
               ( ( tr []
@@ -289,10 +292,10 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
               ::( List.reverse
                   ( Tuple.first
                     ( List.foldr
-                      ( \chatMessageAndTokens (nodes, senders) ->
+                      ( \chatMessagesAndWords (nodes, senders) ->
                         let
                           sender : String
-                          sender = chatMessageAndTokens.chatMessage.sender
+                          sender = chatMessagesAndWords.chatMessage.sender
                         in
                         if Set.member sender senders then (nodes, senders)
                         else
@@ -302,7 +305,7 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
                                 [ text
                                   ( String.join ", "
                                     ( Maybe.withDefault []
-                                      ( Dict.get sender counts.tokensBySender )
+                                      ( Dict.get sender counts.wordsBySender )
                                     )
                                   )
                                 ]
@@ -312,7 +315,7 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
                           )
                       )
                       ( [], Set.empty )
-                      counts.chatMessagesAndTokens
+                      counts.chatMessagesAndWords
                     )
                   )
                 )
@@ -321,7 +324,7 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
         )
       , div -- counts by token
         [ css [ position absolute, left (em 99) ] ]
-        ( if List.isEmpty counts.chatMessagesAndTokens then []
+        ( if List.isEmpty counts.chatMessagesAndWords then []
           else
             [ table [ css [ width (em 15), eventBlockStyle ] ]
               ( ( tr []
@@ -330,11 +333,10 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
                   ]
                 )
               ::( let
-                    countsByWord : Dict String Int
-                    countsByWord = Dict.fromList counts.tokensAndCounts
-
                     words : List String
-                    words = List.concatMap .tokens counts.chatMessagesAndTokens
+                    words =
+                      List.concatMap .words counts.chatMessagesAndWords
+                      |> List.map .word
                   in
                   List.reverse
                   ( Tuple.first
@@ -342,7 +344,7 @@ implementationDiagramView counts step fromLeft scale scaleChanged =
                       ( \word (nodes, displayedWords) ->
                         let
                           count : Int
-                          count = Maybe.withDefault 0 (Dict.get word countsByWord)
+                          count = Maybe.withDefault 0 (Dict.get word counts.countsByWord)
                         in
                         if count == 0 || Set.member word displayedWords then (nodes, displayedWords)
                         else
