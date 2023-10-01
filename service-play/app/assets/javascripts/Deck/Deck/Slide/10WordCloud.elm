@@ -13,7 +13,7 @@ import Css exposing
   ( Color, Style, Vw
   -- Container
   , bottom, borderRadius, borderSpacing, borderTop3
-  , display, displayFlex, height, left, listStyle, margin2, marginBottom
+  , display, displayFlex, height, left, listStyle, margin2
   , maxWidth, overflow, padding2, paddingTop, position, right, textOverflow
   , top, width
   -- Content
@@ -453,13 +453,6 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
 
     extractedWordHeightEm : Float
     extractedWordHeightEm = 3.8
-
-    elementBlockStyle : Style
-    elementBlockStyle =
-      Css.batch
-      [ borderSpacing zero, borderRadius (em 0.75)
-      , backgroundColor themeForegroundColor
-      ]
 
     truncatedTextStyle : Style
     truncatedTextStyle =
