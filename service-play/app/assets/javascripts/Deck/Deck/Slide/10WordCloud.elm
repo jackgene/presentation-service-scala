@@ -1,13 +1,5 @@
 module Deck.Slide.WordCloud exposing
-  ( wordCloud
-  , implementation1ChatMessages
-  , implementation2MapNormalizeWords
-  , implementation3FlatMapConcatSplitIntoWords
-  , implementation4FilterIsValidWord
-  , implementation5RunningFoldUpdateWordsForPerson
-  , implementation6MapCountPersonsForWord
-  , implementation7Complete
-  )
+  ( wordCloud, implementationSlides )
 
 import Css exposing
   ( Color, Style, Vw
@@ -446,7 +438,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
     visibleWidthEm = diagramWidthEm / scale
 
     visibleHeightEm : Float
-    visibleHeightEm = 50 / scale
+    visibleHeightEm = 54 / scale
 
     chatMessageHeightEm : Float
     chatMessageHeightEm = 5.5
@@ -728,7 +720,7 @@ implementationDiagramSlide step introText fromLeft scale scaleChanged =
   , view =
     ( \page model ->
       standardSlideView page heading
-      "Word Clouds as a Reactive Streaming Application"
+      "Word Clouds as a Functional Reactive Application"
       ( div []
         [ p [] [ text introText ]
         , implementationDiagramView
@@ -767,7 +759,7 @@ implementation2MapNormalizeWords =
 implementation3FlatMapConcatSplitIntoWords : UnindexedSlideModel
 implementation3FlatMapConcatSplitIntoWords =
   implementationDiagramSlide 2
-  "For each person, retain the most recent three words:"
+  "The normalized text is split into words:"
   implementation3Layout.leftEm
   detailedMagnification False
 
@@ -775,7 +767,7 @@ implementation3FlatMapConcatSplitIntoWords =
 implementation4FilterIsValidWord : UnindexedSlideModel
 implementation4FilterIsValidWord =
   implementationDiagramSlide 3
-  "For each word, count the number of persons, using those counts as weights:"
+  "Invalid words are filtered out:"
   (leftEmCentering rawWordsPos.base validatedWordsPos.base)
   detailedMagnification False
 
@@ -783,7 +775,7 @@ implementation4FilterIsValidWord =
 implementation5RunningFoldUpdateWordsForPerson : UnindexedSlideModel
 implementation5RunningFoldUpdateWordsForPerson =
   implementationDiagramSlide 4
-  "For each word, count the number of persons, using those counts as weights:"
+  "For each person, retain their most recent three words:"
   (leftEmCentering validatedWordsPos.base wordsByPersonsPos.base)
   detailedMagnification False
 
@@ -800,3 +792,15 @@ implementation7Complete : UnindexedSlideModel
 implementation7Complete =
   implementationDiagramSlide 6
   "Observe that information is lost as it moves through the system:" 0.0 1.0 True
+
+
+implementationSlides : List UnindexedSlideModel
+implementationSlides =
+  [ implementation1ChatMessages
+  , implementation2MapNormalizeWords
+  , implementation3FlatMapConcatSplitIntoWords
+  , implementation4FilterIsValidWord
+  , implementation5RunningFoldUpdateWordsForPerson
+  , implementation6MapCountPersonsForWord
+  , implementation7Complete
+  ]
