@@ -42,14 +42,13 @@ preQuestionSlides : List UnindexedSlideModel
 preQuestionSlides =
   [ Cover.cover
   , WordCloud.wordCloud
-  , WordCloud.implementation1EventSource
-  , WordCloud.implementation2ExtractWords
-  , WordCloud.implementation3RetainLastNWords
-  , WordCloud.implementation4CountSendersByWord
-  , WordCloud.implementation5Complete
-  , WordCloud.implementation6CountSendersByWord
-  , WordCloud.implementation7RetainLastNWords
-  , WordCloud.implementation8ExtractWords
+  , WordCloud.implementation1ChatMessages
+  , WordCloud.implementation2MapNormalizeWords
+  , WordCloud.implementation3FlatMapConcatSplitIntoWords
+  , WordCloud.implementation4FilterIsValidWord
+  , WordCloud.implementation5RunningFoldUpdateWordsForPerson
+  , WordCloud.implementation6MapCountPersonsForWord
+  , WordCloud.implementation7Complete
 
   -- Q & A
   , SectionCover.questions

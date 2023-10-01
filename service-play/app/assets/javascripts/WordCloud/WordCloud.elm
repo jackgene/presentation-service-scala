@@ -24,6 +24,7 @@ type alias ExtractedWord =
 
 type alias ChatMessageAndWords =
   { chatMessage : ChatMessage
+  , normalizedText : String
   , words : List ExtractedWord
   }
 
@@ -52,8 +53,9 @@ extractedWordDecoder =
 
 chatMessageAndTokensDecoder : Decoder ChatMessageAndWords
 chatMessageAndTokensDecoder =
-  Decode.map2 ChatMessageAndWords
+  Decode.map3 ChatMessageAndWords
   ( Decode.field "chatMessage" chatMessageDecoder )
+  ( Decode.field "normalizedText" Decode.string )
   ( Decode.field "words" ( Decode.list extractedWordDecoder ) )
 
 
