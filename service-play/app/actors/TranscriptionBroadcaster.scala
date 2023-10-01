@@ -24,7 +24,7 @@ object TranscriptionBroadcaster {
   }
 
   private def running(
-    text: String, subscribers: Set[ActorRef[Event]]
+    subscribers: Set[ActorRef[Event]]
   ): Behavior[Command] = Behaviors.receive { (ctx: ActorContext[Command], cmd: Command) =>
     cmd match {
       case NewTranscriptionText(text: String) =>
@@ -32,15 +32,12 @@ object TranscriptionBroadcaster {
         for (subscriber: ActorRef[Event] <- subscribers) {
           subscriber ! Transcription(text)
         }
-        running(text, subscribers)
+        running(subscribers)
 
       case Subscribe(subscriber: ActorRef[Event]) if !subscribers.contains(subscriber) =>
         ctx.log.info(s"+1 subscriber (=${subscribers.size + 1})")
-        if (text.nonEmpty) {
-          subscriber ! Transcription(text)
-        }
         ctx.watchWith(subscriber, Unsubscribe(subscriber))
-        running(text, subscribers + subscriber)
+        running(subscribers + subscriber)
 
       case Subscribe(subscriber: ActorRef[Event]) =>
         ctx.log.warn(s"attempted to subscribe duplicate subscriber - ${subscriber.path}")
@@ -49,7 +46,7 @@ object TranscriptionBroadcaster {
       case Unsubscribe(subscriber: ActorRef[Event]) if subscribers.contains(subscriber) =>
         ctx.log.info(s"-1 subscriber (=${subscribers.size - 1})")
         ctx.unwatch(subscriber)
-        running(text, subscribers - subscriber)
+        running(subscribers - subscriber)
 
       case Unsubscribe(subscriber: ActorRef[Event]) =>
         ctx.log.warn(s"attempted to unsubscribe unknown subscriber - ${subscriber.path}")
@@ -57,7 +54,7 @@ object TranscriptionBroadcaster {
     }
   }
 
-  def apply(): Behavior[Command] = running("", Set())
+  def apply(): Behavior[Command] = running(Set())
 
   /**
    * Publishes broadcast as JSON
