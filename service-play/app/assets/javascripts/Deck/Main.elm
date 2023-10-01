@@ -1,6 +1,5 @@
 module Deck exposing (main)
 
-import AnimationFrame
 import Array exposing (Array)
 import Deck.Common exposing
   ( Model, Msg(..), Navigation, Slide(Slide), SlideModel
@@ -271,7 +270,7 @@ update msg model =
 
     AnimationTick ->
       ( { model
-        | animationFramesRemaining = model.animationFramesRemaining - 1
+        | animationFramesRemaining = 0
         }
       , Cmd.none
       )
@@ -313,7 +312,10 @@ subscriptions model =
         ]
       _ -> Sub.none
   , if model.animationFramesRemaining <= 0 then Sub.none
-    else AnimationFrame.times (always AnimationTick)
+    else
+      Time.every
+      (toFloat model.animationFramesRemaining * 1000 / 60 * Time.millisecond)
+      (always AnimationTick)
   , Keyboard.ups
     ( \keyCode ->
       case keyCode of
