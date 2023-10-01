@@ -36,7 +36,9 @@ object TranscriptionBroadcaster {
 
       case Subscribe(subscriber: ActorRef[Event]) if !subscribers.contains(subscriber) =>
         ctx.log.info(s"+1 subscriber (=${subscribers.size + 1})")
-        subscriber ! Transcription(text)
+        if (text.nonEmpty) {
+          subscriber ! Transcription(text)
+        }
         ctx.watchWith(subscriber, Unsubscribe(subscriber))
         running(text, subscribers + subscriber)
 
