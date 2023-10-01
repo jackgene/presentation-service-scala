@@ -42,16 +42,10 @@ preQuestionSlides : List UnindexedSlideModel
 preQuestionSlides =
   [ Cover.cover
   , WordCloud.wordCloud
-  , WordCloud.implementation1ChatMessages
-  , WordCloud.implementation2MapNormalizeWords
-  , WordCloud.implementation3FlatMapConcatSplitIntoWords
-  , WordCloud.implementation4FilterIsValidWord
-  , WordCloud.implementation5RunningFoldUpdateWordsForPerson
-  , WordCloud.implementation6MapCountPersonsForWord
-  , WordCloud.implementation7Complete
-
+  ] ++
+  WordCloud.implementationSlides ++
   -- Q & A
-  , SectionCover.questions
+  [ SectionCover.questions
   ]
 
 
