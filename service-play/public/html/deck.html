@@ -3282,28 +3282,6 @@ var _Skinney$murmur3$Murmur3$hashString = F2(
 				A4(_Skinney$murmur3$Murmur3$HashData, 0, seed, 0, 0),
 				str));
 	});
-var _elm_lang$animation_frame$Native_AnimationFrame = function()
-{
-
-function create()
-{
-	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
-	{
-		var id = requestAnimationFrame(function() {
-			callback(_elm_lang$core$Native_Scheduler.succeed(Date.now()));
-		});
-
-		return function() {
-			cancelAnimationFrame(id);
-		};
-	});
-}
-
-return {
-	create: create
-};
-
-}();
 var _elm_lang$core$Task$onError = _elm_lang$core$Native_Scheduler.onError;
 var _elm_lang$core$Task$andThen = _elm_lang$core$Native_Scheduler.andThen;
 var _elm_lang$core$Task$spawnCmd = F2(
@@ -4632,147 +4610,6 @@ _elm_lang$core$Native_Platform.effectManagers['Time'] = {pkg: 'elm-lang/core', i
 var _elm_lang$core$Process$kill = _elm_lang$core$Native_Scheduler.kill;
 var _elm_lang$core$Process$sleep = _elm_lang$core$Native_Scheduler.sleep;
 var _elm_lang$core$Process$spawn = _elm_lang$core$Native_Scheduler.spawn;
-var _elm_lang$animation_frame$AnimationFrame$rAF = _elm_lang$animation_frame$Native_AnimationFrame.create(
-	{ctor: '_Tuple0'});
-var _elm_lang$animation_frame$AnimationFrame$subscription = _elm_lang$core$Native_Platform.leaf('AnimationFrame');
-var _elm_lang$animation_frame$AnimationFrame$State = F3(
-	function (a, b, c) {
-		return {subs: a, request: b, oldTime: c};
-	});
-var _elm_lang$animation_frame$AnimationFrame$init = _elm_lang$core$Task$succeed(
-	A3(
-		_elm_lang$animation_frame$AnimationFrame$State,
-		{ctor: '[]'},
-		_elm_lang$core$Maybe$Nothing,
-		0));
-var _elm_lang$animation_frame$AnimationFrame$onEffects = F3(
-	function (router, subs, _p0) {
-		var _p1 = _p0;
-		var _p5 = _p1.request;
-		var _p4 = _p1.oldTime;
-		var _p2 = {ctor: '_Tuple2', _0: _p5, _1: subs};
-		if (_p2._0.ctor === 'Nothing') {
-			if (_p2._1.ctor === '[]') {
-				return _elm_lang$core$Task$succeed(
-					A3(
-						_elm_lang$animation_frame$AnimationFrame$State,
-						{ctor: '[]'},
-						_elm_lang$core$Maybe$Nothing,
-						_p4));
-			} else {
-				return A2(
-					_elm_lang$core$Task$andThen,
-					function (pid) {
-						return A2(
-							_elm_lang$core$Task$andThen,
-							function (time) {
-								return _elm_lang$core$Task$succeed(
-									A3(
-										_elm_lang$animation_frame$AnimationFrame$State,
-										subs,
-										_elm_lang$core$Maybe$Just(pid),
-										time));
-							},
-							_elm_lang$core$Time$now);
-					},
-					_elm_lang$core$Process$spawn(
-						A2(
-							_elm_lang$core$Task$andThen,
-							_elm_lang$core$Platform$sendToSelf(router),
-							_elm_lang$animation_frame$AnimationFrame$rAF)));
-			}
-		} else {
-			if (_p2._1.ctor === '[]') {
-				return A2(
-					_elm_lang$core$Task$andThen,
-					function (_p3) {
-						return _elm_lang$core$Task$succeed(
-							A3(
-								_elm_lang$animation_frame$AnimationFrame$State,
-								{ctor: '[]'},
-								_elm_lang$core$Maybe$Nothing,
-								_p4));
-					},
-					_elm_lang$core$Process$kill(_p2._0._0));
-			} else {
-				return _elm_lang$core$Task$succeed(
-					A3(_elm_lang$animation_frame$AnimationFrame$State, subs, _p5, _p4));
-			}
-		}
-	});
-var _elm_lang$animation_frame$AnimationFrame$onSelfMsg = F3(
-	function (router, newTime, _p6) {
-		var _p7 = _p6;
-		var _p10 = _p7.subs;
-		var diff = newTime - _p7.oldTime;
-		var send = function (sub) {
-			var _p8 = sub;
-			if (_p8.ctor === 'Time') {
-				return A2(
-					_elm_lang$core$Platform$sendToApp,
-					router,
-					_p8._0(newTime));
-			} else {
-				return A2(
-					_elm_lang$core$Platform$sendToApp,
-					router,
-					_p8._0(diff));
-			}
-		};
-		return A2(
-			_elm_lang$core$Task$andThen,
-			function (pid) {
-				return A2(
-					_elm_lang$core$Task$andThen,
-					function (_p9) {
-						return _elm_lang$core$Task$succeed(
-							A3(
-								_elm_lang$animation_frame$AnimationFrame$State,
-								_p10,
-								_elm_lang$core$Maybe$Just(pid),
-								newTime));
-					},
-					_elm_lang$core$Task$sequence(
-						A2(_elm_lang$core$List$map, send, _p10)));
-			},
-			_elm_lang$core$Process$spawn(
-				A2(
-					_elm_lang$core$Task$andThen,
-					_elm_lang$core$Platform$sendToSelf(router),
-					_elm_lang$animation_frame$AnimationFrame$rAF)));
-	});
-var _elm_lang$animation_frame$AnimationFrame$Diff = function (a) {
-	return {ctor: 'Diff', _0: a};
-};
-var _elm_lang$animation_frame$AnimationFrame$diffs = function (tagger) {
-	return _elm_lang$animation_frame$AnimationFrame$subscription(
-		_elm_lang$animation_frame$AnimationFrame$Diff(tagger));
-};
-var _elm_lang$animation_frame$AnimationFrame$Time = function (a) {
-	return {ctor: 'Time', _0: a};
-};
-var _elm_lang$animation_frame$AnimationFrame$times = function (tagger) {
-	return _elm_lang$animation_frame$AnimationFrame$subscription(
-		_elm_lang$animation_frame$AnimationFrame$Time(tagger));
-};
-var _elm_lang$animation_frame$AnimationFrame$subMap = F2(
-	function (func, sub) {
-		var _p11 = sub;
-		if (_p11.ctor === 'Time') {
-			return _elm_lang$animation_frame$AnimationFrame$Time(
-				function (_p12) {
-					return func(
-						_p11._0(_p12));
-				});
-		} else {
-			return _elm_lang$animation_frame$AnimationFrame$Diff(
-				function (_p13) {
-					return func(
-						_p11._0(_p13));
-				});
-		}
-	});
-_elm_lang$core$Native_Platform.effectManagers['AnimationFrame'] = {pkg: 'elm-lang/animation-frame', init: _elm_lang$animation_frame$AnimationFrame$init, onEffects: _elm_lang$animation_frame$AnimationFrame$onEffects, onSelfMsg: _elm_lang$animation_frame$AnimationFrame$onSelfMsg, tag: 'sub', subMap: _elm_lang$animation_frame$AnimationFrame$subMap};
 //import Native.List //
 
 var _elm_lang$core$Native_Array = function() {
@@ -29430,24 +29267,9 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 					}
 				}
 			});
-		var elementBlockStyle = _rtfeldman$elm_css$Css$batch(
-			{
-				ctor: '::',
-				_0: _rtfeldman$elm_css$Css$borderSpacing(_rtfeldman$elm_css$Css$zero),
-				_1: {
-					ctor: '::',
-					_0: _rtfeldman$elm_css$Css$borderRadius(
-						_rtfeldman$elm_css$Css$em(0.75)),
-					_1: {
-						ctor: '::',
-						_0: _rtfeldman$elm_css$Css$backgroundColor(_jackgene$live_deck$Deck_Slide_Common$themeForegroundColor),
-						_1: {ctor: '[]'}
-					}
-				}
-			});
 		var extractedWordHeightEm = 3.8;
 		var chatMessageHeightEm = 5.5;
-		var visibleHeightEm = 50 / scale;
+		var visibleHeightEm = 54 / scale;
 		var diagramWidthEm = _jackgene$live_deck$Deck_Slide_WordCloud$leftEmAfter(_jackgene$live_deck$Deck_Slide_WordCloud$personCountsByWordBasePos);
 		var visibleWidthEm = diagramWidthEm / scale;
 		return A2(
@@ -30744,7 +30566,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramSlide = F5(
 							_jackgene$live_deck$Deck_Slide_Template$standardSlideView,
 							page,
 							_jackgene$live_deck$Deck_Slide_WordCloud$heading,
-							'Word Clouds as a Reactive Streaming Application',
+							'Word Clouds as a Functional Reactive Application',
 							A2(
 								_rtfeldman$elm_css$Html_Styled$div,
 								{ctor: '[]'},
@@ -30776,18 +30598,18 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramSlide = F5(
 	});
 var _jackgene$live_deck$Deck_Slide_WordCloud$implementation1ChatMessages = A5(_jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramSlide, 0, 'We start the events - Zoom chat messages:', _jackgene$live_deck$Deck_Slide_WordCloud$implementation1Layout.leftEm, _jackgene$live_deck$Deck_Slide_WordCloud$detailedMagnification, false);
 var _jackgene$live_deck$Deck_Slide_WordCloud$implementation2MapNormalizeWords = A5(_jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramSlide, 1, 'The message text is normalized, retaining the sender as the person:', _jackgene$live_deck$Deck_Slide_WordCloud$implementation2Layout.leftEm, _jackgene$live_deck$Deck_Slide_WordCloud$detailedMagnification, false);
-var _jackgene$live_deck$Deck_Slide_WordCloud$implementation3FlatMapConcatSplitIntoWords = A5(_jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramSlide, 2, 'For each person, retain the most recent three words:', _jackgene$live_deck$Deck_Slide_WordCloud$implementation3Layout.leftEm, _jackgene$live_deck$Deck_Slide_WordCloud$detailedMagnification, false);
+var _jackgene$live_deck$Deck_Slide_WordCloud$implementation3FlatMapConcatSplitIntoWords = A5(_jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramSlide, 2, 'The normalized text is split into words:', _jackgene$live_deck$Deck_Slide_WordCloud$implementation3Layout.leftEm, _jackgene$live_deck$Deck_Slide_WordCloud$detailedMagnification, false);
 var _jackgene$live_deck$Deck_Slide_WordCloud$implementation4FilterIsValidWord = A5(
 	_jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramSlide,
 	3,
-	'For each word, count the number of persons, using those counts as weights:',
+	'Invalid words are filtered out:',
 	A2(_jackgene$live_deck$Deck_Slide_WordCloud$leftEmCentering, _jackgene$live_deck$Deck_Slide_WordCloud$rawWordsPos.base, _jackgene$live_deck$Deck_Slide_WordCloud$validatedWordsPos.base),
 	_jackgene$live_deck$Deck_Slide_WordCloud$detailedMagnification,
 	false);
 var _jackgene$live_deck$Deck_Slide_WordCloud$implementation5RunningFoldUpdateWordsForPerson = A5(
 	_jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramSlide,
 	4,
-	'For each word, count the number of persons, using those counts as weights:',
+	'For each person, retain their most recent three words:',
 	A2(_jackgene$live_deck$Deck_Slide_WordCloud$leftEmCentering, _jackgene$live_deck$Deck_Slide_WordCloud$validatedWordsPos.base, _jackgene$live_deck$Deck_Slide_WordCloud$wordsByPersonsPos.base),
 	_jackgene$live_deck$Deck_Slide_WordCloud$detailedMagnification,
 	false);
@@ -30799,6 +30621,35 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementation6MapCountPersonsForWo
 	_jackgene$live_deck$Deck_Slide_WordCloud$detailedMagnification,
 	false);
 var _jackgene$live_deck$Deck_Slide_WordCloud$implementation7Complete = A5(_jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramSlide, 6, 'Observe that information is lost as it moves through the system:', 0.0, 1.0, true);
+var _jackgene$live_deck$Deck_Slide_WordCloud$implementationSlides = {
+	ctor: '::',
+	_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation1ChatMessages,
+	_1: {
+		ctor: '::',
+		_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation2MapNormalizeWords,
+		_1: {
+			ctor: '::',
+			_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation3FlatMapConcatSplitIntoWords,
+			_1: {
+				ctor: '::',
+				_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation4FilterIsValidWord,
+				_1: {
+					ctor: '::',
+					_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation5RunningFoldUpdateWordsForPerson,
+					_1: {
+						ctor: '::',
+						_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation6MapCountPersonsForWord,
+						_1: {
+							ctor: '::',
+							_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation7Complete,
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			}
+		}
+	}
+};
 var _jackgene$live_deck$Deck_Slide_WordCloud$HorizontalPosition = F2(
 	function (a, b) {
 		return {leftEm: a, widthEm: b};
@@ -31160,47 +31011,25 @@ var _jackgene$live_deck$Deck_Slide$questionSlides = {
 		}
 	}
 };
-var _jackgene$live_deck$Deck_Slide$preQuestionSlides = {
-	ctor: '::',
-	_0: _jackgene$live_deck$Deck_Slide_Cover$cover,
-	_1: {
+var _jackgene$live_deck$Deck_Slide$preQuestionSlides = A2(
+	_elm_lang$core$Basics_ops['++'],
+	{
 		ctor: '::',
-		_0: _jackgene$live_deck$Deck_Slide_WordCloud$wordCloud,
+		_0: _jackgene$live_deck$Deck_Slide_Cover$cover,
 		_1: {
 			ctor: '::',
-			_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation1ChatMessages,
-			_1: {
-				ctor: '::',
-				_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation2MapNormalizeWords,
-				_1: {
-					ctor: '::',
-					_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation3FlatMapConcatSplitIntoWords,
-					_1: {
-						ctor: '::',
-						_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation4FilterIsValidWord,
-						_1: {
-							ctor: '::',
-							_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation5RunningFoldUpdateWordsForPerson,
-							_1: {
-								ctor: '::',
-								_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation6MapCountPersonsForWord,
-								_1: {
-									ctor: '::',
-									_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation7Complete,
-									_1: {
-										ctor: '::',
-										_0: _jackgene$live_deck$Deck_Slide_SectionCover$questions,
-										_1: {ctor: '[]'}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
+			_0: _jackgene$live_deck$Deck_Slide_WordCloud$wordCloud,
+			_1: {ctor: '[]'}
 		}
-	}
-};
+	},
+	A2(
+		_elm_lang$core$Basics_ops['++'],
+		_jackgene$live_deck$Deck_Slide_WordCloud$implementationSlides,
+		{
+			ctor: '::',
+			_0: _jackgene$live_deck$Deck_Slide_SectionCover$questions,
+			_1: {ctor: '[]'}
+		}));
 var _jackgene$live_deck$Deck_Slide$firstQuestionIndex = _elm_lang$core$List$length(_jackgene$live_deck$Deck_Slide$preQuestionSlides);
 var _jackgene$live_deck$Deck_Slide$indexSlide = F2(
 	function (index, unindexedSlide) {
@@ -31375,7 +31204,9 @@ var _jackgene$live_deck$Deck$subscriptions = function (model) {
 				}(),
 				_1: {
 					ctor: '::',
-					_0: (_elm_lang$core$Native_Utils.cmp(model.animationFramesRemaining, 0) < 1) ? _elm_lang$core$Platform_Sub$none : _elm_lang$animation_frame$AnimationFrame$times(
+					_0: (_elm_lang$core$Native_Utils.cmp(model.animationFramesRemaining, 0) < 1) ? _elm_lang$core$Platform_Sub$none : A2(
+						_elm_lang$core$Time$every,
+						((_elm_lang$core$Basics$toFloat(model.animationFramesRemaining) * 1000) / 60) * _elm_lang$core$Time$millisecond,
 						_elm_lang$core$Basics$always(_jackgene$live_deck$Deck_Common$AnimationTick)),
 					_1: {
 						ctor: '::',
@@ -31703,7 +31534,7 @@ var _jackgene$live_deck$Deck$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{animationFramesRemaining: model.animationFramesRemaining - 1}),
+						{animationFramesRemaining: 0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			default:
