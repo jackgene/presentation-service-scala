@@ -22,6 +22,8 @@ import Css exposing
   )
 import Css.Transitions exposing (easeInOut, transition)
 import Deck.Slide.Common exposing (..)
+import Deck.Slide.SyntaxHighlight exposing
+  ( Language(Kotlin), syntaxHighlightedCodeBlock )
 import Deck.Slide.Template exposing (standardSlideView)
 import Dict exposing (Dict)
 import Html.Styled exposing (Html, br, div, p, table, td, text, th, tr, ul)
@@ -106,7 +108,7 @@ wordCloud =
                     [ text word ]
                   ]
                 )
-                topWordsAndCounts
+                ( List.sort topWordsAndCounts )
               )
             )
           ]
@@ -438,7 +440,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
     visibleWidthEm = diagramWidthEm / scale
 
     visibleHeightEm : Float
-    visibleHeightEm = 54 / scale
+    visibleHeightEm = 56 / scale
 
     chatMessageHeightEm : Float
     chatMessageHeightEm = 5.5
@@ -456,7 +458,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
   div
   [ css
     [ position relative
-    , height (vw 30)
+    , height (vw 32)
     , overflow hidden
     ]
   ]
@@ -713,8 +715,8 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
   ]
 
 
-implementationDiagramSlide : Int -> String -> Float -> Float -> Bool -> UnindexedSlideModel
-implementationDiagramSlide step introText fromLeft scale scaleChanged =
+implementationDiagramSlide : Int -> String -> String -> Bool -> Float -> Float -> Bool -> UnindexedSlideModel
+implementationDiagramSlide step introText code showCode fromLeft scale scaleChanged =
   { baseSlideModel
   | animationFrames = if scaleChanged then always 30 else always 0
   , view =
@@ -722,10 +724,24 @@ implementationDiagramSlide step introText fromLeft scale scaleChanged =
       standardSlideView page heading
       "Word Clouds as a Functional Reactive Application"
       ( div []
-        [ p [] [ text introText ]
+        [ p [ css [ margin2 (em 0.5) zero ] ] [ text introText ]
         , implementationDiagramView
           model.wordCloud step fromLeft scale
           (scaleChanged && model.animationFramesRemaining > 0)
+        , div
+          [ css
+            ( [ position relative
+              , transition
+                [ Css.Transitions.opacity3 transitionDurationMs 0 easeInOut
+                , Css.Transitions.top3 transitionDurationMs 0 easeInOut
+                ]
+              ]
+            ++( if showCode then [ top (vw -31), opacity (num 0.875) ]
+                else [ top zero, opacity zero ]
+              )
+            )
+          ]
+          [ syntaxHighlightedCodeBlock Kotlin Dict.empty Dict.empty [] code ]
         ]
       )
     )
@@ -742,65 +758,142 @@ detailedMagnification : Float
 detailedMagnification = leftEmAfter personCountsByWordBasePos / magnifiedWidthEm
 
 
-implementation1ChatMessages : UnindexedSlideModel
-implementation1ChatMessages =
+implementation1ChatMessages : Bool -> UnindexedSlideModel
+implementation1ChatMessages showCode =
   implementationDiagramSlide 0
   "We start the events - Zoom chat messages:"
+  """
+val chatMessages: Flow<ChatMessage> =
+    ReceiverSettings<String, ChatMessage>(
+        bootstrapServers = "localhost:9092",
+        keyDeserializer = StringDeserializer(),
+        valueDeserializer = StringDeserializer()
+            .map(Json::decodeFromString),
+        groupId = "word-cloud-app", autoOffsetReset = Earliest
+    ).let { settings ->
+        KafkaReceiver(settings).receive("word-cloud.chat-message")
+            .map { it.value() }
+            .shareIn(CoroutineScope(Default), Lazily)
+    }
+""" showCode
   implementation1Layout.leftEm detailedMagnification False
 
 
-implementation2MapNormalizeWords : UnindexedSlideModel
-implementation2MapNormalizeWords =
+implementation2MapNormalizeWords : Bool -> UnindexedSlideModel
+implementation2MapNormalizeWords showCode =
   implementationDiagramSlide 1
   "The message text is normalized, retaining the sender as the person:"
+  """
+val NON_LETTER_PATTERN = Regex(\"""[^\\p{L}]+\""")
+fun normalizeText(msg: ChatMessage): PersonAndText =
+    PersonAndText(
+        msg.sender,
+        msg.text
+            .replace(NON_LETTER_PATTERN, " ")
+            .trim()
+            .lowercase()
+    )
+""" showCode
   implementation2Layout.leftEm detailedMagnification False
 
 
-implementation3FlatMapConcatSplitIntoWords : UnindexedSlideModel
-implementation3FlatMapConcatSplitIntoWords =
+implementation3FlatMapConcatSplitIntoWords : Bool -> UnindexedSlideModel
+implementation3FlatMapConcatSplitIntoWords showCode =
   implementationDiagramSlide 2
   "The normalized text is split into words:"
+  """
+fun splitIntoWords(
+    personText: PersonAndText
+): Flow<PersonAndWord> = personText.text
+    .split(" ")
+    .map { PersonAndWord(personText.person, it) }
+    .reversed()
+    .asFlow()
+""" showCode
   implementation3Layout.leftEm
   detailedMagnification False
 
 
-implementation4FilterIsValidWord : UnindexedSlideModel
-implementation4FilterIsValidWord =
+implementation4FilterIsValidWord : Bool -> UnindexedSlideModel
+implementation4FilterIsValidWord showCode =
   implementationDiagramSlide 3
   "Invalid words are filtered out:"
+  """
+fun isValidWord(personWord: PersonAndWord): Boolean =
+    personWord.word.length in minWordLength..maxWordLength
+        && !stopWords.contains(personWord.word)
+""" showCode
   (leftEmCentering rawWordsPos.base validatedWordsPos.base)
   detailedMagnification False
 
 
-implementation5RunningFoldUpdateWordsForPerson : UnindexedSlideModel
-implementation5RunningFoldUpdateWordsForPerson =
+implementation5RunningFoldUpdateWordsForPerson : Bool -> UnindexedSlideModel
+implementation5RunningFoldUpdateWordsForPerson showCode =
   implementationDiagramSlide 4
   "For each person, retain their most recent three words:"
+  """
+fun updateWordsForPerson(
+    wordsByPerson: Map<String, List<String>>,
+    personWord: PersonAndWord
+): Map<String, List<String>> {
+    val oldWords: List<String> =
+        wordsByPerson[personWord.person] ?: listOf()
+    val newWords: List<String> =
+        (listOf(personWord.word) + oldWords).distinct()
+            .take(maxWordsPerPerson)
+    return wordsByPerson + (personWord.person to newWords)
+}
+""" showCode
   (leftEmCentering validatedWordsPos.base wordsByPersonsPos.base)
   detailedMagnification False
 
 
-implementation6MapCountPersonsForWord : UnindexedSlideModel
-implementation6MapCountPersonsForWord =
+implementation6MapCountPersonsForWord : Bool -> UnindexedSlideModel
+implementation6MapCountPersonsForWord showCode =
   implementationDiagramSlide 5
   "For each word, count the number of persons, using those counts as weights:"
+  """
+fun countWords(
+    wordsByPerson: Map<String, List<String>>
+): Map<String, Int> = wordsByPerson
+    .flatMap { it.value.map { word -> word to it.key } }
+    .groupBy({ it.first }, { it.second })
+    .mapValues { it.value.size }
+""" showCode
   (leftEmCentering wordsByPersonsPos.base personCountsByWordPos.base)
   detailedMagnification False
 
 
-implementation7Complete : UnindexedSlideModel
-implementation7Complete =
+implementation7Complete : Bool -> UnindexedSlideModel
+implementation7Complete showCode =
   implementationDiagramSlide 6
-  "Observe that information is lost as it moves through the system:" 0.0 1.0 True
+  "Tying it all together:"
+  """
+val wordCounts: Flow<Counts> = chatMessages
+    .map(::normalizeText)
+    .flatMapConcat(::splitIntoWords)
+    .filter(::isValidWord)
+    .runningFold(mapOf(), ::updateWordsForPerson)
+    .map(::countWords).map(::Counts)
+    .shareIn(CoroutineScope(Default), Eagerly, 1)
+""" showCode
+  0.0 1.0 True
 
 
 implementationSlides : List UnindexedSlideModel
 implementationSlides =
-  [ implementation1ChatMessages
-  , implementation2MapNormalizeWords
-  , implementation3FlatMapConcatSplitIntoWords
-  , implementation4FilterIsValidWord
-  , implementation5RunningFoldUpdateWordsForPerson
-  , implementation6MapCountPersonsForWord
-  , implementation7Complete
+  [ implementation1ChatMessages False
+  , implementation1ChatMessages True
+  , implementation2MapNormalizeWords False
+  , implementation2MapNormalizeWords True
+  , implementation3FlatMapConcatSplitIntoWords False
+  , implementation3FlatMapConcatSplitIntoWords True
+  , implementation4FilterIsValidWord False
+  , implementation4FilterIsValidWord True
+  , implementation5RunningFoldUpdateWordsForPerson False
+  , implementation5RunningFoldUpdateWordsForPerson True
+  , implementation6MapCountPersonsForWord False
+  , implementation6MapCountPersonsForWord True
+  , implementation7Complete False
+  , implementation7Complete True
   ]
