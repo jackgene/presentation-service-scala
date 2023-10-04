@@ -412,8 +412,8 @@ streamElementView pos color scaleChanged rows =
   ]
 
 
-operationView : HorizontalPosition -> Bool -> String -> String -> Html msg
-operationView pos scaleChanged operator operand =
+operationView : HorizontalPosition -> Bool -> List String -> Html msg
+operationView pos scaleChanged codeLines =
   div
   [ css
     [ position absolute, left (em pos.leftEm)
@@ -424,10 +424,7 @@ operationView pos scaleChanged operator operand =
       )
     ]
   ]
-  [ text (operator ++ "(")
-  , br [] [], text ("\xA0\xA0" ++ operand)
-  , br [] [], text ")"
-  ]
+  ( codeLines |> List.map text |> List.intersperse (br [] []) )
 
 
 implementationDiagramView : WordCounts -> Int -> Float -> Float -> Bool -> Html msg
@@ -488,19 +485,19 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
       [ div [] -- operations
         [ operationView
           (horizontalPosition mapNormalizeTextPos step) scaleChanged
-          "map" "::normalizeText"
+          [ "map(", "\xA0\xA0::normalizeText", ")" ]
         , operationView
           (horizontalPosition flatMapConcatSplitIntoWordsPos step) scaleChanged
-          "flatMapConcat" "::splitIntoWords"
+          [ "flatMapConcat(", "\xA0\xA0::splitIntoWords", ")" ]
         , operationView
           (horizontalPosition filterIsValidWordPos step) scaleChanged
-          "filter" "::isValidWord"
+          [ "filter(", "\xA0\xA0::isValidWord", ")" ]
         , operationView
           (horizontalPosition runningFoldUpdateWordsForPersonPos step) scaleChanged
-          "runningFold" "::updateWordsForPerson"
+          [ "runningFold(", "\xA0\xA0mapOf(),", "\xA0\xA0::updateWordsForPerson", ")" ]
         , operationView
           (horizontalPosition mapCountPersonsForWordPos step) scaleChanged
-          "map" "::countPersonsForWord"
+          [ "map(", "\xA0\xA0::countPersonsForWord", ")" ]
         ]
       , div [] -- chat messages
         ( Tuple.first
