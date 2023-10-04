@@ -36415,8 +36415,8 @@ var _jackgene$live_deck$Deck_Slide_SyntaxHighlight$syntaxHighlightedCodeBlock = 
 						_elm_lang$core$String$trim(source)));
 			}());
 	});
-var _jackgene$live_deck$Deck_Slide_WordCloud$operationView = F4(
-	function (pos, scaleChanged, operator, operand) {
+var _jackgene$live_deck$Deck_Slide_WordCloud$operationView = F3(
+	function (pos, scaleChanged, codeLines) {
 		return A2(
 			_rtfeldman$elm_css$Html_Styled$div,
 			{
@@ -36455,35 +36455,13 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$operationView = F4(
 					}),
 				_1: {ctor: '[]'}
 			},
-			{
-				ctor: '::',
-				_0: _rtfeldman$elm_css$Html_Styled$text(
-					A2(_elm_lang$core$Basics_ops['++'], operator, '(')),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_rtfeldman$elm_css$Html_Styled$br,
-						{ctor: '[]'},
-						{ctor: '[]'}),
-					_1: {
-						ctor: '::',
-						_0: _rtfeldman$elm_css$Html_Styled$text(
-							A2(_elm_lang$core$Basics_ops['++'], '  ', operand)),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_rtfeldman$elm_css$Html_Styled$br,
-								{ctor: '[]'},
-								{ctor: '[]'}),
-							_1: {
-								ctor: '::',
-								_0: _rtfeldman$elm_css$Html_Styled$text(')'),
-								_1: {ctor: '[]'}
-							}
-						}
-					}
-				}
-			});
+			A2(
+				_elm_lang$core$List$intersperse,
+				A2(
+					_rtfeldman$elm_css$Html_Styled$br,
+					{ctor: '[]'},
+					{ctor: '[]'}),
+				A2(_elm_lang$core$List$map, _rtfeldman$elm_css$Html_Styled$text, codeLines)));
 	});
 var _jackgene$live_deck$Deck_Slide_WordCloud$streamElementView = F4(
 	function (pos, color, scaleChanged, rows) {
@@ -36859,44 +36837,103 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 									{ctor: '[]'},
 									{
 										ctor: '::',
-										_0: A4(
+										_0: A3(
 											_jackgene$live_deck$Deck_Slide_WordCloud$operationView,
 											A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$mapNormalizeTextPos, step),
 											scaleChanged,
-											'map',
-											'::normalizeText'),
+											{
+												ctor: '::',
+												_0: 'map(',
+												_1: {
+													ctor: '::',
+													_0: '  ::normalizeText',
+													_1: {
+														ctor: '::',
+														_0: ')',
+														_1: {ctor: '[]'}
+													}
+												}
+											}),
 										_1: {
 											ctor: '::',
-											_0: A4(
+											_0: A3(
 												_jackgene$live_deck$Deck_Slide_WordCloud$operationView,
 												A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$flatMapConcatSplitIntoWordsPos, step),
 												scaleChanged,
-												'flatMapConcat',
-												'::splitIntoWords'),
+												{
+													ctor: '::',
+													_0: 'flatMapConcat(',
+													_1: {
+														ctor: '::',
+														_0: '  ::splitIntoWords',
+														_1: {
+															ctor: '::',
+															_0: ')',
+															_1: {ctor: '[]'}
+														}
+													}
+												}),
 											_1: {
 												ctor: '::',
-												_0: A4(
+												_0: A3(
 													_jackgene$live_deck$Deck_Slide_WordCloud$operationView,
 													A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$filterIsValidWordPos, step),
 													scaleChanged,
-													'filter',
-													'::isValidWord'),
+													{
+														ctor: '::',
+														_0: 'filter(',
+														_1: {
+															ctor: '::',
+															_0: '  ::isValidWord',
+															_1: {
+																ctor: '::',
+																_0: ')',
+																_1: {ctor: '[]'}
+															}
+														}
+													}),
 												_1: {
 													ctor: '::',
-													_0: A4(
+													_0: A3(
 														_jackgene$live_deck$Deck_Slide_WordCloud$operationView,
 														A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$runningFoldUpdateWordsForPersonPos, step),
 														scaleChanged,
-														'runningFold',
-														'::updateWordsForPerson'),
+														{
+															ctor: '::',
+															_0: 'runningFold(',
+															_1: {
+																ctor: '::',
+																_0: '  mapOf(),',
+																_1: {
+																	ctor: '::',
+																	_0: '  ::updateWordsForPerson',
+																	_1: {
+																		ctor: '::',
+																		_0: ')',
+																		_1: {ctor: '[]'}
+																	}
+																}
+															}
+														}),
 													_1: {
 														ctor: '::',
-														_0: A4(
+														_0: A3(
 															_jackgene$live_deck$Deck_Slide_WordCloud$operationView,
 															A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$mapCountPersonsForWordPos, step),
 															scaleChanged,
-															'map',
-															'::countPersonsForWord'),
+															{
+																ctor: '::',
+																_0: 'map(',
+																_1: {
+																	ctor: '::',
+																	_0: '  ::countPersonsForWord',
+																	_1: {
+																		ctor: '::',
+																		_0: ')',
+																		_1: {ctor: '[]'}
+																	}
+																}
+															}),
 														_1: {ctor: '[]'}
 													}
 												}
