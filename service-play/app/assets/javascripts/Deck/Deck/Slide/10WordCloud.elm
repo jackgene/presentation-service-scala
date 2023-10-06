@@ -4,7 +4,7 @@ module Deck.Slide.WordCloud exposing
 import Css exposing
   ( Color, Style, Vw
   -- Container
-  , bottom, borderRadius, borderSpacing, borderTop3
+  , bottom, borderRadius, borderSpacing, borderTop3, boxShadow4
   , display, displayFlex, height, left, listStyle, margin2
   , maxWidth, overflow, padding2, paddingTop, position, right, textOverflow
   , top, width
@@ -406,6 +406,7 @@ streamElementView pos color scaleChanged rows =
       [ width (em pos.widthEm)
       , borderSpacing zero, borderRadius (em 0.75)
       , backgroundColor color
+      , boxShadow4 zero (em 0.25) (em 0.5) darkGray
       ]
     ]
     rows
@@ -425,6 +426,14 @@ operationView pos scaleChanged codeLines =
     ]
   ]
   ( codeLines |> List.map text |> List.intersperse (br [] []) )
+
+
+firstName : String -> String
+firstName fullName =
+  fullName
+  |> String.words
+  |> List.head
+  |> Maybe.withDefault ""
 
 
 implementationDiagramView : WordCounts -> Int -> Float -> Float -> Bool -> Html msg
@@ -501,10 +510,10 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
         ]
       , div [] -- chat messages
         ( Tuple.first
-          ( List.foldr
-            ( \chatMessageAndWords (nodes, topEm) ->
+          ( counts.history |> List.foldr
+            ( \event (chatMessageDivs, topEm) ->
               if topEm > visibleHeightEm then
-                ( ( div [ css [ display none ] ] [] ) :: nodes
+                ( ( div [ css [ display none ] ] [] ) :: chatMessageDivs
                 , topEm
                 )
               else
@@ -512,6 +521,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                     [ css
                       [ position absolute, top (em topEm)
                       , borderTop3 (em 0.075) solid (if step > 0 then darkGray else white), paddingTop (em 0.3)
+                      , opacity (num ((max 0 ((16 - topEm) * 0.05)) + 0.2))
                       , transition
                         ( if scaleChanged then []
                           else
@@ -526,15 +536,15 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                       themeForegroundColor scaleChanged
                       [ tr []
                         [ th [ css [ width (em 5.4), textAlign right, verticalAlign top ] ] [ text "sender:" ]
-                        , td [] [ text chatMessageAndWords.chatMessage.sender ]
+                        , td [] [ text (firstName event.chatMessage.sender) ]
                         ]
                       , tr []
                         [ th [ css [ textAlign right, verticalAlign top ] ] [ text "recipient:" ]
-                        , td [] [ text chatMessageAndWords.chatMessage.recipient ]
+                        , td [] [ text event.chatMessage.recipient ]
                         ]
                       , tr []
                         [ th [ css [ textAlign right, verticalAlign top ] ] [ text "text:" ]
-                        , td [ css [ truncatedTextStyle ] ] [ text chatMessageAndWords.chatMessage.text ]
+                        , td [ css [ truncatedTextStyle ] ] [ text event.chatMessage.text ]
                         ]
                       ]
                     , streamElementView -- per chat message - person and normalized text
@@ -542,11 +552,11 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                       themeForegroundColor scaleChanged
                       [ tr []
                         [ th [ css [ width (em 4.5), textAlign right, verticalAlign top ] ] [ text "person:" ]
-                        , td [] [ text chatMessageAndWords.chatMessage.sender ]
+                        , td [] [ text (firstName event.chatMessage.sender) ]
                         ]
                       , tr []
                         [ th [ css [ textAlign right, verticalAlign top ] ] [ text "text:" ]
-                        , td [ css [ truncatedTextStyle ] ] [ text chatMessageAndWords.normalizedText ]
+                        , td [ css [ truncatedTextStyle ] ] [ text event.normalizedText ]
                         ]
                       ]
                     , div -- per chat message - extracted words
@@ -558,14 +568,18 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                           )
                         ]
                       ]
-                      ( List.indexedMap
+                      ( event.words |> List.reverse  |> List.indexedMap
                         ( \idx extractedWord ->
                           let
+                            shiftPos : HorizontalPosition -> HorizontalPosition
+                            shiftPos pos =
+                              { pos | leftEm = pos.leftEm - rawWordsBasePos.leftEm }
+
                             wordRows : List (Html msg)
                             wordRows =
                               [ tr []
                                 [ th [ css [ width (em 4.5), textAlign right, verticalAlign top ] ] [ text "person:" ]
-                                , td [] [ text chatMessageAndWords.chatMessage.sender ]
+                                , td [] [ text (firstName event.chatMessage.sender) ]
                                 ]
                               , tr []
                                 [ th [ css [ textAlign right, verticalAlign top ] ] [ text "word:" ]
@@ -575,34 +589,100 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                           in
                           div [ css [ position absolute, top (em (toFloat idx * 3.75)) ] ] -- per extracted word
                           [ streamElementView -- per extracted word - raw word
-                            ( let
-                                pos : HorizontalPosition
-                                pos = (horizontalPosition rawWordsPos step)
-                              in { pos | leftEm = pos.leftEm - rawWordsBasePos.leftEm }
-                            )
+                            ( shiftPos ( horizontalPosition rawWordsPos step ) )
                             themeForegroundColor scaleChanged wordRows
                           , ( if not extractedWord.isValid then div [] []
                               else
                                 streamElementView -- per extracted word - valid word
-                                ( let
-                                    pos : HorizontalPosition
-                                    pos = (horizontalPosition validatedWordsPos step)
-                                  in { pos | leftEm = pos.leftEm - rawWordsBasePos.leftEm }
-                                )
+                                ( shiftPos ( horizontalPosition validatedWordsPos step ) )
                                 themeForegroundColor scaleChanged wordRows
+                            )
+                          , streamElementView -- aggregates - words by person
+                            ( shiftPos ( horizontalPosition wordsByPersonsPos step ) )
+                            themeForegroundColor scaleChanged
+                            ( ( tr []
+                                [ th [ css [ width (em 7) ] ] [ text "person" ]
+                                , th [] [ text "words" ]
+                                ]
+                              )
+                            ::( List.reverse
+                                ( Tuple.first
+                                  ( counts.history |> List.foldr
+                                    ( \{ chatMessage } (wordsBySenderTrs, senders) ->
+                                      let
+                                        sender : String
+                                        sender = chatMessage.sender
+                                      in
+                                      if Set.member sender senders then (wordsBySenderTrs, senders)
+                                      else
+                                        ( ( tr []
+                                            [ td [ css [ textAlign center, verticalAlign top ] ] [ text (firstName sender) ]
+                                            , td [ css [ textAlign center, verticalAlign top ] ]
+                                              [ text
+                                                ( String.join ", "
+                                                  ( Maybe.withDefault []
+                                                    ( Dict.get sender event.wordsBySender )
+                                                  )
+                                                )
+                                              ]
+                                            ]
+                                          ) :: wordsBySenderTrs
+                                        , Set.insert sender senders
+                                        )
+                                    )
+                                    ( [], Set.empty )
+                                  )
+                                )
+                              )
+                            )
+                          , streamElementView -- aggregates - person counts by word
+                            ( shiftPos ( horizontalPosition personCountsByWordPos step ) )
+                            themeForegroundColor scaleChanged
+                            ( ( tr []
+                                [ th [] [ text "word" ]
+                                , th [ css [ width (em 6) ] ] [ text "persons" ]
+                                ]
+                              )
+                            ::( let
+                                  words : List String
+                                  words =
+                                    counts.history |> List.concatMap .words |> List.map .word
+                                in
+                                List.reverse
+                                ( Tuple.first
+                                  ( List.foldr
+                                    ( \word (nodes, displayedWords) ->
+                                      let
+                                        count : Int
+                                        count = Maybe.withDefault 0 (Dict.get word event.countsByWord)
+                                      in
+                                      if count == 0 || Set.member word displayedWords then (nodes, displayedWords)
+                                      else
+                                        ( ( tr []
+                                            [ td [ css [ textAlign center, verticalAlign top ] ] [ text word ]
+                                            , td [ css [ textAlign center, verticalAlign top ] ] [ text (toString count) ]
+                                            ]
+                                          ) :: nodes
+                                        , Set.insert word displayedWords
+                                        )
+                                    )
+                                    ( [], Set.empty )
+                                    words
+                                  )
+                                )
+                              )
                             )
                           ]
                         )
-                        ( List.reverse chatMessageAndWords.words )
                       )
                     ]
-                  ) :: nodes
+                  ) :: chatMessageDivs
                 , let
                     rowHeightEm : Float
                     rowHeightEm =
                       max
                       chatMessageHeightEm
-                      (toFloat (List.length chatMessageAndWords.words) * extractedWordHeightEm)
+                      (toFloat (List.length event.words) * extractedWordHeightEm)
                   in
                   topEm + rowHeightEm
                 )
@@ -618,85 +698,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                   ]
                 ] []
               ]
-            , -0.3
-            )
-            counts.chatMessagesAndWords
-          )
-        )
-      , streamElementView -- aggregates - words by person
-        (horizontalPosition wordsByPersonsPos step)
-        themeForegroundColor scaleChanged
-        ( ( tr []
-            [ th [ css [ width (em 7) ] ] [ text "person" ]
-            , th [] [ text "words" ]
-            ]
-          )
-        ::( List.reverse
-            ( Tuple.first
-              ( List.foldr
-                ( \chatMessagesAndWords (nodes, senders) ->
-                  let
-                    sender : String
-                    sender = chatMessagesAndWords.chatMessage.sender
-                  in
-                  if Set.member sender senders then (nodes, senders)
-                  else
-                    ( ( tr []
-                        [ td [ css [ textAlign center, verticalAlign top ] ] [ text sender ]
-                        , td [ css [ textAlign center, verticalAlign top ] ]
-                          [ text
-                            ( String.join ", "
-                              ( Maybe.withDefault []
-                                ( Dict.get sender counts.wordsBySender )
-                              )
-                            )
-                          ]
-                        ]
-                      ) :: nodes
-                    , Set.insert sender senders
-                    )
-                )
-                ( [], Set.empty )
-                counts.chatMessagesAndWords
-              )
-            )
-          )
-        )
-      , streamElementView -- aggregates - person counts by word
-        (horizontalPosition personCountsByWordPos step)
-        themeForegroundColor scaleChanged
-        ( ( tr []
-            [ th [] [ text "word" ]
-            , th [ css [ width (em 6) ] ] [ text "persons" ]
-            ]
-          )
-        ::( let
-              words : List String
-              words =
-                List.concatMap .words counts.chatMessagesAndWords
-                |> List.map .word
-            in
-            List.reverse
-            ( Tuple.first
-              ( List.foldr
-                ( \word (nodes, displayedWords) ->
-                  let
-                    count : Int
-                    count = Maybe.withDefault 0 (Dict.get word counts.countsByWord)
-                  in
-                  if count == 0 || Set.member word displayedWords then (nodes, displayedWords)
-                  else
-                    ( ( tr []
-                        [ td [ css [ textAlign center, verticalAlign top ] ] [ text word ]
-                        , td [ css [ textAlign center, verticalAlign top ] ] [ text (toString count) ]
-                        ]
-                      ) :: nodes
-                    , Set.insert word displayedWords
-                    )
-                )
-                ( [], Set.empty )
-                words
-              )
+            , 0.0
             )
           )
         )
