@@ -22,16 +22,17 @@ type alias ExtractedWord =
   }
 
 
-type alias ChatMessageAndWords =
+type alias Event =
   { chatMessage : ChatMessage
   , normalizedText : String
   , words : List ExtractedWord
+  , wordsBySender : Dict String (List String)
+  , countsByWord : Dict String Int
   }
 
 
 type alias WordCounts =
-  { chatMessagesAndWords : List ChatMessageAndWords
-  , wordsBySender : Dict String (List String)
+  { history : List Event
   , countsByWord : Dict String Int
   }
 
@@ -51,26 +52,26 @@ extractedWordDecoder =
   ( Decode.field "isValid" Decode.bool )
 
 
-chatMessageAndTokensDecoder : Decoder ChatMessageAndWords
+chatMessageAndTokensDecoder : Decoder Event
 chatMessageAndTokensDecoder =
-  Decode.map3 ChatMessageAndWords
+  Decode.map5 Event
   ( Decode.field "chatMessage" chatMessageDecoder )
   ( Decode.field "normalizedText" Decode.string )
   ( Decode.field "words" ( Decode.list extractedWordDecoder ) )
+  ( Decode.field "wordsBySender" ( Decode.dict ( Decode.list Decode.string ) ) )
+  ( Decode.field "countsByWord" ( Decode.dict Decode.int ) )
 
 
 wordCountsDecoder : Decoder WordCounts
 wordCountsDecoder =
-  Decode.map3 WordCounts
-  ( Decode.field "chatMessagesAndWords" ( Decode.list chatMessageAndTokensDecoder ) )
-  ( Decode.field "wordsBySender" ( Decode.dict ( Decode.list Decode.string ) ) )
+  Decode.map2 WordCounts
+  ( Decode.field "history" ( Decode.list chatMessageAndTokensDecoder ) )
   ( Decode.field "countsByWord" ( Decode.dict Decode.int ) )
 
 
 empty : WordCounts
 empty =
-  { chatMessagesAndWords = []
-  , wordsBySender = Dict.empty
+  { history = []
   , countsByWord = Dict.empty
   }
 
