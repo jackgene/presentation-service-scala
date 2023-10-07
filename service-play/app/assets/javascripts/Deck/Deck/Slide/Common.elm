@@ -77,6 +77,26 @@ consoleText : Color
 consoleText = rgb 65 255 0
 
 
+-- From https://www.pastelcolorpalettes.com/primary-colors-in-pastels
+partition1Color : Color
+partition1Color = rgb 0xF0 0x9A 0xA0
+
+
+partition2Color : Color
+partition2Color = rgb 0xB6 0xE8 0x8E
+
+
+partition3Color : Color
+partition3Color = rgb 0xFA 0xF8 0x84
+
+
+partition4Color : Color
+partition4Color = rgb 0xA3 0xBC 0xE8
+
+
+partition5Color : Color
+partition5Color = rgb 0xEB 0xAE 0x83
+
 headerFontFamily : Style
 headerFontFamily = fontFamilies [ "Montserrat" ]
 
