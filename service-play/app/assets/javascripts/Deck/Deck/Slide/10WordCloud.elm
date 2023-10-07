@@ -1,10 +1,11 @@
 module Deck.Slide.WordCloud exposing
   ( wordCloud, implementationSlides )
 
+import Char
 import Css exposing
   ( Color, Style, Vw
   -- Container
-  , bottom, borderRadius, borderSpacing, borderTop3, boxShadow4
+  , bottom, borderRadius, borderSpacing, borderTop3, boxShadow5
   , display, displayFlex, height, left, listStyle, margin2
   , maxWidth, overflow, padding2, paddingTop, position, right, textOverflow
   , top, width
@@ -406,7 +407,7 @@ streamElementView pos color scaleChanged rows =
       [ width (em pos.widthEm)
       , borderSpacing zero, borderRadius (em 0.75)
       , backgroundColor color
-      , boxShadow4 zero (em 0.25) (em 0.5) darkGray
+      , boxShadow5 zero (em 0.5) (em 0.5) (em -0.25) (rgba 0 0 0 0.25)
       ]
     ]
     rows
@@ -472,7 +473,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
     [ css
       [ position relative
       , height (em visibleHeightEm)
-      , fontSize (em (scale * 39 / diagramWidthEm))
+      , fontSize (em (scale * 38.75 / diagramWidthEm))
       , overflow hidden
       , transition
         [ Css.Transitions.fontSize3 transitionDurationMs 0 easeInOut
@@ -484,7 +485,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
     [ div
       [ css
         [ position absolute
-        , right (em (visibleWidthEm + fromLeftEm))
+        , right (em (visibleWidthEm + fromLeftEm + 0.25))
         , transition
           ( if scaleChanged then []
             else [ Css.Transitions.right3 transitionDurationMs 0 easeInOut ]
@@ -517,6 +518,19 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                 , topEm
                 )
               else
+                let
+                  partitionColor : Color
+                  partitionColor =
+                    case String.uncons event.chatMessage.sender of
+                      Just (c, _) ->
+                        case rem (Char.toCode c) 5 of
+                          0 -> partition1Color
+                          1 -> partition2Color
+                          2 -> partition3Color
+                          3 -> partition4Color
+                          _ -> partition5Color
+                      Nothing -> partition1Color
+                in
                 ( ( div -- per chat message
                     [ css
                       [ position absolute, top (em topEm)
@@ -533,7 +547,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                     ]
                     [ streamElementView -- per chat message - chat message
                       (horizontalPosition chatMessagesPos step)
-                      themeForegroundColor scaleChanged
+                      partitionColor scaleChanged
                       [ tr []
                         [ th [ css [ width (em 5.4), textAlign right, verticalAlign top ] ] [ text "sender:" ]
                         , td [] [ text (firstName event.chatMessage.sender) ]
@@ -549,7 +563,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                       ]
                     , streamElementView -- per chat message - person and normalized text
                       (horizontalPosition normalizedTextPos step)
-                      themeForegroundColor scaleChanged
+                      partitionColor scaleChanged
                       [ tr []
                         [ th [ css [ width (em 4.5), textAlign right, verticalAlign top ] ] [ text "person:" ]
                         , td [] [ text (firstName event.chatMessage.sender) ]
@@ -568,7 +582,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                           )
                         ]
                       ]
-                      ( event.words |> List.reverse  |> List.indexedMap
+                      ( event.words |> List.indexedMap
                         ( \idx extractedWord ->
                           let
                             shiftPos : HorizontalPosition -> HorizontalPosition
@@ -590,16 +604,16 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                           div [ css [ position absolute, top (em (toFloat idx * 3.75)) ] ] -- per extracted word
                           [ streamElementView -- per extracted word - raw word
                             ( shiftPos ( horizontalPosition rawWordsPos step ) )
-                            themeForegroundColor scaleChanged wordRows
+                            partitionColor scaleChanged wordRows
                           , ( if not extractedWord.isValid then div [] []
                               else
                                 streamElementView -- per extracted word - valid word
                                 ( shiftPos ( horizontalPosition validatedWordsPos step ) )
-                                themeForegroundColor scaleChanged wordRows
+                                partitionColor scaleChanged wordRows
                             )
                           , streamElementView -- aggregates - words by person
                             ( shiftPos ( horizontalPosition wordsByPersonsPos step ) )
-                            themeForegroundColor scaleChanged
+                            partitionColor scaleChanged
                             ( ( tr []
                                 [ th [ css [ width (em 7) ] ] [ text "person" ]
                                 , th [] [ text "words" ]
@@ -637,7 +651,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                             )
                           , streamElementView -- aggregates - person counts by word
                             ( shiftPos ( horizontalPosition personCountsByWordPos step ) )
-                            themeForegroundColor scaleChanged
+                            partitionColor scaleChanged
                             ( ( tr []
                                 [ th [] [ text "word" ]
                                 , th [ css [ width (em 6) ] ] [ text "persons" ]
