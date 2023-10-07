@@ -5,10 +5,9 @@ import Char
 import Css exposing
   ( Color, Style, Vw
   -- Container
-  , bottom, borderRadius, borderSpacing, borderTop3, boxShadow5
-  , display, displayFlex, height, left, listStyle, margin2
-  , maxWidth, overflow, padding2, paddingTop, position, right, textOverflow
-  , top, width
+  , bottom, borderRadius, borderSpacing, boxShadow5, display, displayFlex
+  , height, left, listStyle, margin2, maxWidth, overflow, padding2, paddingTop
+  , position, right, textOverflow, top, width
   -- Content
   , alignItems, backgroundColor, backgroundImage, color, flexWrap, fontSize
   , justifyContent, lineHeight, opacity, textAlign, verticalAlign
@@ -18,7 +17,7 @@ import Css exposing
   , absolute, relative
   -- Transform
   -- Other values
-  , block, center, ellipsis, hidden, linearGradient, none, noWrap, solid, stop
+  , block, center, ellipsis, hidden, linearGradient, none, noWrap, stop
   , whiteSpace, wrap
   )
 import Css.Transitions exposing (easeInOut, transition)
@@ -453,7 +452,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
     chatMessageHeightEm = 5.5
 
     extractedWordHeightEm : Float
-    extractedWordHeightEm = 3.8
+    extractedWordHeightEm = 3.85
 
     truncatedTextStyle : Style
     truncatedTextStyle =
@@ -513,12 +512,24 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
         ( Tuple.first
           ( counts.history |> List.foldr
             ( \event (chatMessageDivs, topEm) ->
-              if topEm > visibleHeightEm then
+              if topEm > visibleHeightEm + 10 then
                 ( ( div [ css [ display none ] ] [] ) :: chatMessageDivs
                 , topEm
                 )
               else
                 let
+                  extractedWordsHeightEm : Float
+                  extractedWordsHeightEm =
+                    toFloat (List.length event.words) * extractedWordHeightEm
+
+                  bigSmallOffsetEm : Float
+                  bigSmallOffsetEm = 0.875
+
+                  chatMessageTopEm : Float
+                  chatMessageTopEm =
+                    if step < 2 then 0
+                    else max 0 (extractedWordsHeightEm - chatMessageHeightEm + bigSmallOffsetEm)
+
                   partitionColor : Color
                   partitionColor =
                     case String.uncons event.chatMessage.sender of
@@ -533,8 +544,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                 in
                 ( ( div -- per chat message
                     [ css
-                      [ position absolute, top (em topEm)
-                      , borderTop3 (em 0.075) solid (if step > 0 then darkGray else white), paddingTop (em 0.3)
+                      [ position absolute, top (em topEm), paddingTop (em 0.3)
                       , opacity (num ((max 0 ((16 - topEm) * 0.05)) + 0.2))
                       , transition
                         ( if scaleChanged then []
@@ -545,37 +555,51 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                         )
                       ]
                     ]
-                    [ streamElementView -- per chat message - chat message
-                      (horizontalPosition chatMessagesPos step)
-                      partitionColor scaleChanged
-                      [ tr []
-                        [ th [ css [ width (em 5.4), textAlign right, verticalAlign top ] ] [ text "sender:" ]
-                        , td [] [ text (firstName event.chatMessage.sender) ]
-                        ]
-                      , tr []
-                        [ th [ css [ textAlign right, verticalAlign top ] ] [ text "recipient:" ]
-                        , td [] [ text event.chatMessage.recipient ]
-                        ]
-                      , tr []
-                        [ th [ css [ textAlign right, verticalAlign top ] ] [ text "text:" ]
-                        , td [ css [ truncatedTextStyle ] ] [ text event.chatMessage.text ]
+                    [ div
+                      [ css
+                        [ position absolute, top (em chatMessageTopEm)
+                        , transition
+                          ( if scaleChanged then []
+                            else [ Css.Transitions.top3 transitionDurationMs 0 easeInOut ]
+                          )
                         ]
                       ]
-                    , streamElementView -- per chat message - person and normalized text
-                      (horizontalPosition normalizedTextPos step)
-                      partitionColor scaleChanged
-                      [ tr []
-                        [ th [ css [ width (em 4.5), textAlign right, verticalAlign top ] ] [ text "person:" ]
-                        , td [] [ text (firstName event.chatMessage.sender) ]
+                      [ streamElementView -- per chat message - chat message
+                        (horizontalPosition chatMessagesPos step)
+                        partitionColor scaleChanged
+                        [ tr []
+                          [ th [ css [ width (em 5.4), textAlign right, verticalAlign top ] ] [ text "sender:" ]
+                          , td [] [ text (firstName event.chatMessage.sender) ]
+                          ]
+                        , tr []
+                          [ th [ css [ textAlign right, verticalAlign top ] ] [ text "recipient:" ]
+                          , td [] [ text event.chatMessage.recipient ]
+                          ]
+                        , tr []
+                          [ th [ css [ textAlign right, verticalAlign top ] ] [ text "text:" ]
+                          , td [ css [ truncatedTextStyle ] ] [ text event.chatMessage.text ]
+                          ]
                         ]
-                      , tr []
-                        [ th [ css [ textAlign right, verticalAlign top ] ] [ text "text:" ]
-                        , td [ css [ truncatedTextStyle ] ] [ text event.normalizedText ]
+                      , div [ css [ position absolute, top (em bigSmallOffsetEm) ] ]
+                        [ streamElementView -- per chat message - person and normalized text
+                          (horizontalPosition normalizedTextPos step)
+                          partitionColor scaleChanged
+                          [ tr []
+                            [ th [ css [ width (em 4.5), textAlign right, verticalAlign top ] ] [ text "person:" ]
+                            , td [] [ text (firstName event.chatMessage.sender) ]
+                            ]
+                          , tr []
+                            [ th [ css [ textAlign right, verticalAlign top ] ] [ text "text:" ]
+                            , td [ css [ truncatedTextStyle ] ] [ text event.normalizedText ]
+                            ]
+                          ]
                         ]
                       ]
                     , div -- per chat message - extracted words
                       [ css
-                        [ position absolute, left (em rawWordsPos.base.leftEm)
+                        [ position absolute
+                        , top (em (if List.length event.words > 1 then 0 else bigSmallOffsetEm))
+                        , left (em rawWordsPos.base.leftEm)
                         , transition
                           ( if scaleChanged then []
                             else [ Css.Transitions.left3 transitionDurationMs 0 easeInOut ]
@@ -601,7 +625,12 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                                 ]
                               ]
                           in
-                          div [ css [ position absolute, top (em (toFloat idx * 3.75)) ] ] -- per extracted word
+                          div -- per extracted word
+                          [ css
+                            [ position absolute, top (em (toFloat idx * 3.75))
+                            , opacity (num (if idx == 0 then 1.0 else 0.5))
+                            ]
+                          ]
                           [ streamElementView -- per extracted word - raw word
                             ( shiftPos ( horizontalPosition rawWordsPos step ) )
                             partitionColor scaleChanged wordRows
@@ -688,17 +717,11 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                             )
                           ]
                         )
+                        |> List.reverse
                       )
                     ]
                   ) :: chatMessageDivs
-                , let
-                    rowHeightEm : Float
-                    rowHeightEm =
-                      max
-                      chatMessageHeightEm
-                      (toFloat (List.length event.words) * extractedWordHeightEm)
-                  in
-                  topEm + rowHeightEm
+                , topEm + chatMessageTopEm + chatMessageHeightEm
                 )
             )
             -- Initial value
@@ -893,6 +916,38 @@ val wordCounts: Flow<Counts> = chatMessages
   0.0 1.0 True
 
 
+implementation8Complete : Bool -> UnindexedSlideModel
+implementation8Complete showCode =
+  implementationDiagramSlide 6
+  "Observe that some events can be re-ordered without changing the final outcome:"
+  """
+val wordCounts: Flow<Counts> = chatMessages
+    .map(::normalizeText)
+    .flatMapConcat(::splitIntoWords)
+    .filter(::isValidWord)
+    .runningFold(mapOf(), ::updateWordsForPerson)
+    .map(::countWords).map(::Counts)
+    .shareIn(CoroutineScope(Default), Eagerly, 1)
+""" showCode
+  0.0 1.0 True
+
+
+implementation9Complete : Bool -> UnindexedSlideModel
+implementation9Complete showCode =
+  implementationDiagramSlide 6
+  "Furthermore, notice that information is lost as it flows through the system:"
+  """
+val wordCounts: Flow<Counts> = chatMessages
+    .map(::normalizeText)
+    .flatMapConcat(::splitIntoWords)
+    .filter(::isValidWord)
+    .runningFold(mapOf(), ::updateWordsForPerson)
+    .map(::countWords).map(::Counts)
+    .shareIn(CoroutineScope(Default), Eagerly, 1)
+""" showCode
+  0.0 1.0 True
+
+
 implementationSlides : List UnindexedSlideModel
 implementationSlides =
   [ implementation1ChatMessages False
@@ -909,4 +964,6 @@ implementationSlides =
   , implementation6MapCountPersonsForWord True
   , implementation7Complete False
   , implementation7Complete True
+  , implementation8Complete False
+  , implementation9Complete False
   ]
