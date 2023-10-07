@@ -20329,11 +20329,11 @@ var _jackgene$live_deck$Deck_Slide_Common$subHeaderStyle = _rtfeldman$elm_css$Cs
 			_1: {ctor: '[]'}
 		}
 	});
-var _jackgene$live_deck$Deck_Slide_Common$partition5Color = A3(_rtfeldman$elm_css$Css$rgb, 235, 174, 131);
-var _jackgene$live_deck$Deck_Slide_Common$partition4Color = A3(_rtfeldman$elm_css$Css$rgb, 163, 188, 232);
-var _jackgene$live_deck$Deck_Slide_Common$partition3Color = A3(_rtfeldman$elm_css$Css$rgb, 250, 248, 132);
-var _jackgene$live_deck$Deck_Slide_Common$partition2Color = A3(_rtfeldman$elm_css$Css$rgb, 182, 232, 142);
-var _jackgene$live_deck$Deck_Slide_Common$partition1Color = A3(_rtfeldman$elm_css$Css$rgb, 240, 154, 160);
+var _jackgene$live_deck$Deck_Slide_Common$partition5Color = A3(_rtfeldman$elm_css$Css$rgb, 163, 188, 232);
+var _jackgene$live_deck$Deck_Slide_Common$partition4Color = A3(_rtfeldman$elm_css$Css$rgb, 250, 248, 132);
+var _jackgene$live_deck$Deck_Slide_Common$partition3Color = A3(_rtfeldman$elm_css$Css$rgb, 182, 232, 142);
+var _jackgene$live_deck$Deck_Slide_Common$partition2Color = A3(_rtfeldman$elm_css$Css$rgb, 240, 154, 160);
+var _jackgene$live_deck$Deck_Slide_Common$partition1Color = A3(_rtfeldman$elm_css$Css$rgb, 235, 174, 131);
 var _jackgene$live_deck$Deck_Slide_Common$consoleText = A3(_rtfeldman$elm_css$Css$rgb, 65, 255, 0);
 var _jackgene$live_deck$Deck_Slide_Common$lightGrey = A3(_rtfeldman$elm_css$Css$rgb, 238, 238, 238);
 var _jackgene$live_deck$Deck_Slide_Common$darkGray = A3(_rtfeldman$elm_css$Css$rgb, 192, 192, 192);
@@ -36756,7 +36756,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 					}
 				}
 			});
-		var extractedWordHeightEm = 3.8;
+		var extractedWordHeightEm = 3.85;
 		var chatMessageHeightEm = 5.5;
 		var visibleHeightEm = 56 / scale;
 		var diagramWidthEm = _jackgene$live_deck$Deck_Slide_WordCloud$leftEmAfter(_jackgene$live_deck$Deck_Slide_WordCloud$personCountsByWordBasePos);
@@ -36978,7 +36978,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 														var _p4 = _p3;
 														var _p18 = _p4._1;
 														var _p17 = _p4._0;
-														if (_elm_lang$core$Native_Utils.cmp(_p18, visibleHeightEm) > 0) {
+														if (_elm_lang$core$Native_Utils.cmp(_p18, visibleHeightEm + 10) > 0) {
 															return {
 																ctor: '_Tuple2',
 																_0: {
@@ -37010,20 +37010,24 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																		5);
 																	switch (_p6) {
 																		case 0:
-																			return _jackgene$live_deck$Deck_Slide_Common$partition5Color;
-																		case 1:
 																			return _jackgene$live_deck$Deck_Slide_Common$partition1Color;
-																		case 2:
+																		case 1:
 																			return _jackgene$live_deck$Deck_Slide_Common$partition2Color;
-																		case 3:
+																		case 2:
 																			return _jackgene$live_deck$Deck_Slide_Common$partition3Color;
-																		default:
+																		case 3:
 																			return _jackgene$live_deck$Deck_Slide_Common$partition4Color;
+																		default:
+																			return _jackgene$live_deck$Deck_Slide_Common$partition5Color;
 																	}
 																} else {
 																	return _jackgene$live_deck$Deck_Slide_Common$partition1Color;
 																}
 															}();
+															var bigSmallOffsetEm = 0.875;
+															var extractedWordsHeightEm = _elm_lang$core$Basics$toFloat(
+																_elm_lang$core$List$length(event.words)) * extractedWordHeightEm;
+															var chatMessageTopEm = (_elm_lang$core$Native_Utils.cmp(step, 2) < 0) ? 0 : A2(_elm_lang$core$Basics$max, 0, (extractedWordsHeightEm - chatMessageHeightEm) + bigSmallOffsetEm);
 															return {
 																ctor: '_Tuple2',
 																_0: {
@@ -37042,34 +37046,26 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																							_rtfeldman$elm_css$Css$em(_p18)),
 																						_1: {
 																							ctor: '::',
-																							_0: A3(
-																								_rtfeldman$elm_css$Css$borderTop3,
-																								_rtfeldman$elm_css$Css$em(7.5e-2),
-																								_rtfeldman$elm_css$Css$solid,
-																								(_elm_lang$core$Native_Utils.cmp(step, 0) > 0) ? _jackgene$live_deck$Deck_Slide_Common$darkGray : _jackgene$live_deck$Deck_Slide_Common$white),
+																							_0: _rtfeldman$elm_css$Css$paddingTop(
+																								_rtfeldman$elm_css$Css$em(0.3)),
 																							_1: {
 																								ctor: '::',
-																								_0: _rtfeldman$elm_css$Css$paddingTop(
-																									_rtfeldman$elm_css$Css$em(0.3)),
+																								_0: _rtfeldman$elm_css$Css$opacity(
+																									_rtfeldman$elm_css$Css$num(
+																										A2(_elm_lang$core$Basics$max, 0, (16 - _p18) * 5.0e-2) + 0.2)),
 																								_1: {
 																									ctor: '::',
-																									_0: _rtfeldman$elm_css$Css$opacity(
-																										_rtfeldman$elm_css$Css$num(
-																											A2(_elm_lang$core$Basics$max, 0, (16 - _p18) * 5.0e-2) + 0.2)),
-																									_1: {
-																										ctor: '::',
-																										_0: _rtfeldman$elm_css$Css_Transitions$transition(
-																											scaleChanged ? {ctor: '[]'} : {
+																									_0: _rtfeldman$elm_css$Css_Transitions$transition(
+																										scaleChanged ? {ctor: '[]'} : {
+																											ctor: '::',
+																											_0: A3(_rtfeldman$elm_css$Css_Transitions$opacity3, _jackgene$live_deck$Deck_Slide_Common$transitionDurationMs, 0, _rtfeldman$elm_css$Css_Transitions$easeInOut),
+																											_1: {
 																												ctor: '::',
-																												_0: A3(_rtfeldman$elm_css$Css_Transitions$opacity3, _jackgene$live_deck$Deck_Slide_Common$transitionDurationMs, 0, _rtfeldman$elm_css$Css_Transitions$easeInOut),
-																												_1: {
-																													ctor: '::',
-																													_0: A3(_rtfeldman$elm_css$Css_Transitions$top3, _jackgene$live_deck$Deck_Slide_Common$transitionDurationMs, 0, _rtfeldman$elm_css$Css_Transitions$easeInOut),
-																													_1: {ctor: '[]'}
-																												}
-																											}),
-																										_1: {ctor: '[]'}
-																									}
+																												_0: A3(_rtfeldman$elm_css$Css_Transitions$top3, _jackgene$live_deck$Deck_Slide_Common$transitionDurationMs, 0, _rtfeldman$elm_css$Css_Transitions$easeInOut),
+																												_1: {ctor: '[]'}
+																											}
+																										}),
+																									_1: {ctor: '[]'}
 																								}
 																							}
 																						}
@@ -37079,270 +37075,329 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																		},
 																		{
 																			ctor: '::',
-																			_0: A4(
-																				_jackgene$live_deck$Deck_Slide_WordCloud$streamElementView,
-																				A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$chatMessagesPos, step),
-																				partitionColor,
-																				scaleChanged,
+																			_0: A2(
+																				_rtfeldman$elm_css$Html_Styled$div,
 																				{
 																					ctor: '::',
-																					_0: A2(
-																						_rtfeldman$elm_css$Html_Styled$tr,
-																						{ctor: '[]'},
+																					_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
+																						{
+																							ctor: '::',
+																							_0: _rtfeldman$elm_css$Css$position(_rtfeldman$elm_css$Css$absolute),
+																							_1: {
+																								ctor: '::',
+																								_0: _rtfeldman$elm_css$Css$top(
+																									_rtfeldman$elm_css$Css$em(chatMessageTopEm)),
+																								_1: {
+																									ctor: '::',
+																									_0: _rtfeldman$elm_css$Css_Transitions$transition(
+																										scaleChanged ? {ctor: '[]'} : {
+																											ctor: '::',
+																											_0: A3(_rtfeldman$elm_css$Css_Transitions$top3, _jackgene$live_deck$Deck_Slide_Common$transitionDurationMs, 0, _rtfeldman$elm_css$Css_Transitions$easeInOut),
+																											_1: {ctor: '[]'}
+																										}),
+																									_1: {ctor: '[]'}
+																								}
+																							}
+																						}),
+																					_1: {ctor: '[]'}
+																				},
+																				{
+																					ctor: '::',
+																					_0: A4(
+																						_jackgene$live_deck$Deck_Slide_WordCloud$streamElementView,
+																						A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$chatMessagesPos, step),
+																						partitionColor,
+																						scaleChanged,
 																						{
 																							ctor: '::',
 																							_0: A2(
-																								_rtfeldman$elm_css$Html_Styled$th,
+																								_rtfeldman$elm_css$Html_Styled$tr,
+																								{ctor: '[]'},
 																								{
 																									ctor: '::',
-																									_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
+																									_0: A2(
+																										_rtfeldman$elm_css$Html_Styled$th,
 																										{
 																											ctor: '::',
-																											_0: _rtfeldman$elm_css$Css$width(
-																												_rtfeldman$elm_css$Css$em(5.4)),
-																											_1: {
-																												ctor: '::',
-																												_0: _rtfeldman$elm_css$Css$textAlign(_rtfeldman$elm_css$Css$right),
-																												_1: {
+																											_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
+																												{
 																													ctor: '::',
-																													_0: _rtfeldman$elm_css$Css$verticalAlign(_rtfeldman$elm_css$Css$top),
-																													_1: {ctor: '[]'}
-																												}
-																											}
+																													_0: _rtfeldman$elm_css$Css$width(
+																														_rtfeldman$elm_css$Css$em(5.4)),
+																													_1: {
+																														ctor: '::',
+																														_0: _rtfeldman$elm_css$Css$textAlign(_rtfeldman$elm_css$Css$right),
+																														_1: {
+																															ctor: '::',
+																															_0: _rtfeldman$elm_css$Css$verticalAlign(_rtfeldman$elm_css$Css$top),
+																															_1: {ctor: '[]'}
+																														}
+																													}
+																												}),
+																											_1: {ctor: '[]'}
+																										},
+																										{
+																											ctor: '::',
+																											_0: _rtfeldman$elm_css$Html_Styled$text('sender:'),
+																											_1: {ctor: '[]'}
 																										}),
-																									_1: {ctor: '[]'}
-																								},
-																								{
-																									ctor: '::',
-																									_0: _rtfeldman$elm_css$Html_Styled$text('sender:'),
-																									_1: {ctor: '[]'}
+																									_1: {
+																										ctor: '::',
+																										_0: A2(
+																											_rtfeldman$elm_css$Html_Styled$td,
+																											{ctor: '[]'},
+																											{
+																												ctor: '::',
+																												_0: _rtfeldman$elm_css$Html_Styled$text(
+																													_jackgene$live_deck$Deck_Slide_WordCloud$firstName(event.chatMessage.sender)),
+																												_1: {ctor: '[]'}
+																											}),
+																										_1: {ctor: '[]'}
+																									}
 																								}),
 																							_1: {
 																								ctor: '::',
 																								_0: A2(
-																									_rtfeldman$elm_css$Html_Styled$td,
+																									_rtfeldman$elm_css$Html_Styled$tr,
 																									{ctor: '[]'},
 																									{
 																										ctor: '::',
-																										_0: _rtfeldman$elm_css$Html_Styled$text(
-																											_jackgene$live_deck$Deck_Slide_WordCloud$firstName(event.chatMessage.sender)),
-																										_1: {ctor: '[]'}
+																										_0: A2(
+																											_rtfeldman$elm_css$Html_Styled$th,
+																											{
+																												ctor: '::',
+																												_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
+																													{
+																														ctor: '::',
+																														_0: _rtfeldman$elm_css$Css$textAlign(_rtfeldman$elm_css$Css$right),
+																														_1: {
+																															ctor: '::',
+																															_0: _rtfeldman$elm_css$Css$verticalAlign(_rtfeldman$elm_css$Css$top),
+																															_1: {ctor: '[]'}
+																														}
+																													}),
+																												_1: {ctor: '[]'}
+																											},
+																											{
+																												ctor: '::',
+																												_0: _rtfeldman$elm_css$Html_Styled$text('recipient:'),
+																												_1: {ctor: '[]'}
+																											}),
+																										_1: {
+																											ctor: '::',
+																											_0: A2(
+																												_rtfeldman$elm_css$Html_Styled$td,
+																												{ctor: '[]'},
+																												{
+																													ctor: '::',
+																													_0: _rtfeldman$elm_css$Html_Styled$text(event.chatMessage.recipient),
+																													_1: {ctor: '[]'}
+																												}),
+																											_1: {ctor: '[]'}
+																										}
 																									}),
-																								_1: {ctor: '[]'}
+																								_1: {
+																									ctor: '::',
+																									_0: A2(
+																										_rtfeldman$elm_css$Html_Styled$tr,
+																										{ctor: '[]'},
+																										{
+																											ctor: '::',
+																											_0: A2(
+																												_rtfeldman$elm_css$Html_Styled$th,
+																												{
+																													ctor: '::',
+																													_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
+																														{
+																															ctor: '::',
+																															_0: _rtfeldman$elm_css$Css$textAlign(_rtfeldman$elm_css$Css$right),
+																															_1: {
+																																ctor: '::',
+																																_0: _rtfeldman$elm_css$Css$verticalAlign(_rtfeldman$elm_css$Css$top),
+																																_1: {ctor: '[]'}
+																															}
+																														}),
+																													_1: {ctor: '[]'}
+																												},
+																												{
+																													ctor: '::',
+																													_0: _rtfeldman$elm_css$Html_Styled$text('text:'),
+																													_1: {ctor: '[]'}
+																												}),
+																											_1: {
+																												ctor: '::',
+																												_0: A2(
+																													_rtfeldman$elm_css$Html_Styled$td,
+																													{
+																														ctor: '::',
+																														_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
+																															{
+																																ctor: '::',
+																																_0: truncatedTextStyle,
+																																_1: {ctor: '[]'}
+																															}),
+																														_1: {ctor: '[]'}
+																													},
+																													{
+																														ctor: '::',
+																														_0: _rtfeldman$elm_css$Html_Styled$text(event.chatMessage.text),
+																														_1: {ctor: '[]'}
+																													}),
+																												_1: {ctor: '[]'}
+																											}
+																										}),
+																									_1: {ctor: '[]'}
+																								}
 																							}
 																						}),
 																					_1: {
 																						ctor: '::',
 																						_0: A2(
-																							_rtfeldman$elm_css$Html_Styled$tr,
-																							{ctor: '[]'},
+																							_rtfeldman$elm_css$Html_Styled$div,
 																							{
 																								ctor: '::',
-																								_0: A2(
-																									_rtfeldman$elm_css$Html_Styled$th,
+																								_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
 																									{
 																										ctor: '::',
-																										_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
+																										_0: _rtfeldman$elm_css$Css$position(_rtfeldman$elm_css$Css$absolute),
+																										_1: {
+																											ctor: '::',
+																											_0: _rtfeldman$elm_css$Css$top(
+																												_rtfeldman$elm_css$Css$em(bigSmallOffsetEm)),
+																											_1: {ctor: '[]'}
+																										}
+																									}),
+																								_1: {ctor: '[]'}
+																							},
+																							{
+																								ctor: '::',
+																								_0: A4(
+																									_jackgene$live_deck$Deck_Slide_WordCloud$streamElementView,
+																									A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$normalizedTextPos, step),
+																									partitionColor,
+																									scaleChanged,
+																									{
+																										ctor: '::',
+																										_0: A2(
+																											_rtfeldman$elm_css$Html_Styled$tr,
+																											{ctor: '[]'},
 																											{
 																												ctor: '::',
-																												_0: _rtfeldman$elm_css$Css$textAlign(_rtfeldman$elm_css$Css$right),
+																												_0: A2(
+																													_rtfeldman$elm_css$Html_Styled$th,
+																													{
+																														ctor: '::',
+																														_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
+																															{
+																																ctor: '::',
+																																_0: _rtfeldman$elm_css$Css$width(
+																																	_rtfeldman$elm_css$Css$em(4.5)),
+																																_1: {
+																																	ctor: '::',
+																																	_0: _rtfeldman$elm_css$Css$textAlign(_rtfeldman$elm_css$Css$right),
+																																	_1: {
+																																		ctor: '::',
+																																		_0: _rtfeldman$elm_css$Css$verticalAlign(_rtfeldman$elm_css$Css$top),
+																																		_1: {ctor: '[]'}
+																																	}
+																																}
+																															}),
+																														_1: {ctor: '[]'}
+																													},
+																													{
+																														ctor: '::',
+																														_0: _rtfeldman$elm_css$Html_Styled$text('person:'),
+																														_1: {ctor: '[]'}
+																													}),
 																												_1: {
 																													ctor: '::',
-																													_0: _rtfeldman$elm_css$Css$verticalAlign(_rtfeldman$elm_css$Css$top),
+																													_0: A2(
+																														_rtfeldman$elm_css$Html_Styled$td,
+																														{ctor: '[]'},
+																														{
+																															ctor: '::',
+																															_0: _rtfeldman$elm_css$Html_Styled$text(
+																																_jackgene$live_deck$Deck_Slide_WordCloud$firstName(event.chatMessage.sender)),
+																															_1: {ctor: '[]'}
+																														}),
 																													_1: {ctor: '[]'}
 																												}
 																											}),
-																										_1: {ctor: '[]'}
-																									},
-																									{
-																										ctor: '::',
-																										_0: _rtfeldman$elm_css$Html_Styled$text('recipient:'),
-																										_1: {ctor: '[]'}
-																									}),
-																								_1: {
-																									ctor: '::',
-																									_0: A2(
-																										_rtfeldman$elm_css$Html_Styled$td,
-																										{ctor: '[]'},
-																										{
+																										_1: {
 																											ctor: '::',
-																											_0: _rtfeldman$elm_css$Html_Styled$text(event.chatMessage.recipient),
-																											_1: {ctor: '[]'}
-																										}),
-																									_1: {ctor: '[]'}
-																								}
-																							}),
-																						_1: {
-																							ctor: '::',
-																							_0: A2(
-																								_rtfeldman$elm_css$Html_Styled$tr,
-																								{ctor: '[]'},
-																								{
-																									ctor: '::',
-																									_0: A2(
-																										_rtfeldman$elm_css$Html_Styled$th,
-																										{
-																											ctor: '::',
-																											_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
+																											_0: A2(
+																												_rtfeldman$elm_css$Html_Styled$tr,
+																												{ctor: '[]'},
 																												{
 																													ctor: '::',
-																													_0: _rtfeldman$elm_css$Css$textAlign(_rtfeldman$elm_css$Css$right),
+																													_0: A2(
+																														_rtfeldman$elm_css$Html_Styled$th,
+																														{
+																															ctor: '::',
+																															_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
+																																{
+																																	ctor: '::',
+																																	_0: _rtfeldman$elm_css$Css$textAlign(_rtfeldman$elm_css$Css$right),
+																																	_1: {
+																																		ctor: '::',
+																																		_0: _rtfeldman$elm_css$Css$verticalAlign(_rtfeldman$elm_css$Css$top),
+																																		_1: {ctor: '[]'}
+																																	}
+																																}),
+																															_1: {ctor: '[]'}
+																														},
+																														{
+																															ctor: '::',
+																															_0: _rtfeldman$elm_css$Html_Styled$text('text:'),
+																															_1: {ctor: '[]'}
+																														}),
 																													_1: {
 																														ctor: '::',
-																														_0: _rtfeldman$elm_css$Css$verticalAlign(_rtfeldman$elm_css$Css$top),
+																														_0: A2(
+																															_rtfeldman$elm_css$Html_Styled$td,
+																															{
+																																ctor: '::',
+																																_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
+																																	{
+																																		ctor: '::',
+																																		_0: truncatedTextStyle,
+																																		_1: {ctor: '[]'}
+																																	}),
+																																_1: {ctor: '[]'}
+																															},
+																															{
+																																ctor: '::',
+																																_0: _rtfeldman$elm_css$Html_Styled$text(event.normalizedText),
+																																_1: {ctor: '[]'}
+																															}),
 																														_1: {ctor: '[]'}
 																													}
 																												}),
 																											_1: {ctor: '[]'}
-																										},
-																										{
-																											ctor: '::',
-																											_0: _rtfeldman$elm_css$Html_Styled$text('text:'),
-																											_1: {ctor: '[]'}
-																										}),
-																									_1: {
-																										ctor: '::',
-																										_0: A2(
-																											_rtfeldman$elm_css$Html_Styled$td,
-																											{
-																												ctor: '::',
-																												_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
-																													{
-																														ctor: '::',
-																														_0: truncatedTextStyle,
-																														_1: {ctor: '[]'}
-																													}),
-																												_1: {ctor: '[]'}
-																											},
-																											{
-																												ctor: '::',
-																												_0: _rtfeldman$elm_css$Html_Styled$text(event.chatMessage.text),
-																												_1: {ctor: '[]'}
-																											}),
-																										_1: {ctor: '[]'}
-																									}
-																								}),
-																							_1: {ctor: '[]'}
-																						}
+																										}
+																									}),
+																								_1: {ctor: '[]'}
+																							}),
+																						_1: {ctor: '[]'}
 																					}
 																				}),
 																			_1: {
 																				ctor: '::',
-																				_0: A4(
-																					_jackgene$live_deck$Deck_Slide_WordCloud$streamElementView,
-																					A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$normalizedTextPos, step),
-																					partitionColor,
-																					scaleChanged,
+																				_0: A2(
+																					_rtfeldman$elm_css$Html_Styled$div,
 																					{
 																						ctor: '::',
-																						_0: A2(
-																							_rtfeldman$elm_css$Html_Styled$tr,
-																							{ctor: '[]'},
+																						_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
 																							{
 																								ctor: '::',
-																								_0: A2(
-																									_rtfeldman$elm_css$Html_Styled$th,
-																									{
-																										ctor: '::',
-																										_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
-																											{
-																												ctor: '::',
-																												_0: _rtfeldman$elm_css$Css$width(
-																													_rtfeldman$elm_css$Css$em(4.5)),
-																												_1: {
-																													ctor: '::',
-																													_0: _rtfeldman$elm_css$Css$textAlign(_rtfeldman$elm_css$Css$right),
-																													_1: {
-																														ctor: '::',
-																														_0: _rtfeldman$elm_css$Css$verticalAlign(_rtfeldman$elm_css$Css$top),
-																														_1: {ctor: '[]'}
-																													}
-																												}
-																											}),
-																										_1: {ctor: '[]'}
-																									},
-																									{
-																										ctor: '::',
-																										_0: _rtfeldman$elm_css$Html_Styled$text('person:'),
-																										_1: {ctor: '[]'}
-																									}),
+																								_0: _rtfeldman$elm_css$Css$position(_rtfeldman$elm_css$Css$absolute),
 																								_1: {
 																									ctor: '::',
-																									_0: A2(
-																										_rtfeldman$elm_css$Html_Styled$td,
-																										{ctor: '[]'},
-																										{
-																											ctor: '::',
-																											_0: _rtfeldman$elm_css$Html_Styled$text(
-																												_jackgene$live_deck$Deck_Slide_WordCloud$firstName(event.chatMessage.sender)),
-																											_1: {ctor: '[]'}
-																										}),
-																									_1: {ctor: '[]'}
-																								}
-																							}),
-																						_1: {
-																							ctor: '::',
-																							_0: A2(
-																								_rtfeldman$elm_css$Html_Styled$tr,
-																								{ctor: '[]'},
-																								{
-																									ctor: '::',
-																									_0: A2(
-																										_rtfeldman$elm_css$Html_Styled$th,
-																										{
-																											ctor: '::',
-																											_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
-																												{
-																													ctor: '::',
-																													_0: _rtfeldman$elm_css$Css$textAlign(_rtfeldman$elm_css$Css$right),
-																													_1: {
-																														ctor: '::',
-																														_0: _rtfeldman$elm_css$Css$verticalAlign(_rtfeldman$elm_css$Css$top),
-																														_1: {ctor: '[]'}
-																													}
-																												}),
-																											_1: {ctor: '[]'}
-																										},
-																										{
-																											ctor: '::',
-																											_0: _rtfeldman$elm_css$Html_Styled$text('text:'),
-																											_1: {ctor: '[]'}
-																										}),
-																									_1: {
-																										ctor: '::',
-																										_0: A2(
-																											_rtfeldman$elm_css$Html_Styled$td,
-																											{
-																												ctor: '::',
-																												_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
-																													{
-																														ctor: '::',
-																														_0: truncatedTextStyle,
-																														_1: {ctor: '[]'}
-																													}),
-																												_1: {ctor: '[]'}
-																											},
-																											{
-																												ctor: '::',
-																												_0: _rtfeldman$elm_css$Html_Styled$text(event.normalizedText),
-																												_1: {ctor: '[]'}
-																											}),
-																										_1: {ctor: '[]'}
-																									}
-																								}),
-																							_1: {ctor: '[]'}
-																						}
-																					}),
-																				_1: {
-																					ctor: '::',
-																					_0: A2(
-																						_rtfeldman$elm_css$Html_Styled$div,
-																						{
-																							ctor: '::',
-																							_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
-																								{
-																									ctor: '::',
-																									_0: _rtfeldman$elm_css$Css$position(_rtfeldman$elm_css$Css$absolute),
+																									_0: _rtfeldman$elm_css$Css$top(
+																										_rtfeldman$elm_css$Css$em(
+																											(_elm_lang$core$Native_Utils.cmp(
+																												_elm_lang$core$List$length(event.words),
+																												1) > 0) ? 0 : bigSmallOffsetEm)),
 																									_1: {
 																										ctor: '::',
 																										_0: _rtfeldman$elm_css$Css$left(
@@ -37358,9 +37413,11 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																											_1: {ctor: '[]'}
 																										}
 																									}
-																								}),
-																							_1: {ctor: '[]'}
-																						},
+																								}
+																							}),
+																						_1: {ctor: '[]'}
+																					},
+																					_elm_lang$core$List$reverse(
 																						A2(
 																							_elm_lang$core$List$indexedMap,
 																							F2(
@@ -37483,7 +37540,13 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																														_0: _rtfeldman$elm_css$Css$top(
 																															_rtfeldman$elm_css$Css$em(
 																																_elm_lang$core$Basics$toFloat(idx) * 3.75)),
-																														_1: {ctor: '[]'}
+																														_1: {
+																															ctor: '::',
+																															_0: _rtfeldman$elm_css$Css$opacity(
+																																_rtfeldman$elm_css$Css$num(
+																																	_elm_lang$core$Native_Utils.eq(idx, 0) ? 1.0 : 0.5)),
+																															_1: {ctor: '[]'}
+																														}
 																													}
 																												}),
 																											_1: {ctor: '[]'}
@@ -37789,21 +37852,13 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																											}
 																										});
 																								}),
-																							event.words)),
-																					_1: {ctor: '[]'}
-																				}
+																							event.words))),
+																				_1: {ctor: '[]'}
 																			}
 																		}),
 																	_1: _p17
 																},
-																_1: function () {
-																	var rowHeightEm = A2(
-																		_elm_lang$core$Basics$max,
-																		chatMessageHeightEm,
-																		_elm_lang$core$Basics$toFloat(
-																			_elm_lang$core$List$length(event.words)) * extractedWordHeightEm);
-																	return _p18 + rowHeightEm;
-																}()
+																_1: (_p18 + chatMessageTopEm) + chatMessageHeightEm
 															};
 														}
 													}),
@@ -38298,6 +38353,12 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementation6MapCountPersonsForWo
 var _jackgene$live_deck$Deck_Slide_WordCloud$implementation7Complete = function (showCode) {
 	return A7(_jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramSlide, 6, 'Tying it all together:', '\nval wordCounts: Flow<Counts> = chatMessages\n    .map(::normalizeText)\n    .flatMapConcat(::splitIntoWords)\n    .filter(::isValidWord)\n    .runningFold(mapOf(), ::updateWordsForPerson)\n    .map(::countWords).map(::Counts)\n    .shareIn(CoroutineScope(Default), Eagerly, 1)\n', showCode, 0.0, 1.0, true);
 };
+var _jackgene$live_deck$Deck_Slide_WordCloud$implementation8Complete = function (showCode) {
+	return A7(_jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramSlide, 6, 'Observe that some events can be re-ordered without changing the final outcome:', '\nval wordCounts: Flow<Counts> = chatMessages\n    .map(::normalizeText)\n    .flatMapConcat(::splitIntoWords)\n    .filter(::isValidWord)\n    .runningFold(mapOf(), ::updateWordsForPerson)\n    .map(::countWords).map(::Counts)\n    .shareIn(CoroutineScope(Default), Eagerly, 1)\n', showCode, 0.0, 1.0, true);
+};
+var _jackgene$live_deck$Deck_Slide_WordCloud$implementation9Complete = function (showCode) {
+	return A7(_jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramSlide, 6, 'Furthermore, notice that information is lost as it flows through the system:', '\nval wordCounts: Flow<Counts> = chatMessages\n    .map(::normalizeText)\n    .flatMapConcat(::splitIntoWords)\n    .filter(::isValidWord)\n    .runningFold(mapOf(), ::updateWordsForPerson)\n    .map(::countWords).map(::Counts)\n    .shareIn(CoroutineScope(Default), Eagerly, 1)\n', showCode, 0.0, 1.0, true);
+};
 var _jackgene$live_deck$Deck_Slide_WordCloud$implementationSlides = {
 	ctor: '::',
 	_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation1ChatMessages(false),
@@ -38340,7 +38401,15 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationSlides = {
 													_1: {
 														ctor: '::',
 														_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation7Complete(true),
-														_1: {ctor: '[]'}
+														_1: {
+															ctor: '::',
+															_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation8Complete(false),
+															_1: {
+																ctor: '::',
+																_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation9Complete(false),
+																_1: {ctor: '[]'}
+															}
+														}
 													}
 												}
 											}
@@ -38732,8 +38801,12 @@ var _jackgene$live_deck$Deck_Slide$preQuestionSlides = A2(
 		_jackgene$live_deck$Deck_Slide_WordCloud$implementationSlides,
 		{
 			ctor: '::',
-			_0: _jackgene$live_deck$Deck_Slide_SectionCover$questions,
-			_1: {ctor: '[]'}
+			_0: _jackgene$live_deck$Deck_Slide_WordCloud$wordCloud,
+			_1: {
+				ctor: '::',
+				_0: _jackgene$live_deck$Deck_Slide_SectionCover$questions,
+				_1: {ctor: '[]'}
+			}
 		}));
 var _jackgene$live_deck$Deck_Slide$firstQuestionIndex = _elm_lang$core$List$length(_jackgene$live_deck$Deck_Slide$preQuestionSlides);
 var _jackgene$live_deck$Deck_Slide$indexSlide = F2(

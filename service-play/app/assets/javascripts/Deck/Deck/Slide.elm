@@ -44,8 +44,9 @@ preQuestionSlides =
   , WordCloud.wordCloud
   ] ++
   WordCloud.implementationSlides ++
+  [ WordCloud.wordCloud
   -- Q & A
-  [ SectionCover.questions
+  , SectionCover.questions
   ]
 
 
