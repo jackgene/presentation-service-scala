@@ -37656,176 +37656,34 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																												wordRows),
 																											_1: {
 																												ctor: '::',
-																												_0: (!extractedWord.isValid) ? A2(
+																												_0: A2(
 																													_rtfeldman$elm_css$Html_Styled$div,
 																													{ctor: '[]'},
-																													{ctor: '[]'}) : A5(
-																													_jackgene$live_deck$Deck_Slide_WordCloud$streamElementView,
-																													shiftPos(
-																														A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$validatedWordsPos, step)),
-																													partitionColor,
-																													wordOpacityNum,
-																													scaleChanged,
-																													wordRows),
-																												_1: {
-																													ctor: '::',
-																													_0: A5(
-																														_jackgene$live_deck$Deck_Slide_WordCloud$streamElementView,
-																														shiftPos(
-																															A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$wordsByPersonsPos, step)),
-																														partitionColor,
-																														wordOpacityNum,
-																														scaleChanged,
-																														{
-																															ctor: '::',
-																															_0: A2(
-																																_rtfeldman$elm_css$Html_Styled$tr,
-																																{ctor: '[]'},
-																																{
-																																	ctor: '::',
-																																	_0: A2(
-																																		_rtfeldman$elm_css$Html_Styled$th,
-																																		{
-																																			ctor: '::',
-																																			_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
-																																				{
-																																					ctor: '::',
-																																					_0: _rtfeldman$elm_css$Css$width(
-																																						_rtfeldman$elm_css$Css$em(7)),
-																																					_1: {ctor: '[]'}
-																																				}),
-																																			_1: {ctor: '[]'}
-																																		},
-																																		{
-																																			ctor: '::',
-																																			_0: _rtfeldman$elm_css$Html_Styled$text('person'),
-																																			_1: {ctor: '[]'}
-																																		}),
-																																	_1: {
-																																		ctor: '::',
-																																		_0: A2(
-																																			_rtfeldman$elm_css$Html_Styled$th,
-																																			{ctor: '[]'},
-																																			{
-																																				ctor: '::',
-																																				_0: _rtfeldman$elm_css$Html_Styled$text('words'),
-																																				_1: {ctor: '[]'}
-																																			}),
-																																		_1: {ctor: '[]'}
-																																	}
-																																}),
-																															_1: _elm_lang$core$List$reverse(
-																																_elm_lang$core$Tuple$first(
-																																	A3(
-																																		_elm_lang$core$List$foldr,
-																																		F2(
-																																			function (_p8, _p7) {
-																																				var _p9 = _p8;
-																																				var _p10 = _p7;
-																																				var _p12 = _p10._0;
-																																				var _p11 = _p10._1;
-																																				var sender = _p9.chatMessage.sender;
-																																				return A2(_elm_lang$core$Set$member, sender, _p11) ? {ctor: '_Tuple2', _0: _p12, _1: _p11} : {
-																																					ctor: '_Tuple2',
-																																					_0: {
-																																						ctor: '::',
-																																						_0: A2(
-																																							_rtfeldman$elm_css$Html_Styled$tr,
-																																							{ctor: '[]'},
-																																							{
-																																								ctor: '::',
-																																								_0: A2(
-																																									_rtfeldman$elm_css$Html_Styled$td,
-																																									{
-																																										ctor: '::',
-																																										_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
-																																											{
-																																												ctor: '::',
-																																												_0: _rtfeldman$elm_css$Css$textAlign(_rtfeldman$elm_css$Css$center),
-																																												_1: {
-																																													ctor: '::',
-																																													_0: _rtfeldman$elm_css$Css$verticalAlign(_rtfeldman$elm_css$Css$top),
-																																													_1: {ctor: '[]'}
-																																												}
-																																											}),
-																																										_1: {ctor: '[]'}
-																																									},
-																																									{
-																																										ctor: '::',
-																																										_0: _rtfeldman$elm_css$Html_Styled$text(
-																																											_jackgene$live_deck$Deck_Slide_WordCloud$firstName(sender)),
-																																										_1: {ctor: '[]'}
-																																									}),
-																																								_1: {
-																																									ctor: '::',
-																																									_0: A2(
-																																										_rtfeldman$elm_css$Html_Styled$td,
-																																										{
-																																											ctor: '::',
-																																											_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
-																																												{
-																																													ctor: '::',
-																																													_0: _rtfeldman$elm_css$Css$textAlign(_rtfeldman$elm_css$Css$center),
-																																													_1: {
-																																														ctor: '::',
-																																														_0: _rtfeldman$elm_css$Css$verticalAlign(_rtfeldman$elm_css$Css$top),
-																																														_1: {ctor: '[]'}
-																																													}
-																																												}),
-																																											_1: {ctor: '[]'}
-																																										},
-																																										{
-																																											ctor: '::',
-																																											_0: _rtfeldman$elm_css$Html_Styled$text(
-																																												A2(
-																																													_elm_lang$core$String$join,
-																																													', ',
-																																													A2(
-																																														_elm_lang$core$Maybe$withDefault,
-																																														{ctor: '[]'},
-																																														A2(_elm_lang$core$Dict$get, sender, event.wordsBySender)))),
-																																											_1: {ctor: '[]'}
-																																										}),
-																																									_1: {ctor: '[]'}
-																																								}
-																																							}),
-																																						_1: _p12
-																																					},
-																																					_1: A2(_elm_lang$core$Set$insert, sender, _p11)
-																																				};
-																																			}),
-																																		{
-																																			ctor: '_Tuple2',
-																																			_0: {ctor: '[]'},
-																																			_1: _elm_lang$core$Set$empty
-																																		},
-																																		counts.history)))
-																														}),
-																													_1: {
+																													(!extractedWord.isValid) ? {ctor: '[]'} : {
 																														ctor: '::',
 																														_0: A5(
 																															_jackgene$live_deck$Deck_Slide_WordCloud$streamElementView,
 																															shiftPos(
-																																A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$personCountsByWordPos, step)),
+																																A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$validatedWordsPos, step)),
 																															partitionColor,
 																															wordOpacityNum,
 																															scaleChanged,
-																															{
-																																ctor: '::',
-																																_0: A2(
-																																	_rtfeldman$elm_css$Html_Styled$tr,
-																																	{ctor: '[]'},
-																																	{
-																																		ctor: '::',
-																																		_0: A2(
-																																			_rtfeldman$elm_css$Html_Styled$th,
-																																			{ctor: '[]'},
-																																			{
-																																				ctor: '::',
-																																				_0: _rtfeldman$elm_css$Html_Styled$text('word'),
-																																				_1: {ctor: '[]'}
-																																			}),
-																																		_1: {
+																															wordRows),
+																														_1: {
+																															ctor: '::',
+																															_0: A5(
+																																_jackgene$live_deck$Deck_Slide_WordCloud$streamElementView,
+																																shiftPos(
+																																	A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$wordsByPersonsPos, step)),
+																																partitionColor,
+																																wordOpacityNum,
+																																scaleChanged,
+																																{
+																																	ctor: '::',
+																																	_0: A2(
+																																		_rtfeldman$elm_css$Html_Styled$tr,
+																																		{ctor: '[]'},
+																																		{
 																																			ctor: '::',
 																																			_0: A2(
 																																				_rtfeldman$elm_css$Html_Styled$th,
@@ -37835,45 +37693,41 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																																						{
 																																							ctor: '::',
 																																							_0: _rtfeldman$elm_css$Css$width(
-																																								_rtfeldman$elm_css$Css$em(6)),
+																																								_rtfeldman$elm_css$Css$em(7)),
 																																							_1: {ctor: '[]'}
 																																						}),
 																																					_1: {ctor: '[]'}
 																																				},
 																																				{
 																																					ctor: '::',
-																																					_0: _rtfeldman$elm_css$Html_Styled$text('persons'),
+																																					_0: _rtfeldman$elm_css$Html_Styled$text('person'),
 																																					_1: {ctor: '[]'}
 																																				}),
-																																			_1: {ctor: '[]'}
-																																		}
-																																	}),
-																																_1: function () {
-																																	var words = A2(
-																																		_elm_lang$core$List$map,
-																																		function (_) {
-																																			return _.word;
-																																		},
-																																		A2(
-																																			_elm_lang$core$List$concatMap,
-																																			function (_) {
-																																				return _.words;
-																																			},
-																																			counts.history));
-																																	return _elm_lang$core$List$reverse(
+																																			_1: {
+																																				ctor: '::',
+																																				_0: A2(
+																																					_rtfeldman$elm_css$Html_Styled$th,
+																																					{ctor: '[]'},
+																																					{
+																																						ctor: '::',
+																																						_0: _rtfeldman$elm_css$Html_Styled$text('words'),
+																																						_1: {ctor: '[]'}
+																																					}),
+																																				_1: {ctor: '[]'}
+																																			}
+																																		}),
+																																	_1: _elm_lang$core$List$reverse(
 																																		_elm_lang$core$Tuple$first(
 																																			A3(
 																																				_elm_lang$core$List$foldr,
 																																				F2(
-																																					function (word, _p13) {
-																																						var _p14 = _p13;
-																																						var _p16 = _p14._0;
-																																						var _p15 = _p14._1;
-																																						var count = A2(
-																																							_elm_lang$core$Maybe$withDefault,
-																																							0,
-																																							A2(_elm_lang$core$Dict$get, word, event.countsByWord));
-																																						return (_elm_lang$core$Native_Utils.eq(count, 0) || A2(_elm_lang$core$Set$member, word, _p15)) ? {ctor: '_Tuple2', _0: _p16, _1: _p15} : {
+																																					function (_p8, _p7) {
+																																						var _p9 = _p8;
+																																						var _p10 = _p7;
+																																						var _p12 = _p10._0;
+																																						var _p11 = _p10._1;
+																																						var sender = _p9.chatMessage.sender;
+																																						return A2(_elm_lang$core$Set$member, sender, _p11) ? {ctor: '_Tuple2', _0: _p12, _1: _p11} : {
 																																							ctor: '_Tuple2',
 																																							_0: {
 																																								ctor: '::',
@@ -37900,7 +37754,8 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																																											},
 																																											{
 																																												ctor: '::',
-																																												_0: _rtfeldman$elm_css$Html_Styled$text(word),
+																																												_0: _rtfeldman$elm_css$Html_Styled$text(
+																																													_jackgene$live_deck$Deck_Slide_WordCloud$firstName(sender)),
 																																												_1: {ctor: '[]'}
 																																											}),
 																																										_1: {
@@ -37924,15 +37779,21 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																																												{
 																																													ctor: '::',
 																																													_0: _rtfeldman$elm_css$Html_Styled$text(
-																																														_elm_lang$core$Basics$toString(count)),
+																																														A2(
+																																															_elm_lang$core$String$join,
+																																															', ',
+																																															A2(
+																																																_elm_lang$core$Maybe$withDefault,
+																																																{ctor: '[]'},
+																																																A2(_elm_lang$core$Dict$get, sender, event.wordsBySender)))),
 																																													_1: {ctor: '[]'}
 																																												}),
 																																											_1: {ctor: '[]'}
 																																										}
 																																									}),
-																																								_1: _p16
+																																								_1: _p12
 																																							},
-																																							_1: A2(_elm_lang$core$Set$insert, word, _p15)
+																																							_1: A2(_elm_lang$core$Set$insert, sender, _p11)
 																																						};
 																																					}),
 																																				{
@@ -37940,12 +37801,155 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																																					_0: {ctor: '[]'},
 																																					_1: _elm_lang$core$Set$empty
 																																				},
-																																				words)));
-																																}()
-																															}),
-																														_1: {ctor: '[]'}
-																													}
-																												}
+																																				counts.history)))
+																																}),
+																															_1: {
+																																ctor: '::',
+																																_0: A5(
+																																	_jackgene$live_deck$Deck_Slide_WordCloud$streamElementView,
+																																	shiftPos(
+																																		A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$personCountsByWordPos, step)),
+																																	partitionColor,
+																																	wordOpacityNum,
+																																	scaleChanged,
+																																	{
+																																		ctor: '::',
+																																		_0: A2(
+																																			_rtfeldman$elm_css$Html_Styled$tr,
+																																			{ctor: '[]'},
+																																			{
+																																				ctor: '::',
+																																				_0: A2(
+																																					_rtfeldman$elm_css$Html_Styled$th,
+																																					{ctor: '[]'},
+																																					{
+																																						ctor: '::',
+																																						_0: _rtfeldman$elm_css$Html_Styled$text('word'),
+																																						_1: {ctor: '[]'}
+																																					}),
+																																				_1: {
+																																					ctor: '::',
+																																					_0: A2(
+																																						_rtfeldman$elm_css$Html_Styled$th,
+																																						{
+																																							ctor: '::',
+																																							_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
+																																								{
+																																									ctor: '::',
+																																									_0: _rtfeldman$elm_css$Css$width(
+																																										_rtfeldman$elm_css$Css$em(6)),
+																																									_1: {ctor: '[]'}
+																																								}),
+																																							_1: {ctor: '[]'}
+																																						},
+																																						{
+																																							ctor: '::',
+																																							_0: _rtfeldman$elm_css$Html_Styled$text('persons'),
+																																							_1: {ctor: '[]'}
+																																						}),
+																																					_1: {ctor: '[]'}
+																																				}
+																																			}),
+																																		_1: function () {
+																																			var words = A2(
+																																				_elm_lang$core$List$map,
+																																				function (_) {
+																																					return _.word;
+																																				},
+																																				A2(
+																																					_elm_lang$core$List$concatMap,
+																																					function (_) {
+																																						return _.words;
+																																					},
+																																					counts.history));
+																																			return _elm_lang$core$List$reverse(
+																																				_elm_lang$core$Tuple$first(
+																																					A3(
+																																						_elm_lang$core$List$foldr,
+																																						F2(
+																																							function (word, _p13) {
+																																								var _p14 = _p13;
+																																								var _p16 = _p14._0;
+																																								var _p15 = _p14._1;
+																																								var count = A2(
+																																									_elm_lang$core$Maybe$withDefault,
+																																									0,
+																																									A2(_elm_lang$core$Dict$get, word, event.countsByWord));
+																																								return (_elm_lang$core$Native_Utils.eq(count, 0) || A2(_elm_lang$core$Set$member, word, _p15)) ? {ctor: '_Tuple2', _0: _p16, _1: _p15} : {
+																																									ctor: '_Tuple2',
+																																									_0: {
+																																										ctor: '::',
+																																										_0: A2(
+																																											_rtfeldman$elm_css$Html_Styled$tr,
+																																											{ctor: '[]'},
+																																											{
+																																												ctor: '::',
+																																												_0: A2(
+																																													_rtfeldman$elm_css$Html_Styled$td,
+																																													{
+																																														ctor: '::',
+																																														_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
+																																															{
+																																																ctor: '::',
+																																																_0: _rtfeldman$elm_css$Css$textAlign(_rtfeldman$elm_css$Css$center),
+																																																_1: {
+																																																	ctor: '::',
+																																																	_0: _rtfeldman$elm_css$Css$verticalAlign(_rtfeldman$elm_css$Css$top),
+																																																	_1: {ctor: '[]'}
+																																																}
+																																															}),
+																																														_1: {ctor: '[]'}
+																																													},
+																																													{
+																																														ctor: '::',
+																																														_0: _rtfeldman$elm_css$Html_Styled$text(word),
+																																														_1: {ctor: '[]'}
+																																													}),
+																																												_1: {
+																																													ctor: '::',
+																																													_0: A2(
+																																														_rtfeldman$elm_css$Html_Styled$td,
+																																														{
+																																															ctor: '::',
+																																															_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
+																																																{
+																																																	ctor: '::',
+																																																	_0: _rtfeldman$elm_css$Css$textAlign(_rtfeldman$elm_css$Css$center),
+																																																	_1: {
+																																																		ctor: '::',
+																																																		_0: _rtfeldman$elm_css$Css$verticalAlign(_rtfeldman$elm_css$Css$top),
+																																																		_1: {ctor: '[]'}
+																																																	}
+																																																}),
+																																															_1: {ctor: '[]'}
+																																														},
+																																														{
+																																															ctor: '::',
+																																															_0: _rtfeldman$elm_css$Html_Styled$text(
+																																																_elm_lang$core$Basics$toString(count)),
+																																															_1: {ctor: '[]'}
+																																														}),
+																																													_1: {ctor: '[]'}
+																																												}
+																																											}),
+																																										_1: _p16
+																																									},
+																																									_1: A2(_elm_lang$core$Set$insert, word, _p15)
+																																								};
+																																							}),
+																																						{
+																																							ctor: '_Tuple2',
+																																							_0: {ctor: '[]'},
+																																							_1: _elm_lang$core$Set$empty
+																																						},
+																																						words)));
+																																		}()
+																																	}),
+																																_1: {ctor: '[]'}
+																															}
+																														}
+																													}),
+																												_1: {ctor: '[]'}
 																											}
 																										});
 																								}),
