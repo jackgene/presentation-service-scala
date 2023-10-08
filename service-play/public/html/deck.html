@@ -20335,7 +20335,7 @@ var _jackgene$live_deck$Deck_Slide_Common$partition3Color = A3(_rtfeldman$elm_cs
 var _jackgene$live_deck$Deck_Slide_Common$partition2Color = A3(_rtfeldman$elm_css$Css$rgb, 240, 154, 160);
 var _jackgene$live_deck$Deck_Slide_Common$partition1Color = A3(_rtfeldman$elm_css$Css$rgb, 235, 174, 131);
 var _jackgene$live_deck$Deck_Slide_Common$consoleText = A3(_rtfeldman$elm_css$Css$rgb, 65, 255, 0);
-var _jackgene$live_deck$Deck_Slide_Common$lightGrey = A3(_rtfeldman$elm_css$Css$rgb, 238, 238, 238);
+var _jackgene$live_deck$Deck_Slide_Common$lightGray = A3(_rtfeldman$elm_css$Css$rgb, 238, 238, 238);
 var _jackgene$live_deck$Deck_Slide_Common$darkGray = A3(_rtfeldman$elm_css$Css$rgb, 192, 192, 192);
 var _jackgene$live_deck$Deck_Slide_Common$blackTranslucent = A4(_rtfeldman$elm_css$Css$rgba, 32, 31, 27, 0.15);
 var _jackgene$live_deck$Deck_Slide_Common$themeBackgroundColor = A3(_rtfeldman$elm_css$Css$rgb, 224, 229, 249);
@@ -36478,8 +36478,48 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$operationView = F3(
 					{ctor: '[]'}),
 				A2(_elm_lang$core$List$map, _rtfeldman$elm_css$Html_Styled$text, codeLines)));
 	});
-var _jackgene$live_deck$Deck_Slide_WordCloud$streamElementView = F4(
-	function (pos, color, scaleChanged, rows) {
+var _jackgene$live_deck$Deck_Slide_WordCloud$streamLineView = F2(
+	function (pos, heightEm) {
+		return A2(
+			_rtfeldman$elm_css$Html_Styled$div,
+			{
+				ctor: '::',
+				_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
+					{
+						ctor: '::',
+						_0: _rtfeldman$elm_css$Css$position(_rtfeldman$elm_css$Css$absolute),
+						_1: {
+							ctor: '::',
+							_0: _rtfeldman$elm_css$Css$left(
+								_rtfeldman$elm_css$Css$em(pos.leftEm + (pos.widthEm / 2))),
+							_1: {
+								ctor: '::',
+								_0: _rtfeldman$elm_css$Css$width(
+									_rtfeldman$elm_css$Css$px(1)),
+								_1: {
+									ctor: '::',
+									_0: _rtfeldman$elm_css$Css$height(
+										_rtfeldman$elm_css$Css$em(heightEm)),
+									_1: {
+										ctor: '::',
+										_0: _rtfeldman$elm_css$Css$backgroundImage(
+											A3(
+												_rtfeldman$elm_css$Css$linearGradient,
+												_rtfeldman$elm_css$Css$stop(_jackgene$live_deck$Deck_Slide_Common$darkGray),
+												_rtfeldman$elm_css$Css$stop(_jackgene$live_deck$Deck_Slide_Common$lightGray),
+												{ctor: '[]'})),
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}
+					}),
+				_1: {ctor: '[]'}
+			},
+			{ctor: '[]'});
+	});
+var _jackgene$live_deck$Deck_Slide_WordCloud$streamElementView = F5(
+	function (pos, color, opacityNum, scaleChanged, rows) {
 		return A2(
 			_rtfeldman$elm_css$Html_Styled$div,
 			{
@@ -36494,13 +36534,27 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$streamElementView = F4(
 								_rtfeldman$elm_css$Css$em(pos.leftEm)),
 							_1: {
 								ctor: '::',
-								_0: _rtfeldman$elm_css$Css_Transitions$transition(
-									scaleChanged ? {ctor: '[]'} : {
+								_0: _rtfeldman$elm_css$Css$borderRadius(
+									_rtfeldman$elm_css$Css$em(0.75)),
+								_1: {
+									ctor: '::',
+									_0: _rtfeldman$elm_css$Css$backgroundColor(_jackgene$live_deck$Deck_Slide_Common$white),
+									_1: {
 										ctor: '::',
-										_0: A3(_rtfeldman$elm_css$Css_Transitions$left3, _jackgene$live_deck$Deck_Slide_Common$transitionDurationMs, 0, _rtfeldman$elm_css$Css_Transitions$easeInOut),
-										_1: {ctor: '[]'}
-									}),
-								_1: {ctor: '[]'}
+										_0: _rtfeldman$elm_css$Css$opacity(
+											_rtfeldman$elm_css$Css$num(1)),
+										_1: {
+											ctor: '::',
+											_0: _rtfeldman$elm_css$Css_Transitions$transition(
+												scaleChanged ? {ctor: '[]'} : {
+													ctor: '::',
+													_0: A3(_rtfeldman$elm_css$Css_Transitions$left3, _jackgene$live_deck$Deck_Slide_Common$transitionDurationMs, 0, _rtfeldman$elm_css$Css_Transitions$easeInOut),
+													_1: {ctor: '[]'}
+												}),
+											_1: {ctor: '[]'}
+										}
+									}
+								}
 							}
 						}
 					}),
@@ -36529,14 +36583,19 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$streamElementView = F4(
 											_0: _rtfeldman$elm_css$Css$backgroundColor(color),
 											_1: {
 												ctor: '::',
-												_0: A5(
-													_rtfeldman$elm_css$Css$boxShadow5,
-													_rtfeldman$elm_css$Css$zero,
-													_rtfeldman$elm_css$Css$em(0.5),
-													_rtfeldman$elm_css$Css$em(0.5),
-													_rtfeldman$elm_css$Css$em(-0.25),
-													A4(_rtfeldman$elm_css$Css$rgba, 0, 0, 0, 0.25)),
-												_1: {ctor: '[]'}
+												_0: _rtfeldman$elm_css$Css$opacity(
+													_rtfeldman$elm_css$Css$num(opacityNum)),
+												_1: {
+													ctor: '::',
+													_0: A5(
+														_rtfeldman$elm_css$Css$boxShadow5,
+														_rtfeldman$elm_css$Css$zero,
+														_rtfeldman$elm_css$Css$em(0.5),
+														_rtfeldman$elm_css$Css$em(0.5),
+														_rtfeldman$elm_css$Css$em(-0.25),
+														A4(_rtfeldman$elm_css$Css$rgba, 0, 0, 0, 0.25)),
+													_1: {ctor: '[]'}
+												}
 											}
 										}
 									}
@@ -36862,35 +36921,22 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 									{ctor: '[]'},
 									{
 										ctor: '::',
-										_0: A3(
-											_jackgene$live_deck$Deck_Slide_WordCloud$operationView,
-											A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$mapNormalizeTextPos, step),
-											scaleChanged,
-											{
-												ctor: '::',
-												_0: 'map(',
-												_1: {
-													ctor: '::',
-													_0: '  ::normalizeText',
-													_1: {
-														ctor: '::',
-														_0: ')',
-														_1: {ctor: '[]'}
-													}
-												}
-											}),
+										_0: A2(
+											_jackgene$live_deck$Deck_Slide_WordCloud$streamLineView,
+											A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$chatMessagesPos, step),
+											visibleHeightEm),
 										_1: {
 											ctor: '::',
 											_0: A3(
 												_jackgene$live_deck$Deck_Slide_WordCloud$operationView,
-												A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$flatMapConcatSplitIntoWordsPos, step),
+												A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$mapNormalizeTextPos, step),
 												scaleChanged,
 												{
 													ctor: '::',
-													_0: 'flatMapConcat(',
+													_0: 'map(',
 													_1: {
 														ctor: '::',
-														_0: '  ::splitIntoWords',
+														_0: '  ::normalizeText',
 														_1: {
 															ctor: '::',
 															_0: ')',
@@ -36900,66 +36946,121 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 												}),
 											_1: {
 												ctor: '::',
-												_0: A3(
-													_jackgene$live_deck$Deck_Slide_WordCloud$operationView,
-													A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$filterIsValidWordPos, step),
-													scaleChanged,
-													{
-														ctor: '::',
-														_0: 'filter(',
-														_1: {
-															ctor: '::',
-															_0: '  ::isValidWord',
-															_1: {
-																ctor: '::',
-																_0: ')',
-																_1: {ctor: '[]'}
-															}
-														}
-													}),
+												_0: A2(
+													_jackgene$live_deck$Deck_Slide_WordCloud$streamLineView,
+													A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$normalizedTextPos, step),
+													visibleHeightEm),
 												_1: {
 													ctor: '::',
 													_0: A3(
 														_jackgene$live_deck$Deck_Slide_WordCloud$operationView,
-														A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$runningFoldUpdateWordsForPersonPos, step),
+														A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$flatMapConcatSplitIntoWordsPos, step),
 														scaleChanged,
 														{
 															ctor: '::',
-															_0: 'runningFold(',
+															_0: 'flatMapConcat(',
 															_1: {
 																ctor: '::',
-																_0: '  mapOf(),',
+																_0: '  ::splitIntoWords',
 																_1: {
 																	ctor: '::',
-																	_0: '  ::updateWordsForPerson',
-																	_1: {
-																		ctor: '::',
-																		_0: ')',
-																		_1: {ctor: '[]'}
-																	}
+																	_0: ')',
+																	_1: {ctor: '[]'}
 																}
 															}
 														}),
 													_1: {
 														ctor: '::',
-														_0: A3(
-															_jackgene$live_deck$Deck_Slide_WordCloud$operationView,
-															A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$mapCountPersonsForWordPos, step),
-															scaleChanged,
-															{
-																ctor: '::',
-																_0: 'map(',
-																_1: {
+														_0: A2(
+															_jackgene$live_deck$Deck_Slide_WordCloud$streamLineView,
+															A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$rawWordsPos, step),
+															visibleHeightEm),
+														_1: {
+															ctor: '::',
+															_0: A3(
+																_jackgene$live_deck$Deck_Slide_WordCloud$operationView,
+																A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$filterIsValidWordPos, step),
+																scaleChanged,
+																{
 																	ctor: '::',
-																	_0: '  ::countPersonsForWord',
+																	_0: 'filter(',
 																	_1: {
 																		ctor: '::',
-																		_0: ')',
-																		_1: {ctor: '[]'}
+																		_0: '  ::isValidWord',
+																		_1: {
+																			ctor: '::',
+																			_0: ')',
+																			_1: {ctor: '[]'}
+																		}
+																	}
+																}),
+															_1: {
+																ctor: '::',
+																_0: A2(
+																	_jackgene$live_deck$Deck_Slide_WordCloud$streamLineView,
+																	A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$validatedWordsPos, step),
+																	visibleHeightEm),
+																_1: {
+																	ctor: '::',
+																	_0: A3(
+																		_jackgene$live_deck$Deck_Slide_WordCloud$operationView,
+																		A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$runningFoldUpdateWordsForPersonPos, step),
+																		scaleChanged,
+																		{
+																			ctor: '::',
+																			_0: 'runningFold(',
+																			_1: {
+																				ctor: '::',
+																				_0: '  mapOf(),',
+																				_1: {
+																					ctor: '::',
+																					_0: '  ::updateWordsForPerson',
+																					_1: {
+																						ctor: '::',
+																						_0: ')',
+																						_1: {ctor: '[]'}
+																					}
+																				}
+																			}
+																		}),
+																	_1: {
+																		ctor: '::',
+																		_0: A2(
+																			_jackgene$live_deck$Deck_Slide_WordCloud$streamLineView,
+																			A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$wordsByPersonsPos, step),
+																			visibleHeightEm),
+																		_1: {
+																			ctor: '::',
+																			_0: A3(
+																				_jackgene$live_deck$Deck_Slide_WordCloud$operationView,
+																				A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$mapCountPersonsForWordPos, step),
+																				scaleChanged,
+																				{
+																					ctor: '::',
+																					_0: 'map(',
+																					_1: {
+																						ctor: '::',
+																						_0: '  ::countPersonsForWord',
+																						_1: {
+																							ctor: '::',
+																							_0: ')',
+																							_1: {ctor: '[]'}
+																						}
+																					}
+																				}),
+																			_1: {
+																				ctor: '::',
+																				_0: A2(
+																					_jackgene$live_deck$Deck_Slide_WordCloud$streamLineView,
+																					A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$personCountsByWordPos, step),
+																					visibleHeightEm),
+																				_1: {ctor: '[]'}
+																			}
+																		}
 																	}
 																}
-															}),
-														_1: {ctor: '[]'}
+															}
+														}
 													}
 												}
 											}
@@ -37024,6 +37125,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																	return _jackgene$live_deck$Deck_Slide_Common$partition1Color;
 																}
 															}();
+															var chatMessageOpacityNum = A2(_elm_lang$core$Basics$max, 0, (16 - _p18) * 5.0e-2) + 0.2;
 															var bigSmallOffsetEm = 0.875;
 															var extractedWordsHeightEm = _elm_lang$core$Basics$toFloat(
 																_elm_lang$core$List$length(event.words)) * extractedWordHeightEm;
@@ -37050,23 +37152,17 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																								_rtfeldman$elm_css$Css$em(0.3)),
 																							_1: {
 																								ctor: '::',
-																								_0: _rtfeldman$elm_css$Css$opacity(
-																									_rtfeldman$elm_css$Css$num(
-																										A2(_elm_lang$core$Basics$max, 0, (16 - _p18) * 5.0e-2) + 0.2)),
-																								_1: {
-																									ctor: '::',
-																									_0: _rtfeldman$elm_css$Css_Transitions$transition(
-																										scaleChanged ? {ctor: '[]'} : {
+																								_0: _rtfeldman$elm_css$Css_Transitions$transition(
+																									scaleChanged ? {ctor: '[]'} : {
+																										ctor: '::',
+																										_0: A3(_rtfeldman$elm_css$Css_Transitions$opacity3, _jackgene$live_deck$Deck_Slide_Common$transitionDurationMs, 0, _rtfeldman$elm_css$Css_Transitions$easeInOut),
+																										_1: {
 																											ctor: '::',
-																											_0: A3(_rtfeldman$elm_css$Css_Transitions$opacity3, _jackgene$live_deck$Deck_Slide_Common$transitionDurationMs, 0, _rtfeldman$elm_css$Css_Transitions$easeInOut),
-																											_1: {
-																												ctor: '::',
-																												_0: A3(_rtfeldman$elm_css$Css_Transitions$top3, _jackgene$live_deck$Deck_Slide_Common$transitionDurationMs, 0, _rtfeldman$elm_css$Css_Transitions$easeInOut),
-																												_1: {ctor: '[]'}
-																											}
-																										}),
-																									_1: {ctor: '[]'}
-																								}
+																											_0: A3(_rtfeldman$elm_css$Css_Transitions$top3, _jackgene$live_deck$Deck_Slide_Common$transitionDurationMs, 0, _rtfeldman$elm_css$Css_Transitions$easeInOut),
+																											_1: {ctor: '[]'}
+																										}
+																									}),
+																								_1: {ctor: '[]'}
 																							}
 																						}
 																					}
@@ -37103,10 +37199,11 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																				},
 																				{
 																					ctor: '::',
-																					_0: A4(
+																					_0: A5(
 																						_jackgene$live_deck$Deck_Slide_WordCloud$streamElementView,
 																						A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$chatMessagesPos, step),
 																						partitionColor,
+																						chatMessageOpacityNum,
 																						scaleChanged,
 																						{
 																							ctor: '::',
@@ -37271,10 +37368,11 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																							},
 																							{
 																								ctor: '::',
-																								_0: A4(
+																								_0: A5(
 																									_jackgene$live_deck$Deck_Slide_WordCloud$streamElementView,
 																									A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$normalizedTextPos, step),
 																									partitionColor,
+																									chatMessageOpacityNum,
 																									scaleChanged,
 																									{
 																										ctor: '::',
@@ -37527,6 +37625,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																											pos,
 																											{leftEm: pos.leftEm - _jackgene$live_deck$Deck_Slide_WordCloud$rawWordsBasePos.leftEm});
 																									};
+																									var wordOpacityNum = chatMessageOpacityNum * (_elm_lang$core$Native_Utils.eq(idx, 0) ? 1.0 : 0.5);
 																									return A2(
 																										_rtfeldman$elm_css$Html_Styled$div,
 																										{
@@ -37540,24 +37639,19 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																														_0: _rtfeldman$elm_css$Css$top(
 																															_rtfeldman$elm_css$Css$em(
 																																_elm_lang$core$Basics$toFloat(idx) * 3.75)),
-																														_1: {
-																															ctor: '::',
-																															_0: _rtfeldman$elm_css$Css$opacity(
-																																_rtfeldman$elm_css$Css$num(
-																																	_elm_lang$core$Native_Utils.eq(idx, 0) ? 1.0 : 0.5)),
-																															_1: {ctor: '[]'}
-																														}
+																														_1: {ctor: '[]'}
 																													}
 																												}),
 																											_1: {ctor: '[]'}
 																										},
 																										{
 																											ctor: '::',
-																											_0: A4(
+																											_0: A5(
 																												_jackgene$live_deck$Deck_Slide_WordCloud$streamElementView,
 																												shiftPos(
 																													A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$rawWordsPos, step)),
 																												partitionColor,
+																												wordOpacityNum,
 																												scaleChanged,
 																												wordRows),
 																											_1: {
@@ -37565,20 +37659,22 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																												_0: (!extractedWord.isValid) ? A2(
 																													_rtfeldman$elm_css$Html_Styled$div,
 																													{ctor: '[]'},
-																													{ctor: '[]'}) : A4(
+																													{ctor: '[]'}) : A5(
 																													_jackgene$live_deck$Deck_Slide_WordCloud$streamElementView,
 																													shiftPos(
 																														A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$validatedWordsPos, step)),
 																													partitionColor,
+																													wordOpacityNum,
 																													scaleChanged,
 																													wordRows),
 																												_1: {
 																													ctor: '::',
-																													_0: A4(
+																													_0: A5(
 																														_jackgene$live_deck$Deck_Slide_WordCloud$streamElementView,
 																														shiftPos(
 																															A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$wordsByPersonsPos, step)),
 																														partitionColor,
+																														wordOpacityNum,
 																														scaleChanged,
 																														{
 																															ctor: '::',
@@ -37707,11 +37803,12 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																														}),
 																													_1: {
 																														ctor: '::',
-																														_0: A4(
+																														_0: A5(
 																															_jackgene$live_deck$Deck_Slide_WordCloud$streamElementView,
 																															shiftPos(
 																																A2(_jackgene$live_deck$Deck_Slide_WordCloud$horizontalPosition, _jackgene$live_deck$Deck_Slide_WordCloud$personCountsByWordPos, step)),
 																															partitionColor,
+																															wordOpacityNum,
 																															scaleChanged,
 																															{
 																																ctor: '::',
@@ -38403,11 +38500,15 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationSlides = {
 														_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation7Complete(true),
 														_1: {
 															ctor: '::',
-															_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation8Complete(false),
+															_0: _jackgene$live_deck$Deck_Slide_WordCloud$wordCloud,
 															_1: {
 																ctor: '::',
-																_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation9Complete(false),
-																_1: {ctor: '[]'}
+																_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation8Complete(false),
+																_1: {
+																	ctor: '::',
+																	_0: _jackgene$live_deck$Deck_Slide_WordCloud$implementation9Complete(false),
+																	_1: {ctor: '[]'}
+																}
 															}
 														}
 													}
