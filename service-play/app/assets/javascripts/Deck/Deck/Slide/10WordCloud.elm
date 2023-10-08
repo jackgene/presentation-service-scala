@@ -12,7 +12,7 @@ import Css exposing
   , alignItems, backgroundColor, backgroundImage, color, flexWrap, fontSize
   , justifyContent, lineHeight, opacity, textAlign, verticalAlign
   -- Units
-  , em, num, pct, rgba, vw, zero
+  , em, num, pct, px, rgba, vw, zero
   -- Alignment & Positions
   , absolute, relative
   -- Transform
@@ -390,11 +390,12 @@ personCountsByWordPos =
   }
 
 
-streamElementView : HorizontalPosition -> Color -> Bool -> List (Html msg) -> Html msg
-streamElementView pos color scaleChanged rows =
+streamElementView : HorizontalPosition -> Color -> Float -> Bool -> List (Html msg) -> Html msg
+streamElementView pos color opacityNum scaleChanged rows =
   div
   [ css
-    [ position absolute, left (em pos.leftEm)
+    [ position absolute, left (em pos.leftEm), borderRadius (em 0.75)
+    , backgroundColor white, opacity (num 1)
     , transition
       ( if scaleChanged then []
         else [ Css.Transitions.left3 transitionDurationMs 0 easeInOut ]
@@ -405,12 +406,25 @@ streamElementView pos color scaleChanged rows =
     [ css
       [ width (em pos.widthEm)
       , borderSpacing zero, borderRadius (em 0.75)
-      , backgroundColor color
+      , backgroundColor color, opacity (num opacityNum)
       , boxShadow5 zero (em 0.5) (em 0.5) (em -0.25) (rgba 0 0 0 0.25)
       ]
     ]
     rows
   ]
+
+
+streamLineView : HorizontalPosition -> Float -> Html msg
+streamLineView pos heightEm =
+  div
+  [ css
+    [ position absolute
+    , left (em (pos.leftEm + pos.widthEm / 2))
+    , width (px 1), height (em heightEm)
+    , backgroundImage (linearGradient (stop darkGray) (stop lightGray) [])
+    ]
+  ]
+  []
 
 
 operationView : HorizontalPosition -> Bool -> List String -> Html msg
@@ -491,22 +505,28 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
           )
         ]
       ]
-      [ div [] -- operations
-        [ operationView
+      [ div [] -- stream lines and operations
+        [ streamLineView (horizontalPosition chatMessagesPos step) visibleHeightEm
+        , operationView
           (horizontalPosition mapNormalizeTextPos step) scaleChanged
           [ "map(", "\xA0\xA0::normalizeText", ")" ]
+        , streamLineView (horizontalPosition normalizedTextPos step) visibleHeightEm
         , operationView
           (horizontalPosition flatMapConcatSplitIntoWordsPos step) scaleChanged
           [ "flatMapConcat(", "\xA0\xA0::splitIntoWords", ")" ]
+        , streamLineView (horizontalPosition rawWordsPos step) visibleHeightEm
         , operationView
           (horizontalPosition filterIsValidWordPos step) scaleChanged
           [ "filter(", "\xA0\xA0::isValidWord", ")" ]
+        , streamLineView (horizontalPosition validatedWordsPos step) visibleHeightEm
         , operationView
           (horizontalPosition runningFoldUpdateWordsForPersonPos step) scaleChanged
           [ "runningFold(", "\xA0\xA0mapOf(),", "\xA0\xA0::updateWordsForPerson", ")" ]
+        , streamLineView (horizontalPosition wordsByPersonsPos step) visibleHeightEm
         , operationView
           (horizontalPosition mapCountPersonsForWordPos step) scaleChanged
           [ "map(", "\xA0\xA0::countPersonsForWord", ")" ]
+        , streamLineView (horizontalPosition personCountsByWordPos step) visibleHeightEm
         ]
       , div [] -- chat messages
         ( Tuple.first
@@ -530,6 +550,9 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                     if step < 2 then 0
                     else max 0 (extractedWordsHeightEm - chatMessageHeightEm + bigSmallOffsetEm)
 
+                  chatMessageOpacityNum : Float
+                  chatMessageOpacityNum = (max 0 ((16 - topEm) * 0.05)) + 0.2
+
                   partitionColor : Color
                   partitionColor =
                     case String.uncons event.chatMessage.sender of
@@ -545,7 +568,6 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                 ( ( div -- per chat message
                     [ css
                       [ position absolute, top (em topEm), paddingTop (em 0.3)
-                      , opacity (num ((max 0 ((16 - topEm) * 0.05)) + 0.2))
                       , transition
                         ( if scaleChanged then []
                           else
@@ -566,7 +588,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                       ]
                       [ streamElementView -- per chat message - chat message
                         (horizontalPosition chatMessagesPos step)
-                        partitionColor scaleChanged
+                        partitionColor chatMessageOpacityNum scaleChanged
                         [ tr []
                           [ th [ css [ width (em 5.4), textAlign right, verticalAlign top ] ] [ text "sender:" ]
                           , td [] [ text (firstName event.chatMessage.sender) ]
@@ -583,7 +605,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                       , div [ css [ position absolute, top (em bigSmallOffsetEm) ] ]
                         [ streamElementView -- per chat message - person and normalized text
                           (horizontalPosition normalizedTextPos step)
-                          partitionColor scaleChanged
+                          partitionColor chatMessageOpacityNum scaleChanged
                           [ tr []
                             [ th [ css [ width (em 4.5), textAlign right, verticalAlign top ] ] [ text "person:" ]
                             , td [] [ text (firstName event.chatMessage.sender) ]
@@ -609,6 +631,10 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                       ( event.words |> List.indexedMap
                         ( \idx extractedWord ->
                           let
+                            wordOpacityNum : Float
+                            wordOpacityNum =
+                              chatMessageOpacityNum * if idx == 0 then 1.0 else 0.5
+
                             shiftPos : HorizontalPosition -> HorizontalPosition
                             shiftPos pos =
                               { pos | leftEm = pos.leftEm - rawWordsBasePos.leftEm }
@@ -628,21 +654,20 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                           div -- per extracted word
                           [ css
                             [ position absolute, top (em (toFloat idx * 3.75))
-                            , opacity (num (if idx == 0 then 1.0 else 0.5))
                             ]
                           ]
                           [ streamElementView -- per extracted word - raw word
                             ( shiftPos ( horizontalPosition rawWordsPos step ) )
-                            partitionColor scaleChanged wordRows
+                            partitionColor wordOpacityNum scaleChanged wordRows
                           , ( if not extractedWord.isValid then div [] []
                               else
                                 streamElementView -- per extracted word - valid word
                                 ( shiftPos ( horizontalPosition validatedWordsPos step ) )
-                                partitionColor scaleChanged wordRows
+                                partitionColor wordOpacityNum scaleChanged wordRows
                             )
                           , streamElementView -- aggregates - words by person
                             ( shiftPos ( horizontalPosition wordsByPersonsPos step ) )
-                            partitionColor scaleChanged
+                            partitionColor wordOpacityNum scaleChanged
                             ( ( tr []
                                 [ th [ css [ width (em 7) ] ] [ text "person" ]
                                 , th [] [ text "words" ]
@@ -680,7 +705,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                             )
                           , streamElementView -- aggregates - person counts by word
                             ( shiftPos ( horizontalPosition personCountsByWordPos step ) )
-                            partitionColor scaleChanged
+                            partitionColor wordOpacityNum scaleChanged
                             ( ( tr []
                                 [ th [] [ text "word" ]
                                 , th [ css [ width (em 6) ] ] [ text "persons" ]
@@ -964,6 +989,7 @@ implementationSlides =
   , implementation6MapCountPersonsForWord True
   , implementation7Complete False
   , implementation7Complete True
+  , wordCloud
   , implementation8Complete False
   , implementation9Complete False
   ]
