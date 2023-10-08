@@ -587,7 +587,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                         ]
                       ]
                       [ streamElementView -- per chat message - chat message
-                        (horizontalPosition chatMessagesPos step)
+                        ( horizontalPosition chatMessagesPos step )
                         partitionColor chatMessageOpacityNum scaleChanged
                         [ tr []
                           [ th [ css [ width (em 5.4), textAlign right, verticalAlign top ] ] [ text "sender:" ]
@@ -604,7 +604,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                         ]
                       , div [ css [ position absolute, top (em bigSmallOffsetEm) ] ]
                         [ streamElementView -- per chat message - person and normalized text
-                          (horizontalPosition normalizedTextPos step)
+                          ( horizontalPosition normalizedTextPos step )
                           partitionColor chatMessageOpacityNum scaleChanged
                           [ tr []
                             [ th [ css [ width (em 4.5), textAlign right, verticalAlign top ] ] [ text "person:" ]
@@ -659,86 +659,88 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                           [ streamElementView -- per extracted word - raw word
                             ( shiftPos ( horizontalPosition rawWordsPos step ) )
                             partitionColor wordOpacityNum scaleChanged wordRows
-                          , ( if not extractedWord.isValid then div [] []
+                          , div []
+                            ( if not extractedWord.isValid then []
                               else
-                                streamElementView -- per extracted word - valid word
-                                ( shiftPos ( horizontalPosition validatedWordsPos step ) )
-                                partitionColor wordOpacityNum scaleChanged wordRows
-                            )
-                          , streamElementView -- aggregates - words by person
-                            ( shiftPos ( horizontalPosition wordsByPersonsPos step ) )
-                            partitionColor wordOpacityNum scaleChanged
-                            ( ( tr []
-                                [ th [ css [ width (em 7) ] ] [ text "person" ]
-                                , th [] [ text "words" ]
-                                ]
-                              )
-                            ::( List.reverse
-                                ( Tuple.first
-                                  ( counts.history |> List.foldr
-                                    ( \{ chatMessage } (wordsBySenderTrs, senders) ->
-                                      let
-                                        sender : String
-                                        sender = chatMessage.sender
-                                      in
-                                      if Set.member sender senders then (wordsBySenderTrs, senders)
-                                      else
-                                        ( ( tr []
-                                            [ td [ css [ textAlign center, verticalAlign top ] ] [ text (firstName sender) ]
-                                            , td [ css [ textAlign center, verticalAlign top ] ]
-                                              [ text
-                                                ( String.join ", "
-                                                  ( Maybe.withDefault []
-                                                    ( Dict.get sender event.wordsBySender )
-                                                  )
-                                                )
-                                              ]
-                                            ]
-                                          ) :: wordsBySenderTrs
-                                        , Set.insert sender senders
-                                        )
+                                [ streamElementView -- per extracted word - valid word
+                                  ( shiftPos ( horizontalPosition validatedWordsPos step ) )
+                                  partitionColor wordOpacityNum scaleChanged wordRows
+                                , streamElementView -- aggregates - words by person
+                                  ( shiftPos ( horizontalPosition wordsByPersonsPos step ) )
+                                  partitionColor wordOpacityNum scaleChanged
+                                  ( ( tr []
+                                      [ th [ css [ width (em 7) ] ] [ text "person" ]
+                                      , th [] [ text "words" ]
+                                      ]
                                     )
-                                    ( [], Set.empty )
-                                  )
-                                )
-                              )
-                            )
-                          , streamElementView -- aggregates - person counts by word
-                            ( shiftPos ( horizontalPosition personCountsByWordPos step ) )
-                            partitionColor wordOpacityNum scaleChanged
-                            ( ( tr []
-                                [ th [] [ text "word" ]
-                                , th [ css [ width (em 6) ] ] [ text "persons" ]
-                                ]
-                              )
-                            ::( let
-                                  words : List String
-                                  words =
-                                    counts.history |> List.concatMap .words |> List.map .word
-                                in
-                                List.reverse
-                                ( Tuple.first
-                                  ( List.foldr
-                                    ( \word (nodes, displayedWords) ->
-                                      let
-                                        count : Int
-                                        count = Maybe.withDefault 0 (Dict.get word event.countsByWord)
-                                      in
-                                      if count == 0 || Set.member word displayedWords then (nodes, displayedWords)
-                                      else
-                                        ( ( tr []
-                                            [ td [ css [ textAlign center, verticalAlign top ] ] [ text word ]
-                                            , td [ css [ textAlign center, verticalAlign top ] ] [ text (toString count) ]
-                                            ]
-                                          ) :: nodes
-                                        , Set.insert word displayedWords
+                                  ::( List.reverse
+                                      ( Tuple.first
+                                        ( counts.history |> List.foldr
+                                          ( \{ chatMessage } (wordsBySenderTrs, senders) ->
+                                            let
+                                              sender : String
+                                              sender = chatMessage.sender
+                                            in
+                                            if Set.member sender senders then (wordsBySenderTrs, senders)
+                                            else
+                                              ( ( tr []
+                                                  [ td [ css [ textAlign center, verticalAlign top ] ] [ text (firstName sender) ]
+                                                  , td [ css [ textAlign center, verticalAlign top ] ]
+                                                    [ text
+                                                      ( String.join ", "
+                                                        ( Maybe.withDefault []
+                                                          ( Dict.get sender event.wordsBySender )
+                                                        )
+                                                      )
+                                                    ]
+                                                  ]
+                                                ) :: wordsBySenderTrs
+                                              , Set.insert sender senders
+                                              )
+                                          )
+                                          ( [], Set.empty )
                                         )
+                                      )
                                     )
-                                    ( [], Set.empty )
-                                    words
                                   )
-                                )
-                              )
+                                , streamElementView -- aggregates - person counts by word
+                                  ( shiftPos ( horizontalPosition personCountsByWordPos step ) )
+                                  partitionColor wordOpacityNum scaleChanged
+                                  ( ( tr []
+                                      [ th [] [ text "word" ]
+                                      , th [ css [ width (em 6) ] ] [ text "persons" ]
+                                      ]
+                                    )
+                                  ::( let
+                                        words : List String
+                                        words =
+                                          counts.history |> List.concatMap .words |> List.map .word
+                                      in
+                                      List.reverse
+                                      ( Tuple.first
+                                        ( List.foldr
+                                          ( \word (nodes, displayedWords) ->
+                                            let
+                                              count : Int
+                                              count = Maybe.withDefault 0 (Dict.get word event.countsByWord)
+                                            in
+                                            if count == 0 || Set.member word displayedWords then (nodes, displayedWords)
+                                            else
+                                              ( ( tr []
+                                                  [ td [ css [ textAlign center, verticalAlign top ] ] [ text word ]
+                                                  , td [ css [ textAlign center, verticalAlign top ] ] [ text (toString count) ]
+                                                  ]
+                                                ) :: nodes
+                                              , Set.insert word displayedWords
+                                              )
+                                          )
+                                          ( [], Set.empty )
+                                          words
+                                        )
+                                      )
+                                    )
+                                  )
+                                ]
                             )
                           ]
                         )
