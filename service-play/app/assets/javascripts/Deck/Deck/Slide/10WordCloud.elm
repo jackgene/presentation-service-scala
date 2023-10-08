@@ -620,7 +620,6 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                     , div -- per chat message - extracted words
                       [ css
                         [ position absolute
-                        , top (em (if List.length event.words > 1 then 0 else bigSmallOffsetEm))
                         , left (em rawWordsPos.base.leftEm)
                         , transition
                           ( if scaleChanged then []
@@ -631,9 +630,13 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                       ( event.words |> List.indexedMap
                         ( \idx extractedWord ->
                           let
+                            wordTopOffsetEm : Float
+                            wordTopOffsetEm =
+                              if List.length event.words > 1 then 0 else bigSmallOffsetEm
+
                             wordOpacityNum : Float
                             wordOpacityNum =
-                              chatMessageOpacityNum * if idx == 0 then 1.0 else 0.5
+                              chatMessageOpacityNum * if idx == 0 then 1.0 else 0.75
 
                             shiftPos : HorizontalPosition -> HorizontalPosition
                             shiftPos pos =
@@ -652,19 +655,20 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                               ]
                           in
                           div -- per extracted word
-                          [ css
-                            [ position absolute, top (em (toFloat idx * 3.75))
+                          [ css [ position absolute, top (em (toFloat idx * 3.75)) ] ]
+                          [ div [ css [ position absolute, top (em wordTopOffsetEm) ] ]
+                            [ streamElementView -- per extracted word - raw word
+                              ( shiftPos ( horizontalPosition rawWordsPos step ) )
+                              partitionColor wordOpacityNum scaleChanged wordRows
                             ]
-                          ]
-                          [ streamElementView -- per extracted word - raw word
-                            ( shiftPos ( horizontalPosition rawWordsPos step ) )
-                            partitionColor wordOpacityNum scaleChanged wordRows
                           , div []
                             ( if not extractedWord.isValid then []
                               else
-                                [ streamElementView -- per extracted word - valid word
-                                  ( shiftPos ( horizontalPosition validatedWordsPos step ) )
-                                  partitionColor wordOpacityNum scaleChanged wordRows
+                                [ div [ css [ position absolute, top (em wordTopOffsetEm) ] ]
+                                  [ streamElementView -- per extracted word - valid word
+                                    ( shiftPos ( horizontalPosition validatedWordsPos step ) )
+                                    partitionColor wordOpacityNum scaleChanged wordRows
+                                  ]
                                 , streamElementView -- aggregates - words by person
                                   ( shiftPos ( horizontalPosition wordsByPersonsPos step ) )
                                   partitionColor wordOpacityNum scaleChanged
