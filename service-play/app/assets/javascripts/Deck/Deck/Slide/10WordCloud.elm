@@ -475,7 +475,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
       , whiteSpace noWrap, textOverflow ellipsis
       ]
   in
-  div
+  div -- diagram frame
   [ css
     [ position relative
     , height (vw 32)
@@ -636,7 +636,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
 
                             wordOpacityNum : Float
                             wordOpacityNum =
-                              chatMessageOpacityNum * if idx == 0 then 1.0 else 0.75
+                              chatMessageOpacityNum * ((max 0 (5 - toFloat idx)) / 10 + 0.5)
 
                             shiftPos : HorizontalPosition -> HorizontalPosition
                             shiftPos pos =
