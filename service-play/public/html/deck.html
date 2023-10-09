@@ -37617,7 +37617,10 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$implementationDiagramView = F5(
 																											pos,
 																											{leftEm: pos.leftEm - _jackgene$live_deck$Deck_Slide_WordCloud$rawWordsBasePos.leftEm});
 																									};
-																									var wordOpacityNum = chatMessageOpacityNum * (_elm_lang$core$Native_Utils.eq(idx, 0) ? 1.0 : 0.75);
+																									var wordOpacityNum = chatMessageOpacityNum * ((A2(
+																										_elm_lang$core$Basics$max,
+																										0,
+																										5 - _elm_lang$core$Basics$toFloat(idx)) / 10) + 0.5);
 																									var wordTopOffsetEm = (_elm_lang$core$Native_Utils.cmp(
 																										_elm_lang$core$List$length(event.words),
 																										1) > 0) ? 0 : bigSmallOffsetEm;
@@ -39950,7 +39953,7 @@ var _jackgene$live_deck$Deck_Slide_Conclusion$testing = _elm_lang$core$Native_Ut
 						}));
 			})
 	});
-var _jackgene$live_deck$Deck_Slide_Introduction$heading = 'What is “Strongly Typed”?';
+var _jackgene$live_deck$Deck_Slide_Introduction$heading = 'What is Functional Reactive Programming?';
 var _jackgene$live_deck$Deck_Slide_Introduction$wikipediaDefinitions = _elm_lang$core$Native_Utils.update(
 	_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 	{
