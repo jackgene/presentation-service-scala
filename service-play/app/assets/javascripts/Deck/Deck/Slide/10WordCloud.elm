@@ -49,7 +49,7 @@ wordCloud =
   | view =
     ( \page model ->
       standardSlideView page heading
-      "How Would You Describe Kafka?"
+      "How Would You Describe Functional Reactive Programming?"
       ( div []
         [ div
           [ css
@@ -62,9 +62,9 @@ wordCloud =
             ]
           ]
           [ ul []
-            [ li [] [ text "Think of up to three words you associate with Kafka" ]
-            , li [] [ text "Submit it one word per message on Zoom chat" ]
-            , li [] [ text "Hyphenate multi-word phrases" ]
+            [ li [] [ text "Think of up to three words you associate with Functional Reactive Programming" ]
+            , li [] [ text "Send it in by Zoom chat" ]
+            , li [] [ text "You can send as many words as you want, but only the last three words will be accepted" ]
             ]
           ]
         , div
