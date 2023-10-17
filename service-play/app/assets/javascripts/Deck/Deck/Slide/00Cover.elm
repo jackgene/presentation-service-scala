@@ -31,17 +31,17 @@ cover =
           ]
         ]
         [ h1 [ css [ margin zero, headerFontFamily, fontSize (vw 4.5) ] ]
-          [ text "Kafka as the"
+          [ text "Functional Reactive"
           , br [] []
-          , text "Source of Truth"
+          , text "Streaming"
           , br [] []
-          , text "in Event Driven Systems"
+          , text "with Kotlin Flow"
           ]
         , p
           [ css [ margin2 (em 2.5) zero, fontSize (em 0.875) ] ]
           [ text "Jack Leow"
           , br [] []
-          , text "October 15, 2022"]
+          , text "November 1, 2023"]
         ]
       ]
     )
