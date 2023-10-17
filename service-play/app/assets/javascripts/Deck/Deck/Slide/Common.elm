@@ -9,7 +9,9 @@ import Css exposing
   , backgroundColor, before, color
   , fontFamilies, fontSize, fontStyle, fontWeight
   -- Units
-  , em, int, rgb, rgba, vw, zero
+  , em, int, vw, zero
+  -- Color
+  , rgb, rgba
   -- Alignments & Positions
   -- Other values
   , block, italic
@@ -75,27 +77,6 @@ lightGray = rgb 238 238 238
 
 consoleText : Color
 consoleText = rgb 65 255 0
-
-
--- From https://www.pastelcolorpalettes.com/primary-colors-in-pastels
-partition1Color : Color
-partition1Color = rgb 235 174 131
-
-
-partition2Color : Color
-partition2Color = rgb 240 154 160
-
-
-partition3Color : Color
-partition3Color = rgb 182 232 142
-
-
-partition4Color : Color
-partition4Color = rgb 250 248 132
-
-
-partition5Color : Color
-partition5Color = rgb 163 188 232
 
 
 headerFontFamily : Style
