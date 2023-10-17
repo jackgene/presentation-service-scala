@@ -1,4 +1,5 @@
-module Deck.Slide exposing (activeNavigationOf, slideFromLocationHash, slideView, firstQuestionIndex)
+module Deck.Slide exposing
+  ( activeNavigationOf, slideFromLocationHash, slideView, firstQuestionIndex )
 
 import Array exposing (Array)
 import Css exposing
@@ -17,8 +18,10 @@ import Css exposing
 import Deck.Common exposing (Model, Msg, Navigation, Slide(Slide), SlideModel)
 import Deck.Font exposing (..)
 import Deck.Slide.Common exposing (UnindexedSlideModel, black, paragraphFontFamily, white)
-import Deck.Slide.QuestionAnswer as QuestionAnswer
 import Deck.Slide.Cover as Cover
+import Deck.Slide.ExampleApplication as ExampleApplication
+import Deck.Slide.Operators as Operators
+import Deck.Slide.QuestionAnswer as QuestionAnswer
 import Deck.Slide.WordCloud as WordCloud
 import Deck.Slide.SectionCover as SectionCover
 import Html.Styled exposing (Html, div, node, text)
@@ -41,10 +44,16 @@ indexSlide index unindexedSlide =
 preQuestionSlides : List UnindexedSlideModel
 preQuestionSlides =
   [ Cover.cover
-  , WordCloud.wordCloud
+  , WordCloud.wordCloud "What is Functional Reactive Streaming?"
   ] ++
-  WordCloud.implementationSlides ++
-  [ WordCloud.wordCloud
+  Operators.operatorSlides ++
+  [ WordCloud.wordCloud "Word Cloud as a Functional Reactive Stream"
+  ] ++
+  ExampleApplication.implementationSlides ++
+  [ WordCloud.wordCloud "Visualizing the word counts as a word cloud"
+  , ExampleApplication.implementation8Complete False
+  , WordCloud.wordCloud "Visualizing the word counts as a word cloud"
+  , ExampleApplication.implementation9Complete False
   -- Q & A
   , SectionCover.questions
   ]
