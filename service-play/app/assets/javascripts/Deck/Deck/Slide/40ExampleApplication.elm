@@ -22,8 +22,6 @@ import Css exposing
 import Css.Transitions exposing (easeInOut, transition)
 import Deck.Slide.Common exposing (..)
 import Deck.Slide.MarbleDiagram exposing (..)
-import Deck.Slide.SyntaxHighlight exposing
-  ( Language(Kotlin), syntaxHighlightedCodeBlock )
 import Deck.Slide.Template exposing (standardSlideView)
 import Dict exposing (Dict)
 import Html.Styled exposing (Html, div, p, table, td, text, th, tr)
@@ -443,15 +441,12 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                   chatMessageOpacityNum : Float
                   chatMessageOpacityNum = (max 0 ((16 - topEm) * 0.05)) + 0.2
 
-                  partitionColor : Color
-                  partitionColor =
-                    case String.uncons event.chatMessage.sender of
-                      Just (c, _) ->
-                        case rem (Char.toCode c + 1) 3 of
-                          0 -> partition0Color
-                          1 -> partition1Color
-                          _ -> partition2Color
-                      Nothing -> partition0Color
+                  elementColor : Color
+                  elementColor =
+                    String.uncons event.chatMessage.sender
+                    |> Maybe.map ( \(c, _) -> rem (Char.toCode c + 1) 3 )
+                    |> Maybe.withDefault -1
+                    |> partitionColor
                 in
                 ( ( div -- per chat message
                     [ css
@@ -476,7 +471,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                       ]
                       [ streamElementView -- per chat message - chat message
                         ( horizontalPosition chatMessagesPos step )
-                        partitionColor chatMessageOpacityNum scaleChanged
+                        elementColor chatMessageOpacityNum scaleChanged
                         [ tr []
                           [ th [ css [ width (em 5.4), textAlign right, verticalAlign top ] ] [ text "sender:" ]
                           , td [] [ text (firstName event.chatMessage.sender) ]
@@ -493,7 +488,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                       , div [ css [ position absolute, top (em bigSmallOffsetEm) ] ]
                         [ streamElementView -- per chat message - person and normalized text
                           ( horizontalPosition normalizedTextPos step )
-                          partitionColor chatMessageOpacityNum scaleChanged
+                          elementColor chatMessageOpacityNum scaleChanged
                           [ tr []
                             [ th [ css [ width (em 4.5), textAlign right, verticalAlign top ] ] [ text "person:" ]
                             , td [] [ text (firstName event.chatMessage.sender) ]
@@ -547,7 +542,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                           [ div [ css [ position absolute, top (em wordTopOffsetEm) ] ]
                             [ streamElementView -- per extracted word - raw word
                               ( shiftPos ( horizontalPosition rawWordsPos step ) )
-                              partitionColor wordOpacityNum scaleChanged wordRows
+                              elementColor wordOpacityNum scaleChanged wordRows
                             ]
                           , div []
                             ( if not extractedWord.isValid then []
@@ -555,11 +550,11 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                                 [ div [ css [ position absolute, top (em wordTopOffsetEm) ] ]
                                   [ streamElementView -- per extracted word - valid word
                                     ( shiftPos ( horizontalPosition validatedWordsPos step ) )
-                                    partitionColor wordOpacityNum scaleChanged wordRows
+                                    elementColor wordOpacityNum scaleChanged wordRows
                                   ]
                                 , streamElementView -- aggregates - words by person
                                   ( shiftPos ( horizontalPosition wordsByPersonsPos step ) )
-                                  partitionColor wordOpacityNum scaleChanged
+                                  elementColor wordOpacityNum scaleChanged
                                   ( ( tr []
                                       [ th [ css [ width (em 7) ] ] [ text "person" ]
                                       , th [] [ text "words" ]
@@ -597,7 +592,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                                   )
                                 , streamElementView -- aggregates - person counts by word
                                   ( shiftPos ( horizontalPosition personCountsByWordPos step ) )
-                                  partitionColor wordOpacityNum scaleChanged
+                                  elementColor wordOpacityNum scaleChanged
                                   ( ( tr []
                                       [ th [] [ text "word" ]
                                       , th [ css [ width (em 6) ] ] [ text "persons" ]
@@ -670,32 +665,19 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
   ]
 
 
-implementationDiagramSlide : Int -> String -> String -> Bool -> Float -> Float -> Bool -> UnindexedSlideModel
-implementationDiagramSlide step introText code showCode fromLeft scale scaleChanged =
+implementationDiagramSlide : Int -> String -> String -> String -> Bool -> Float -> Float -> Bool -> UnindexedSlideModel
+implementationDiagramSlide step subheading introText code showCode fromLeft scale scaleChanged =
   { baseSlideModel
   | animationFrames = if scaleChanged then always 30 else always 0
   , view =
     ( \page model ->
-      standardSlideView page heading commonSubheading
+      standardSlideView page heading subheading
       ( div []
         [ p [ css [ margin2 (em 0.5) zero ] ] [ text introText ]
         , implementationDiagramView
           model.wordCloud step fromLeft scale
           (scaleChanged && model.animationFramesRemaining > 0)
-        , div
-          [ css
-            ( [ position relative
-              , transition
-                [ Css.Transitions.opacity3 transitionDurationMs 0 easeInOut
-                , Css.Transitions.top3 transitionDurationMs 0 easeInOut
-                ]
-              ]
-            ++( if showCode then [ top (vw -31), opacity (num 0.875) ]
-                else [ top zero, opacity zero ]
-              )
-            )
-          ]
-          [ syntaxHighlightedCodeBlock Kotlin Dict.empty Dict.empty [] code ]
+        , slideOutCodeBlock code showCode
         ]
       )
     )
@@ -715,7 +697,8 @@ detailedMagnification = leftEmAfter personCountsByWordBasePos / magnifiedWidthEm
 implementation1ChatMessages : Bool -> UnindexedSlideModel
 implementation1ChatMessages showCode =
   implementationDiagramSlide 0
-  "We start the events - Zoom chat messages:"
+  "Source Events"
+  "We start with the source event messages - actual Zoom chat messages:"
   """
 val chatMessages: Flow<ChatMessage> =
     ReceiverSettings<String, ChatMessage>(
@@ -736,6 +719,7 @@ val chatMessages: Flow<ChatMessage> =
 implementation2MapNormalizeWords : Bool -> UnindexedSlideModel
 implementation2MapNormalizeWords showCode =
   implementationDiagramSlide 1
+  "Normalizing Message Text"
   "The message text is normalized, retaining the sender as the person:"
   """
 val NON_LETTER_PATTERN = Regex(\"""[^\\p{L}]+\""")
@@ -754,6 +738,7 @@ fun normalizeText(msg: ChatMessage): PersonAndText =
 implementation3FlatMapConcatSplitIntoWords : Bool -> UnindexedSlideModel
 implementation3FlatMapConcatSplitIntoWords showCode =
   implementationDiagramSlide 2
+  "Splitting Message Into Words"
   "The normalized text is split into words:"
   """
 fun splitIntoWords(
@@ -771,6 +756,7 @@ fun splitIntoWords(
 implementation4FilterIsValidWord : Bool -> UnindexedSlideModel
 implementation4FilterIsValidWord showCode =
   implementationDiagramSlide 3
+  "Removing Invalid Words"
   "Invalid words are filtered out:"
   """
 fun isValidWord(personWord: PersonAndWord): Boolean =
@@ -784,6 +770,7 @@ fun isValidWord(personWord: PersonAndWord): Boolean =
 implementation5RunningFoldUpdateWordsForPerson : Bool -> UnindexedSlideModel
 implementation5RunningFoldUpdateWordsForPerson showCode =
   implementationDiagramSlide 4
+  "Determine Words for Each Person"
   "For each person, retain their most recent three words:"
   """
 fun updateWordsForPerson(
@@ -805,6 +792,7 @@ fun updateWordsForPerson(
 implementation6MapCountPersonsForWord : Bool -> UnindexedSlideModel
 implementation6MapCountPersonsForWord showCode =
   implementationDiagramSlide 5
+  "Count Persons for Each Word"
   "For each word, count the number of persons, using those counts as weights:"
   """
 fun countWords(
@@ -821,7 +809,8 @@ fun countWords(
 implementation7Complete : Bool -> UnindexedSlideModel
 implementation7Complete showCode =
   implementationDiagramSlide 6
-  "Tying it all together:"
+  "Tying It All Together"
+  "Composing all the operations into a single flow:"
   """
 val wordCounts: Flow<Counts> = chatMessages
     .map(::normalizeText)
@@ -837,6 +826,7 @@ val wordCounts: Flow<Counts> = chatMessages
 implementation8Complete : Bool -> UnindexedSlideModel
 implementation8Complete showCode =
   implementationDiagramSlide 6
+  "Considerations for Distributed Deployment"
   "Observe that some events can be re-ordered without changing the final outcome:"
   """
 val wordCounts: Flow<Counts> = chatMessages
@@ -853,6 +843,7 @@ val wordCounts: Flow<Counts> = chatMessages
 implementation9Complete : Bool -> UnindexedSlideModel
 implementation9Complete showCode =
   implementationDiagramSlide 6
+  "Application Source of Truth Considerations"
   "Furthermore, notice that information is lost as it flows through the system:"
   """
 val wordCounts: Flow<Counts> = chatMessages
@@ -868,18 +859,12 @@ val wordCounts: Flow<Counts> = chatMessages
 
 implementationSlides : List UnindexedSlideModel
 implementationSlides =
-  [ implementation1ChatMessages False
-  , implementation1ChatMessages True
-  , implementation2MapNormalizeWords False
-  , implementation2MapNormalizeWords True
-  , implementation3FlatMapConcatSplitIntoWords False
-  , implementation3FlatMapConcatSplitIntoWords True
-  , implementation4FilterIsValidWord False
-  , implementation4FilterIsValidWord True
-  , implementation5RunningFoldUpdateWordsForPerson False
-  , implementation5RunningFoldUpdateWordsForPerson True
-  , implementation6MapCountPersonsForWord False
-  , implementation6MapCountPersonsForWord True
-  , implementation7Complete False
-  , implementation7Complete True
+  [ implementation1ChatMessages
+  , implementation2MapNormalizeWords
+  , implementation3FlatMapConcatSplitIntoWords
+  , implementation4FilterIsValidWord
+  , implementation5RunningFoldUpdateWordsForPerson
+  , implementation6MapCountPersonsForWord
+  , implementation7Complete
   ]
+  |> List.concatMap ( \slide -> [ slide False, slide True, slide False ] )
