@@ -1,4 +1,9 @@
-module Deck.Slide.MarbleDiagram exposing (..)
+module Deck.Slide.MarbleDiagram exposing
+  ( HorizontalPosition, Shape(..), Element
+  , OperandValue(..), Operand, Operation
+  , diagramView, slideOutCodeBlock
+  , operationView, streamLineView, partitionColor
+  )
 
 import Css exposing
   ( Color, Style
@@ -6,18 +11,21 @@ import Css exposing
   , borderRadius, bottom, boxShadow5, displayFlex, height, left
   , margin, overflow, padding2, position, top, width
   -- Content
-  , backgroundColor, backgroundImage, fontSize
+  , backgroundColor, backgroundImage, fontSize, opacity
   -- Units
-  , em, pct, px, vw, zero
+  , em, num, pct, px, vw, zero
   -- Color
   , rgb, rgba
   -- Alignment & Positions
-  , absolute
+  , absolute, relative
   -- Other values
   , auto, hidden, linearGradient, stop
   )
 import Css.Transitions exposing (easeInOut, linear, transition)
 import Deck.Slide.Common exposing (..)
+import Deck.Slide.SyntaxHighlight exposing
+  ( Language(Kotlin), syntaxHighlightedCodeBlock )
+import Dict
 import Html.Styled exposing (Html, br, div, text)
 import Html.Styled.Attributes exposing (css)
 
@@ -110,8 +118,8 @@ operationView pos scaleChanged codeLines =
   ( codeLines |> List.map text |> List.intersperse (br [] []) )
 
 
-streamElementView : Shape -> Color -> Int -> Html msg
-streamElementView shape color value =
+elementView : Shape -> Color -> Int -> Html msg
+elementView shape color value =
   div
   [ css
     [ displayFlex, width (vw 5), height (vw 5), margin (vw 1)
@@ -126,7 +134,13 @@ streamElementView shape color value =
   ]
   [ div
     [ css
-      [ margin auto, fontSize (if value < 1000 then (em 1) else (em 0.8)) ]
+      [ margin auto
+      , fontSize
+        ( if value < 1000 then (em 1)
+          else if value < 10000 then (em 0.8)
+          else (em 0.7)
+        )
+      ]
     ]
     [ text (toString value) ]
   ]
@@ -134,10 +148,11 @@ streamElementView shape color value =
 
 partitionColor : Int -> Color
 partitionColor partition =
-  ( case rem (partition - 1) 3 of
+  ( case partition of
       0 -> partition0Color
       1 -> partition1Color
-      _ -> partition2Color
+      2 -> partition2Color
+      _ -> darkGray
   )
 
 
@@ -154,7 +169,7 @@ operandView operand lastElementTime animate =
             ( let
                 shiftedTime : Float
                 shiftedTime =
-                  if not animate then 8000
+                  if not animate then 7200
                   else 5500 - lastElementTime
 
                 bottomEm : Float
@@ -178,12 +193,12 @@ operandView operand lastElementTime animate =
             , bottom (em (4 * element.time / 2000))
             ]
           ]
-          [ streamElementView element.shape (partitionColor element.partition) element.value ]
+          [ elementView element.shape (partitionColor element.partition) element.value ]
         )
       )
 
     Single element ->
-      div [] [ streamElementView element.shape (partitionColor element.partition) element.value ]
+      div [] [ elementView element.shape (partitionColor element.partition) element.value ]
 
 
 diagramView : Operand -> Operation -> Operand -> Bool -> Html msg
@@ -220,10 +235,28 @@ diagramView input operation output animate =
   [ div -- static background
     [ css [ position absolute, top zero ] ]
     [ streamLineView input.horizontalPosition 18
-    , operationView operation.horizontalPosition False operation.operatorCode
+    , operationView operation.horizontalPosition True operation.operatorCode
     , streamLineView output.horizontalPosition 18
     ]
   -- animated foreground
   , operandView input lastElementTime animate
   , operandView output lastElementTime animate
   ]
+
+
+slideOutCodeBlock : String -> Bool -> Html msg
+slideOutCodeBlock code show =
+  div
+  [ css
+    ( [ position relative
+      , transition
+        [ Css.Transitions.opacity3 transitionDurationMs 0 easeInOut
+        , Css.Transitions.top3 transitionDurationMs 0 easeInOut
+        ]
+      ]
+    ++( if show then [ top (vw -31), opacity (num 0.875) ]
+        else [ top zero, opacity zero ]
+      )
+    )
+  ]
+  [ syntaxHighlightedCodeBlock Kotlin Dict.empty Dict.empty [] code ]
