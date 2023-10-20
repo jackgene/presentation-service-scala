@@ -11,7 +11,7 @@ import Css exposing
   , borderRadius, bottom, boxShadow5, displayFlex, height, left
   , margin, overflow, padding2, position, top, width
   -- Content
-  , backgroundColor, backgroundImage, fontSize, opacity
+  , backgroundColor, backgroundImage, fontFamilies, fontSize, opacity
   -- Units
   , em, num, pct, px, vw, zero
   -- Color
@@ -108,14 +108,16 @@ operationView pos scaleChanged codeLines =
   div
   [ css
     [ position absolute, left (em pos.leftEm)
-    , width (em pos.widthEm), padding2 (em 0.75) (em 0.25)
+    , width (em pos.widthEm), padding2 (em 0.75) (em 0.5)
     , transition
       ( if scaleChanged then []
         else [ Css.Transitions.left3 transitionDurationMs 0 easeInOut ]
       )
     ]
   ]
-  ( codeLines |> List.map text |> List.intersperse (br [] []) )
+  [ div [ css [ fontFamilies [ "Fira Code" ], fontSize (em 0.75) ] ]
+    ( codeLines |> List.map text |> List.intersperse (br [] []) )
+  ]
 
 
 elementView : Shape -> Color -> Int -> Html msg
@@ -158,47 +160,55 @@ partitionColor partition =
 
 operandView : Operand -> Float -> Bool -> Html msg
 operandView operand lastElementTime animate =
-  case operand.value of
-    Stream { terminal, elements } ->
-      div
-      [ css
-        [ position absolute
-        , left (em operand.horizontalPosition.leftEm)
-        , bottom
-          ( em
-            ( let
-                shiftedTime : Float
-                shiftedTime =
-                  if not animate then 7200
-                  else 5500 - lastElementTime
+  div
+  [ css
+    [ position absolute
+    , left (em operand.horizontalPosition.leftEm)
+    , bottom
+      ( em
+        ( let
+            shiftedTime : Float
+            shiftedTime =
+              if not animate then 7200
+              else 5400 - lastElementTime
 
-                bottomEm : Float
-                bottomEm = 2 + 4 * shiftedTime / 2000
-              in bottomEm
-            )
-          )
-        , height (em (4 * lastElementTime / 2000))
-        , ( if not animate then Css.batch []
-            else
-              transition
-              [ Css.Transitions.bottom3 lastElementTime 0 linear ]
-          )
-        ]
-      ]
-      ( elements |> List.map
-        ( \element ->
-          div
-          [ css
-            [ position absolute
-            , bottom (em (4 * element.time / 2000))
-            ]
-          ]
-          [ elementView element.shape (partitionColor element.partition) element.value ]
+            bottomEm : Float
+            bottomEm = 2 + 4 * shiftedTime / 2000
+          in bottomEm
         )
       )
+    --, height (em (4 * lastElementTime / 2000))
+    , ( if not animate then Css.batch []
+        else
+          transition
+          [ Css.Transitions.bottom3 lastElementTime 0 linear ]
+      )
+    ]
+  ]
+  ( case operand.value of
+      Stream { terminal, elements } ->
+        ( elements |> List.map
+          ( \element ->
+            div
+            [ css
+              [ position absolute
+              , bottom (em (4 * element.time / 2000))
+              ]
+            ]
+            [ elementView element.shape (partitionColor element.partition) element.value ]
+          )
+        )
 
-    Single element ->
-      div [] [ elementView element.shape (partitionColor element.partition) element.value ]
+      Single element ->
+        [ div
+            [ css
+              [ position absolute
+              , bottom (em (4 * element.time / 2000))
+              ]
+            ]
+          [ elementView element.shape (partitionColor element.partition) element.value ]
+        ]
+  )
 
 
 diagramView : Operand -> Operation -> Operand -> Bool -> Html msg
