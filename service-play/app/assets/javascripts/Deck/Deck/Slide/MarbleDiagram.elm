@@ -8,7 +8,7 @@ module Deck.Slide.MarbleDiagram exposing
 import Css exposing
   ( Color, Style
   -- Container
-  , borderRadius, bottom, boxShadow5, displayFlex, height, left
+  , borderRadius, borderTop3, bottom, boxShadow5, displayFlex, height, left
   , margin, overflow, padding2, position, top, width
   -- Content
   , backgroundColor, backgroundImage, fontFamilies, fontSize, opacity
@@ -19,7 +19,7 @@ import Css exposing
   -- Alignment & Positions
   , absolute, relative
   -- Other values
-  , auto, hidden, linearGradient, stop
+  , auto, hidden, linearGradient, solid, stop
   )
 import Css.Transitions exposing (easeInOut, linear, transition)
 import Deck.Slide.Common exposing (..)
@@ -95,7 +95,7 @@ streamLineView pos heightEm =
   div
   [ css
     [ position absolute
-    , left (em (pos.leftEm + pos.widthEm / 2))
+    , left (em (pos.leftEm + pos.widthEm / 2 + 0.1))
     , width (px 1), height (em heightEm)
     , backgroundImage (linearGradient (stop darkGray) (stop lightGray) [])
     ]
@@ -170,14 +170,20 @@ operandView operand lastElementTime animate =
             shiftedTime : Float
             shiftedTime =
               if not animate then 7200
-              else 5400 - lastElementTime
+              else 4900 - lastElementTime
 
             bottomEm : Float
             bottomEm = 2 + 4 * shiftedTime / 2000
           in bottomEm
         )
       )
-    --, height (em (4 * lastElementTime / 2000))
+    , height (em (4 * lastElementTime / 2000 + 3)), width (em 3.125)
+    , ( case operand.value of
+          Stream { terminal } ->
+            if not terminal then Css.batch []
+            else borderTop3 (px 1) solid darkGray
+          _ -> Css.batch []
+      )
     , ( if not animate then Css.batch []
         else
           transition
@@ -201,10 +207,7 @@ operandView operand lastElementTime animate =
 
       Single element ->
         [ div
-            [ css
-              [ position absolute
-              , bottom (em (4 * element.time / 2000))
-              ]
+            [ css [ position absolute, top (em -1.5) ]
             ]
           [ elementView element.shape (partitionColor element.partition) element.value ]
         ]
