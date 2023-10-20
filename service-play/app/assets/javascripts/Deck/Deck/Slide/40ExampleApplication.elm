@@ -75,7 +75,7 @@ chatMessagesBasePos =
 mapNormalizeTextBasePos : HorizontalPosition
 mapNormalizeTextBasePos =
   { leftEm = leftEmAfter chatMessagesBasePos
-  , widthEm = 9.5
+  , widthEm = 8.75
   }
 
 
@@ -89,7 +89,7 @@ normalizedTextBasePos =
 flatMapConcatSplitIntoWordsBasePos : HorizontalPosition
 flatMapConcatSplitIntoWordsBasePos =
   { leftEm = leftEmAfter normalizedTextBasePos
-  , widthEm = 9.5
+  , widthEm = 9.25
   }
 
 
@@ -103,7 +103,7 @@ rawWordsBasePos =
 filterIsValidWordBasePos : HorizontalPosition
 filterIsValidWordBasePos =
   { leftEm = leftEmAfter rawWordsBasePos
-  , widthEm = 8.5
+  , widthEm = 8
   }
 
 
@@ -117,7 +117,7 @@ validatedWordsBasePos =
 runningFoldUpdateWordsForPersonBasePos : HorizontalPosition
 runningFoldUpdateWordsForPersonBasePos =
   { leftEm = leftEmAfter validatedWordsBasePos
-  , widthEm = 13.5
+  , widthEm = 12
   }
 
 
@@ -131,7 +131,7 @@ wordsByPersonsBasePos =
 mapCountPersonsForWordBasePos : HorizontalPosition
 mapCountPersonsForWordBasePos =
   { leftEm = leftEmAfter wordsByPersonsBasePos
-  , widthEm = 13
+  , widthEm = 11.5
   }
 
 
