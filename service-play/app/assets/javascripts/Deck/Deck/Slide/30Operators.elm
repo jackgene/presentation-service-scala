@@ -52,7 +52,7 @@ operatorMap : Bool -> Bool -> UnindexedSlideModel
 operatorMap showCode animate =
   operator "Transforming Elements"
   ( div [] [ text "Text about the map operator" ] )
-  { horizontalPosition = { leftEm = 2, widthEm = 3 }
+  { horizontalPosition = { leftEm = 1.5, widthEm = 3 }
   , value =
     Stream
     { terminal = False
@@ -360,7 +360,7 @@ operatorMap showCode animate =
       ]
     }
   }
-  { horizontalPosition = { leftEm = 5, widthEm = 7 }
+  { horizontalPosition = { leftEm = 4.5, widthEm = 7.5 }
   , operatorCode = [ "map { it * 2L }" ]
   }
   { horizontalPosition = { leftEm = 12, widthEm = 3 }
@@ -686,7 +686,7 @@ operatorFilter : Bool -> Bool -> UnindexedSlideModel
 operatorFilter showCode animate =
   operator "Conditionally Removing Elements"
   ( div [] [ text "Text about the filter operator" ] )
-  { horizontalPosition = { leftEm = 3, widthEm = 3 }
+  { horizontalPosition = { leftEm = 2, widthEm = 3 }
   , value =
     Stream
     { terminal = False
@@ -994,7 +994,7 @@ operatorFilter showCode animate =
       ]
     }
   }
-  { horizontalPosition = { leftEm = 6, widthEm = 6 }
+  { horizontalPosition = { leftEm = 5, widthEm = 7 }
   , operatorCode = [ "filter {", "\xA0\xA0it % 2 == 0", "}" ]
   }
   { horizontalPosition = { leftEm = 12, widthEm = 3 }
@@ -1478,7 +1478,7 @@ operatorFlatMapMerge showCode animate =
       ]
     }
   }
-  { horizontalPosition = { leftEm = 4, widthEm = 10 }
+  { horizontalPosition = { leftEm = 4, widthEm = 11 }
   , operatorCode =
     [ "flatMapMerge {"
     , "\xA0\xA0 flow {"
@@ -1489,7 +1489,7 @@ operatorFlatMapMerge showCode animate =
     , "}"
     ]
   }
-  { horizontalPosition = { leftEm = 14, widthEm = 3 }
+  { horizontalPosition = { leftEm = 15, widthEm = 3 }
   , value =
     Stream
     { terminal = False
@@ -2426,7 +2426,7 @@ operatorFlatMapConcat showCode animate =
       ]
     }
   }
-  { horizontalPosition = { leftEm = 4, widthEm = 10 }
+  { horizontalPosition = { leftEm = 4, widthEm = 11 }
   , operatorCode =
     [ "flatMapConcat {"
     , "\xA0\xA0 flow {"
@@ -2437,7 +2437,7 @@ operatorFlatMapConcat showCode animate =
     , "}"
     ]
   }
-  { horizontalPosition = { leftEm = 14, widthEm = 3 }
+  { horizontalPosition = { leftEm = 15, widthEm = 3 }
   , value =
     Stream
     { terminal = False
@@ -3084,7 +3084,7 @@ operatorFold showCode animate =
       ]
     }
   }
-  { horizontalPosition = { leftEm = 4, widthEm = 8 }
+  { horizontalPosition = { leftEm = 4, widthEm = 9 }
   , operatorCode =
     [ "fold(0L) {"
     , "\xA0\xA0 accum, next ->"
@@ -3092,8 +3092,8 @@ operatorFold showCode animate =
     , "}"
     ]
   }
-  { horizontalPosition = { leftEm = 12, widthEm = 3 }
-  , value = Single (Element 598 Square 2 594226)
+  { horizontalPosition = { leftEm = 13, widthEm = 3 }
+  , value = Single (Element 45 Square 2 20078)
   }
   animate
   """
