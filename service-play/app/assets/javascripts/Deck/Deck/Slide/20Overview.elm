@@ -47,11 +47,9 @@ functional =
             [ text "Application is implemented by applying operations on immutable messages, making it easy to reason about." ]
           , li []
             [ text "The operators are based on functional collection processing primitives, such as "
-            , syntaxHighlightedCodeSnippet Kotlin "map(...)"
-            , text ", "
-            , syntaxHighlightedCodeSnippet Kotlin "flatMap(...)"
-            , text ", "
-            , syntaxHighlightedCodeSnippet Kotlin "filter(...)"
+            , syntaxHighlightedCodeSnippet Kotlin "map(T -> R)"
+            , text ", and "
+            , syntaxHighlightedCodeSnippet Kotlin "filter(T -> Boolean)"
             , text ", and are functionally pure."
             ]
           , li []
@@ -81,7 +79,7 @@ reactive =
           [ li [] [ text "“Reactive” is just a made up term that is interchangeable with “Asynchronous”" ]
           , li [] [ text "Popularized by the unexpected success of server-side JavaScript, making people realize it is possible for a single thread to handle considerable load" ]
           , li [] [ text "Strives to minimize the number of threads to the degree of parallelism needed (typically equal to the number of available CPU cores)" ]
-          , li [] [ text "Functions should be non-blocking: Consume a thread when the CPU is needed, yield when CPU is not needed (e.g., when awaiting a longer running I/O operation)" ]
+          , li [] [ text "Functions should be non-blocking: That is, they only consume a thread when they need the CPU, yield when CPU is not needed" ]
           , li [] [ text "Again, not a silver bullet: Programmers are required to understand and follow asynchronous programming practices" ]
           ]
         ]
@@ -99,14 +97,12 @@ streaming =
       ( div []
         [ ul []
           [ li [] [ text "Streams (known as Flows in Kotlin) behave a lot like iterators, but with one key difference: elements materialize asynchronously - an element can come immediately after the last element, or it can come days later" ]
-          , li [] [ text "May have an infinite number of elements, and are processed lazily, on demand, possibly concurrently" ]
+          , li [] [ text "May have an infinite number of elements, are processed lazily on demand, possibly concurrently" ]
           , li []
             [ text "Processed by applying operations using operators such as "
-            , syntaxHighlightedCodeSnippet Kotlin "map(...)"
-            , text ", "
-            , syntaxHighlightedCodeSnippet Kotlin "flatMap(...)"
+            , syntaxHighlightedCodeSnippet Kotlin "map(T -> R)"
             , text ", and "
-            , syntaxHighlightedCodeSnippet Kotlin "filter(...)"
+            , syntaxHighlightedCodeSnippet Kotlin "filter(T -> Boolean)"
             ]
           , li [] [ text "Operators are the foundation of functional reactive streaming" ]
           ]
