@@ -436,7 +436,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
             (chatMessageDivs, lastDivTopEm) =
               counts.history |> List.foldr
               ( \event (accumDivs, topEm) ->
-                if topEm > visibleHeightEm + 10 then
+                if topEm > visibleHeightEm * 2 then
                   ( ( div [ css [ display none ] ] [] ) :: accumDivs
                   , topEm
                   )
