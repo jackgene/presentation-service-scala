@@ -1,12 +1,12 @@
-module Deck.Slide.Operators exposing (operatorSlides)
+module Deck.Slide.Operators exposing (slides)
 
 import Css exposing
   ( Color, Style
   -- Container
-  , height, left, position, width
+  , height, left, position, top, width
   -- Content
   -- Units
-  , vw, zero
+  , em, vw, zero
   -- Alignment & Positions
   , absolute, relative
   -- Other values
@@ -14,17 +14,48 @@ import Css exposing
 import Deck.Common exposing (Msg)
 import Deck.Slide.Common exposing (..)
 import Deck.Slide.MarbleDiagram exposing (..)
+import Deck.Slide.SyntaxHighlight exposing (..)
 import Deck.Slide.Template exposing (standardSlideView)
-import Html.Styled exposing (Html, b, div, p, text, ul)
+import Html.Styled exposing (Html, div, p, text, ul)
 import Html.Styled.Attributes exposing (css)
 
 
 -- Constants
 heading : String
-heading = "An Overview of Reactive Streams"
+heading = "A Detailed Look at the Operators"
 
 
 -- Slides
+introduction : UnindexedSlideModel
+introduction =
+  { baseSlideModel
+  | view =
+    ( \page _ -> standardSlideView page heading
+      "An Overview of the Most Common and Useful Operators"
+      ( div []
+        [ p []
+          [ text "There are functional reactive streaming implementations for all major languages, all conforming to functional reactive streaming at a high level." ]
+        , p []
+          [ text "Each implementation is slightly different however, tailoring to the semantics of each language. "
+          , text "Kotlin for instance, has safe "
+          , syntaxHighlightedCodeSnippet Kotlin "null"
+          , text "-handling, as such Flow has additional operators such as "
+          , syntaxHighlightedCodeSnippet Kotlin "mapNotNull(...)"
+          , text ", "
+          , syntaxHighlightedCodeSnippet Kotlin "filterNotNull()"
+          , text " to handle "
+          , syntaxHighlightedCodeSnippet Kotlin "null"
+          , text " values."
+          ]
+        , p []
+          [ text "Let’s look at seven of the most common and useful operators."
+          ]
+        ]
+      )
+    )
+  }
+
+
 operator : String -> Html Msg -> Operand -> Operation -> Operand -> Bool -> String -> Bool -> UnindexedSlideModel
 operator subheading textView input operation output animate code showCode =
   { baseSlideModel
@@ -32,12 +63,12 @@ operator subheading textView input operation output animate code showCode =
     ( \page _ ->
       standardSlideView page heading subheading
       ( div []
-        [ div [ css [ position relative, height (vw 32) ] ]
+        [ div [ css [ position relative, top (em -1), height (vw 32) ] ]
           [ div
             [ css [ position absolute, left zero, width (vw 46) ] ]
             [ textView ]
           , div -- diagram frame
-            [ css [ position absolute, left (vw 46), width (vw 40) ] ]
+            [ css [ position absolute, top (em 1), left (vw 46), width (vw 40) ] ]
             [ diagramView input operation output animate ]
           ]
         , div [] [] -- prevent animation
@@ -50,8 +81,22 @@ operator subheading textView input operation output animate code showCode =
 
 operatorMap : Bool -> Bool -> UnindexedSlideModel
 operatorMap showCode animate =
-  operator "Transforming Elements"
-  ( div [] [ text "Text about the map operator" ] )
+  operator "map: Transform Flow Elements"
+  ( div []
+    [ p []
+      [ text "The "
+      , syntaxHighlightedCodeSnippet Kotlin "map((T) -> R)"
+      , text " operator takes a transformation function, applying it to each element of the Flow, and returns a new Flow with the resultant element."
+      ]
+    , p []
+      [ text "Properties:"
+      , ul []
+        [ li [] [ text "Output and input have the same size" ]
+        , li [] [ text "Output type is the return type of the function return type" ]
+        ]
+      ]
+    ]
+  )
   { horizontalPosition = { leftEm = 1.5, widthEm = 3 }
   , value =
     Stream
@@ -684,8 +729,22 @@ flow {
 
 operatorFilter : Bool -> Bool -> UnindexedSlideModel
 operatorFilter showCode animate =
-  operator "Conditionally Removing Elements"
-  ( div [] [ text "Text about the filter operator" ] )
+  operator "filter: Conditionally Remove Elements"
+  ( div []
+    [ p []
+      [ text "The "
+      , syntaxHighlightedCodeSnippet Kotlin "filter((T) -> Boolean)"
+      , text " operator takes a predicate function, and returns a new Flow with only elements that match the predicate."
+      ]
+    , p []
+      [ text "Properties:"
+      , ul []
+        [ li [] [ text "Output size is no larger than input" ]
+        , li [] [ text "Output type is the same type as input" ]
+        ]
+      ]
+    ]
+  )
   { horizontalPosition = { leftEm = 2, widthEm = 3 }
   , value =
     Stream
@@ -994,10 +1053,10 @@ operatorFilter showCode animate =
       ]
     }
   }
-  { horizontalPosition = { leftEm = 5, widthEm = 7 }
+  { horizontalPosition = { leftEm = 5, widthEm = 6.5 }
   , operatorCode = [ "filter {", "\xA0\xA0it % 2 == 0", "}" ]
   }
-  { horizontalPosition = { leftEm = 12, widthEm = 3 }
+  { horizontalPosition = { leftEm = 11.5, widthEm = 3 }
   , value =
     Stream
     { terminal = False
@@ -1166,10 +1225,94 @@ flow {
 """ showCode
 
 
+operatorTake : Bool -> Bool -> UnindexedSlideModel
+operatorTake showCode animate =
+  operator "take: Retain the First Few Elements"
+  ( div []
+    [ p []
+      [ text "The "
+      , syntaxHighlightedCodeSnippet Kotlin "take(Int)"
+      , text " operator takes a count, and returns a new Flow with up to that number of elements."
+      ]
+    , p []
+      [ text "It is often used to turn an infinite Flow info a finite Flow."
+      ]
+    , p []
+      [ text "Properties:"
+      , ul []
+        [ li [] [ text "Output is always finite, and no larger than input" ]
+        , li [] [ text "Output type is the same type as input" ]
+        ]
+      ]
+    ]
+  )
+  { horizontalPosition = { leftEm = 3, widthEm = 3 }
+  , value =
+    Stream
+    { terminal = False
+    , elements =
+      [ Element 0 Disc 0 0
+      , Element 1 Disc 1 2008
+      , Element 2 Disc 2 4015
+      , Element 3 Disc 0 6025
+      , Element 4 Disc 1 8033
+      , Element 5 Disc 2 10038
+      , Element 6 Disc 0 12045
+      , Element 7 Disc 1 14055
+      , Element 8 Disc 2 16062
+      , Element 9 Disc 0 18070
+      ]
+    }
+  }
+  { horizontalPosition = { leftEm = 6, widthEm = 4 }
+  , operatorCode = [ "take(10)" ]
+  }
+  { horizontalPosition = { leftEm = 11, widthEm = 3 }
+  , value =
+    Stream
+    { terminal = True
+    , elements =
+      [ Element 0 Disc 0 0
+      , Element 1 Disc 1 2008
+      , Element 2 Disc 2 4015
+      , Element 3 Disc 0 6025
+      , Element 4 Disc 1 8034
+      , Element 5 Disc 2 10038
+      , Element 6 Disc 0 12045
+      , Element 7 Disc 1 14055
+      , Element 8 Disc 2 16063
+      , Element 9 Disc 0 18070
+      ]
+    }
+  }
+  animate
+  """
+flow {
+    generateSequence(0) { it + 1 }.forEach {
+        delay(2.seconds)
+        emit(it)
+    }
+}.take(10)
+""" showCode
+
+
 operatorFlatMapMerge : Bool -> Bool -> UnindexedSlideModel
 operatorFlatMapMerge showCode animate =
-  operator "Flat Maps Can Process Inputs Concurrently"
-  ( div [] [ text "Text about the flatMapMerge operator" ] )
+  operator "flatMapMerge: Transform into flows, flatten concurrently"
+  ( div []
+    [ p []
+      [ text "The "
+      , syntaxHighlightedCodeSnippet Kotlin "flatMapMerge(T -> Flow<R>)"
+      , text " operator takes a function that transforms elements into Flows, applying it to each element, and returns a new Flow with the resultant Flows flattened, concurrently."
+      ]
+    , p []
+      [ text "Properties:"
+      , ul []
+        [ li [] [ text "If the input is empty, so must be the output" ]
+        ]
+      ]
+    ]
+  )
   { horizontalPosition = { leftEm = 1, widthEm = 3 }
   , value =
     Stream
@@ -1494,7 +1637,7 @@ operatorFlatMapMerge showCode animate =
     Stream
     { terminal = False
     , elements =
-            [ Element 0 Square 0 11
+      [ Element 0 Square 0 11
       , Element 1 Square 1 2016
       , Element 0 Square 0 3023
       , Element 2 Square 2 4026
@@ -2116,14 +2259,27 @@ flow {
 
 operatorFlatMapConcat : Bool -> Bool -> UnindexedSlideModel
 operatorFlatMapConcat showCode animate =
-  operator "Or They Can Process Inputs Sequentually"
-  ( div [] [ text "Text about the flatMapConcat operator" ] )
+  operator "flatMapConcat: Transform into flows, flatten sequentially"
+  ( div []
+    [ p []
+      [ text "The "
+      , syntaxHighlightedCodeSnippet Kotlin "flatMapConcat(T -> Flow<R>)"
+      , text " operator takes a function that transforms elements into Flows, applying it to each element, and returns a new Flow with the resultant Flows flattened, sequentially."
+      ]
+    , p []
+      [ text "Properties:"
+      , ul []
+        [ li [] [ text "If the input is empty, so must be the output" ]
+        ]
+      ]
+    ]
+  )
   { horizontalPosition = { leftEm = 1, widthEm = 3 }
   , value =
     Stream
     { terminal = False
     , elements =
-            [ Element 0 Disc 0 0
+      [ Element 0 Disc 0 0
       , Element 1 Disc 1 5017
       , Element 2 Disc 2 10037
       , Element 3 Disc 0 15057
@@ -2442,7 +2598,7 @@ operatorFlatMapConcat showCode animate =
     Stream
     { terminal = False
     , elements =
-            [ Element 0 Square 0 5
+      [ Element 0 Square 0 5
       , Element 0 Square 0 3008
       , Element 1 Square 1 5017
       , Element 1 Square 1 8026
@@ -3064,8 +3220,22 @@ flow {
 
 operatorFold : Bool -> Bool -> UnindexedSlideModel
 operatorFold showCode animate =
-  operator "Flows Can Be Folded"
-  ( div [] [ text "Text about the fold operator" ] )
+  operator "fold: Combine all elements of a Flow into a single element"
+  ( div []
+    [ p []
+      [ text "The "
+      , syntaxHighlightedCodeSnippet Kotlin "fold(T, (R, T) -> R)"
+      , text " takes an initial value, and a combining function, combining the initial value and all elements of the flow into a single element."
+      ]
+    , p []
+      [ text "Properties:"
+      , ul []
+        [ li [] [ text "Output is a single element, not a flow" ]
+        , li [] [ text "Does not return if input is infinite" ]
+        ]
+      ]
+    ]
+  )
   { horizontalPosition = { leftEm = 1, widthEm = 3 }
   , value =
     Stream
@@ -3110,8 +3280,24 @@ flow {
 
 operatorRunningFold : Bool -> Bool -> UnindexedSlideModel
 operatorRunningFold showCode animate =
-  operator "A Running Fold Emits the Accumulated Value on Every Step"
-  ( div [] [ text "Text about the runningFold operator" ] )
+  operator "runningFold: fold that emits the value of each step"
+  ( div []
+    [ p []
+      [ text "The "
+      , syntaxHighlightedCodeSnippet Kotlin "runningFold(T, (R, T) -> R)"
+      , text " operator (and its alias "
+      , syntaxHighlightedCodeSnippet Kotlin "scan(T, (R, T) -> R)"
+      , text ") is just a fold that emits the accumulated value on every combining step."
+      ]
+    , p []
+      [ text "Properties:"
+      , ul []
+        [ li [] [ text "Output has one more element than input" ]
+        , li [] [ text "Output type is the type of the initial value" ]
+        ]
+      ]
+    ]
+  )
   { horizontalPosition = { leftEm = 1, widthEm = 3 }
   , value =
     Stream
@@ -3750,20 +3936,23 @@ flow {
 """ showCode
 
 
-operatorSlides : List UnindexedSlideModel
-operatorSlides =
-  [ operatorMap
-  , operatorFilter
-  , operatorFlatMapMerge
-  , operatorFlatMapConcat
-  , operatorFold
-  , operatorRunningFold
-  ]
-  |> List.concatMap
-    ( \slide ->
-      [ slide False False
-      , slide False True
-      , slide True True
-      , slide False True
-      ]
-    )
+slides : List UnindexedSlideModel
+slides =
+  introduction ::
+  ( [ operatorMap
+    , operatorFilter
+    , operatorTake
+    , operatorFlatMapMerge
+    , operatorFlatMapConcat
+    , operatorFold
+    , operatorRunningFold
+    ]
+    |> List.concatMap
+      ( \slide ->
+        [ slide False False
+        , slide False True
+        , slide True True
+        , slide False True
+        ]
+      )
+  )
