@@ -267,7 +267,7 @@ slideOutCodeBlock code show =
         , Css.Transitions.top3 transitionDurationMs 0 easeInOut
         ]
       ]
-    ++( if show then [ top (vw -31), opacity (num 0.875) ]
+    ++( if show then [ top (vw -31), opacity (num 0.9375) ]
         else [ top zero, opacity zero ]
       )
     )
