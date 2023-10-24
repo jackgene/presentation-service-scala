@@ -434,9 +434,11 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
       , div [] -- chat messages
         ( let
             (chatMessageDivs, lastDivTopEm) =
-              counts.history |> List.foldr
-              ( \event (accumDivs, topEm) ->
-                if topEm > visibleHeightEm * 2 then
+              counts.history
+              |> List.indexedMap ( \idx event -> (idx, event) )
+              |> List.foldr
+              ( \(eventIdx, event) (accumDivs, topEm) ->
+                if eventIdx > 3 && topEm > visibleHeightEm + 10 then
                   ( ( div [ css [ display none ] ] [] ) :: accumDivs
                   , topEm
                   )
@@ -527,7 +529,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                           ]
                         ]
                         ( event.words |> List.indexedMap
-                          ( \idx extractedWord ->
+                          ( \wordIdx extractedWord ->
                             let
                               wordTopOffsetEm : Float
                               wordTopOffsetEm =
@@ -535,7 +537,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
   
                               wordOpacityNum : Float
                               wordOpacityNum =
-                                chatMessageOpacityNum * ((max 0 (5 - toFloat idx)) / 10 + 0.5)
+                                chatMessageOpacityNum * ((max 0 (5 - toFloat wordIdx)) / 10 + 0.5)
   
                               shiftPos : HorizontalPosition -> HorizontalPosition
                               shiftPos pos =
@@ -554,7 +556,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                                 ]
                             in
                             div -- per extracted word
-                            [ css [ position absolute, top (em (toFloat idx * 3.75)) ] ]
+                            [ css [ position absolute, top (em (toFloat wordIdx * 3.75)) ] ]
                             [ div [ css [ position absolute, top (em wordTopOffsetEm) ] ]
                               [ streamElementView -- per extracted word - raw word
                                 ( shiftPos ( horizontalPosition rawWordsPos step ) )
