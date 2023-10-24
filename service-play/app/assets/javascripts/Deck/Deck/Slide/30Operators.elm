@@ -3285,7 +3285,7 @@ operatorRunningFold showCode animate =
     [ p []
       [ text "The "
       , syntaxHighlightedCodeSnippet Kotlin "runningFold(T, (R, T) -> R)"
-      , text " operator (and its alias "
+      , text " operator (and its better known alias "
       , syntaxHighlightedCodeSnippet Kotlin "scan(T, (R, T) -> R)"
       , text ") is just a fold that emits the accumulated value on every combining step."
       ]
