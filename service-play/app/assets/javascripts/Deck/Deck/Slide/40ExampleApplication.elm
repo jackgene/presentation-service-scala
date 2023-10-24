@@ -1,5 +1,5 @@
 module Deck.Slide.ExampleApplication exposing
-  ( implementationSlides, implementation8Complete, implementation9Complete )
+  ( slides, implementation8Complete, implementation9Complete )
 
 import Char
 import Css exposing
@@ -35,12 +35,27 @@ heading : String
 heading = "Word Cloud as a Functional Reactive Stream"
 
 
-commonSubheading : String
-commonSubheading = "Word Clouds as a Flow Application"
-
-
 -- View
 -- Slides
+introduction : UnindexedSlideModel
+introduction =
+  { baseSlideModel
+  | view =
+    ( \page _ -> standardSlideView page heading
+      "Building an Application by Composing Operations"
+      ( div []
+        [ p []
+          [ text "Now that we have had a look at some common operators, let’s look at how they can be composed to build an application."
+          ]
+        , p []
+          [ text "We’ll build a functional reactive streaming application that is simple, but not trivially so: A word cloud application."
+          ]
+        ]
+      )
+    )
+  }
+
+
 type alias StepAdjustedHorizontalPosition =
   { base : HorizontalPosition
   , leftEmAdjustmentByStep : Dict Int Float
@@ -761,7 +776,7 @@ fun normalizeText(msg: ChatMessage): PersonAndText =
 implementation3FlatMapConcatSplitIntoWords : Bool -> UnindexedSlideModel
 implementation3FlatMapConcatSplitIntoWords showCode =
   implementationDiagramSlide 2
-  "Splitting Message Into Words"
+  "Splitting Message Text Into Words"
   "The normalized text is split into words:"
   """
 fun splitIntoWords(
@@ -816,7 +831,7 @@ implementation6MapCountPersonsForWord : Bool -> UnindexedSlideModel
 implementation6MapCountPersonsForWord showCode =
   implementationDiagramSlide 5
   "Count Persons for Each Word"
-  "For each word, count the number of persons, using those counts as weights:"
+  "For each word, count the number of persons who proposed the word:"
   """
 fun countWords(
     wordsByPerson: Map<String, List<String>>
@@ -880,14 +895,16 @@ val wordCounts: Flow<Counts> = chatMessages
   0.0 1.0 True
 
 
-implementationSlides : List UnindexedSlideModel
-implementationSlides =
-  [ implementation1ChatMessages
-  , implementation2MapNormalizeWords
-  , implementation3FlatMapConcatSplitIntoWords
-  , implementation4FilterIsValidWord
-  , implementation5RunningFoldUpdateWordsForPerson
-  , implementation6MapCountPersonsForWord
-  , implementation7Complete
-  ]
-  |> List.concatMap ( \slide -> [ slide False, slide True, slide False ] )
+slides : List UnindexedSlideModel
+slides =
+  introduction ::
+  ( [ implementation1ChatMessages
+    , implementation2MapNormalizeWords
+    , implementation3FlatMapConcatSplitIntoWords
+    , implementation4FilterIsValidWord
+    , implementation5RunningFoldUpdateWordsForPerson
+    , implementation6MapCountPersonsForWord
+    , implementation7Complete
+    ]
+    |> List.concatMap ( \slide -> [ slide False, slide True, slide False ] )
+  )
