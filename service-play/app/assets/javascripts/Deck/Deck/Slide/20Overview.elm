@@ -81,7 +81,7 @@ reactive =
           [ li [] [ text "“Reactive” is just a made up term that is interchangeable with “Asynchronous”" ]
           , li [] [ text "Popularized by the unexpected success of server-side JavaScript, making people realize it is possible for a single thread to handle considerable load" ]
           , li [] [ text "Strives to minimize the number of threads to the degree of parallelism needed (typically equal to the number of available CPU cores)" ]
-          , li [] [ text "Functions should only consume thread when the CPU is needed, yield when CPU is no longer needed (e.g., when awaiting a longer running I/O operation)" ]
+          , li [] [ text "Functions should be non-blocking: Consume a thread when the CPU is needed, yield when CPU is not needed (e.g., when awaiting a longer running I/O operation)" ]
           , li [] [ text "Again, not a silver bullet: Programmers are required to understand and follow asynchronous programming practices" ]
           ]
         ]
@@ -99,7 +99,7 @@ streaming =
       ( div []
         [ ul []
           [ li [] [ text "Streams (known as Flows in Kotlin) behave a lot like iterators, but with one key difference: elements materialize asynchronously - an element can come immediately after the last element, or it can come days later" ]
-          , li [] [ text "May have an infinite number of elements, and are processed lazily, on demand" ]
+          , li [] [ text "May have an infinite number of elements, and are processed lazily, on demand, possibly concurrently" ]
           , li []
             [ text "Processed by applying operations using operators such as "
             , syntaxHighlightedCodeSnippet Kotlin "map(...)"
