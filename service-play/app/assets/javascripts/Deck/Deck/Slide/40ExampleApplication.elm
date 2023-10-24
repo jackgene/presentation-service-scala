@@ -45,11 +45,11 @@ introduction =
       "Building an Application by Composing Operations"
       ( div []
         [ p []
-          [ text "Now that we have had a look at some common operators, let’s look at how they can be composed to build an application."
-          ]
+          [ text "Now that we have had a look at some common operators, we will next look at how we can compose them to build an application." ]
         , p []
-          [ text "We’ll build a functional reactive streaming application that is simple, but not trivially so: A word cloud application."
-          ]
+          [ text "Let’s build a application that is simple, but not trivially so." ]
+        , p []
+          [ text "Let’s build a functional reactive streaming word cloud application." ]
         ]
       )
     )
