@@ -37,10 +37,10 @@ introduction =
           [ text "There are functional reactive streaming implementations for all major languages, all conforming to functional reactive streaming at a high level." ]
         , p []
           [ text "Each implementation is slightly different however, tailoring to the semantics of each language. "
-          , text "Kotlin for instance, has safe "
+          , text "For instance: Kotlin has safe "
           , syntaxHighlightedCodeSnippet Kotlin "null"
-          , text "-handling, as such Flow has additional operators such as "
-          , syntaxHighlightedCodeSnippet Kotlin "mapNotNull(...)"
+          , text "-handling, and has additional operators such as "
+          , syntaxHighlightedCodeSnippet Kotlin "mapNotNull(T -> R?)"
           , text ", "
           , syntaxHighlightedCodeSnippet Kotlin "filterNotNull()"
           , text " to handle "
@@ -48,8 +48,7 @@ introduction =
           , text " values."
           ]
         , p []
-          [ text "Let’s look at seven of the most common and useful operators."
-          ]
+          [ text "Let’s have a closer look at seven common and useful operators." ]
         ]
       )
     )
@@ -86,13 +85,13 @@ operatorMap showCode animate =
     [ p []
       [ text "The "
       , syntaxHighlightedCodeSnippet Kotlin "map((T) -> R)"
-      , text " operator takes a transformation function, applying it to each element of the Flow, and returns a new Flow with the resultant element."
+      , text " operator accepts a transformation function, applying it to each element of the Flow, and returns a new Flow with the transformed elements."
       ]
     , p []
       [ text "Properties:"
       , ul []
         [ li [] [ text "Output and input have the same size" ]
-        , li [] [ text "Output type is the return type of the function return type" ]
+        , li [] [ text "Output type can be anything (based on return type of transformation function)" ]
         ]
       ]
     ]
@@ -723,7 +722,9 @@ flow {
         delay(2.seconds)
         emit(it)
     }
-}.map { it * 2L }
+}.map {
+    it * 2L
+}.collect()
 """ showCode
 
 
@@ -734,7 +735,7 @@ operatorFilter showCode animate =
     [ p []
       [ text "The "
       , syntaxHighlightedCodeSnippet Kotlin "filter((T) -> Boolean)"
-      , text " operator takes a predicate function, and returns a new Flow with only elements that match the predicate."
+      , text " operator accepts a predicate function, and returns a new Flow with only elements that match the predicate."
       ]
     , p []
       [ text "Properties:"
@@ -1221,7 +1222,9 @@ flow {
         delay(2.seconds)
         emit(it)
     }
-}.filter { it % 2 == 0 }
+}.filter {
+    it % 2 == 0
+}.collect()
 """ showCode
 
 
@@ -1232,7 +1235,7 @@ operatorTake showCode animate =
     [ p []
       [ text "The "
       , syntaxHighlightedCodeSnippet Kotlin "take(Int)"
-      , text " operator takes a count, and returns a new Flow with up to that number of elements."
+      , text " operator accepts a count, and returns a new Flow with up to that number of elements."
       ]
     , p []
       [ text "It is often used to turn an infinite Flow info a finite Flow."
@@ -1292,7 +1295,7 @@ flow {
         delay(2.seconds)
         emit(it)
     }
-}.take(10)
+}.take(10).collect()
 """ showCode
 
 
@@ -1308,7 +1311,8 @@ operatorFlatMapMerge showCode animate =
     , p []
       [ text "Properties:"
       , ul []
-        [ li [] [ text "If the input is empty, so must be the output" ]
+        [ li [] [ text "If the input is empty, the output too must be empty" ]
+        , li [] [ text "Output type can be anything (based on return type of transformation function)" ]
         ]
       ]
     ]
@@ -2253,7 +2257,7 @@ flow {
         delay(3.seconds)
         emit(it.toLong())
     }
-}
+}.collect()
 """ showCode
 
 
@@ -2264,12 +2268,13 @@ operatorFlatMapConcat showCode animate =
     [ p []
       [ text "The "
       , syntaxHighlightedCodeSnippet Kotlin "flatMapConcat(T -> Flow<R>)"
-      , text " operator takes a function that transforms elements into Flows, applying it to each element, and returns a new Flow with the resultant Flows flattened, sequentially."
+      , text " operator accepts a function that transforms elements into Flows, applying it to each element, and returns a new Flow with the resultant Flows flattened, sequentially."
       ]
     , p []
       [ text "Properties:"
       , ul []
-        [ li [] [ text "If the input is empty, so must be the output" ]
+        [ li [] [ text "If the input is empty, the output too must be empty" ]
+        , li [] [ text "Output type can be anything (based on return type of transformation function)" ]
         ]
       ]
     ]
@@ -3214,7 +3219,7 @@ flow {
         delay(3.seconds)
         emit(it.toLong())
     }
-}
+}.collect()
 """ showCode
 
 
@@ -3224,9 +3229,11 @@ operatorFold showCode animate =
   ( div []
     [ p []
       [ text "The "
-      , syntaxHighlightedCodeSnippet Kotlin "fold(T, (R, T) -> R)"
-      , text " takes an initial value, and a combining function, combining the initial value and all elements of the flow into a single element."
+      , syntaxHighlightedCodeSnippet Kotlin "fold(R, (R, T) -> R)"
+      , text " accepts an initial value, and a combining function, combining the initial value and all elements of the flow into a single element."
       ]
+    , p []
+      [ text "It is used for general aggregation operations." ]
     , p []
       [ text "Properties:"
       , ul []
@@ -3268,7 +3275,7 @@ operatorFold showCode animate =
   animate
   """
 flow {
-    generateSequence(0) { it + 1 }.forEach {
+    repeat(10) {
         delay(2.seconds)
         emit(it)
     }
@@ -3284,9 +3291,9 @@ operatorRunningFold showCode animate =
   ( div []
     [ p []
       [ text "The "
-      , syntaxHighlightedCodeSnippet Kotlin "runningFold(T, (R, T) -> R)"
+      , syntaxHighlightedCodeSnippet Kotlin "runningFold(R, (R, T) -> R)"
       , text " operator (and its better known alias "
-      , syntaxHighlightedCodeSnippet Kotlin "scan(T, (R, T) -> R)"
+      , syntaxHighlightedCodeSnippet Kotlin "scan(R, (R, T) -> R)"
       , text ") is just a fold that emits the accumulated value on every combining step."
       ]
     , p []
@@ -3932,7 +3939,7 @@ flow {
     }
 }.runningFold(0L) { accum, next ->
     accum + next
-}
+}.collect()
 """ showCode
 
 
