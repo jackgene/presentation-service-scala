@@ -1318,7 +1318,7 @@ operatorFlatMapMerge showCode animate =
     Stream
     { terminal = False
     , elements =
-            [ Element 0 Disc 0 0
+      [ Element 0 Disc 0 0
       , Element 1 Disc 1 2013
       , Element 2 Disc 2 4025
       , Element 3 Disc 0 6035
