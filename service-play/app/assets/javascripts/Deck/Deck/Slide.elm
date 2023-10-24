@@ -21,6 +21,7 @@ import Deck.Slide.Common exposing (UnindexedSlideModel, black, paragraphFontFami
 import Deck.Slide.Cover as Cover
 import Deck.Slide.ExampleApplication as ExampleApplication
 import Deck.Slide.Operators as Operators
+import Deck.Slide.Overview as Overview
 import Deck.Slide.QuestionAnswer as QuestionAnswer
 import Deck.Slide.WordCloud as WordCloud
 import Deck.Slide.SectionCover as SectionCover
@@ -44,12 +45,11 @@ indexSlide index unindexedSlide =
 preQuestionSlides : List UnindexedSlideModel
 preQuestionSlides =
   [ Cover.cover
-  , WordCloud.wordCloud "What is Functional Reactive Streaming?"
+  , WordCloud.wordCloud "Words You Associate With Functional Reactive Streaming"
   ] ++
-  Operators.operatorSlides ++
-  [ WordCloud.wordCloud "Word Cloud as a Functional Reactive Stream"
-  ] ++
-  ExampleApplication.implementationSlides ++
+  Overview.slides ++
+  Operators.slides ++
+  ExampleApplication.slides ++
   [ WordCloud.wordCloud "Visualizing the word counts as a word cloud"
   , ExampleApplication.implementation8Complete False
   , WordCloud.wordCloud "Visualizing the word counts as a word cloud"
