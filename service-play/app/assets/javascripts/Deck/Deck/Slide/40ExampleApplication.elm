@@ -1,5 +1,7 @@
 module Deck.Slide.ExampleApplication exposing
-  ( slides, implementation8Complete, implementation9Complete )
+  ( heading, slides
+  , implementationCompleteDistribution, implementationCompleteEventSourcing
+  )
 
 import Char
 import Css exposing
@@ -22,6 +24,7 @@ import Css exposing
 import Css.Transitions exposing (easeInOut, transition)
 import Deck.Slide.Common exposing (..)
 import Deck.Slide.MarbleDiagram exposing (..)
+import Deck.Slide.SyntaxHighlight exposing (..)
 import Deck.Slide.Template exposing (standardSlideView)
 import Dict exposing (Dict)
 import Html.Styled exposing (Html, div, p, table, td, text, th, tr)
@@ -50,6 +53,36 @@ introduction =
           [ text "Let’s build a application that is simple, but not trivially so." ]
         , p []
           [ text "Let’s build a functional reactive streaming word cloud application." ]
+        ]
+      )
+    )
+  }
+
+
+collecting : UnindexedSlideModel
+collecting =
+  { baseSlideModel
+  | view =
+    ( \page _ -> standardSlideView page heading
+      "Exposing the Word Counts to the Front End"
+      ( div []
+        [ p []
+          [ text "Finally, we need to make the word counts available to some sort of front end. "
+          , text "A naïve WebSocket endpoint in ktor might look like:"
+          ]
+        , div []
+          [ syntaxHighlightedCodeBlock Kotlin Dict.empty Dict.empty []
+      """
+routing {
+    webSocket("/") {
+        wordCounts
+            .sample(100.milliseconds)
+            .map { Frame.Text(Json.encodeToString(it)) }
+            .collect(outgoing::send)
+    }
+}
+"""
+          ]
         ]
       )
     )
@@ -706,13 +739,13 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
   ]
 
 
-implementationDiagramSlide : Int -> String -> String -> String -> Bool -> Float -> Float -> Bool -> UnindexedSlideModel
-implementationDiagramSlide step subheading introText code showCode fromLeft scale scaleChanged =
+implementationDiagramSlide : Int -> String -> String -> String -> String -> Bool -> Float -> Float -> Bool -> UnindexedSlideModel
+implementationDiagramSlide step diagramHeading subheading introText code showCode fromLeft scale scaleChanged =
   { baseSlideModel
   | animationFrames = if scaleChanged then always 30 else always 0
   , view =
     ( \page model ->
-      standardSlideView page heading subheading
+      standardSlideView page diagramHeading subheading
       ( div []
         [ p [ css [ margin2 (em 0.5) zero ] ] [ text introText ]
         , implementationDiagramView
@@ -737,7 +770,7 @@ detailedMagnification = leftEmAfter personCountsByWordBasePos / magnifiedWidthEm
 
 implementation1ChatMessages : Bool -> UnindexedSlideModel
 implementation1ChatMessages showCode =
-  implementationDiagramSlide 0
+  implementationDiagramSlide 0 heading
   "Source Events"
   "We start with the source event messages - actual Zoom chat messages:"
   """
@@ -759,7 +792,7 @@ val chatMessages: Flow<ChatMessage> =
 
 implementation2MapNormalizeWords : Bool -> UnindexedSlideModel
 implementation2MapNormalizeWords showCode =
-  implementationDiagramSlide 1
+  implementationDiagramSlide 1 heading
   "Normalizing Message Text"
   "The message text is normalized, retaining the sender as the person:"
   """
@@ -778,7 +811,7 @@ fun normalizeText(msg: ChatMessage): PersonAndText =
 
 implementation3FlatMapConcatSplitIntoWords : Bool -> UnindexedSlideModel
 implementation3FlatMapConcatSplitIntoWords showCode =
-  implementationDiagramSlide 2
+  implementationDiagramSlide 2 heading
   "Splitting Message Text Into Words"
   "The normalized text is split into words:"
   """
@@ -796,7 +829,7 @@ fun splitIntoWords(
 
 implementation4FilterIsValidWord : Bool -> UnindexedSlideModel
 implementation4FilterIsValidWord showCode =
-  implementationDiagramSlide 3
+  implementationDiagramSlide 3 heading
   "Removing Invalid Words"
   "Invalid words are filtered out:"
   """
@@ -810,7 +843,7 @@ fun isValidWord(personWord: PersonAndWord): Boolean =
 
 implementation5RunningFoldUpdateWordsForPerson : Bool -> UnindexedSlideModel
 implementation5RunningFoldUpdateWordsForPerson showCode =
-  implementationDiagramSlide 4
+  implementationDiagramSlide 4 heading
   "Determine Words for Each Person"
   "For each person, retain their most recent three words:"
   """
@@ -832,7 +865,7 @@ fun updateWordsForPerson(
 
 implementation6MapCountPersonsForWord : Bool -> UnindexedSlideModel
 implementation6MapCountPersonsForWord showCode =
-  implementationDiagramSlide 5
+  implementationDiagramSlide 5 heading
   "Count Persons for Each Word"
   "For each word, count the number of persons who proposed the word:"
   """
@@ -849,7 +882,7 @@ fun countWords(
 
 implementation7Complete : Bool -> UnindexedSlideModel
 implementation7Complete showCode =
-  implementationDiagramSlide 6
+  implementationDiagramSlide 6 heading
   "Tying It All Together"
   "Composing all the operations into a single flow:"
   """
@@ -864,9 +897,10 @@ val wordCounts: Flow<Counts> = chatMessages
   0.0 1.0 True
 
 
-implementation8Complete : Bool -> UnindexedSlideModel
-implementation8Complete showCode =
+implementationCompleteDistribution : Bool -> UnindexedSlideModel
+implementationCompleteDistribution showCode =
   implementationDiagramSlide 6
+  "Additional Considerations"
   "Considerations for Distributed Deployment"
   "Observe that some events can be re-ordered without changing the final outcome:"
   """
@@ -881,9 +915,10 @@ val wordCounts: Flow<Counts> = chatMessages
   0.0 1.0 True
 
 
-implementation9Complete : Bool -> UnindexedSlideModel
-implementation9Complete showCode =
+implementationCompleteEventSourcing : Bool -> UnindexedSlideModel
+implementationCompleteEventSourcing showCode =
   implementationDiagramSlide 6
+  "Additional Considerations"
   "Application Source of Truth Considerations"
   "Furthermore, notice that information is lost as it flows through the system:"
   """
@@ -900,15 +935,16 @@ val wordCounts: Flow<Counts> = chatMessages
 
 slides : List UnindexedSlideModel
 slides =
-  introduction ::
-  ( [ implementation1ChatMessages
-    , implementation2MapNormalizeWords
-    , implementation3FlatMapConcatSplitIntoWords
-    , implementation4FilterIsValidWord
-    , implementation5RunningFoldUpdateWordsForPerson
-    , implementation6MapCountPersonsForWord
-    , implementation7Complete
-    ]
-    |> List.concatMap ( \slide -> [ slide False, slide True, slide False ] )
-  ) ++
-  []
+  ( introduction
+  ::( [ implementation1ChatMessages
+      , implementation2MapNormalizeWords
+      , implementation3FlatMapConcatSplitIntoWords
+      , implementation4FilterIsValidWord
+      , implementation5RunningFoldUpdateWordsForPerson
+      , implementation6MapCountPersonsForWord
+      , implementation7Complete
+      ]
+      |> List.concatMap ( \slide -> [ slide False, slide True, slide False ] )
+    )
+  ++[ collecting ]
+  )
