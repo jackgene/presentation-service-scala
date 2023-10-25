@@ -433,14 +433,13 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
         ]
       , div [] -- chat messages
         ( let
-            (chatMessageDivs, lastDivTopEm) =
-              counts.history
-              |> List.indexedMap ( \idx event -> (idx, event) )
-              |> List.foldr
-              ( \(eventIdx, event) (accumDivs, topEm) ->
+            (chatMessageDivs, lastDivTopEm, _) =
+              counts.history |> List.foldr
+              ( \event (accumDivs, topEm, eventIdx) ->
                 if eventIdx > 3 && topEm > visibleHeightEm + 10 then
                   ( ( div [ css [ display none ] ] [] ) :: accumDivs
                   , topEm
+                  , eventIdx + 1
                   )
                 else
                   let
@@ -654,6 +653,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                       ]
                     ) :: accumDivs
                   , topEm + chatMessageTopEm + chatMessageHeightEm
+                  , eventIdx + 1
                   )
               )
               -- Initial value
@@ -668,6 +668,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                   ] []
                 ]
               , 0.0
+              , 0
               )
           in
           ( div
@@ -909,4 +910,5 @@ slides =
     , implementation7Complete
     ]
     |> List.concatMap ( \slide -> [ slide False, slide True, slide False ] )
-  )
+  ) ++
+  []
