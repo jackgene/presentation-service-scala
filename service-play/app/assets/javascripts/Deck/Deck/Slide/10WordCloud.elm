@@ -24,18 +24,14 @@ import WordCloud exposing (WordCounts)
 
 
 -- Constants
-heading : String
-heading = "Audience Word Cloud"
-
-
 maxWordDisplayCount : Int
 maxWordDisplayCount = 11
 
 
 -- View
 -- Slides
-wordCloud : String -> UnindexedSlideModel
-wordCloud subheading =
+wordCloud : String -> String -> UnindexedSlideModel
+wordCloud heading subheading =
   { baseSlideModel
   | view =
     ( \page model ->
