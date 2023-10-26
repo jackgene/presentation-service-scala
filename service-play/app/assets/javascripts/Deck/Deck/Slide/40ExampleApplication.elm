@@ -925,7 +925,7 @@ implementationCompleteEventSourcing showCode =
   implementationDiagramSlide 6
   "Additional Considerations"
   "Application Source of Truth Considerations"
-  "Observe information loss as it flows through the system:"
+  "Observe that information is lost as it flows through the system:"
   """
 val wordCounts: Flow<Counts> = chatMessages
     .map(::normalizeText)
