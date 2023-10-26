@@ -44,20 +44,20 @@ functional =
       ( div []
         [ ul []
           [ li []
-            [ text "Application is implemented by applying operations on immutable messages, making it easy to reason about." ]
+            [ text "Application is implemented by applying operations on immutable messages, making it easy to reason about" ]
           , li []
             [ text "The operators are based on functional collection processing primitives, such as "
             , syntaxHighlightedCodeSnippet Kotlin "map(T -> R)"
             , text ", and "
             , syntaxHighlightedCodeSnippet Kotlin "filter(T -> Boolean)"
-            , text ", and are functionally pure."
+            , text ", and are functionally pure"
             ]
           , li []
-            [ text "As long as only pure functions are applied to these operators, the application too will be functionally pure." ]
+            [ text "As long as only pure functions are applied to these operators, the application too will be functionally pure" ]
           , li []
             [ text "Error handling is done by returning discriminated union types such as Kotlin’s built-in "
             , syntaxHighlightedCodeSnippet Kotlin ": Result<T>"
-            , text " (or third-party equivalent)."
+            , text " (or third-party equivalent)"
             ]
           , li []
             [ text "Not a silver bullet: Programmers get the most out of it when they conform to functional programming practices" ]
