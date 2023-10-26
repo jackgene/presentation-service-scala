@@ -27,7 +27,7 @@ import Deck.Slide.MarbleDiagram exposing (..)
 import Deck.Slide.SyntaxHighlight exposing (..)
 import Deck.Slide.Template exposing (standardSlideView)
 import Dict exposing (Dict)
-import Html.Styled exposing (Html, div, p, table, td, text, th, tr)
+import Html.Styled exposing (Html, br, div, p, table, td, text, th, tr)
 import Html.Styled.Attributes exposing (css)
 import Set
 import WordCloud exposing (WordCounts)
@@ -77,11 +77,16 @@ routing {
     webSocket("/") {
         wordCounts
             .sample(100.milliseconds)
-            .map { Frame.Text(Json.encodeToString(it)) }
-            .collect(outgoing::send)
+            .map { Json.encodeToString(it) }
+            .collect(::send)
     }
 }
 """
+          ]
+        , p []
+          [ text "Full source:"
+          , br [] []
+          , text "https://github.com/jackgene/reactive-word-cloud-kotlin/tree/presentation"
           ]
         ]
       )
@@ -920,7 +925,7 @@ implementationCompleteEventSourcing showCode =
   implementationDiagramSlide 6
   "Additional Considerations"
   "Application Source of Truth Considerations"
-  "Furthermore, notice that information is lost as it flows through the system:"
+  "Observe information loss as it flows through the system:"
   """
 val wordCounts: Flow<Counts> = chatMessages
     .map(::normalizeText)
