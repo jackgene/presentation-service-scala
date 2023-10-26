@@ -96,7 +96,7 @@ streaming =
       "Streaming: Models Application Events as Message Streams"
       ( div []
         [ ul []
-          [ li [] [ text "Streams (known as Flows in Kotlin) behave a lot like iterators, but with one key difference: elements materialize asynchronously - an element can come immediately after the last element, or it can come days later" ]
+          [ li [] [ text "Streams (known as Flows in Kotlin) behave a lot like iterators, but with one key difference: elements come to be asynchronously - an element can come immediately after the last element, or it can come days later" ]
           , li [] [ text "May have an infinite number of elements, are processed lazily on demand, possibly concurrently" ]
           , li []
             [ text "Processed by applying operations using operators such as "
