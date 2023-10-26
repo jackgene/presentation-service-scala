@@ -48,11 +48,9 @@ introduction =
       "Building an Application by Composing Operations"
       ( div []
         [ p []
-          [ text "Now that we have had a look at some common operators, we will next look at how we can compose them to build an application." ]
+          [ text "Now that we have had a look at some common operators, we will next look at how we can compose operations to build an application." ]
         , p []
-          [ text "Let’s build a application that is simple, but not trivially so." ]
-        , p []
-          [ text "Let’s build a functional reactive streaming word cloud application." ]
+          [ text "Let’s build a application that is simple, but not trivially so: A word cloud." ]
         ]
       )
     )
@@ -167,30 +165,30 @@ validatedWordsBasePos =
   }
 
 
-runningFoldUpdateWordsForPersonBasePos : HorizontalPosition
-runningFoldUpdateWordsForPersonBasePos =
+runningFoldUpdateWordsForSenderBasePos : HorizontalPosition
+runningFoldUpdateWordsForSenderBasePos =
   { leftEm = leftEmAfter validatedWordsBasePos
   , widthEm = 12
   }
 
 
-wordsByPersonsBasePos : HorizontalPosition
-wordsByPersonsBasePos =
-  { leftEm = leftEmAfter runningFoldUpdateWordsForPersonBasePos
+wordsBySendersBasePos : HorizontalPosition
+wordsBySendersBasePos =
+  { leftEm = leftEmAfter runningFoldUpdateWordsForSenderBasePos
   , widthEm = 20
   }
 
 
-mapCountPersonsForWordBasePos : HorizontalPosition
-mapCountPersonsForWordBasePos =
-  { leftEm = leftEmAfter wordsByPersonsBasePos
+mapCountSendersForWordBasePos : HorizontalPosition
+mapCountSendersForWordBasePos =
+  { leftEm = leftEmAfter wordsBySendersBasePos
   , widthEm = 11.5
   }
 
 
-personCountsByWordBasePos : HorizontalPosition
-personCountsByWordBasePos =
-  { leftEm = leftEmAfter mapCountPersonsForWordBasePos
+senderCountsByWordBasePos : HorizontalPosition
+senderCountsByWordBasePos =
+  { leftEm = leftEmAfter mapCountSendersForWordBasePos
   , widthEm = 14.5
   }
 
@@ -237,12 +235,12 @@ implementation4Layout =
 
 implementation5Layout : SlideLayout
 implementation5Layout =
-  slideLayoutForStreams validatedWordsBasePos wordsByPersonsBasePos
+  slideLayoutForStreams validatedWordsBasePos wordsBySendersBasePos
 
 
 implementation6Layout : SlideLayout
 implementation6Layout =
-  slideLayoutForStreams wordsByPersonsBasePos personCountsByWordBasePos
+  slideLayoutForStreams wordsBySendersBasePos senderCountsByWordBasePos
 
 
 chatMessagesPos : StepAdjustedHorizontalPosition
@@ -318,9 +316,9 @@ validatedWordsPos =
   }
 
 
-runningFoldUpdateWordsForPersonPos : StepAdjustedHorizontalPosition
-runningFoldUpdateWordsForPersonPos =
-  { base = runningFoldUpdateWordsForPersonBasePos
+runningFoldUpdateWordsForSenderPos : StepAdjustedHorizontalPosition
+runningFoldUpdateWordsForSenderPos =
+  { base = runningFoldUpdateWordsForSenderBasePos
   , leftEmAdjustmentByStep =
     Dict.fromList
     [ (3, implementation4Layout.marginWidthEm)
@@ -329,9 +327,9 @@ runningFoldUpdateWordsForPersonPos =
   }
 
 
-wordsByPersonsPos : StepAdjustedHorizontalPosition
-wordsByPersonsPos =
-  { base = wordsByPersonsBasePos
+wordsBySendersPos : StepAdjustedHorizontalPosition
+wordsBySendersPos =
+  { base = wordsBySendersBasePos
   , leftEmAdjustmentByStep =
     Dict.fromList
     [ (3, implementation4Layout.marginWidthEm)
@@ -339,9 +337,9 @@ wordsByPersonsPos =
   }
 
 
-mapCountPersonsForWordPos : StepAdjustedHorizontalPosition
-mapCountPersonsForWordPos =
-  { base = mapCountPersonsForWordBasePos
+mapCountSendersForWordPos : StepAdjustedHorizontalPosition
+mapCountSendersForWordPos =
+  { base = mapCountSendersForWordBasePos
   , leftEmAdjustmentByStep =
     Dict.fromList
     [ (4, implementation5Layout.marginWidthEm)
@@ -349,9 +347,9 @@ mapCountPersonsForWordPos =
   }
 
 
-personCountsByWordPos : StepAdjustedHorizontalPosition
-personCountsByWordPos =
-  { base = personCountsByWordBasePos
+senderCountsByWordPos : StepAdjustedHorizontalPosition
+senderCountsByWordPos =
+  { base = senderCountsByWordBasePos
   , leftEmAdjustmentByStep =
     Dict.fromList
     [ (4, implementation5Layout.marginWidthEm)
@@ -395,7 +393,7 @@ implementationDiagramView : WordCounts -> Int -> Float -> Float -> Bool -> Html 
 implementationDiagramView counts step fromLeftEm scale scaleChanged =
   let
     diagramWidthEm : Float
-    diagramWidthEm = leftEmAfter personCountsByWordBasePos
+    diagramWidthEm = leftEmAfter senderCountsByWordBasePos
 
     visibleWidthEm : Float
     visibleWidthEm = diagramWidthEm / scale
@@ -461,13 +459,13 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
           [ "filter(", "\xA0\xA0::isValidWord", ")" ]
         , streamLineView (horizontalPosition validatedWordsPos step) visibleHeightEm
         , operationView
-          (horizontalPosition runningFoldUpdateWordsForPersonPos step) scaleChanged
-          [ "runningFold(", "\xA0\xA0mapOf(),", "\xA0\xA0::updateWordsForPerson", ")" ]
-        , streamLineView (horizontalPosition wordsByPersonsPos step) visibleHeightEm
+          (horizontalPosition runningFoldUpdateWordsForSenderPos step) scaleChanged
+          [ "runningFold(", "\xA0\xA0mapOf(),", "\xA0\xA0::updateWordsForSender", ")" ]
+        , streamLineView (horizontalPosition wordsBySendersPos step) visibleHeightEm
         , operationView
-          (horizontalPosition mapCountPersonsForWordPos step) scaleChanged
-          [ "map(", "\xA0\xA0::countPersonsForWord", ")" ]
-        , streamLineView (horizontalPosition personCountsByWordPos step) visibleHeightEm
+          (horizontalPosition mapCountSendersForWordPos step) scaleChanged
+          [ "map(", "\xA0\xA0::countSendersForWord", ")" ]
+        , streamLineView (horizontalPosition senderCountsByWordPos step) visibleHeightEm
         ]
       , div [] -- chat messages
         ( let
@@ -541,11 +539,11 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                             ]
                           ]
                         , div [ css [ position absolute, top (em bigSmallOffsetEm) ] ]
-                          [ streamElementView -- per chat message - person and normalized text
+                          [ streamElementView -- per chat message - sender and normalized text
                             ( horizontalPosition normalizedTextPos step )
                             elementColor chatMessageOpacityNum scaleChanged
                             [ tr []
-                              [ th [ css [ width (em 4.5), textAlign right, verticalAlign top ] ] [ text "person:" ]
+                              [ th [ css [ width (em 4.5), textAlign right, verticalAlign top ] ] [ text "sender:" ]
                               , td [] [ text (firstName event.chatMessage.sender) ]
                               ]
                             , tr []
@@ -583,7 +581,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                               wordRows : List (Html msg)
                               wordRows =
                                 [ tr []
-                                  [ th [ css [ width (em 4.5), textAlign right, verticalAlign top ] ] [ text "person:" ]
+                                  [ th [ css [ width (em 4.5), textAlign right, verticalAlign top ] ] [ text "sender:" ]
                                   , td [] [ text (firstName event.chatMessage.sender) ]
                                   ]
                                 , tr []
@@ -607,11 +605,11 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                                       ( shiftPos ( horizontalPosition validatedWordsPos step ) )
                                       elementColor wordOpacityNum scaleChanged wordRows
                                     ]
-                                  , streamElementView -- aggregates - words by person
-                                    ( shiftPos ( horizontalPosition wordsByPersonsPos step ) )
+                                  , streamElementView -- aggregates - words by sender
+                                    ( shiftPos ( horizontalPosition wordsBySendersPos step ) )
                                     elementColor wordOpacityNum scaleChanged
                                     ( ( tr []
-                                        [ th [ css [ width (em 7) ] ] [ text "person" ]
+                                        [ th [ css [ width (em 7) ] ] [ text "sender" ]
                                         , th [] [ text "words" ]
                                         ]
                                       )
@@ -645,12 +643,12 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                                         )
                                       )
                                     )
-                                  , streamElementView -- aggregates - person counts by word
-                                    ( shiftPos ( horizontalPosition personCountsByWordPos step ) )
+                                  , streamElementView -- aggregates - sender counts by word
+                                    ( shiftPos ( horizontalPosition senderCountsByWordPos step ) )
                                     elementColor wordOpacityNum scaleChanged
                                     ( ( tr []
                                         [ th [] [ text "word" ]
-                                        , th [ css [ width (em 6) ] ] [ text "persons" ]
+                                        , th [ css [ width (em 6) ] ] [ text "senders" ]
                                         ]
                                       )
                                     ::( let
@@ -718,18 +716,18 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
               , transition [ Css.Transitions.top3 transitionDurationMs 0 easeInOut ]
               ]
             ]
-            [ streamElementView -- aggregates - words by person
-              ( horizontalPosition wordsByPersonsPos step ) darkGray bottomOpacityNum scaleChanged
+            [ streamElementView -- aggregates - words by sender
+              ( horizontalPosition wordsBySendersPos step ) darkGray bottomOpacityNum scaleChanged
               [ tr []
-                [ th [ css [ width (em 7) ] ] [ text "person" ]
+                [ th [ css [ width (em 7) ] ] [ text "sender" ]
                 , th [] [ text "words" ]
                 ]
               ]
-            , streamElementView -- aggregates - person counts by word
-              ( horizontalPosition personCountsByWordPos step ) darkGray bottomOpacityNum scaleChanged
+            , streamElementView -- aggregates - sender counts by word
+              ( horizontalPosition senderCountsByWordPos step ) darkGray bottomOpacityNum scaleChanged
               [ tr []
                 [ th [] [ text "word" ]
-                , th [ css [ width (em 6) ] ] [ text "persons" ]
+                , th [ css [ width (em 6) ] ] [ text "senders" ]
                 ]
               ]
             ]
@@ -773,7 +771,7 @@ leftEmCentering left right =
 
 
 detailedMagnification : Float
-detailedMagnification = leftEmAfter personCountsByWordBasePos / magnifiedWidthEm
+detailedMagnification = leftEmAfter senderCountsByWordBasePos / magnifiedWidthEm
 
 
 implementation1ChatMessages : Bool -> UnindexedSlideModel
@@ -802,11 +800,11 @@ implementation2MapNormalizeWords : Bool -> UnindexedSlideModel
 implementation2MapNormalizeWords showCode =
   implementationDiagramSlide 1 heading
   "Normalizing Message Text"
-  "The message text is normalized, retaining the sender as the person:"
+  "The message text is normalized, retaining the sender as the sender:"
   """
 val NON_LETTER_PATTERN = Regex(\"""[^\\p{L}]+\""")
-fun normalizeText(msg: ChatMessage): PersonAndText =
-    PersonAndText(
+fun normalizeText(msg: ChatMessage): SenderAndText =
+    SenderAndText(
         msg.sender,
         msg.text
             .replace(NON_LETTER_PATTERN, " ")
@@ -824,10 +822,10 @@ implementation3FlatMapConcatSplitIntoWords showCode =
   "The normalized text is split into words:"
   """
 fun splitIntoWords(
-    personText: PersonAndText
-): Flow<PersonAndWord> = personText.text
+    senderText: SenderAndText
+): Flow<SenderAndWord> = senderText.text
     .split(" ")
-    .map { PersonAndWord(personText.person, it) }
+    .map { SenderAndWord(senderText.sender, it) }
     .reversed()
     .asFlow()
 """ showCode
@@ -841,50 +839,50 @@ implementation4FilterIsValidWord showCode =
   "Removing Invalid Words"
   "Invalid words are filtered out:"
   """
-fun isValidWord(personWord: PersonAndWord): Boolean =
-    personWord.word.length in minWordLength..maxWordLength
-        && !stopWords.contains(personWord.word)
+fun isValidWord(senderWord: SenderAndWord): Boolean =
+    senderWord.word.length in minWordLength..maxWordLength
+        && !stopWords.contains(senderWord.word)
 """ showCode
   (leftEmCentering rawWordsPos.base validatedWordsPos.base)
   detailedMagnification False
 
 
-implementation5RunningFoldUpdateWordsForPerson : Bool -> UnindexedSlideModel
-implementation5RunningFoldUpdateWordsForPerson showCode =
+implementation5RunningFoldUpdateWordsForSender : Bool -> UnindexedSlideModel
+implementation5RunningFoldUpdateWordsForSender showCode =
   implementationDiagramSlide 4 heading
-  "Determine Words for Each Person"
-  "For each person, retain their most recent three words:"
+  "Determine Words for Each Sender"
+  "For each sender, retain their most recent three words:"
   """
-fun updateWordsForPerson(
-    wordsByPerson: Map<String, List<String>>,
-    personWord: PersonAndWord
+fun updateWordsForSender(
+    wordsBySender: Map<String, List<String>>,
+    senderWord: SenderAndWord
 ): Map<String, List<String>> {
     val oldWords: List<String> =
-        wordsByPerson[personWord.person] ?: listOf()
+        wordsBySender[senderWord.sender] ?: listOf()
     val newWords: List<String> =
-        (listOf(personWord.word) + oldWords).distinct()
-            .take(maxWordsPerPerson)
-    return wordsByPerson + (personWord.person to newWords)
+        (listOf(senderWord.word) + oldWords).distinct()
+            .take(maxWordsPerSender)
+    return wordsBySender + (senderWord.sender to newWords)
 }
 """ showCode
-  (leftEmCentering validatedWordsPos.base wordsByPersonsPos.base)
+  (leftEmCentering validatedWordsPos.base wordsBySendersPos.base)
   detailedMagnification False
 
 
-implementation6MapCountPersonsForWord : Bool -> UnindexedSlideModel
-implementation6MapCountPersonsForWord showCode =
+implementation6MapCountSendersForWord : Bool -> UnindexedSlideModel
+implementation6MapCountSendersForWord showCode =
   implementationDiagramSlide 5 heading
-  "Count Persons for Each Word"
-  "For each word, count the number of persons who proposed the word:"
+  "Count Senders for Each Word"
+  "For each word, count the number of senders:"
   """
 fun countWords(
-    wordsByPerson: Map<String, List<String>>
-): Map<String, Int> = wordsByPerson
+    wordsBySender: Map<String, List<String>>
+): Map<String, Int> = wordsBySender
     .flatMap { it.value.map { word -> word to it.key } }
     .groupBy({ it.first }, { it.second })
     .mapValues { it.value.size }
 """ showCode
-  (leftEmCentering wordsByPersonsPos.base personCountsByWordPos.base)
+  (leftEmCentering wordsBySendersPos.base senderCountsByWordPos.base)
   detailedMagnification False
 
 
@@ -898,7 +896,7 @@ val wordCounts: Flow<Counts> = chatMessages
     .map(::normalizeText)
     .flatMapConcat(::splitIntoWords)
     .filter(::isValidWord)
-    .runningFold(mapOf(), ::updateWordsForPerson)
+    .runningFold(mapOf(), ::updateWordsForSender)
     .map(::countWords).map(::Counts)
     .shareIn(CoroutineScope(Default), Eagerly, 1)
 """ showCode
@@ -916,7 +914,7 @@ val wordCounts: Flow<Counts> = chatMessages
     .map(::normalizeText)
     .flatMapConcat(::splitIntoWords)
     .filter(::isValidWord)
-    .runningFold(mapOf(), ::updateWordsForPerson)
+    .runningFold(mapOf(), ::updateWordsForSender)
     .map(::countWords).map(::Counts)
     .shareIn(CoroutineScope(Default), Eagerly, 1)
 """ showCode
@@ -934,7 +932,7 @@ val wordCounts: Flow<Counts> = chatMessages
     .map(::normalizeText)
     .flatMapConcat(::splitIntoWords)
     .filter(::isValidWord)
-    .runningFold(mapOf(), ::updateWordsForPerson)
+    .runningFold(mapOf(), ::updateWordsForSender)
     .map(::countWords).map(::Counts)
     .shareIn(CoroutineScope(Default), Eagerly, 1)
 """ showCode
@@ -948,8 +946,8 @@ slides =
       , implementation2MapNormalizeWords
       , implementation3FlatMapConcatSplitIntoWords
       , implementation4FilterIsValidWord
-      , implementation5RunningFoldUpdateWordsForPerson
-      , implementation6MapCountPersonsForWord
+      , implementation5RunningFoldUpdateWordsForSender
+      , implementation6MapCountSendersForWord
       , implementation7Complete
       ]
       |> List.concatMap ( \slide -> [ slide False, slide True, slide False ] )

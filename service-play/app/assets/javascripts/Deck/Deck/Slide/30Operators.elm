@@ -16,7 +16,7 @@ import Deck.Slide.Common exposing (..)
 import Deck.Slide.MarbleDiagram exposing (..)
 import Deck.Slide.SyntaxHighlight exposing (..)
 import Deck.Slide.Template exposing (standardSlideView)
-import Html.Styled exposing (Html, div, p, text, ul)
+import Html.Styled exposing (Html, div, i, p, text, ul)
 import Html.Styled.Attributes exposing (css)
 
 
@@ -34,7 +34,7 @@ introduction =
       "An Overview of the Most Common and Useful Operators"
       ( div []
         [ p []
-          [ text "There are functional reactive streaming implementations for all major languages, all conforming to functional reactive streaming at a high level." ]
+          [ text "There are functional reactive streaming implementations for all major languages, all conforming to \"the functional reactive streaming API\" at a high level." ]
         , p []
           [ text "Each implementation is slightly different however, tailoring to the semantics of each language. "
           , text "For instance: Kotlin has safe "
@@ -85,13 +85,13 @@ operatorMap showCode animate =
     [ p []
       [ text "The "
       , syntaxHighlightedCodeSnippet Kotlin "map((T) -> R)"
-      , text " operator accepts a transformation function, applying it to each element of the Flow, and returns a new Flow with the transformed elements."
+      , text " operator accepts a transformation function, and returns a new Flow of the result of applying the function to each element of the original Flow."
       ]
     , p []
       [ text "Properties:"
       , ul []
         [ li [] [ text "Output and input have the same size" ]
-        , li [] [ text "Output type can be anything (based on return type of transformation function)" ]
+        , li [] [ text "Output type can be anything (determined by transformation function)" ]
         ]
       ]
     ]
@@ -735,7 +735,7 @@ operatorFilter showCode animate =
     [ p []
       [ text "The "
       , syntaxHighlightedCodeSnippet Kotlin "filter((T) -> Boolean)"
-      , text " operator accepts a predicate function, and returns a new Flow with only elements that match the predicate."
+      , text " operator accepts a predicate function, and returns a new Flow of elements that match the predicate."
       ]
     , p []
       [ text "Properties:"
@@ -1306,13 +1306,15 @@ operatorFlatMapMerge showCode animate =
     [ p []
       [ text "The "
       , syntaxHighlightedCodeSnippet Kotlin "flatMapMerge(T -> Flow<R>)"
-      , text " operator takes a function that transforms elements into Flows, applying it to each element, and returns a new Flow with the resultant Flows flattened, concurrently."
+      , text " operator takes a function that transforms elements into Flows, applying it to each element, and returns a new Flow with the resultant Flows flattened, "
+      , i [] [ text "concurrently" ]
+      , text "."
       ]
     , p []
       [ text "Properties:"
       , ul []
         [ li [] [ text "If the input is empty, the output too must be empty" ]
-        , li [] [ text "Output type can be anything (based on return type of transformation function)" ]
+        , li [] [ text "Output type can be anything (determined by transformation function)" ]
         ]
       ]
     ]
@@ -2268,13 +2270,15 @@ operatorFlatMapConcat showCode animate =
     [ p []
       [ text "The "
       , syntaxHighlightedCodeSnippet Kotlin "flatMapConcat(T -> Flow<R>)"
-      , text " operator accepts a function that transforms elements into Flows, applying it to each element, and returns a new Flow with the resultant Flows flattened, sequentially."
+      , text " operator accepts a function that transforms elements into Flows, applying it to each element, and returns a new Flow with the resultant Flows flattened, "
+      , i [] [ text "sequentially" ]
+      , text "."
       ]
     , p []
       [ text "Properties:"
       , ul []
         [ li [] [ text "If the input is empty, the output too must be empty" ]
-        , li [] [ text "Output type can be anything (based on return type of transformation function)" ]
+        , li [] [ text "Output type can be anything (determined by transformation function)" ]
         ]
       ]
     ]
@@ -3230,7 +3234,7 @@ operatorFold showCode animate =
     [ p []
       [ text "The "
       , syntaxHighlightedCodeSnippet Kotlin "fold(R, (R, T) -> R)"
-      , text " accepts an initial value, and a combining function, combining the initial value and all elements of the flow into a single element."
+      , text " operator accepts an initial value, and a combining function, combining the initial value and all elements of the flow into a single element."
       ]
     , p []
       [ text "It is used for general aggregation operations." ]
