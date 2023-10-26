@@ -471,7 +471,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
         ]
       , div [] -- chat messages
         ( let
-            (chatMessageDivs, lastDivTopEm, _) =
+            (chatMessageDivs, lastDivTopEm, divCount) =
               counts.history |> List.foldr
               ( \event (accumDivs, topEm, eventIdx) ->
                 if eventIdx > 3 && topEm > visibleHeightEm + 10 then
@@ -708,6 +708,9 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
               , 0.0
               , 0
               )
+
+            bottomOpacityNum : Float
+            bottomOpacityNum = (max 0 ((4 - divCount) * 0.2)) + 0.2
           in
           ( div
             [ css
@@ -716,14 +719,14 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
               ]
             ]
             [ streamElementView -- aggregates - words by person
-              ( horizontalPosition wordsByPersonsPos step ) darkGray 0.5 scaleChanged
+              ( horizontalPosition wordsByPersonsPos step ) darkGray bottomOpacityNum scaleChanged
               [ tr []
                 [ th [ css [ width (em 7) ] ] [ text "person" ]
                 , th [] [ text "words" ]
                 ]
               ]
             , streamElementView -- aggregates - person counts by word
-              ( horizontalPosition personCountsByWordPos step ) darkGray 0.5 scaleChanged
+              ( horizontalPosition personCountsByWordPos step ) darkGray bottomOpacityNum scaleChanged
               [ tr []
                 [ th [] [ text "word" ]
                 , th [ css [ width (em 6) ] ] [ text "persons" ]
