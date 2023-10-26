@@ -17,6 +17,7 @@ import Css exposing
   )
 import Deck.Common exposing (Model, Msg, Navigation, Slide(Slide), SlideModel)
 import Deck.Font exposing (..)
+import Deck.Slide.AdditionalConsiderations as AdditionalConsiderations
 import Deck.Slide.Common exposing (UnindexedSlideModel, black, paragraphFontFamily, white)
 import Deck.Slide.Cover as Cover
 import Deck.Slide.ExampleApplication as ExampleApplication
@@ -51,7 +52,9 @@ preQuestionSlides =
   Operators.slides ++
   ExampleApplication.slides ++
   [ WordCloud.wordCloud ExampleApplication.heading "Visualizing the Word Counts as a Word Cloud"
+  , AdditionalConsiderations.distributedDeployment
   , ExampleApplication.implementationCompleteDistribution False
+  , AdditionalConsiderations.eventSourcing
   , ExampleApplication.implementationCompleteEventSourcing False
   , WordCloud.wordCloud "Additional Considerations" "The New Word Cloud"
   -- Q & A
