@@ -16,7 +16,8 @@ import Deck.Slide.Common exposing (..)
 import Deck.Slide.MarbleDiagram exposing (..)
 import Deck.Slide.SyntaxHighlight exposing (..)
 import Deck.Slide.Template exposing (standardSlideView)
-import Html.Styled exposing (Html, div, i, p, text, ul)
+import Dict
+import Html.Styled exposing (Html, br, div, i, p, text, ul)
 import Html.Styled.Attributes exposing (css)
 
 
@@ -48,7 +49,7 @@ introduction =
           , text " values."
           ]
         , p []
-          [ text "Let’s have a closer look at seven common and useful operators." ]
+          [ text "Let’s have a closer look at eight common and useful operators." ]
         ]
       )
     )
@@ -3947,23 +3948,98 @@ flow {
 """ showCode
 
 
-slides : List UnindexedSlideModel
-slides =
-  introduction ::
-  ( [ operatorMap
-    , operatorFilter
-    , operatorTake
-    , operatorFlatMapMerge
-    , operatorFlatMapConcat
-    , operatorFold
-    , operatorRunningFold
-    ]
-    |> List.concatMap
-      ( \slide ->
-        [ slide False False
-        , slide False True
-        , slide True True
-        , slide False True
+operatorCollect : UnindexedSlideModel
+operatorCollect =
+  { baseSlideModel
+  | view =
+    ( \page _ -> standardSlideView page heading
+      "collect: Run the flow, collect emitted elements"
+      ( div []
+        [ p []
+          [ text "In the previous code snippets, you may have noticed that some of the Flows end with a call to "
+          , syntaxHighlightedCodeSnippet Kotlin "collect()"
+          , text ". This is because Flows are cold, and only start running on a "
+          , i [] [ text "terminal operation" ]
+          , text " (such as "
+          , syntaxHighlightedCodeSnippet Kotlin "fold(R, (R, T) -> R)"
+          , text ")."
+          ]
+        , p []
+          [ syntaxHighlightedCodeSnippet Kotlin "collect(FlowCollector<T>)"
+          , text " is another terminal operator, and is the most general of them. All other terminal operators are implemented in terms of it."
+          ]
+        , div [] [] -- Prevent animation
+        , div [] [] -- Prevent animation
+        , div [] [] -- Prevent animation
+        , div []
+          [ syntaxHighlightedCodeBlock Kotlin Dict.empty Dict.empty []
+      """
+flow {
+    generateSequence(0) { it + 1 }.forEach {
+        delay(2.seconds)
+        emit(it)
+    }
+}.collect { println(it) }
+"""
+          ]
         ]
       )
+    )
+  }
+
+
+terminalOperators : UnindexedSlideModel
+terminalOperators =
+  { baseSlideModel
+  | view =
+    ( \page _ -> standardSlideView page heading
+      "Terminal vs Non-Terminal Operators"
+      ( div []
+        [ p []
+          [ text "We have seen a number of common operators, some of them terminal and some not. It is useful to understand the differences between them:"
+          , ul []
+            [ li []
+              [ text "Terminal operators run the flow; "
+              , br [] []
+              , text "Non-terminal operators are lazily applied to it"
+              ]
+            , li []
+              [ text "Terminal operators can return anything; "
+              , br [] []
+              , text "Non-terminal operators must return another Flow"
+              ]
+            , li []
+              [ text "Terminal operators suspend; "
+              , br [] []
+              , text "Non-terminal operators do not"
+              ]
+            ]
+          ]
+        ]
+      )
+    )
+  }
+
+
+slides : List UnindexedSlideModel
+slides =
+  ( introduction
+  ::( [ operatorMap
+      , operatorFilter
+      , operatorTake
+      , operatorFlatMapMerge
+      , operatorFlatMapConcat
+      , operatorFold
+      , operatorRunningFold
+      ]
+      |> List.concatMap
+        ( \slide ->
+          [ slide False False
+          , slide False True
+          , slide True True
+          , slide False True
+          ]
+        )
+    )
   )
+  ++[ operatorCollect, terminalOperators ]
