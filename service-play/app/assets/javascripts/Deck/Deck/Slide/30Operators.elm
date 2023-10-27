@@ -3305,7 +3305,7 @@ operatorRunningFold showCode animate =
       [ text "Properties:"
       , ul []
         [ li [] [ text "Output has one more element than input" ]
-        , li [] [ text "Output type is the type of the initial value" ]
+        , li [] [ text "Output type can be anything (determined by combining function’s initial value)" ]
         ]
       ]
     ]
