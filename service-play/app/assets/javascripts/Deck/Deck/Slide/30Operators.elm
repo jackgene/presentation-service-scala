@@ -85,7 +85,7 @@ operatorMap showCode animate =
     [ p []
       [ text "The "
       , syntaxHighlightedCodeSnippet Kotlin "map((T) -> R)"
-      , text " operator accepts a transformation function, and returns a new Flow of the result of applying the function to each element of the original Flow."
+      , text " operator accepts a transformation function, and returns a new Flow of the transformed elements of the original Flow."
       ]
     , p []
       [ text "Properties:"
