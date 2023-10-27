@@ -76,7 +76,7 @@ reactive =
       "Reactive: Built on an Asynchronous Architecture"
       ( div []
         [ ul []
-          [ li [] [ text "“Reactive” is just a made up term that is interchangeable with “Asynchronous”" ]
+          [ li [] [ text "“Reactive” because it is based on the “Reactor Design Pattern”" ]
           , li [] [ text "Popularized by the unexpected success of server-side JavaScript, making people realize it is possible for a single thread to handle considerable load" ]
           , li [] [ text "Strives to minimize the number of threads to the degree of parallelism needed (typically equal to the number of available CPU cores)" ]
           , li [] [ text "Functions should be non-blocking: That is, they only consume a thread when they need the CPU, yield when CPU is not needed" ]
