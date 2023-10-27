@@ -52,16 +52,17 @@ eventSourcing =
         [ p []
           [ text "Information is often lost as it flows through the system." ]
         , p []
-          [ text "Consider if we need to make the following word cloud changes:"
+          [ text "At first glance, one may be tempted to use the sender-words pairs as the source of truth for the word cloud application state. "
+          , text "But consider if we need to make the following word cloud changes:"
           , ul []
-            [ li [] [ text "Instead of retaining the last 3 words per person, we retain 7 words" ]
+            [ li [] [ text "Accept each sender’s last 7 words" ]
             , li [] [ text "Add or remove stop words" ]
-            , li [] [ text "Change the text normalizing logic" ]
             ]
           ]
         , p []
-          [ text "By using the original events as the source of truth (along with frequent snapshotting, "
-          , text "and a separate data store optimized for queries) we always have the flexibility to replay the events."
+          [ text "We would not have the information to update the application state. "
+          , text "If instead, we use the original events as the source of truth, "
+          , text "we would be able to rebuild the application state by replay the events with the new configurations."
           ]
         ]
       )
