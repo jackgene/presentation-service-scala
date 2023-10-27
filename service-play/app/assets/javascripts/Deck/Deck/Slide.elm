@@ -47,11 +47,15 @@ preQuestionSlides : List UnindexedSlideModel
 preQuestionSlides =
   [ Cover.cover
   , WordCloud.wordCloud "Audience Word Cloud" "Words You Associate With Functional Reactive Streaming"
+  , SectionCover.introduction
   ] ++
   Overview.slides ++
+  [ SectionCover.operators ] ++
   Operators.slides ++
+  [ SectionCover.application ] ++
   ExampleApplication.slides ++
   [ WordCloud.wordCloud ExampleApplication.heading "Visualizing the Word Counts as a Word Cloud"
+  , SectionCover.additionalConsiderations
   , AdditionalConsiderations.distributedDeployment
   , ExampleApplication.implementationCompleteDistribution False
   , AdditionalConsiderations.eventSourcing

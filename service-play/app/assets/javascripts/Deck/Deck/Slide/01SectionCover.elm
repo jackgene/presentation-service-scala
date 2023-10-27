@@ -11,24 +11,31 @@ introduction =
   }
 
 
-typeSystemProperties : UnindexedSlideModel
-typeSystemProperties =
+operators : UnindexedSlideModel
+operators =
   { baseSlideModel
-  | view = ( \_ _ -> sectionCoverSlideView 2 "Type System Properties" )
+  | view = ( \_ _ -> sectionCoverSlideView 2 "Operators" )
   }
 
 
-conclusion : UnindexedSlideModel
-conclusion =
+application : UnindexedSlideModel
+application =
   { baseSlideModel
-  | view = ( \_ _ -> sectionCoverSlideView 3 "Strong Typing & Quality Software" )
+  | view = ( \_ _ -> sectionCoverSlideView 3 "Example Application" )
+  }
+
+
+additionalConsiderations : UnindexedSlideModel
+additionalConsiderations =
+  { baseSlideModel
+  | view = ( \_ _ -> sectionCoverSlideView 4 "Additional Considerations" )
   }
 
 
 questions : UnindexedSlideModel
 questions =
   { baseSlideModel
-  | view = ( \_ _ -> sectionCoverSlideView 4 "Audience Questions" )
+  | view = ( \_ _ -> sectionCoverSlideView 5 "Audience Questions" )
   , eventsWsPath = Just "question"
   }
 
@@ -36,5 +43,5 @@ questions =
 thankYou : UnindexedSlideModel
 thankYou =
   { baseSlideModel
-  | view = ( \_ _ -> sectionCoverSlideView 5 "Thank You" )
+  | view = ( \_ _ -> sectionCoverSlideView 6 "Thank You" )
   }
