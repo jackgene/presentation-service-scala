@@ -708,7 +708,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
               )
 
             bottomOpacityNum : Float
-            bottomOpacityNum = (max 0 ((4 - divCount) * 0.2)) + 0.2
+            bottomOpacityNum = (max 0 ((2 - divCount) * 0.4)) + 0.2
           in
           ( div
             [ css
