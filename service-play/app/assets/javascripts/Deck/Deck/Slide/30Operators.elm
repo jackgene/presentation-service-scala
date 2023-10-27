@@ -41,7 +41,7 @@ introduction =
           , text "For instance: Kotlin has safe "
           , syntaxHighlightedCodeSnippet Kotlin "null"
           , text "-handling, and has additional operators such as "
-          , syntaxHighlightedCodeSnippet Kotlin "mapNotNull(T -> R?)"
+          , syntaxHighlightedCodeSnippet Kotlin "mapNotNull((T) -> R?)"
           , text ", "
           , syntaxHighlightedCodeSnippet Kotlin "filterNotNull()"
           , text " to handle "
