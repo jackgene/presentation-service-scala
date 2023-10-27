@@ -1238,7 +1238,7 @@ operatorTake showCode animate =
       , text " operator accepts a count, and returns a new Flow with up to that number of elements."
       ]
     , p []
-      [ text "It is often used to turn an infinite Flow info a finite Flow."
+      [ text "It is often used to turn an infinite Flow into a finite Flow."
       ]
     , p []
       [ text "Properties:"
