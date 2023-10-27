@@ -3968,10 +3968,7 @@ operatorCollect =
           [ syntaxHighlightedCodeSnippet Kotlin "collect(FlowCollector<T>)"
           , text " is another terminal operator, and is the most general of them. All other terminal operators are implemented in terms of it."
           ]
-        , div [] [] -- Prevent animation
-        , div [] [] -- Prevent animation
-        , div [] [] -- Prevent animation
-        , div []
+        , p []
           [ syntaxHighlightedCodeBlock Kotlin Dict.empty Dict.empty []
       """
 flow {
