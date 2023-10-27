@@ -33,7 +33,7 @@ import Svg.Styled.Attributes as Attributes exposing
 
 
 coverBackgroundViewBox : Float
-coverBackgroundViewBox = 52
+coverBackgroundViewBox = 70
 
 
 coverBackgroundGraphic : Svg msg
@@ -42,7 +42,8 @@ coverBackgroundGraphic =
   [ css [ Css.width (vw (coverBackgroundViewBox * 100 / 160)) ]
   , viewBox ("0 0 " ++ (toString coverBackgroundViewBox) ++ " 90")
   ]
-  [ rect [ width "52", height "90", css [ Css.fill themeForegroundColor ] ] [] ]
+  [ polygon [ points "0,0 70,0 38,45 70,90 0,90", css [ Css.fill themeBackgroundColor ] ] []
+  ]
 
 
 numberedDisc : String -> Float -> List (Attribute msg) -> Svg msg
