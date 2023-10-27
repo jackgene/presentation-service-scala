@@ -800,7 +800,7 @@ implementation2MapNormalizeWords : Bool -> UnindexedSlideModel
 implementation2MapNormalizeWords showCode =
   implementationDiagramSlide 1 heading
   "Normalizing Message Text"
-  "The message text is normalized, retaining the sender as the sender:"
+  "The message text is normalized, retaining the sender:"
   """
 val NON_LETTER_PATTERN = Regex(\"""[^\\p{L}]+\""")
 fun normalizeText(msg: ChatMessage): SenderAndText =
