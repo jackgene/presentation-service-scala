@@ -50,7 +50,7 @@ wordCloud heading subheading =
           [ ul []
             [ li [] [ text "Think of up to three words you associate with Functional Reactive Streaming" ]
             , li [] [ text "Send it in by Zoom chat" ]
-            , li [] [ text "You can send as many words as you want, but only the last three words will be accepted" ]
+            , li [] [ text "Send as many words as you want, but only the last three words will be counted" ]
             ]
           ]
         , div
