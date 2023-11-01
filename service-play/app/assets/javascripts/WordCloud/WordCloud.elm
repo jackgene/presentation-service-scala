@@ -19,6 +19,8 @@ type alias ChatMessage =
 type alias ExtractedWord =
   { word : String
   , isValid : Bool
+  , wordsBySender : Dict String (List String)
+  , countsByWord : Dict String Int
   }
 
 
@@ -26,8 +28,6 @@ type alias Event =
   { chatMessage : ChatMessage
   , normalizedText : String
   , words : List ExtractedWord
-  , wordsBySender : Dict String (List String)
-  , countsByWord : Dict String Int
   }
 
 
@@ -47,19 +47,19 @@ chatMessageDecoder =
 
 extractedWordDecoder : Decoder ExtractedWord
 extractedWordDecoder =
-  Decode.map2 ExtractedWord
+  Decode.map4 ExtractedWord
   ( Decode.field "word" Decode.string )
   ( Decode.field "isValid" Decode.bool )
+  ( Decode.field "wordsBySender" ( Decode.dict ( Decode.list Decode.string ) ) )
+  ( Decode.field "countsByWord" ( Decode.dict Decode.int ) )
 
 
 chatMessageAndTokensDecoder : Decoder Event
 chatMessageAndTokensDecoder =
-  Decode.map5 Event
+  Decode.map3 Event
   ( Decode.field "chatMessage" chatMessageDecoder )
   ( Decode.field "normalizedText" Decode.string )
   ( Decode.field "words" ( Decode.list extractedWordDecoder ) )
-  ( Decode.field "wordsBySender" ( Decode.dict ( Decode.list Decode.string ) ) )
-  ( Decode.field "countsByWord" ( Decode.dict Decode.int ) )
 
 
 wordCountsDecoder : Decoder WordCounts
