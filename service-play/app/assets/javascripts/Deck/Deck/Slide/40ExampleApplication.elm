@@ -654,7 +654,9 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                                     ::( let
                                           words : List String
                                           words =
-                                            counts.history |> List.concatMap .words |> List.map .word
+                                            counts.history
+                                            |> List.concatMap ( \histElem -> histElem.words |> List.reverse )
+                                            |> List.map .word
                                         in
                                         List.reverse
                                         ( Tuple.first
