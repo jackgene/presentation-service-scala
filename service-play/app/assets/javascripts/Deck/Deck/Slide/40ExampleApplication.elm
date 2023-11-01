@@ -629,7 +629,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                                                       [ text
                                                         ( String.join ", "
                                                           ( Maybe.withDefault []
-                                                            ( Dict.get sender event.wordsBySender )
+                                                            ( Dict.get sender extractedWord.wordsBySender )
                                                           )
                                                         )
                                                       ]
@@ -662,7 +662,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                                             ( \word (nodes, displayedWords) ->
                                               let
                                                 count : Int
-                                                count = Maybe.withDefault 0 (Dict.get word event.countsByWord)
+                                                count = Maybe.withDefault 0 (Dict.get word extractedWord.countsByWord)
                                               in
                                               if count == 0 || Set.member word displayedWords then (nodes, displayedWords)
                                               else
