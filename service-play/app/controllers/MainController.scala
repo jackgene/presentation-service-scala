@@ -66,61 +66,61 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
       TranscriptionBroadcaster(), "transcriptions"
     )
 
-  def languagePollEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { _: RequestHeader =>
+  def languagePollEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { (_: RequestHeader) =>
     Flow.fromSinkAndSource(
       Sink.ignore,
-      ActorFlow.sourceBehavior { webSocketClient: ActorRef[JsValue] =>
+      ActorFlow.sourceBehavior { (webSocketClient: ActorRef[JsValue]) =>
         SendersByTokenCounter.JsonPublisher(webSocketClient, languagePoll)
       }
     )
   }
 
-  def wordCloudEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { _: RequestHeader =>
+  def wordCloudEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { (_: RequestHeader) =>
     Flow.fromSinkAndSource(
       Sink.ignore,
-      ActorFlow.sourceBehavior { webSocketClient: ActorRef[JsValue] =>
+      ActorFlow.sourceBehavior { (webSocketClient: ActorRef[JsValue]) =>
         SendersByTokenCounter.JsonPublisher(webSocketClient, wordCloud)
       }
     )
   }
 
-  def chattiestEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { _: RequestHeader =>
+  def chattiestEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { (_: RequestHeader) =>
     Flow.fromSinkAndSource(
       Sink.ignore,
-      ActorFlow.sourceBehavior { webSocketClient: ActorRef[JsValue] =>
+      ActorFlow.sourceBehavior { (webSocketClient: ActorRef[JsValue]) =>
         MessagesBySenderCounter.JsonPublisher(webSocketClient, chattiest)
       }
     )
   }
 
-  def questionEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { _: RequestHeader =>
+  def questionEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { (_: RequestHeader) =>
     Flow.fromSinkAndSource(
       Sink.ignore,
-      ActorFlow.sourceBehavior { webSocketClient: ActorRef[JsValue] =>
+      ActorFlow.sourceBehavior { (webSocketClient: ActorRef[JsValue]) =>
         ModeratedTextCollector.JsonPublisher(webSocketClient, questions)
       }
     )
   }
 
-  def transcriptionEvent(): WebSocket = WebSocket.accept[JsValue, JsValue] { _: RequestHeader =>
+  def transcriptionEvent(): WebSocket = WebSocket.accept[JsValue, JsValue] { (_: RequestHeader) =>
     Flow.fromSinkAndSource(
       Sink.ignore,
-      ActorFlow.sourceBehavior { webSocketClient: ActorRef[JsValue] =>
+      ActorFlow.sourceBehavior { (webSocketClient: ActorRef[JsValue]) =>
         TranscriptionBroadcaster.JsonPublisher(webSocketClient, transcriptions)
       }
     )
   }
 
-  def moderationEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { _: RequestHeader =>
+  def moderationEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { (_: RequestHeader) =>
     Flow.fromSinkAndSource(
       Sink.ignore,
-      ActorFlow.sourceBehavior { webSocketClient: ActorRef[JsValue] =>
+      ActorFlow.sourceBehavior { (webSocketClient: ActorRef[JsValue]) =>
         ChatMessageBroadcaster.JsonPublisher(webSocketClient, rejectedMessages)
       }
     )
   }
 
-  def chat(route: String, text: String): Action[Unit] = Action(parse.empty) { _: Request[Unit] =>
+  def chat(route: String, text: String): Action[Unit] = Action(parse.empty) { (_: Request[Unit]) =>
     route match {
       case RoutePattern(sender, recipient) =>
         chatMessages ! ChatMessageBroadcaster.Record(ChatMessage(sender, recipient, text))
@@ -130,7 +130,7 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
     }
   }
 
-  def reset(): Action[Unit] = Action(parse.empty) { _: Request[Unit] =>
+  def reset(): Action[Unit] = Action(parse.empty) { (_: Request[Unit]) =>
     languagePoll ! SendersByTokenCounter.Reset
     wordCloud ! SendersByTokenCounter.Reset
     chattiest ! MessagesBySenderCounter.Reset
@@ -138,7 +138,7 @@ class MainController (cc: ControllerComponents, cfg: Configuration)
     NoContent
   }
 
-  def transcription(text: String): Action[Unit] = Action(parse.empty) { _: Request[Unit] =>
+  def transcription(text: String): Action[Unit] = Action(parse.empty) { (_: Request[Unit]) =>
     transcriptions ! TranscriptionBroadcaster.NewTranscriptionText(text)
     NoContent
   }

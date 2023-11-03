@@ -11,11 +11,11 @@ import play.api.libs.json.{JsValue, Json, Writes}
 object JsonWriter {
   def apply[T](destination: ActorRef[JsValue])(
     implicit writes: Writes[T]
-  ): Behavior[T] = Behaviors.setup { ctx: ActorContext[T] =>
+  ): Behavior[T] = Behaviors.setup { (ctx: ActorContext[T]) =>
     ctx.watch(destination)
 
     Behaviors.
-      receiveMessage[T] { message: T =>
+      receiveMessage[T] { (message: T) =>
         destination ! Json.toJson(message)
         Behaviors.same
       }.

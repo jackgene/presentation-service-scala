@@ -69,7 +69,7 @@ object MessagesBySenderCounter {
 
   def apply(
     chatMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command]
-  ): Behavior[Command] = Behaviors.setup { ctx: ActorContext[Command] =>
+  ): Behavior[Command] = Behaviors.setup { (ctx: ActorContext[Command]) =>
     chatMessageBroadcaster ! ChatMessageBroadcaster.Subscribe(
       ctx.messageAdapter {
         case ChatMessageBroadcaster.New(chatMessage: ChatMessage) => Record(chatMessage)
@@ -87,7 +87,7 @@ object MessagesBySenderCounter {
 
     def apply(
       subscriber: ActorRef[JsValue], counter: ActorRef[Command]
-    ): Behavior[Event] = Behaviors.setup { ctx: ActorContext[Event] =>
+    ): Behavior[Event] = Behaviors.setup { (ctx: ActorContext[Event]) =>
       ctx.watch(counter)
       val rateLimitedCounter = ctx.spawn(
         RateLimiter(ctx.self, MinPeriodBetweenMessages), "rate-limiter"
