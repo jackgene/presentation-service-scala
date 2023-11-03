@@ -101,7 +101,7 @@ class FifoBoundedSetProp extends CommonProp {
   property("add and addAll produces identical effects given up to maxSize identical input") {
     forAll(
       "elements" |: Gen.nonEmptyListOf(Arbitrary.arbitrary[Int])
-    ) { elements: Seq[Int] =>
+    ) { (elements: Seq[Int]) =>
       // Set up
       val empty = FifoBoundedSet[Int](elements.size)
 

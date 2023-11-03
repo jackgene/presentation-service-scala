@@ -30,7 +30,7 @@ object ModeratedTextCollector {
   def apply(
     chatMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command],
     rejectedMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command]
-  ): Behavior[Command] = Behaviors.setup { ctx =>
+  ): Behavior[Command] = Behaviors.setup { (ctx: ActorContext[Command]) =>
     new ModeratedTextCollector(
       chatMessageBroadcaster, rejectedMessageBroadcaster,
       ctx.messageAdapter[ChatMessageBroadcaster.Event] {
@@ -45,7 +45,7 @@ object ModeratedTextCollector {
   object JsonPublisher {
     def apply(
       subscriber: ActorRef[JsValue], moderatedTextCollector: ActorRef[Command]
-    ): Behavior[Event] = Behaviors.setup { ctx: ActorContext[Event] =>
+    ): Behavior[Event] = Behaviors.setup { (ctx: ActorContext[Event]) =>
       ctx.watch(moderatedTextCollector)
       moderatedTextCollector ! Subscribe(ctx.self)
 

@@ -62,7 +62,7 @@ object TranscriptionBroadcaster {
   object JsonPublisher {
     def apply(
       subscriber: ActorRef[JsValue], broadcaster: ActorRef[Command]
-    ): Behavior[Event] = Behaviors.setup { ctx: ActorContext[Event] =>
+    ): Behavior[Event] = Behaviors.setup { (ctx: ActorContext[Event]) =>
       ctx.watch(broadcaster)
       broadcaster ! Subscribe(ctx.self)
 

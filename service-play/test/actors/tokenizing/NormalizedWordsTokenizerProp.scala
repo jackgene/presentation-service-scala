@@ -15,7 +15,7 @@ class NormalizedWordsTokenizerProp extends CommonProp {
       val actualTokens: Seq[String] = instance(text)
 
       // Verify
-      assert(actualTokens.forall { _.forall { c: Char => c == '-' || c.isLower } })
+      assert(actualTokens.forall { _.forall { (c: Char) => c == '-' || c.isLower } })
     }
   }
 

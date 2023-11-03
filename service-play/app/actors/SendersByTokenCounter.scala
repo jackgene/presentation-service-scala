@@ -36,7 +36,7 @@ object SendersByTokenCounter {
     extractTokens: Tokenizer, tokensPerSender: Int,
     chatMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command],
     rejectedMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command]
-  ): Behavior[Command] = Behaviors.setup { ctx =>
+  ): Behavior[Command] = Behaviors.setup { (ctx: ActorContext[Command]) =>
     new SendersByTokenCounter(
       extractTokens, tokensPerSender,
       chatMessageBroadcaster, rejectedMessageBroadcaster,
@@ -54,7 +54,7 @@ object SendersByTokenCounter {
 
     def apply(
       subscriber: ActorRef[JsValue], counter: ActorRef[Command]
-    ): Behavior[Event] = Behaviors.setup { ctx: ActorContext[Event] =>
+    ): Behavior[Event] = Behaviors.setup { (ctx: ActorContext[Event]) =>
       ctx.watch(counter)
       val rateLimitedCounter = ctx.spawn(
         RateLimiter(ctx.self, MinPeriodBetweenMessages), "rate-limiter"

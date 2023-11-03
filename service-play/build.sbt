@@ -1,6 +1,6 @@
 name := "presentation-service-play"
 
-scalaVersion := "2.13.8"
+scalaVersion := "2.13.12"
 
 scalacOptions ++= Seq(
   "-Xsource:3",
@@ -34,13 +34,10 @@ scalacOptions ++= Seq(
   "-Xlint:valpattern"
 )
 
-libraryDependencies += guice
 libraryDependencies += ws
-libraryDependencies += "com.google.inject" % "guice" % "5.1.0"
-libraryDependencies += "com.google.inject.extensions" % "guice-assistedinject" % "5.1.0"
 libraryDependencies += "org.scalatestplus" %% "scalacheck-1-14" % "3.1.1.0" % Test
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
-libraryDependencies += "com.typesafe.akka" %% "akka-stream-typed" % "2.6.20"
+libraryDependencies += "com.typesafe.akka" %% "akka-stream-typed" % "2.6.21"
 
 // Forward all system properties to forked tests
 Test / javaOptions ++= {
@@ -56,7 +53,7 @@ PlayKeys.devSettings += "play.server.http.idleTimeout" -> "900s"
 val elmMakeDeck = taskKey[Seq[File]]("elm-make-deck")
 
 elmMakeDeck := {
-  import scala.sys.process._
+  import scala.sys.process.*
   import com.typesafe.sbt.web.LineBasedProblem
   import play.sbt.PlayExceptions.CompilationException
 
@@ -131,7 +128,7 @@ Assets / sourceGenerators += elmMakeDeck.taskValue
 val elmMakeModerator = taskKey[Seq[File]]("elm-make-moedrator")
 
 elmMakeModerator := {
-  import scala.sys.process._
+  import scala.sys.process.*
   import com.typesafe.sbt.web.LineBasedProblem
   import play.sbt.PlayExceptions.CompilationException
 
@@ -206,7 +203,7 @@ Assets / sourceGenerators += elmMakeModerator.taskValue
 val elmMakeTranscriber = taskKey[Seq[File]]("elm-make-transcriber")
 
 elmMakeTranscriber := {
-  import scala.sys.process._
+  import scala.sys.process.*
   import com.typesafe.sbt.web.LineBasedProblem
   import play.sbt.PlayExceptions.CompilationException
 

@@ -33,12 +33,12 @@ package object adapter {
         toMat(Sink.asPublisher(false))(Keep.both).
         run()
       factory.spawnAnonymous(
-        Behaviors.setup { ctx: ActorContext[Out] =>
+        Behaviors.setup { (ctx: ActorContext[Out]) =>
           ctx.watch(publisherActor)
           ctx.spawnAnonymous(behavior(ctx.self))
 
           Behaviors.
-            receiveMessage { out: Out =>
+            receiveMessage { (out: Out) =>
               publisherActor ! Some(out)
               Behaviors.same[Out]
             }.

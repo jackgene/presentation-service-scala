@@ -12,7 +12,7 @@ class MultiSetProp extends CommonProp {
         element: String <- Gen.alphaLowerStr
         count: Int <- Gen.posNum[Int]
       } yield (element, count)
-    ).map { elementsAndCounts: List[(String, Int)] =>
+    ).map { (elementsAndCounts: List[(String, Int)]) =>
       Random.shuffle(
         for {
           (value: String, count: Int) <- elementsAndCounts
@@ -43,7 +43,7 @@ class MultiSetProp extends CommonProp {
       )
       assert(
         instance.elementsByCount.forall {
-          case (count: Int, elements: Seq[String]) => elements.forall { element: String =>
+          case (count: Int, elements: Seq[String]) => elements.forall { (element: String) =>
             instance.countsByElement(element) == count
           }
         }
@@ -72,7 +72,7 @@ class MultiSetProp extends CommonProp {
   }
 
   property("most recently incremented element is the last of elements by count") {
-    forAll("elements" |: duplicativeElements) { elements: Seq[String] =>
+    forAll("elements" |: duplicativeElements) { (elements: Seq[String]) =>
       elements.foldLeft(MultiSet[String]()) {
         (accum: MultiSet[String], element: String) =>
           val nextAccum: MultiSet[String] = accum + element
@@ -84,7 +84,7 @@ class MultiSetProp extends CommonProp {
   }
 
   property("most recently decremented element is the first of elements by count") {
-    forAll("elements" |: duplicativeElements) { elements: Seq[String] =>
+    forAll("elements" |: duplicativeElements) { (elements: Seq[String]) =>
       val instance: MultiSet[String] = elements.foldLeft(MultiSet[String]()) {
         (accum: MultiSet[String], element: String) => accum + element
       }
