@@ -39,12 +39,8 @@ libraryDependencies += "org.scalatestplus" %% "scalacheck-1-14" % "3.1.1.0" % Te
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
 libraryDependencies += "com.typesafe.akka" %% "akka-stream-typed" % "2.6.21"
 
-// Forward all system properties to forked tests
-Test / javaOptions ++= {
-  sys.props.toList.map {
-    case (key, value) => s"-D$key=$value"
-  }
-}
+// Class path became too long (?) after upgrading to Play Framework 2.9.0
+Test / fork := false
 
 PlayKeys.devSettings += "play.server.http.port" -> "8973"
 PlayKeys.devSettings += "play.server.http.idleTimeout" -> "900s"
