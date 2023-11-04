@@ -1,8 +1,8 @@
 package actors.tokenizing
 
-import org.scalatestplus.play.PlaySpec
+import org.scalatest.wordspec.AnyWordSpec
 
-class MappedKeywordsTokenizerSpec extends PlaySpec {
+class MappedKeywordsTokenizerSpec extends AnyWordSpec {
   val testText: String = "Lorem ipsum dolor sit amet!"
 
   "A MappedKeywordsTokenizer" when {

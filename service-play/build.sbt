@@ -7,8 +7,6 @@ scalacOptions ++= Seq(
   "-Xfatal-warnings"
 )
 
-libraryDependencies += "org.scalatestplus" %% "scalacheck-1-17" % "3.2.17.0" % Test
-libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "6.0.0" % Test
 libraryDependencies += "com.typesafe.akka" %% "akka-stream-typed" % "2.6.21"
 
 // Class path became too long (?) after upgrading to Play Framework 2.9.0

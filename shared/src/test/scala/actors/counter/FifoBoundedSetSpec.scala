@@ -1,8 +1,8 @@
 package actors.counter
 
-import org.scalatestplus.play.PlaySpec
+import org.scalatest.wordspec.AnyWordSpec
 
-class FifoBoundedSetSpec extends PlaySpec {
+class FifoBoundedSetSpec extends AnyWordSpec {
   "A FifoBoundedSet of size 2" when {
     val empty: FifoBoundedSet[String] = FifoBoundedSet(2)
 

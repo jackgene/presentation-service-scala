@@ -1,8 +1,8 @@
 package actors.tokenizing
 
-import org.scalatestplus.play.PlaySpec
+import org.scalatest.wordspec.AnyWordSpec
 
-class NormalizedWordsTokenizerSpec extends PlaySpec {
+class NormalizedWordsTokenizerSpec extends AnyWordSpec {
   val testAsciiText: String = "#hashtag hyphenated-word-  invalid_symbols?! YOLO Yo!fomo"
   val testUnicodeText: String = "Schrödinger's smol little 🐱 (小猫)!"
   val testWordLengthText: String = "i am not your large teapot"
