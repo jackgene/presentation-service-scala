@@ -1,4 +1,4 @@
-package actors.counter
+package com.jackleow.presentation.collection
 
 import common.CommonProp
 import org.scalacheck.{Arbitrary, Gen}

@@ -3,12 +3,12 @@ package controllers
 import actors.*
 import actors.ChatMessageBroadcaster.ChatMessage
 import actors.adapter.*
-import actors.tokenizing.{MappedKeywordsTokenizer, NormalizedWordsTokenizer}
 import akka.actor.ActorSystem
 import akka.actor.typed.ActorRef
 import akka.actor.typed.scaladsl.adapter.*
 import akka.stream.Materializer
 import akka.stream.scaladsl.{Flow, Sink}
+import com.jackleow.presentation.tokenizing.{MappedKeywordsTokenizer, NormalizedWordsTokenizer}
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.libs.streams.ActorFlow
