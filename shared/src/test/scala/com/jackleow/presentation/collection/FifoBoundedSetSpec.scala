@@ -2,29 +2,27 @@ package com.jackleow.presentation.collection
 
 import org.scalatest.wordspec.AnyWordSpec
 
-class FifoBoundedSetSpec extends AnyWordSpec {
-  "A FifoBoundedSet of size 2" when {
+class FifoBoundedSetSpec extends AnyWordSpec:
+  "A FifoBoundedSet of size 2" when:
     val empty: FifoBoundedSet[String] = FifoBoundedSet(2)
 
-    "no element has been added" must {
+    "no element has been added" must:
       // Set up
       val instance: FifoBoundedSet[String] = empty
 
-      "be empty" in {
+      "be empty" in:
         // Test & Verify
         assert(instance.toSeq.isEmpty)
-      }
 
-      "accept 1 new element without evicting" in {
+      "accept 1 new element without evicting" in:
         // Test
         val (actualUpdatedInstance, actualEffect) = instance.add("test")
 
         // Verify
         assert(actualEffect.contains(FifoBoundedSet.Added[String]("test")))
         assert(actualUpdatedInstance.toSeq == Seq("test"))
-      }
 
-      "accept 2 new elements without evicting" in {
+      "accept 2 new elements without evicting" in:
         // Test
         val (actualUpdatedInstance, actualEffects) =
           instance.addAll(Seq("test-1", "test-2"))
@@ -37,9 +35,8 @@ class FifoBoundedSetSpec extends AnyWordSpec {
           )
         )
         assert(actualUpdatedInstance.toSeq == Seq("test-1", "test-2"))
-      }
 
-      "accept 3 new elements ignoring the first" in {
+      "accept 3 new elements ignoring the first" in:
         // Test
         val (actualUpdatedInstance, actualEffects) =
           instance.addAll(
@@ -58,37 +55,32 @@ class FifoBoundedSetSpec extends AnyWordSpec {
           )
         )
         assert(actualUpdatedInstance.toSeq == Seq("test-2", "test-3"))
-      }
-    }
 
-    "1 element has been added" must {
+    "1 element has been added" must:
       // Set up
       val (instance: FifoBoundedSet[String], _) = empty.add("test-1")
 
-      "contain the element" in {
+      "contain the element" in:
         // Test & Verify
         assert(instance.toSeq == Seq("test-1"))
-      }
 
-      "accept 1 new element without evicting" in {
+      "accept 1 new element without evicting" in:
         // Test
         val (actualUpdatedInstance, actualEffect) = instance.add("test-2")
 
         // Verify
         assert(actualEffect.contains(FifoBoundedSet.Added[String]("test-2")))
         assert(actualUpdatedInstance.toSeq == Seq("test-1", "test-2"))
-      }
 
-      "not accept the existing element again" in {
+      "not accept the existing element again" in:
         // Test
         val (actualUpdatedInstance, actualEffect) = instance.add("test-1")
 
         // Verify
         assert(actualEffect.isEmpty)
         assert(actualUpdatedInstance.toSeq == Seq("test-1"))
-      }
 
-      "accept 2 new elements evicting the existing element" in {
+      "accept 2 new elements evicting the existing element" in:
         // Test
         val (actualUpdatedInstance, actualEffects) =
           instance.addAll(Seq("test-2", "test-3"))
@@ -101,37 +93,32 @@ class FifoBoundedSetSpec extends AnyWordSpec {
           )
         )
         assert(actualUpdatedInstance.toSeq == Seq("test-2", "test-3"))
-      }
-    }
 
-    "2 elements have been added" must {
+    "2 elements have been added" must:
       // Set up
       val (instance: FifoBoundedSet[String], _) = empty.addAll(Seq("test-1", "test-2"))
 
-      "contain the elements" in {
+      "contain the elements" in:
         // Test & Verify
         assert(instance.toSeq == Seq("test-1", "test-2"))
-      }
 
-      "accept 1 new element evicting the first existing element" in {
+      "accept 1 new element evicting the first existing element" in:
         // Test
         val (actualUpdatedInstance, actualEffect) = instance.add("test-3")
 
         // Verify
         assert(actualEffect.contains(FifoBoundedSet.AddedEvicting("test-3", "test-1")))
         assert(actualUpdatedInstance.toSeq == Seq("test-2", "test-3"))
-      }
 
-      "not accept an existing element again, but update its insertion order" in {
+      "not accept an existing element again, but update its insertion order" in:
         // Test
         val (actualUpdatedInstance, actualEffect) = instance.add("test-1")
 
         // Verify
         assert(actualEffect.isEmpty)
         assert(actualUpdatedInstance.toSeq == Seq("test-2", "test-1"))
-      }
 
-      "accept 2 new elements evicting all existing elements" in {
+      "accept 2 new elements evicting all existing elements" in:
         // Test
         val (actualUpdatedInstance, actualEffects) =
           instance.addAll(Seq("test-3", "test-4"))
@@ -144,9 +131,8 @@ class FifoBoundedSetSpec extends AnyWordSpec {
           )
         )
         assert(actualUpdatedInstance.toSeq == Seq("test-3", "test-4"))
-      }
 
-      "not accept 2 existing elements, but update their insertion order" in {
+      "not accept 2 existing elements, but update their insertion order" in:
         // Test
         val (actualUpdatedInstance, actualEffects) =
           instance.addAll(Seq("test-2", "test-1"))
@@ -154,9 +140,8 @@ class FifoBoundedSetSpec extends AnyWordSpec {
         // Verify
         assert(actualEffects.isEmpty)
         assert(actualUpdatedInstance.toSeq == Seq("test-2", "test-1"))
-      }
 
-      "accept a new element, but not an existing element, updating the insertion order of the existing element" in {
+      "accept a new element, but not an existing element, updating the insertion order of the existing element" in:
         // Test
         val (actualUpdatedInstance, actualEffects) =
           instance.addAll(
@@ -169,9 +154,8 @@ class FifoBoundedSetSpec extends AnyWordSpec {
         // Verify
         assert(actualEffects == Seq(FifoBoundedSet.AddedEvicting("test-3", "test-2")))
         assert(actualUpdatedInstance.toSeq == Seq("test-1", "test-3"))
-      }
 
-      "accept only the last two of four elements, evicting all existing elements" in {
+      "accept only the last two of four elements, evicting all existing elements" in:
         // Test
         val (actualUpdatedInstance, actualEffects) =
           instance.addAll(
@@ -191,9 +175,8 @@ class FifoBoundedSetSpec extends AnyWordSpec {
           )
         )
         assert(actualUpdatedInstance.toSeq == Seq("test-5", "test-6"))
-      }
 
-      "not accept when the last two of four elements are identical to existing elements" in {
+      "not accept when the last two of four elements are identical to existing elements" in:
         // Test
         val (actualUpdatedInstance, actualEffects) =
           instance.addAll(
@@ -208,7 +191,3 @@ class FifoBoundedSetSpec extends AnyWordSpec {
         // Verify
         assert(actualEffects.isEmpty)
         assert(actualUpdatedInstance.toSeq == Seq("test-1", "test-2"))
-      }
-    }
-  }
-}

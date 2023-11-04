@@ -3,43 +3,37 @@ package com.jackleow.presentation.collection
 import com.jackleow.presentation.CommonProp
 import org.scalacheck.{Arbitrary, Gen}
 
-class FifoBoundedSetProp extends CommonProp {
-  property("never contain more elements than maxSize") {
+class FifoBoundedSetProp extends CommonProp:
+  property("never contain more elements than maxSize"):
     forAll(
       "maxSize"  |: Gen.posNum[Int],
       "elements" |: Arbitrary.arbitrary[Seq[Int]]
-    ) { (maxSize: Int, elements: Seq[Int]) =>
-      whenever(maxSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
+    ): (maxSize: Int, elements: Seq[Int]) =>
+      whenever(maxSize > 0): // When shrinking ScalaCheck can go beyond "posNum" range
         // Set up & Test
         val (instance, _) = FifoBoundedSet[Int](maxSize).addAll(elements)
 
         // Verify
         assert(instance.toSeq.size <= maxSize)
-      }
-    }
-  }
 
-  property("always include the most recently added elements") {
+  property("always include the most recently added elements"):
     forAll(
       "maxSize"  |: Gen.posNum[Int],
       "elements" |: Arbitrary.arbitrary[Seq[Int]]
-    ) { (maxSize: Int, elements: Seq[Int]) =>
-      whenever(maxSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
+    ): (maxSize: Int, elements: Seq[Int]) =>
+      whenever(maxSize > 0): // When shrinking ScalaCheck can go beyond "posNum" range
         // Set up & Test
         val (instance, _) = FifoBoundedSet[Int](maxSize).addAll(elements)
 
         // Verify
         assert(elements.takeRight(maxSize).toSet subsetOf instance.toSeq.toSet)
-      }
-    }
-  }
 
-  property("only evict the least recently added elements") {
+  property("only evict the least recently added elements"):
     forAll(
       "maxSize"  |: Gen.posNum[Int],
       "elements" |: Arbitrary.arbitrary[Seq[Int]]
-    ) { (maxSize: Int, elements: Seq[Int]) =>
-      whenever(maxSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
+    ): (maxSize: Int, elements: Seq[Int]) =>
+      whenever(maxSize > 0): // When shrinking ScalaCheck can go beyond "posNum" range
         // Set up & Test
         val (_, actualEffects: Seq[FifoBoundedSet.Effect[Int]]) =
           FifoBoundedSet[Int](maxSize).addAll(elements)
@@ -51,14 +45,11 @@ class FifoBoundedSetProp extends CommonProp {
 
         // Verify
         assert(actualEvictions subsetOf elements.dropRight(maxSize).toSet)
-      }
-    }
-  }
 
-  property("never evict when not full") {
+  property("never evict when not full"):
     forAll(
       "elements" |: Gen.nonEmptyListOf(Arbitrary.arbitrary[Int])
-    ) { (elements: Seq[Int]) =>
+    ): (elements: Seq[Int]) =>
       // Set up & Test
       val (instance, actualEffects: Seq[FifoBoundedSet.Effect[Int]]) =
         FifoBoundedSet[Int](elements.size).addAll(elements)
@@ -70,16 +61,14 @@ class FifoBoundedSetProp extends CommonProp {
         }
       assert(instance.toSeq.toSet == elements.toSet)
       assert(actualEvictions.isEmpty)
-    }
-  }
 
   // add/addAll Equivalence
-  property("add and addAll are equal given identical input") {
+  property("add and addAll are equal given identical input"):
     forAll(
       "maxSize"  |: Gen.posNum[Int],
       "elements" |: Arbitrary.arbitrary[Seq[Int]]
-    ) { (maxSize: Int, elements: Seq[Int]) =>
-      whenever(maxSize > 0) { // When shrinking ScalaCheck can go beyond "posNum" range
+    ): (maxSize: Int, elements: Seq[Int]) =>
+      whenever(maxSize > 0): // When shrinking ScalaCheck can go beyond "posNum" range
         // Set up
         val empty = FifoBoundedSet[Int](maxSize)
 
@@ -94,14 +83,11 @@ class FifoBoundedSetProp extends CommonProp {
 
         // Verify
         assert(instanceUsingAddAll == instanceUsingAdd)
-      }
-    }
-  }
 
-  property("add and addAll produces identical effects given up to maxSize identical input") {
+  property("add and addAll produces identical effects given up to maxSize identical input"):
     forAll(
       "elements" |: Gen.nonEmptyListOf(Arbitrary.arbitrary[Int])
-    ) { (elements: Seq[Int]) =>
+    ): (elements: Seq[Int]) =>
       // Set up
       val empty = FifoBoundedSet[Int](elements.size)
 
@@ -117,6 +103,3 @@ class FifoBoundedSetProp extends CommonProp {
 
       // Verify
       assert(actualEffectsAddAll == actualEffectsAdd)
-    }
-  }
-}

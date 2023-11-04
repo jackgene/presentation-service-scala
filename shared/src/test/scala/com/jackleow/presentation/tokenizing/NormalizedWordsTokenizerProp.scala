@@ -3,11 +3,11 @@ package com.jackleow.presentation.tokenizing
 import com.jackleow.presentation.CommonProp
 import org.scalacheck.Gen
 
-class NormalizedWordsTokenizerProp extends CommonProp {
-  property("only extract hyphenated lower-case tokens") {
+class NormalizedWordsTokenizerProp extends CommonProp:
+  property("only extract hyphenated lower-case tokens"):
     forAll(
       "text" |: Gen.asciiStr
-    ) { (text: String) =>
+    ): (text: String) =>
       // Set up
       val instance = new NormalizedWordsTokenizer()
 
@@ -16,14 +16,12 @@ class NormalizedWordsTokenizerProp extends CommonProp {
 
       // Verify
       assert(actualTokens.forall { _.forall { (c: Char) => c == '-' || c.isLower } })
-    }
-  }
 
-  property("never extract stop words") {
+  property("never extract stop words"):
     forAll(
       "stopWords" |: Gen.nonEmptyContainerOf[Set, String](Gen.nonEmptyListOf[Char](Gen.alphaLowerChar).map(_.mkString)),
       "text"      |: Gen.asciiStr
-    ) { (stopWords: Set[String], text: String) =>
+    ): (stopWords: Set[String], text: String) =>
       // Set up
       val instance = new NormalizedWordsTokenizer(stopWords)
 
@@ -32,14 +30,12 @@ class NormalizedWordsTokenizerProp extends CommonProp {
 
       // Verify
       assert(actualTokens.forall { !stopWords.contains(_) })
-    }
-  }
 
-  property("only extract words longer than minWordLength") {
+  property("only extract words longer than minWordLength"):
     forAll(
       "minWordLength" |: Gen.posNum[Int],
       "text"          |: Gen.asciiStr
-    ) { (minWordLength: Int, text: String) =>
+    ): (minWordLength: Int, text: String) =>
       // Set up
       val instance = new NormalizedWordsTokenizer(minWordLength = minWordLength)
 
@@ -48,14 +44,12 @@ class NormalizedWordsTokenizerProp extends CommonProp {
 
       // Verify
       assert(actualTokens.forall { _.length >= minWordLength })
-    }
-  }
 
-  property("only extract words shorter than maxWordLength") {
+  property("only extract words shorter than maxWordLength"):
     forAll(
       "maxWordLength" |: Gen.posNum[Int],
       "text"          |: Gen.asciiStr
-    ) { (maxWordLength: Int, text: String) =>
+    ): (maxWordLength: Int, text: String) =>
       // Set up
       val instance = new NormalizedWordsTokenizer(maxWordLength = maxWordLength)
 
@@ -64,6 +58,3 @@ class NormalizedWordsTokenizerProp extends CommonProp {
 
       // Verify
       assert(actualTokens.forall { _.length <= maxWordLength })
-    }
-  }
-}

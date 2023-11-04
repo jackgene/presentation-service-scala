@@ -3,21 +3,21 @@ package com.jackleow.presentation.tokenizing
 import com.jackleow.presentation.CommonProp
 import org.scalacheck.Gen
 
-class MappedKeywordsTokenizerProp extends CommonProp {
+class MappedKeywordsTokenizerProp extends CommonProp:
   val keywordsByRawToken: Gen[Map[String, String]] =
-    for {
+    for
       keysAndValues <- Gen.nonEmptyContainerOf[Set, (String, String)](
-        for {
+        for
           key: String <- Gen.nonEmptyListOf[Char](Gen.alphaLowerChar).map(_.mkString)
           value: String <- Gen.asciiStr
-        } yield (key, value)
+        yield (key, value)
       )
-    } yield keysAndValues.toMap
+    yield keysAndValues.toMap
 
-  property("extract all mapped tokens") {
+  property("extract all mapped tokens"):
     forAll(
       "keywordsByRawToken" |: keywordsByRawToken
-    ) { (keywordsByRawToken: Map[String, String]) =>
+    ): (keywordsByRawToken: Map[String, String]) =>
       // Set up
       val instance = new MappedKeywordsTokenizer(keywordsByRawToken)
 
@@ -26,14 +26,12 @@ class MappedKeywordsTokenizerProp extends CommonProp {
 
       // Verify
       assert(actualTokens.toSet == keywordsByRawToken.values.toSet)
-    }
-  }
 
-  property("only extract mapped tokens") {
+  property("only extract mapped tokens"):
     forAll(
       "keywordsByRawToken"  |: keywordsByRawToken,
       "text"                |: Gen.asciiStr
-    ) { (keywordsByRawToken: Map[String, String], text: String) =>
+    ): (keywordsByRawToken: Map[String, String], text: String) =>
       // Set up
       val instance = new MappedKeywordsTokenizer(keywordsByRawToken)
 
@@ -42,6 +40,3 @@ class MappedKeywordsTokenizerProp extends CommonProp {
 
       // Verify
       assert(actualTokens.toSet subsetOf keywordsByRawToken.values.toSet)
-    }
-  }
-}

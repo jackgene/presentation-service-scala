@@ -2,7 +2,7 @@ package com.jackleow.presentation.collection
 
 import org.scalatest.wordspec.AnyWordSpec
 
-class MultiSetSpec extends AnyWordSpec {
+class MultiSetSpec extends AnyWordSpec:
   "A MultiSet" must {
     val empty: MultiSet[String] = MultiSet()
 
@@ -111,4 +111,3 @@ class MultiSetSpec extends AnyWordSpec {
       assert(instance.elementsByCount.isEmpty)
     }
   }
-}
