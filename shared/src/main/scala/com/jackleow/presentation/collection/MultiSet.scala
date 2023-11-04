@@ -1,10 +1,11 @@
 package com.jackleow.presentation.collection
 
-object MultiSet {
+import scala.annotation.targetName
+
+object MultiSet:
   def apply[A](): MultiSet[A] = new MultiSet[A](
     Map[A, Int](), Map[Int, Seq[A]]()
   )
-}
 
 /**
  * Immutable data structure that tracks counts of anything.
@@ -19,14 +20,15 @@ object MultiSet {
 final class MultiSet[A] private[collection] (
   private[collection] val countsByElement: Map[A, Int],
   val elementsByCount: Map[Int, Seq[A]]
-) {
+):
   /**
    * Updated [[MultiSet]] with `elem` incremented.
    *
    * @param elem the element whose count is to be updated
    * @return updated copy
    */
-  def +(elem: A): MultiSet[A] = countsByElement.getOrElse(elem, 0) match {
+  @targetName("incl")
+  def +(elem: A): MultiSet[A] = countsByElement.getOrElse(elem, 0) match
     case Int.MaxValue => this
 
     case oldCount: Int =>
@@ -46,7 +48,6 @@ final class MultiSet[A] private[collection] (
           ).updated(newCount, newCountElems)
         }
       )
-  }
 
   /**
    * Updated [[MultiSet]] with `elem` decremented.
@@ -54,7 +55,8 @@ final class MultiSet[A] private[collection] (
    * @param elem the element whose count is to be updated
    * @return updated copy
    */
-  def -(elem: A): MultiSet[A] = countsByElement.get(elem) match {
+  @targetName("excl")
+  def -(elem: A): MultiSet[A] = countsByElement.get(elem) match
     case None => this
 
     case Some(oldCount: Int) =>
@@ -78,22 +80,18 @@ final class MultiSet[A] private[collection] (
           )
         }
       )
-  }
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[MultiSet[?]]
 
-  override def equals(other: Any): Boolean = other match {
+  override def equals(other: Any): Boolean = other match
     case that: MultiSet[?] =>
       (that canEqual this) &&
         countsByElement == that.countsByElement &&
         elementsByCount == that.elementsByCount
     case _ => false
-  }
 
-  override def hashCode(): Int = {
+  override def hashCode(): Int =
     val state = Seq(countsByElement, elementsByCount)
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
-  }
 
   override def toString = s"MultiSet($elementsByCount)"
-}

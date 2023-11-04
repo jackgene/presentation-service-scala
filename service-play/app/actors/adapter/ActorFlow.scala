@@ -13,41 +13,37 @@ import play.api.libs.streams.ActorFlow
 /**
  * Adapts Play Framework to typed Akka actors.
  */
-extension (ext: ActorFlow.type) {
+extension (ext: ActorFlow.type):
   def sourceBehavior[Out](
     behavior: ActorRef[Out] => Behavior[?],
     bufferSize: Int = 16,
     overflowStrategy: OverflowStrategy = OverflowStrategy.dropHead
-  )(using factory: ActorSystem): Source[Out, NotUsed] = {
+  )(using factory: ActorSystem): Source[Out, NotUsed] =
     val (
       sourceActor: ActorRef[Option[Out]], source: Source[Option[Out], NotUsed]
-    ) = ActorSource.
-      actorRef[Option[Out]](
+    ) = ActorSource
+      .actorRef[Option[Out]](
         completionMatcher = { case None => () },
         failureMatcher = PartialFunction.empty,
         bufferSize = bufferSize,
         overflowStrategy = overflowStrategy
-      ).
-      preMaterialize()
+      )
+      .preMaterialize()
     factory.spawnAnonymous(
-      Behaviors.setup { (ctx: ActorContext[Out]) =>
+      Behaviors.setup: (ctx: ActorContext[Out]) =>
         ctx.watch(sourceActor)
         ctx.spawnAnonymous(behavior(ctx.self))
 
-        Behaviors.
-          receiveMessage { (out: Out) =>
+        Behaviors
+          .receiveMessage: (out: Out) =>
             sourceActor ! Some(out)
             Behaviors.same[Out]
-          }.
-          receiveSignal {
+          .receiveSignal:
             case (_, Terminated(_)) => Behaviors.stopped
             case (_, PostStop) =>
               sourceActor ! None
               Behaviors.same
-          }
-      }
     )
 
-    source.collect { case Some(out) => out }
-  }
-}
+    source.collect:
+      case Some(out) => out

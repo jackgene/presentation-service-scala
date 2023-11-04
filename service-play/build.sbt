@@ -1,7 +1,5 @@
 name := "presentation-service-play"
 
-scalacOptions ++= Seq("-no-indent")
-
 libraryDependencies += "com.typesafe.akka" %% "akka-stream-typed" % "2.6.21"
 
 PlayKeys.devSettings += "play.server.http.port" -> "8973"

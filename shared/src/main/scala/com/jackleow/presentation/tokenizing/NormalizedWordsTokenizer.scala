@@ -3,18 +3,17 @@ package com.jackleow.presentation.tokenizing
 import scala.collection.immutable.ArraySeq
 import scala.util.matching.Regex
 
-object NormalizedWordsTokenizer {
+object NormalizedWordsTokenizer:
   private val ValidWordPattern: Regex = """(\p{L}+(?:-\p{L}+)*)""".r
   private val WordSeparatorPattern: Regex = """[^\p{L}\-]+""".r
 
   def apply(
     stopWords: Set[String] = Set(), minWordLength: Int, maxWordLength: Int
   ): Tokenizer = new NormalizedWordsTokenizer(stopWords, minWordLength, maxWordLength)
-}
 
 final class NormalizedWordsTokenizer private[tokenizing](
   stopWords: Set[String] = Set(), minWordLength: Int = 1, maxWordLength: Int = Int.MaxValue
-) extends Tokenizer {
+) extends Tokenizer:
   import NormalizedWordsTokenizer.*
 
   require(minWordLength >= 1, s"minWordLength ($minWordLength) must be at least 1")
@@ -33,17 +32,14 @@ final class NormalizedWordsTokenizer private[tokenizing](
 
   private val lowerCasedStopWords: Set[String] = stopWords.map(_.toLowerCase)
 
-  override def apply(text: String): Seq[String] = ArraySeq.
-    unsafeWrapArray(
+  override def apply(text: String): Seq[String] = ArraySeq
+    .unsafeWrapArray(
       WordSeparatorPattern.split(text.trim)
-    ).
-    map {
+    )
+    .map:
       _.toLowerCase.replaceAll("^-+", "").replaceAll("-+$", "")
-    }.
-    collect {
+    .collect:
       case ValidWordPattern(word: String) if
         minWordLength <= word.length && word.length <= maxWordLength &&
           !lowerCasedStopWords.contains(word)
       => word
-    }
-}

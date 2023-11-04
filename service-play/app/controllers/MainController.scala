@@ -25,87 +25,79 @@ final class MainController (
   questions: ActorRef[ModeratedTextCollector.Command],
   transcriptions: ActorRef[TranscriptionBroadcaster.Command],
   cc: ControllerComponents
-)(using system: ActorSystem) extends AbstractController(cc) {
+)(using system: ActorSystem) extends AbstractController(cc):
   private val RoutePattern: Regex = """(.*) to (Everyone|You)(?: \(Direct Message\))?""".r
   private val IgnoredRoutePattern: Regex = "You to .*".r
 
-  def languagePollEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { (_: RequestHeader) =>
-    Flow.fromSinkAndSource(
-      Sink.ignore,
-      ActorFlow.sourceBehavior { (webSocketClient: ActorRef[JsValue]) =>
-        SendersByTokenCounter.JsonPublisher(webSocketClient, languagePoll)
-      }
-    )
-  }
+  def languagePollEvent(): WebSocket =
+    WebSocket.accept[JsValue,JsValue]: (_: RequestHeader) =>
+      Flow.fromSinkAndSource(
+        Sink.ignore,
+        ActorFlow.sourceBehavior: (webSocketClient: ActorRef[JsValue]) =>
+          SendersByTokenCounter.JsonPublisher(webSocketClient, languagePoll)
+      )
 
-  def wordCloudEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { (_: RequestHeader) =>
-    Flow.fromSinkAndSource(
-      Sink.ignore,
-      ActorFlow.sourceBehavior { (webSocketClient: ActorRef[JsValue]) =>
-        SendersByTokenCounter.JsonPublisher(webSocketClient, wordCloud)
-      }
-    )
-  }
+  def wordCloudEvent(): WebSocket =
+    WebSocket.accept[JsValue,JsValue]: (_: RequestHeader) =>
+      Flow.fromSinkAndSource(
+        Sink.ignore,
+        ActorFlow.sourceBehavior: (webSocketClient: ActorRef[JsValue]) =>
+          SendersByTokenCounter.JsonPublisher(webSocketClient, wordCloud)
+      )
 
-  def chattiestEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { (_: RequestHeader) =>
-    Flow.fromSinkAndSource(
-      Sink.ignore,
-      ActorFlow.sourceBehavior { (webSocketClient: ActorRef[JsValue]) =>
-        MessagesBySenderCounter.JsonPublisher(webSocketClient, chattiest)
-      }
-    )
-  }
+  def chattiestEvent(): WebSocket =
+    WebSocket.accept[JsValue,JsValue]: (_: RequestHeader) =>
+      Flow.fromSinkAndSource(
+        Sink.ignore,
+        ActorFlow.sourceBehavior: (webSocketClient: ActorRef[JsValue]) =>
+          MessagesBySenderCounter.JsonPublisher(webSocketClient, chattiest)
+      )
 
-  def questionEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { (_: RequestHeader) =>
-    Flow.fromSinkAndSource(
-      Sink.ignore,
-      ActorFlow.sourceBehavior { (webSocketClient: ActorRef[JsValue]) =>
-        ModeratedTextCollector.JsonPublisher(webSocketClient, questions)
-      }
-    )
-  }
+  def questionEvent(): WebSocket =
+    WebSocket.accept[JsValue,JsValue]: (_: RequestHeader) =>
+      Flow.fromSinkAndSource(
+        Sink.ignore,
+        ActorFlow.sourceBehavior: (webSocketClient: ActorRef[JsValue]) =>
+          ModeratedTextCollector.JsonPublisher(webSocketClient, questions)
+      )
 
-  def transcriptionEvent(): WebSocket = WebSocket.accept[JsValue, JsValue] { (_: RequestHeader) =>
-    Flow.fromSinkAndSource(
-      Sink.ignore,
-      ActorFlow.sourceBehavior { (webSocketClient: ActorRef[JsValue]) =>
-        TranscriptionBroadcaster.JsonPublisher(webSocketClient, transcriptions)
-      }
-    )
-  }
+  def transcriptionEvent(): WebSocket =
+    WebSocket.accept[JsValue, JsValue]: (_: RequestHeader) =>
+      Flow.fromSinkAndSource(
+        Sink.ignore,
+        ActorFlow.sourceBehavior: (webSocketClient: ActorRef[JsValue]) =>
+          TranscriptionBroadcaster.JsonPublisher(webSocketClient, transcriptions)
+      )
 
-  def moderationEvent(): WebSocket = WebSocket.accept[JsValue,JsValue] { (_: RequestHeader) =>
-    Flow.fromSinkAndSource(
-      Sink.ignore,
-      ActorFlow.sourceBehavior { (webSocketClient: ActorRef[JsValue]) =>
-        ChatMessageBroadcaster.JsonPublisher(webSocketClient, rejectedMessages)
-      }
-    )
-  }
+  def moderationEvent(): WebSocket =
+    WebSocket.accept[JsValue,JsValue]: (_: RequestHeader) =>
+      Flow.fromSinkAndSource(
+        Sink.ignore,
+        ActorFlow.sourceBehavior: (webSocketClient: ActorRef[JsValue]) =>
+          ChatMessageBroadcaster.JsonPublisher(webSocketClient, rejectedMessages)
+      )
 
-  def chat(route: String, text: String): Action[Unit] = Action(parse.empty) { (_: Request[Unit]) =>
-    route match {
-      case RoutePattern(sender, recipient) =>
-        chatMessages ! ChatMessageBroadcaster.Command.Record(ChatMessage(sender, recipient, text))
-        NoContent
-      case IgnoredRoutePattern() => NoContent
-      case sender: String =>
-        // With larger Zoom meetings, the "route" is just the sender
-        chatMessages ! ChatMessageBroadcaster.Command.Record(ChatMessage(sender, "Everyone", text))
-        NoContent
-    }
-  }
+  def chat(route: String, text: String): Action[Unit] =
+    Action(parse.empty): (_: Request[Unit]) =>
+      route match
+        case RoutePattern(sender, recipient) =>
+          chatMessages ! ChatMessageBroadcaster.Command.Record(ChatMessage(sender, recipient, text))
+          NoContent
+        case IgnoredRoutePattern() => NoContent
+        case sender: String =>
+          // With larger Zoom meetings, the "route" is just the sender
+          chatMessages ! ChatMessageBroadcaster.Command.Record(ChatMessage(sender, "Everyone", text))
+          NoContent
 
-  def reset(): Action[Unit] = Action(parse.empty) { (_: Request[Unit]) =>
-    languagePoll ! SendersByTokenCounter.Command.Reset
-    wordCloud ! SendersByTokenCounter.Command.Reset
-    chattiest ! MessagesBySenderCounter.Command.Reset
-    questions ! ModeratedTextCollector.Command.Reset
-    NoContent
-  }
+  def reset(): Action[Unit] =
+    Action(parse.empty): (_: Request[Unit]) =>
+      languagePoll ! SendersByTokenCounter.Command.Reset
+      wordCloud ! SendersByTokenCounter.Command.Reset
+      chattiest ! MessagesBySenderCounter.Command.Reset
+      questions ! ModeratedTextCollector.Command.Reset
+      NoContent
 
-  def transcription(text: String): Action[Unit] = Action(parse.empty) { (_: Request[Unit]) =>
-    transcriptions ! TranscriptionBroadcaster.Command.NewTranscriptionText(text)
-    NoContent
-  }
-}
+  def transcription(text: String): Action[Unit] =
+    Action(parse.empty): (_: Request[Unit]) =>
+      transcriptions ! TranscriptionBroadcaster.Command.NewTranscriptionText(text)
+      NoContent

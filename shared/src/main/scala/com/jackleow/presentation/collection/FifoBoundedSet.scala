@@ -2,7 +2,7 @@ package com.jackleow.presentation.collection
 
 import scala.util.chaining.scalaUtilChainingOps
 
-object FifoBoundedSet {
+object FifoBoundedSet:
   /**
    * The effect of adding a value to the set:
    */
@@ -24,7 +24,6 @@ object FifoBoundedSet {
 
   def apply[A](maxSize: Int): FifoBoundedSet[A] =
     new FifoBoundedSet[A](maxSize)
-}
 
 /**
  * First-In, First-Out bounded set.
@@ -38,7 +37,7 @@ final class FifoBoundedSet[A] private(
   val maxSize: Int,
   val insertionOrder: IndexedSeq[A] = Vector[A](),
   private val uniques: Set[A] = Set[A]()
-) {
+):
   import FifoBoundedSet.*
 
   require(maxSize >= 1, "maxSize must be positive")
@@ -95,8 +94,8 @@ final class FifoBoundedSet[A] private(
    * @param elems elements to add
    * @return updated copy of this set, and effects of each addition
    */
-  def addAll(elems: Seq[A]): (FifoBoundedSet[A], Seq[Effect[A]]) = elems.
-    foldLeft((this, List[A]())) {
+  def addAll(elems: Seq[A]): (FifoBoundedSet[A], Seq[Effect[A]]) = elems
+    .foldLeft((this, List[A]())):
       (accum: (FifoBoundedSet[A], List[A]), elem: A) =>
 
       val (
@@ -108,51 +107,45 @@ final class FifoBoundedSet[A] private(
 
       (
         nextAccumSet,
-        updateOpt match {
+        updateOpt match
           case Some(Added(elem)) => elem :: accumAdds
           case Some(AddedEvicting(elem, _)) => elem :: accumAdds
           case None => accumAdds
-        }
       )
-    }.
-    pipe { case (updated: FifoBoundedSet[A], additions: Seq[A]) =>
-      val effectiveEvictions: Seq[A] = {
-        val evictionSet: Set[A] = this.uniques -- updated.uniques
-        this.insertionOrder.filter(evictionSet.contains)
-      }
-      val effectiveAdditions: Seq[A] = {
-        val additionSet: Set[A] = updated.uniques -- this.uniques
-        additions.filter(additionSet.contains).distinct.reverse
-      }
-      val nonEvictAdds: Int = effectiveAdditions.size - effectiveEvictions.size
-      val effectiveAddeds: Seq[Added[A]] =
-        effectiveAdditions.take(nonEvictAdds).map { Added(_) }
-      val effectiveAddedEvictings: Seq[AddedEvicting[A]] =
-        effectiveAdditions.drop(nonEvictAdds).zip(effectiveEvictions).map {
-          case (added, removed) => AddedEvicting(added, removed)
-        }
+    .pipe:
+      case (updated: FifoBoundedSet[A], additions: Seq[A]) =>
+        val effectiveEvictions: Seq[A] =
+          val evictionSet: Set[A] = this.uniques -- updated.uniques
+          this.insertionOrder.filter(evictionSet.contains)
+        val effectiveAdditions: Seq[A] =
+          val additionSet: Set[A] = updated.uniques -- this.uniques
+          additions.filter(additionSet.contains).distinct.reverse
+        val nonEvictAdds: Int = effectiveAdditions.size - effectiveEvictions.size
+        val effectiveAddeds: Seq[Added[A]] =
+          effectiveAdditions.take(nonEvictAdds).map(Added(_))
+        val effectiveAddedEvictings: Seq[AddedEvicting[A]] =
+          effectiveAdditions.drop(nonEvictAdds).zip(effectiveEvictions)
+            .map:
+              case (added, removed) => AddedEvicting(added, removed)
 
-      (updated, effectiveAddeds ++ effectiveAddedEvictings)
-    }
+        (updated, effectiveAddeds ++ effectiveAddedEvictings)
 
   val toSeq: Seq[A] = insertionOrder
 
   private def canEqual(other: Any): Boolean =
     other.isInstanceOf[FifoBoundedSet[?]]
 
-  override def equals(other: Any): Boolean = other match {
-    case that: FifoBoundedSet[?] =>
-      (that canEqual this) &&
-        maxSize == that.maxSize &&
-        insertionOrder == that.insertionOrder
-    case _ => false
-  }
+  override def equals(other: Any): Boolean =
+    other match
+      case that: FifoBoundedSet[?] =>
+        (that canEqual this) &&
+          maxSize == that.maxSize &&
+          insertionOrder == that.insertionOrder
+      case _ => false
 
-  override def hashCode(): Int = {
+  override def hashCode(): Int =
     val state = Seq[Any](maxSize, insertionOrder)
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
-  }
 
   override def toString: String =
     insertionOrder.mkString("FifoBoundedSet(", ", ", ")")
-}

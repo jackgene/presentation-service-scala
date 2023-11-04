@@ -27,5 +27,5 @@ JMH micro benchmarks for some internal data structures
 
 ### Running:
 ```shell
-./sbt "benchmark/jmh:run -i10 -f1 -t1"
+./sbt "benchmark/Jmh/run -i10 -f1 -t1"
 ```
