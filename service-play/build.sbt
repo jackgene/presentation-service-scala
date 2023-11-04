@@ -9,9 +9,6 @@ scalacOptions ++= Seq(
 
 libraryDependencies += "com.typesafe.akka" %% "akka-stream-typed" % "2.6.21"
 
-// Class path became too long (?) after upgrading to Play Framework 2.9.0
-Test / fork := false
-
 PlayKeys.devSettings += "play.server.http.port" -> "8973"
 PlayKeys.devSettings += "play.server.http.idleTimeout" -> "900s"
 
