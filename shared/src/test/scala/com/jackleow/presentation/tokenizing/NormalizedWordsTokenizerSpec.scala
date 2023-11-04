@@ -1,4 +1,4 @@
-package actors.tokenizing
+package com.jackleow.presentation.tokenizing
 
 import org.scalatest.wordspec.AnyWordSpec
 

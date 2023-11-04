@@ -2,10 +2,10 @@ package actors
 
 import actors.ChatMessageBroadcaster.ChatMessage
 import actors.common.{JsonWriter, RateLimiter}
-import actors.counter.{FifoBoundedSet, MultiSet}
-import actors.tokenizing.Tokenizer
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, Behavior}
+import com.jackleow.presentation.collection.{FifoBoundedSet, MultiSet}
+import com.jackleow.presentation.tokenizing.Tokenizer
 import play.api.libs.json.{JsValue, Json, Writes}
 
 import scala.concurrent.duration.{DurationInt, FiniteDuration}

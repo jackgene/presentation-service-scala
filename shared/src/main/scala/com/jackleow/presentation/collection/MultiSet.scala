@@ -1,4 +1,4 @@
-package actors.counter
+package com.jackleow.presentation.collection
 
 object MultiSet {
   def apply[A](): MultiSet[A] = new MultiSet[A](
@@ -16,8 +16,8 @@ object MultiSet {
  * @param elementsByCount mapping of count -> elements
  * @tparam A type of element being counted
  */
-class MultiSet[A] private[counter] (
-  private[counter] val countsByElement: Map[A, Int],
+class MultiSet[A] private[collection] (
+  private[collection] val countsByElement: Map[A, Int],
   val elementsByCount: Map[Int, Seq[A]]
 ) {
   /**

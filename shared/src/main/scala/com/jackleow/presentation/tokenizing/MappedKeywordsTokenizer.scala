@@ -1,4 +1,4 @@
-package actors.tokenizing
+package com.jackleow.presentation.tokenizing
 
 import scala.collection.immutable.ArraySeq
 import scala.util.matching.Regex
