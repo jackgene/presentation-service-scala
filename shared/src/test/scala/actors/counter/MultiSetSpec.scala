@@ -1,8 +1,8 @@
 package actors.counter
 
-import org.scalatestplus.play.PlaySpec
+import org.scalatest.wordspec.AnyWordSpec
 
-class MultiSetSpec extends PlaySpec {
+class MultiSetSpec extends AnyWordSpec {
   "A MultiSet" must {
     val empty: MultiSet[String] = MultiSet()
 

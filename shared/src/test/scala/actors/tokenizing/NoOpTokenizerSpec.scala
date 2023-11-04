@@ -1,8 +1,8 @@
 package actors.tokenizing
 
-import org.scalatestplus.play.PlaySpec
+import org.scalatest.wordspec.AnyWordSpec
 
-class NoOpTokenizerSpec extends PlaySpec {
+class NoOpTokenizerSpec extends AnyWordSpec {
   "The NoOpTokenizer" must {
     "never extract tokens" in {
       // Test

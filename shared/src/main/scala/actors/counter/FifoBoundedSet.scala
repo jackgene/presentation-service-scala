@@ -1,7 +1,5 @@
 package actors.counter
 
-import play.api.libs.json.*
-
 import scala.util.chaining.scalaUtilChainingOps
 
 object FifoBoundedSet {
@@ -26,11 +24,6 @@ object FifoBoundedSet {
 
   def apply[A](maxSize: Int): FifoBoundedSet[A] =
     new FifoBoundedSet[A](maxSize)
-
-  implicit def writes[A](
-    implicit elemWrites: Writes[A]
-  ): Writes[FifoBoundedSet[A]] =
-    (set: FifoBoundedSet[A]) => Json.arr(set.toSeq.map(elemWrites.writes))
 }
 
 /**
