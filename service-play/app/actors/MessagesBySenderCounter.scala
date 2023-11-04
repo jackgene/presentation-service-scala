@@ -17,7 +17,7 @@ object MessagesBySenderCounter {
   final case class Subscribe(subscriber: ActorRef[Event]) extends Command
   final case class Unsubscribe(subscriber: ActorRef[Event]) extends Command
   final case class Record(chatMessage: ChatMessage) extends Command
-  final case object Reset extends Command
+  case object Reset extends Command
 
   sealed trait Event
   final case class Counts(sendersByCount: Map[Int,Seq[String]]) extends Event

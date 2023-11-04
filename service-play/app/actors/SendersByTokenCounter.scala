@@ -18,7 +18,7 @@ object SendersByTokenCounter {
   final case class Subscribe(subscriber: ActorRef[Event]) extends Command
   final case class Unsubscribe(subscriber: ActorRef[Event]) extends Command
   final case class Record(chatMessage: ChatMessage) extends Command
-  final case object Reset extends Command
+  case object Reset extends Command
 
   sealed trait Event
   final case class Counts(tokens: MultiSet[String]) extends Event
@@ -145,7 +145,7 @@ private class SendersByTokenCounter(
 
                   (tokensBySender.updated(sender, tokens), addedTokens, removedTokens)
 
-                case None => (tokensBySender, prioritizedTokens.toSet, Set.empty)
+                case None => (tokensBySender, prioritizedTokens.toSet, Set[String]())
               }
               val newTokenCounts: MultiSet[String] = addedTokens.
                 foldLeft(
