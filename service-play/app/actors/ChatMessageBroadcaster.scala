@@ -38,7 +38,7 @@ object ChatMessageBroadcaster {
     (JsPath \ "s").write[String] and
     (JsPath \ "r").write[String] and
     (JsPath \ "t").write[String]
-  )(unlift(ChatMessage.unapply))
+  ) { msg => (msg.sender, msg.recipient, msg.text) }
   private implicit val eventWrites: Writes[Event] = {
     case New(chatMessage: ChatMessage) => Json.toJson(chatMessage)
   }

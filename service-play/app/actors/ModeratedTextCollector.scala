@@ -16,7 +16,7 @@ object ModeratedTextCollector {
   final case class Subscribe(subscriber: ActorRef[Event]) extends Command
   final case class Unsubscribe(subscriber: ActorRef[Event]) extends Command
   final case class Record(chatMessage: ChatMessage) extends Command
-  final case object Reset extends Command
+  case object Reset extends Command
 
   sealed trait Event
   private final case class ChatMessages(chatText: Seq[String]) extends Event

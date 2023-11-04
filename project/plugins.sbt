@@ -7,4 +7,4 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.9.0")
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "2.0.9")
 
 // JMH
-addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")
+addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.6")

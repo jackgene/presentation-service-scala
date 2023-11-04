@@ -1,42 +1,14 @@
 name := "presentation-service-play"
 
-scalaVersion := "2.13.12"
-
 scalacOptions ++= Seq(
-  "-Xsource:3",
-  "-deprecation", "-feature",
-  "-Wdead-code",
-  "-Wextra-implicit",
-  "-Wmacros:after",
-  "-Wnumeric-widen",
-  "-Woctal-literal",
-  "-Wunused:imports,patvars,privates,locals,explicits,implicits,params,linted",
+  "-feature", "-no-indent",
+  "-Wunused:imports,privates,locals,explicits,implicits,params,linted",
   "-Wvalue-discard",
-  "-Xlint:adapted-args",
-  "-Xlint:constant",
-  "-Xlint:delayedinit-select",
-  "-Xlint:eta-sam",
-  "-Xlint:eta-zero",
-  "-Xlint:implicit-not-found",
-  "-Xlint:implicit-recursion",
-  "-Xlint:inaccessible",
-  "-Xlint:infer-any",
-  "-Xlint:missing-interpolator",
-  "-Xlint:nonlocal-return",
-  "-Xlint:nullary-unit",
-  "-Xlint:option-implicit",
-  "-Xlint:package-object-classes",
-  "-Xlint:poly-implicit-overload",
-  "-Xlint:private-shadow",
-  "-Xlint:serial",
-  "-Xlint:stars-align",
-  "-Xlint:type-parameter-shadow",
-  "-Xlint:valpattern"
+  "-Xfatal-warnings"
 )
 
-libraryDependencies += ws
-libraryDependencies += "org.scalatestplus" %% "scalacheck-1-14" % "3.1.1.0" % Test
-libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
+libraryDependencies += "org.scalatestplus" %% "scalacheck-1-17" % "3.2.17.0" % Test
+libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "6.0.0" % Test
 libraryDependencies += "com.typesafe.akka" %% "akka-stream-typed" % "2.6.21"
 
 // Class path became too long (?) after upgrading to Play Framework 2.9.0
