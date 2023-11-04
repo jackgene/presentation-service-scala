@@ -3,7 +3,7 @@
 Presentation Service implemented in Scala using various frameworks.
 
 ## Play Framework
-Scala 2.13 and Play Framework 2.9
+Scala 3.3 and Play Framework 2.9
 
 ### Running:
 Build the deployment artifact:
