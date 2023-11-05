@@ -56,9 +56,8 @@ class FifoBoundedSetProp extends CommonProp:
 
       // Verify
       val actualEvictions: Seq[FifoBoundedSet.Effect[Int]] =
-        actualEffects.filter {
+        actualEffects.filter:
           _.isInstanceOf[FifoBoundedSet.AddedEvicting[Int]]
-        }
       assert(instance.toSeq.toSet == elements.toSet)
       assert(actualEvictions.isEmpty)
 
@@ -94,12 +93,11 @@ class FifoBoundedSetProp extends CommonProp:
       // Test
       val (_, actualEffectsAddAll: Seq[FifoBoundedSet.Effect[Int]]) = empty.addAll(elements)
       val (_, actualEffectsAdd: Seq[FifoBoundedSet.Effect[Int]]) =
-        elements.foldLeft((empty, Seq[FifoBoundedSet.Effect[Int]]())) {
+        elements.foldLeft((empty, Seq[FifoBoundedSet.Effect[Int]]())):
           case ((accum: FifoBoundedSet[Int], effects: Seq[FifoBoundedSet.Effect[Int]]), elem: Int) =>
             val (accumNext: FifoBoundedSet[Int], effect: Option[FifoBoundedSet.Effect[Int]]) = accum.add(elem)
 
             (accumNext, effects ++ effect)
-        }
 
       // Verify
       assert(actualEffectsAddAll == actualEffectsAdd)
