@@ -12,7 +12,7 @@ object FifoBoundedSetPerf:
 
     (
       preTruncate.take(maxSize),
-      if (elemsReversed.size == preTruncate.size) None
+      if elemsReversed.size == preTruncate.size then None
       else Some((elem, preTruncate.drop(maxSize).headOption))
     )
 
@@ -75,7 +75,7 @@ class FifoBoundedSetPerf:
     val (newElemsReversed: List[Int], additions: Set[Int], removals: Set[Int]) =
       naiveAddAll(List(0, 1), List(), 3)
 
-    if (additions.nonEmpty && removals.isEmpty) newElemsReversed
+    if additions.nonEmpty && removals.isEmpty then newElemsReversed
     else throw new IllegalStateException("additions expected")
 
   @Benchmark
@@ -111,7 +111,7 @@ class FifoBoundedSetPerf:
     val (newElemsReversed: List[Int], additions: Set[Int], removals: Set[Int]) =
       naiveAddAll(List(4, 5), elemsReversed, 3)
 
-    if (additions.size == 2 && removals.size == 2) newElemsReversed
+    if additions.size == 2 && removals.size == 2 then newElemsReversed
     else throw new IllegalStateException("evictions expected")
 
   @Benchmark
@@ -147,7 +147,7 @@ class FifoBoundedSetPerf:
     val (newElemsReversed: List[Int], additions: Set[Int], removals: Set[Int]) =
       naiveAddAll(List(1, 2), elemsReversed, 3)
 
-    if (additions.isEmpty && removals.isEmpty) newElemsReversed
+    if additions.isEmpty && removals.isEmpty then newElemsReversed
     else throw new IllegalStateException("no-op expected")
 
   @Benchmark
