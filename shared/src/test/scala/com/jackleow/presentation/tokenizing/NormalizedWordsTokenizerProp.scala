@@ -1,6 +1,6 @@
 package com.jackleow.presentation.tokenizing
 
-import common.CommonProp
+import com.jackleow.presentation.CommonProp
 import org.scalacheck.Gen
 
 class NormalizedWordsTokenizerProp extends CommonProp {
