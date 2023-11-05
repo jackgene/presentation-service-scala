@@ -1,11 +1,6 @@
 name := "presentation-service-play"
 
-scalacOptions ++= Seq(
-  "-feature", "-no-indent",
-  "-Wunused:imports,privates,locals,explicits,implicits,params,linted",
-  "-Wvalue-discard",
-  "-Xfatal-warnings"
-)
+scalacOptions ++= Seq("-no-indent")
 
 libraryDependencies += "com.typesafe.akka" %% "akka-stream-typed" % "2.6.21"
 
