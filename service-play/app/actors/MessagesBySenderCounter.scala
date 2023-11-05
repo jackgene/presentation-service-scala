@@ -35,12 +35,12 @@ object MessagesBySenderCounter:
         case Command.Record(chatMessage: ChatMessage) =>
           val sender: String = chatMessage.sender
           val newSenders: MultiSet[String] = senders + sender
-          for (subscriber: ActorRef[Event] <- subscribers)
+          for subscriber: ActorRef[Event] <- subscribers do
             subscriber ! Event.Counts(newSenders.elementsByCount)
           running(newSenders, subscribers)
 
         case Command.Reset =>
-          for (subscriber: ActorRef[Event] <- subscribers)
+          for subscriber: ActorRef[Event] <- subscribers do
             subscriber ! Event.Counts(Map())
           running(MultiSet[String](), subscribers)
 

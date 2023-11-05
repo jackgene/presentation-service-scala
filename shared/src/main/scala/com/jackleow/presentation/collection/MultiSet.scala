@@ -43,7 +43,7 @@ final class MultiSet[A] private[collection] (
             elementsByCount.getOrElse(oldCount, IndexedSeq()).diff(Seq(elem))
 
           (
-            if (oldCountElems.isEmpty) elementsByCount.removed(oldCount)
+            if oldCountElems.isEmpty then elementsByCount.removed(oldCount)
             else elementsByCount.updated(oldCount, oldCountElems)
           ).updated(newCount, newCountElems)
         }
@@ -63,7 +63,7 @@ final class MultiSet[A] private[collection] (
       val newCount: Int = oldCount - 1
 
       new MultiSet(
-        if (newCount == 0) countsByElement.removed(elem)
+        if newCount == 0 then countsByElement.removed(elem)
         else countsByElement.updated(elem, newCount),
         {
           val newCountElems: Seq[A] =
@@ -71,10 +71,10 @@ final class MultiSet[A] private[collection] (
           val oldCountElems: Seq[A] =
             elementsByCount.getOrElse(oldCount, IndexedSeq()).diff(Seq(elem))
           val elemsByCountOldCountUpdated =
-            if (oldCountElems.isEmpty) elementsByCount.removed(oldCount)
+            if oldCountElems.isEmpty then elementsByCount.removed(oldCount)
             else elementsByCount.updated(oldCount, oldCountElems)
 
-          if (newCount == 0) elemsByCountOldCountUpdated
+          if newCount == 0 then elemsByCountOldCountUpdated
           else elemsByCountOldCountUpdated.updated(
             newCount, newCountElems.prepended(elem)
           )

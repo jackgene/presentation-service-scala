@@ -25,7 +25,7 @@ private class RateLimiter[T](destination: ActorRef[T], limitPeriod: FiniteDurati
   ): Behavior[T] =
     Behaviors.receive: (ctx: ActorContext[T], msg: T) =>
       scheduled.cancel()
-      if (quietPeriodEnds.isOverdue())
+      if quietPeriodEnds.isOverdue() then
         destination ! msg
         running(limitPeriod.fromNow, Cancellable.alreadyCancelled)
       else

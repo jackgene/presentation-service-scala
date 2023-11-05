@@ -29,7 +29,7 @@ object TranscriptionBroadcaster:
       cmd match
         case Command.NewTranscriptionText(text: String) =>
           ctx.log.info(s"Received transcription text: $text")
-          for (subscriber: ActorRef[Event] <- subscribers)
+          for subscriber: ActorRef[Event] <- subscribers do
             subscriber ! Event.Transcription(text)
           running(subscribers)
 

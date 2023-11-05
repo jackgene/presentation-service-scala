@@ -61,15 +61,16 @@ final class FifoBoundedSet[A] private(
    * @return updated copy of this set, and effect of the addition
    */
   def add(elem: A): (FifoBoundedSet[A], Option[Effect[A]]) =
-    if (uniques.contains(elem))
-      if (elem == insertionOrder.last) (this, None)
+    if uniques.contains(elem) then
+      if elem == insertionOrder.last then
+        (this, None)
       else
         (
           copy(insertionOrder = insertionOrder.filterNot(_ == elem) :+ elem),
           None
         )
     else
-      if (uniques.size < maxSize)
+      if uniques.size < maxSize then
         (
           copy(
             uniques = uniques + elem,

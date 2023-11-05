@@ -151,12 +151,12 @@ private class SendersByTokenCounter(
 
                 (newTokensBySender, newTokenCounts)
 
-          for (subscriber: ActorRef[Event] <- subscribers)
+          for subscriber: ActorRef[Event] <- subscribers do
             subscriber ! Event.Counts(newTokens)
           running(newTokensBySender, newTokens, subscribers)
 
         case Command.Reset =>
-          for (subscriber: ActorRef[Event] <- subscribers)
+          for subscriber: ActorRef[Event] <- subscribers do
             subscriber ! Event.Counts(MultiSet[String]())
           running(emptyTokensBySender, MultiSet[String](), subscribers)
 
@@ -174,7 +174,7 @@ private class SendersByTokenCounter(
           ctx.log.info(s"-1 ${ctx.self.path.name} subscriber (=${subscribers.size - 1})")
           ctx.unwatch(subscriber)
           val remainingSubscribers: Set[ActorRef[Event]] = subscribers - subscriber
-          if (remainingSubscribers.nonEmpty)
+          if remainingSubscribers.nonEmpty then
             running(tokensBySender, tokenCounts, remainingSubscribers)
           else
             chatMessageBroadcaster ! ChatMessageBroadcaster.Command.Unsubscribe(adapter)

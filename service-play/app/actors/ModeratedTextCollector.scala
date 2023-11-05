@@ -86,17 +86,17 @@ private class ModeratedTextCollector(
     Behaviors.receive: (ctx: ActorContext[Command], cmd: Command) =>
       cmd match
         case Command.Record(chatMessage: ChatMessage) =>
-          if (chatMessage.sender != "")
+          if chatMessage.sender != "" then
             rejectedMessageBroadcaster ! ChatMessageBroadcaster.Command.Record(chatMessage)
             Behaviors.same
           else
             val newText: IndexedSeq[String] = text :+ chatMessage.text
-            for (subscriber: ActorRef[Event] <- subscribers)
+            for subscriber: ActorRef[Event] <- subscribers do
               subscriber ! Event.ChatMessages(newText)
             running(newText, subscribers)
 
         case Command.Reset =>
-          for (subscriber: ActorRef[Event] <- subscribers)
+          for subscriber: ActorRef[Event] <- subscribers do
             subscriber ! Event.ChatMessages(IndexedSeq())
           running(IndexedSeq(), subscribers)
 
@@ -114,7 +114,7 @@ private class ModeratedTextCollector(
           ctx.log.info(s"-1 ${ctx.self.path.name} subscriber (=${subscribers.size - 1})")
           ctx.unwatch(subscriber)
           val remainingSubscribers: Set[ActorRef[Event]] = subscribers - subscriber
-          if (remainingSubscribers.nonEmpty)
+          if remainingSubscribers.nonEmpty then
             running(text, remainingSubscribers)
           else
             chatMessageBroadcaster ! ChatMessageBroadcaster.Command.Unsubscribe(adapter)

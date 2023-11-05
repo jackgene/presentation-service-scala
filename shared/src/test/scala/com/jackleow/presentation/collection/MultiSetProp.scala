@@ -84,9 +84,9 @@ class MultiSetProp extends CommonProp:
         .foldLeft(instance):
           (accum: MultiSet[String], element: String) =>
             val nextAccum: MultiSet[String] = accum - element
-            for (
+            for
               // Key is removed when decremented to 0
               count <- nextAccum.countsByElement.get(element)
-            ) assert(nextAccum.elementsByCount(count).head == element)
+            do assert(nextAccum.elementsByCount(count).head == element)
 
             nextAccum

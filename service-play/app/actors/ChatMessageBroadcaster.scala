@@ -51,7 +51,7 @@ object ChatMessageBroadcaster:
       cmd match
         case Command.Record(chatMessage: ChatMessage) =>
           ctx.log.info(s"Received ${ctx.self.path.name} message - $chatMessage")
-          for (subscriber: ActorRef[Event] <- subscribers)
+          for subscriber: ActorRef[Event] <- subscribers do
             subscriber ! Event.New(chatMessage)
           Behaviors.same
 
