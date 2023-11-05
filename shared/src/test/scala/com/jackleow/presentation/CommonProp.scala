@@ -1,4 +1,4 @@
-package common
+package com.jackleow.presentation
 
 import org.scalactic.anyvals.PosInt
 import org.scalatest.propspec.AnyPropSpec

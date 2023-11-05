@@ -1,6 +1,6 @@
 package com.jackleow.presentation.collection
 
-import common.CommonProp
+import com.jackleow.presentation.CommonProp
 import org.scalacheck.Gen
 
 import scala.util.Random
