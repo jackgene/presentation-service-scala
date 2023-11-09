@@ -5,10 +5,9 @@ import akka.actor.ActorSystem
 import akka.actor.typed.scaladsl.adapter.*
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, Behavior, PostStop, Terminated}
-import akka.stream.scaladsl.{Keep, Sink, Source}
+import akka.stream.scaladsl.Source
 import akka.stream.typed.scaladsl.ActorSource
 import akka.stream.{Materializer, OverflowStrategy}
-import org.reactivestreams.Publisher
 import play.api.libs.streams.ActorFlow
 
 /**
@@ -21,7 +20,7 @@ implicit class ActorFlowOps(val ext: ActorFlow.type) extends AnyVal {
     overflowStrategy: OverflowStrategy = OverflowStrategy.dropHead
   )(implicit factory: ActorSystem, mat: Materializer): Source[Out, NotUsed] = {
     val (
-      publisherActor: ActorRef[Option[Out]], publisher: Publisher[Option[Out]]
+      sourceActor: ActorRef[Option[Out]], source: Source[Option[Out], NotUsed]
     ) = ActorSource.
       actorRef[Option[Out]](
         completionMatcher = { case None => () },
@@ -29,29 +28,26 @@ implicit class ActorFlowOps(val ext: ActorFlow.type) extends AnyVal {
         bufferSize = bufferSize,
         overflowStrategy = overflowStrategy
       ).
-      toMat(Sink.asPublisher(false))(Keep.both).
-      run()
+      preMaterialize()
     factory.spawnAnonymous(
       Behaviors.setup { (ctx: ActorContext[Out]) =>
-        ctx.watch(publisherActor)
+        ctx.watch(sourceActor)
         ctx.spawnAnonymous(behavior(ctx.self))
 
         Behaviors.
           receiveMessage { (out: Out) =>
-            publisherActor ! Some(out)
+            sourceActor ! Some(out)
             Behaviors.same[Out]
           }.
           receiveSignal {
             case (_, Terminated(_)) => Behaviors.stopped
             case (_, PostStop) =>
-              publisherActor ! None
+              sourceActor ! None
               Behaviors.same
           }
       }
     )
 
-    Source.
-      fromPublisher(publisher).
-      collect { case Some(out) => out }
+    source.collect { case Some(out) => out }
   }
 }
