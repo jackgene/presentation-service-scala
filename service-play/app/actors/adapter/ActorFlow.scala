@@ -13,7 +13,7 @@ import play.api.libs.streams.ActorFlow
 /**
  * Adapts Play Framework to typed Akka actors.
  */
-extension (ext: ActorFlow.type):
+extension (ext: ActorFlow.type)
   def sourceBehavior[Out](
     behavior: ActorRef[Out] => Behavior[?],
     bufferSize: Int = 16,
