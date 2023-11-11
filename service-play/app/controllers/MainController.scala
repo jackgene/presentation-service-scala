@@ -2,7 +2,7 @@ package controllers
 
 import actors.*
 import actors.ChatMessageBroadcaster.ChatMessage
-import actors.adapter.ActorFlowOps
+import actors.adapter.sourceBehavior
 import akka.actor.ActorSystem
 import akka.actor.typed.ActorRef
 import akka.actor.typed.scaladsl.adapter.*
