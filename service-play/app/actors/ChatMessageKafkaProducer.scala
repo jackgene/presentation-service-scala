@@ -10,7 +10,7 @@ import akka.stream.Materializer
 import akka.stream.scaladsl.{Sink, Source}
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.serialization.StringSerializer
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 
 import scala.concurrent.Future
 
@@ -19,8 +19,8 @@ import scala.concurrent.Future
  */
 object ChatMessageKafkaProducer {
   sealed trait Command
-  final case class Subscribe(subscriber: ActorRef[JsValue]) extends Command
-  final case class Unsubscribe(subscriber: ActorRef[JsValue]) extends Command
+  final case class Subscribe(subscriber: ActorRef[Nothing]) extends Command
+  final case class Unsubscribe(subscriber: ActorRef[Nothing]) extends Command
   final case class Record(chatMessage: ChatMessage) extends Command
 
   def apply(
@@ -50,7 +50,7 @@ private class ChatMessageKafkaProducer(
 
   private val paused: Behavior[Command] = Behaviors.receive { (ctx: ActorContext[Command], cmd: Command) =>
     cmd match {
-      case Subscribe(subscriber: ActorRef[JsValue]) =>
+      case Subscribe(subscriber: ActorRef[Nothing]) =>
         ctx.log.info(s"+1 ${ctx.self.path.name} subscriber (=1)")
         ctx.watchWith(subscriber, Unsubscribe(subscriber))
         chatMessageBroadcaster ! ChatMessageBroadcaster.Subscribe(adapter)
@@ -61,14 +61,14 @@ private class ChatMessageKafkaProducer(
         ctx.log.warn(s"received unexpected record in paused state - $chatMessage")
         Behaviors.unhandled
 
-      case Unsubscribe(subscriber: ActorRef[JsValue]) =>
+      case Unsubscribe(subscriber: ActorRef[Nothing]) =>
         ctx.log.warn(s"received unexpected unsubscription in paused state - ${subscriber.path}")
         Behaviors.unhandled
     }
   }
 
   private def running(
-    subscribers: Set[ActorRef[JsValue]]
+    subscribers: Set[ActorRef[Nothing]]
   ): Behavior[Command] = Behaviors.receive { (ctx: ActorContext[Command], cmd: Command) =>
     cmd match {
       case Record(chatMessage: ChatMessage) =>
@@ -81,19 +81,19 @@ private class ChatMessageKafkaProducer(
           .runWith(kafkaProducer)
         running(subscribers)
 
-      case Subscribe(subscriber: ActorRef[JsValue]) if !subscribers.contains(subscriber) =>
+      case Subscribe(subscriber: ActorRef[Nothing]) if !subscribers.contains(subscriber) =>
         ctx.log.info(s"+1 ${ctx.self.path.name} subscriber (=${subscribers.size + 1})")
         ctx.watchWith(subscriber, Unsubscribe(subscriber))
         running(subscribers + subscriber)
 
-      case Subscribe(subscriber: ActorRef[JsValue]) =>
+      case Subscribe(subscriber: ActorRef[Nothing]) =>
         ctx.log.warn(s"attempted to subscribe duplicate ${ctx.self.path.name} subscriber - ${subscriber.path}")
         Behaviors.unhandled
 
-      case Unsubscribe(subscriber: ActorRef[JsValue]) if subscribers.contains(subscriber) =>
+      case Unsubscribe(subscriber: ActorRef[Nothing]) if subscribers.contains(subscriber) =>
         ctx.log.info(s"-1 ${ctx.self.path.name} subscriber (=${subscribers.size - 1})")
         ctx.unwatch(subscriber)
-        val remainingSubscribers: Set[ActorRef[JsValue]] = subscribers - subscriber
+        val remainingSubscribers: Set[ActorRef[Nothing]] = subscribers - subscriber
         if (remainingSubscribers.nonEmpty) {
           running(remainingSubscribers)
         } else {
@@ -101,7 +101,7 @@ private class ChatMessageKafkaProducer(
           paused
         }
 
-      case Unsubscribe(subscriber: ActorRef[JsValue]) =>
+      case Unsubscribe(subscriber: ActorRef[Nothing]) =>
         ctx.log.warn(s"attempted to unsubscribe unknown ${ctx.self.path.name} subscriber - ${subscriber.path}")
         Behaviors.unhandled
     }
