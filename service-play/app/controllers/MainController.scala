@@ -44,7 +44,7 @@ final class MainController (
       Sink.ignore,
       ActorFlow.sourceBehavior { (webSocketClient: ActorRef[JsValue]) =>
         // Produce ChatMessage in Kafka
-        chatMessageKafkaProducer ! ChatMessageKafkaProducer.Subscribe(webSocketClient)
+        chatMessageKafkaProducer ! ChatMessageKafkaProducer.Activate(webSocketClient)
         SendersByTokenCounter.JsonPublisher(webSocketClient, wordCloud)
       }
     )
