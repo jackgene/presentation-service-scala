@@ -14,6 +14,9 @@ lazy val commonSettings = Seq(
 
 lazy val shared = (project in file("shared")).
   settings(commonSettings)
+lazy val `service-akkahttp` = (project in file("service-akkahttp")).
+  settings(commonSettings).
+  dependsOn(shared)
 lazy val `service-play` = (project in file("service-play")).
   settings(commonSettings).
   enablePlugins(PlayScala).
