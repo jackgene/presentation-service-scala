@@ -1,5 +1,4 @@
 package com.jackleow.presentation.config
 
-trait ConfigurationModule {
+trait ConfigurationModule:
   def configuration: Configuration
-}

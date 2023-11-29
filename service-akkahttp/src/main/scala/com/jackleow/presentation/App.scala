@@ -22,7 +22,7 @@ class App(override val configuration: Configuration, htmlFile: File, port: Int)
     with AkkaStreamTranscriptionModule
     with AkkaModule
     with ConfigurationModule
-    with StrictLogging {
+    with StrictLogging:
 
   override lazy val system: ActorSystem[Nothing] =
     ActorSystem[Nothing](rootBehavior, "presentation-service")
@@ -35,29 +35,27 @@ class App(override val configuration: Configuration, htmlFile: File, port: Int)
 
   private def startHttpServer(htmlFile: File, port: Int)(
     implicit system: ActorSystem[?]
-  ): Unit = {
+  ): Unit =
     import system.executionContext
 
     val bindingFut = Http()
       .newServerAt("0.0.0.0", port)
       .bind(routes(htmlFile))
-    bindingFut.onComplete {
+    bindingFut.onComplete:
       case Success(binding) =>
         val addr = binding.localAddress
         logger.info(s"Server online at http://${addr.getHostString}:${addr.getPort}/")
       case Failure(ex) =>
         logger.error("Failed to bind HTTP endpoint, terminating system", ex)
         system.terminate()
-    }
-  }
-}
-object App extends StrictLogging {
+
+object App extends StrictLogging:
   private case class Arguments(
     htmlFile: File = new File(""),
     port: Int = 8973
   )
   private val builder = OParser.builder[Arguments]
-  private val parser = {
+  private val parser =
     import builder.*
     OParser.sequence(
       programName("presentation-service"),
@@ -74,13 +72,12 @@ object App extends StrictLogging {
       }
         .text("HTTP server port"),
     )
-  }
 
   def main(rawArgs: Array[String]): Unit =
     (
       OParser.parse(parser, rawArgs, Arguments()),
       ConfigSource.default.load[Configuration]
-    ) match {
+    ) match
       case (Some(args: Arguments), Right(configuration: Configuration)) =>
         val _ = new App(configuration, args.htmlFile, args.port)
 
@@ -90,5 +87,3 @@ object App extends StrictLogging {
         )
 
       case _ =>
-    }
-}

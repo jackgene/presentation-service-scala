@@ -1,6 +1,6 @@
 name := "presentation-service-akkahttp"
 
-//scalacOptions := Seq("-new-syntax")
+scalacOptions := Seq("-new-syntax")
 
 fork := true
 

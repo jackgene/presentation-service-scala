@@ -2,10 +2,9 @@ package com.jackleow.presentation.service.interactive
 
 import com.jackleow.presentation.config.ConfigurationModule
 import com.jackleow.presentation.infrastructure.AkkaModule
-import com.typesafe.config.Config
 import com.typesafe.scalalogging.StrictLogging
 
-trait AkkaStreamInteractiveModule extends InteractiveModule with StrictLogging {
+trait AkkaStreamInteractiveModule extends InteractiveModule with StrictLogging:
   this: ConfigurationModule & AkkaModule =>
 
   override val interactiveService: InteractiveService =
@@ -13,4 +12,3 @@ trait AkkaStreamInteractiveModule extends InteractiveModule with StrictLogging {
       configuration.presentation.languagePoll,
       configuration.presentation.wordCloud
     )
-}
