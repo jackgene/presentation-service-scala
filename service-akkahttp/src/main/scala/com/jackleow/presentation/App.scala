@@ -17,21 +17,21 @@ import java.io.File
 import scala.util.{Failure, Success}
 
 class App(override val configuration: Configuration, htmlFile: File, port: Int)
-    extends ServiceRouteModule
-    with AkkaStreamInteractiveModule
-    with AkkaStreamTranscriptionModule
-    with AkkaModule
-    with ConfigurationModule
-    with StrictLogging:
+  extends ServiceRouteModule
+  with AkkaStreamInteractiveModule
+  with AkkaStreamTranscriptionModule
+  with AkkaModule
+  with ConfigurationModule
+  with StrictLogging:
 
   override lazy val system: ActorSystem[Nothing] =
     ActorSystem[Nothing](rootBehavior, "presentation-service")
 
   private def rootBehavior: Behavior[Nothing] =
-    Behaviors.setup[Nothing] { (ctx: ActorContext[Nothing]) =>
-      startHttpServer(htmlFile, port)(ctx.system)
-      Behaviors.empty
-    }
+    Behaviors.setup[Nothing]:
+      (ctx: ActorContext[Nothing]) =>
+        startHttpServer(htmlFile, port)(ctx.system)
+        Behaviors.empty
 
   private def startHttpServer(htmlFile: File, port: Int)(
     implicit system: ActorSystem[?]
@@ -62,14 +62,14 @@ object App extends StrictLogging:
       head("Presentation Service in Akka HTTP"),
       opt[File]("html-path")
         .required()
-        .action {
-          (file: File, args: Arguments) => args.copy(htmlFile = file)
-      }
+        .action:
+          (file: File, args: Arguments) =>
+            args.copy(htmlFile = file)
         .text("Presentation HTML file path"),
       opt[Int]('p', "port")
-        .action {
-          (port: Int, args: Arguments) => args.copy(port = port)
-      }
+        .action:
+          (port: Int, args: Arguments) =>
+            args.copy(port = port)
         .text("HTTP server port"),
     )
 
