@@ -79,6 +79,7 @@ object App extends StrictLogging:
       ConfigSource.default.load[Configuration]
     ) match
       case (Some(args: Arguments), Right(configuration: Configuration)) =>
+        logger.debug(s"Starting presentation service with configuration\n$configuration")
         val _ = new App(configuration, args.htmlFile, args.port)
 
       case (_, Left(failures: ConfigReaderFailures)) =>
