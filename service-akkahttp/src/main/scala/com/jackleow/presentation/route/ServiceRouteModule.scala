@@ -1,6 +1,5 @@
 package com.jackleow.presentation.route
 
-import akka.http.scaladsl.model.ws.TextMessage
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.server.Directives.*
 import akka.http.scaladsl.server.{Directives, Route, StandardRoute}
@@ -16,7 +15,7 @@ import scala.util.{Failure, Success, Try}
 import scala.util.matching.Regex
 
 object ServiceRouteModule:
-  private val completeWith204or429: (Try[Any]) => StandardRoute =
+  private val completeWith204or429: Try[Any] => StandardRoute =
     case Success(_) => complete(StatusCodes.NoContent, HttpEntity.Empty)
     case Failure(_) => complete(StatusCodes.TooManyRequests, HttpEntity.Empty)
 
