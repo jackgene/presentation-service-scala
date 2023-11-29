@@ -1,5 +1,7 @@
 package com.jackleow.presentation.service.interactive
 
-trait InteractiveModule {
+/**
+ * Defines interactive service dependencies.
+ */
+trait InteractiveModule:
   def interactiveService: InteractiveService
-}

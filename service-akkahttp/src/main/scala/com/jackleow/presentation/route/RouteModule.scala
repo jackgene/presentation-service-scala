@@ -4,6 +4,8 @@ import akka.http.scaladsl.server.Route
 
 import java.io.File
 
-trait RouteModule {
+/**
+ * Defines route dependencies.
+ */
+trait RouteModule:
   def routes(htmlFile: File): Route
-}

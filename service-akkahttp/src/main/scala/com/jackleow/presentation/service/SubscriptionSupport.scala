@@ -9,21 +9,24 @@ trait SubscriptionSupport:
   this: StrictLogging =>
 
   def hasActiveSubscriptionsSource(name: String = ""): Source[Boolean, Counter] =
-    Source.
-      counts.
-      scan(0) {
+    Source
+      .counts
+      .scan(0):
         (prevCount: Int, nextCount: Int) =>
-          if nextCount != prevCount then {
+          if nextCount != prevCount then
             val logName: String = if name == "" then "" else s" $name"
             logger.info(f"${nextCount - prevCount}%+d$logName subscriber (=$nextCount)")
-          }
           nextCount
-      }.
-      drop(1).
-      map(_ > 0)
+      .drop(1)
+      .map:
+        _ > 0
 
   def subscriptionTrackingFlow[Out](source: Source[Out, ?], counter: Counter): Flow[Any, Out, NotUsed] =
     Flow.fromSinkAndSourceCoupled(
-      Sink.onComplete { _ => counter.decrement() },
-      source.onStart { counter.increment() }
+      Sink
+        .onComplete:
+          _ => counter.decrement(),
+      source
+        .onStart:
+          counter.increment()
     )

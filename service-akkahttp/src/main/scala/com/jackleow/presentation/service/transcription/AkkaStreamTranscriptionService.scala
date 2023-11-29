@@ -20,29 +20,31 @@ class AkkaStreamTranscriptionService(implicit val system: ActorSystem[Nothing])
 
   private implicit val ec: ExecutionContext = system.executionContext
   private val transcriptionQueueSource: Source[Transcription, BoundedSourceQueue[Transcription]] =
-    Source.
-      queue[Transcription](1).
-      wireTap { case Transcription(text: String) =>
-        logger.info(s"Received transcription text: $text")
-      }
+    Source
+      .queue[Transcription](1)
+      .wireTap:
+        case Transcription(text: String) =>
+          logger.info(s"Received transcription text: $text")
   private val (
     transcriptionQueue: BoundedSourceQueue[Transcription],
     subscriptionCounter: Counter,
     transcriptionSource: Source[Transcription, NotUsed]
   ) =
-    transcriptionQueueSource.
-      viaMat(Flow.activeFilter(hasActiveSubscriptionsSource()))(Keep.both).
-      toMat(BroadcastHub.sink)(Keep.both).
-      mapMaterializedValue {
+    transcriptionQueueSource
+      .viaMat(Flow.activeFilter(hasActiveSubscriptionsSource()))(Keep.both)
+      .toMat(BroadcastHub.sink)(Keep.both)
+      .mapMaterializedValue:
         case ((tq, sq), ts) => (tq, sq, ts) // flatten
-      }.
-      run()
+      .run()
 
   override def receiveTranscription(text: String): Future[Unit] =
-    Future.
-      successful { transcriptionQueue.offer(Transcription(text)) }.
-      filter(_.isEnqueued).
-      map(_ => ())
+    Future
+      .successful:
+        transcriptionQueue.offer(Transcription(text))
+      .filter:
+        _.isEnqueued
+      .map:
+        _ => ()
 
   override val transcriptions: Flow[Any, Transcription, NotUsed] =
     subscriptionTrackingFlow(transcriptionSource, subscriptionCounter)

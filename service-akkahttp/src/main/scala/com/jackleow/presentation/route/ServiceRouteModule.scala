@@ -16,110 +16,99 @@ import scala.concurrent.duration.*
 import scala.util.{Failure, Success}
 import scala.util.matching.Regex
 
-trait ServiceRouteModule extends RouteModule {
+trait ServiceRouteModule extends RouteModule:
   this: AkkaModule & InteractiveModule & TranscriptionModule =>
 
   private val RoutePattern: Regex = """(.*) to (Everyone|You)(?: \(Direct Message\))?""".r
   private val IgnoredRoutePattern: Regex = "You to .*".r
 
-  override def routes(htmlFile: File): Route = {
-    redirectToNoTrailingSlashIfPresent(StatusCodes.Found) {
+  override def routes(htmlFile: File): Route =
+    redirectToNoTrailingSlashIfPresent(StatusCodes.Found):
       // Deck
-      pathSingleSlash {
+      pathSingleSlash:
         getFromFile(htmlFile, ContentTypes.`text/html(UTF-8)`)
-      }
       ~
-      path("event" / "language-poll") {
+      path("event" / "language-poll"):
         handleWebSocketMessages(
-          interactiveService.languagePoll.
-            sample(10, 1.second).
-            map(_.toJson.compactPrint).
-            map(TextMessage(_))
+          interactiveService.languagePoll
+            .sample(10, 1.second)
+            .map:
+              _.toJson.compactPrint
+            .map:
+              TextMessage(_)
         )
-      }
       ~
-      path("event" / "word-cloud") {
+      path("event" / "word-cloud"):
         handleWebSocketMessages(
-          interactiveService.wordCloud.
-            sample(10, 1.second).
-            map(_.toJson.compactPrint).
-            map(TextMessage(_))
+          interactiveService.wordCloud
+            .sample(10, 1.second)
+            .map:
+              _.toJson.compactPrint
+            .map:
+              TextMessage(_)
         )
-      }
       ~
-      path("event" / "question") {
+      path("event" / "question"):
         handleWebSocketMessages(
-          interactiveService.questions.
-            map(_.toJson.compactPrint).
-            map(TextMessage(_))
+          interactiveService.questions
+            .map:
+              _.toJson.compactPrint
+            .map:
+              TextMessage(_)
         )
-      }
       ~
-      path("event" / "transcription") {
+      path("event" / "transcription"):
         handleWebSocketMessages(
-          transcriptionService.transcriptions.
-            map(_.toJson.compactPrint).
-            map(TextMessage(_))
+          transcriptionService.transcriptions
+            .map:
+              _.toJson.compactPrint
+            .map:
+              TextMessage(_)
         )
-      }
       ~
-      path("moderator") {
+      path("moderator"):
         getFromResource("html/moderator.html")
-      }
       ~
-      path("moderator" / "event") {
+      path("moderator" / "event"):
         handleWebSocketMessages(
-          interactiveService.rejectedMessages.
-            map(_.toJson.compactPrint).
-            map(TextMessage(_))
+          interactiveService.rejectedMessages
+            .map:
+              _.toJson.compactPrint
+            .map:
+              TextMessage(_)
         )
-      }
       ~
       // Moderation
-      path("chat") {
-        post {
-          parameters("route", "text") { (route: String, text: String) =>
-            route match {
-              case RoutePattern(sender, recipient) =>
-                onComplete(
-                  interactiveService.receiveChatMessage(ChatMessage(sender, recipient, text))
-                ) {
-                  case Success(_) => complete(StatusCodes.NoContent, HttpEntity.Empty)
-                  case Failure(_) => complete(StatusCodes.TooManyRequests, HttpEntity.Empty)
-                }
-              case IgnoredRoutePattern() =>
-                complete(StatusCodes.NoContent, HttpEntity.Empty)
-              case _ =>
-                complete(StatusCodes.BadRequest, HttpEntity.Empty)
-            }
-          }
-        }
-      }
+      path("chat"):
+        post:
+          parameters("route", "text"):
+            (route: String, text: String) =>
+              route match
+                case RoutePattern(sender, recipient) =>
+                  onComplete(
+                    interactiveService.receiveChatMessage(ChatMessage(sender, recipient, text))
+                  ):
+                    case Success(_) => complete(StatusCodes.NoContent, HttpEntity.Empty)
+                    case Failure(_) => complete(StatusCodes.TooManyRequests, HttpEntity.Empty)
+                case IgnoredRoutePattern() =>
+                  complete(StatusCodes.NoContent, HttpEntity.Empty)
+                case _ =>
+                  complete(StatusCodes.BadRequest, HttpEntity.Empty)
       ~
-      path("reset") {
-        get {
-          onComplete(interactiveService.reset()) {
+      path("reset"):
+        get:
+          onComplete(interactiveService.reset()):
             case Success(_) => complete(StatusCodes.NoContent, HttpEntity.Empty)
             case Failure(_) => complete(StatusCodes.TooManyRequests, HttpEntity.Empty)
-          }
-        }
-      }
       ~
       // Transcription
-      path("transcriber") {
+      path("transcriber"):
         getFromResource("html/transcriber.html")
-      }
       ~
-      path("transcription") {
-        post {
-          parameters("text") { (text: String) =>
-            onComplete(transcriptionService.receiveTranscription(text)) {
-              case Success(_) => complete(StatusCodes.NoContent, HttpEntity.Empty)
-              case Failure(_) => complete(StatusCodes.TooManyRequests, HttpEntity.Empty)
-            }
-          }
-        }
-      }
-    }
-  }
-}
+      path("transcription"):
+        post:
+          parameters("text"):
+            (text: String) =>
+              onComplete(transcriptionService.receiveTranscription(text)):
+                case Success(_) => complete(StatusCodes.NoContent, HttpEntity.Empty)
+                case Failure(_) => complete(StatusCodes.TooManyRequests, HttpEntity.Empty)
