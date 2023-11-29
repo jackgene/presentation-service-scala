@@ -1,8 +1,6 @@
 name := "presentation-service-akkahttp"
 
-scalaVersion := "2.13.12"
-
-scalacOptions := Seq("-Ytasty-reader", "-Xsource:3")
+//scalacOptions := Seq("-new-syntax")
 
 fork := true
 
@@ -11,6 +9,7 @@ resolvers += "Akka library repository".at("https://repo.akka.io/maven")
 val AkkaVersion = "2.9.0"
 val AkkaHttpVersion = "10.6.0"
 libraryDependencies ++= Seq(
+  "com.github.pureconfig" %% "pureconfig-core" % "0.17.4",
   "com.github.scopt" %% "scopt" % "4.1.0",
   "com.typesafe.akka" %% "akka-actor-typed" % AkkaVersion,
   "com.typesafe.akka" %% "akka-stream" % AkkaVersion,
