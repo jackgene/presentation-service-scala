@@ -1,6 +1,8 @@
 package com.jackleow.akka.stream.scaladsl
 
+import akka.http.scaladsl.model.ws.TextMessage
 import akka.stream.scaladsl.{Flow, Keep, Source}
+import spray.json.*
 
 import scala.concurrent.duration.FiniteDuration
 
@@ -29,19 +31,9 @@ extension[In, Out, Mat] (flow: Flow[In, Out, Mat])
       .conflate:
         (_, next: Out) => next
       .throttle(elements, per)
-//  def activeFilterMat[Mat2, Mat3](actives: Source[Boolean, Mat2])(
-//    matF: (Mat, Mat2) => Mat3
-//  ): Flow[In, Out, Mat3] =
-//    flow
-//      .map(Right(_)).mergeMat(actives.map(Left(_)))(matF)
-//      .scan[(Boolean, Option[Out])](false -> None):
-//        case ((curActive: Boolean, _), Left(newActive: Boolean)) =>
-//          newActive -> None
-//
-//        case ((false, _), _) =>
-//          false -> None
-//
-//        case ((active: Boolean, _), Right(out: Out)) =>
-//          active -> Some(out)
-//      .collect:
-//        case (_, Some(out: Out)) => out
+
+  def toJsonWebSocketMessage(implicit writer: JsonWriter[Out]): Flow[In, TextMessage, Mat] =
+    flow.
+      map:
+        (out: Out) =>
+          TextMessage(out.toJson.compactPrint)

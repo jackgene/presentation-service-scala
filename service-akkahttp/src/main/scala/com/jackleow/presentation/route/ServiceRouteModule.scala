@@ -3,21 +3,27 @@ package com.jackleow.presentation.route
 import akka.http.scaladsl.model.ws.TextMessage
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.server.Directives.*
-import akka.http.scaladsl.server.{Directives, Route}
-import com.jackleow.akka.stream.scaladsl.sample
+import akka.http.scaladsl.server.{Directives, Route, StandardRoute}
+import com.jackleow.akka.stream.scaladsl.{sample, toJsonWebSocketMessage}
 import com.jackleow.presentation.infrastructure.AkkaModule
 import com.jackleow.presentation.service.interactive.InteractiveModule
 import com.jackleow.presentation.service.interactive.InteractiveService.ChatMessage
 import com.jackleow.presentation.service.transcription.TranscriptionModule
-import spray.json.*
 
 import java.io.File
 import scala.concurrent.duration.*
-import scala.util.{Failure, Success}
+import scala.util.{Failure, Success, Try}
 import scala.util.matching.Regex
+
+object ServiceRouteModule:
+  private val completeWith204or429: (Try[Any]) => StandardRoute =
+    case Success(_) => complete(StatusCodes.NoContent, HttpEntity.Empty)
+    case Failure(_) => complete(StatusCodes.TooManyRequests, HttpEntity.Empty)
 
 trait ServiceRouteModule extends RouteModule:
   this: AkkaModule & InteractiveModule & TranscriptionModule =>
+
+  import ServiceRouteModule.*
 
   private val RoutePattern: Regex = """(.*) to (Everyone|You)(?: \(Direct Message\))?""".r
   private val IgnoredRoutePattern: Regex = "You to .*".r
@@ -32,38 +38,26 @@ trait ServiceRouteModule extends RouteModule:
         handleWebSocketMessages(
           interactiveService.languagePoll
             .sample(10, 1.second)
-            .map:
-              _.toJson.compactPrint
-            .map:
-              TextMessage(_)
+            .toJsonWebSocketMessage
         )
       ~
       path("event" / "word-cloud"):
         handleWebSocketMessages(
           interactiveService.wordCloud
             .sample(10, 1.second)
-            .map:
-              _.toJson.compactPrint
-            .map:
-              TextMessage(_)
+            .toJsonWebSocketMessage
         )
       ~
       path("event" / "question"):
         handleWebSocketMessages(
           interactiveService.questions
-            .map:
-              _.toJson.compactPrint
-            .map:
-              TextMessage(_)
+            .toJsonWebSocketMessage
         )
       ~
       path("event" / "transcription"):
         handleWebSocketMessages(
           transcriptionService.transcriptions
-            .map:
-              _.toJson.compactPrint
-            .map:
-              TextMessage(_)
+            .toJsonWebSocketMessage
         )
       ~
       path("moderator"):
@@ -72,10 +66,7 @@ trait ServiceRouteModule extends RouteModule:
       path("moderator" / "event"):
         handleWebSocketMessages(
           interactiveService.rejectedMessages
-            .map:
-              _.toJson.compactPrint
-            .map:
-              TextMessage(_)
+            .toJsonWebSocketMessage
         )
       ~
       // Moderation
@@ -87,9 +78,7 @@ trait ServiceRouteModule extends RouteModule:
                 case RoutePattern(sender, recipient) =>
                   onComplete(
                     interactiveService.receiveChatMessage(ChatMessage(sender, recipient, text))
-                  ):
-                    case Success(_) => complete(StatusCodes.NoContent, HttpEntity.Empty)
-                    case Failure(_) => complete(StatusCodes.TooManyRequests, HttpEntity.Empty)
+                  )(completeWith204or429)
                 case IgnoredRoutePattern() =>
                   complete(StatusCodes.NoContent, HttpEntity.Empty)
                 case _ =>
@@ -97,9 +86,7 @@ trait ServiceRouteModule extends RouteModule:
       ~
       path("reset"):
         get:
-          onComplete(interactiveService.reset()):
-            case Success(_) => complete(StatusCodes.NoContent, HttpEntity.Empty)
-            case Failure(_) => complete(StatusCodes.TooManyRequests, HttpEntity.Empty)
+          onComplete(interactiveService.reset())(completeWith204or429)
       ~
       // Transcription
       path("transcriber"):
@@ -109,6 +96,6 @@ trait ServiceRouteModule extends RouteModule:
         post:
           parameters("text"):
             (text: String) =>
-              onComplete(transcriptionService.receiveTranscription(text)):
-                case Success(_) => complete(StatusCodes.NoContent, HttpEntity.Empty)
-                case Failure(_) => complete(StatusCodes.TooManyRequests, HttpEntity.Empty)
+              onComplete(
+                transcriptionService.receiveTranscription(text)
+              )(completeWith204or429)
