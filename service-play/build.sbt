@@ -2,7 +2,7 @@ name := "presentation-service-play"
 
 scalacOptions ++= Seq("-no-indent")
 
-libraryDependencies += "com.typesafe.akka" %% "akka-stream-kafka" % "3.0.1"
+libraryDependencies += "com.typesafe.akka" %% "akka-stream-kafka" % "4.0.2"
 libraryDependencies += "com.typesafe.akka" %% "akka-stream-typed" % "2.6.21"
 
 PlayKeys.devSettings += "play.server.http.port" -> "8973"
