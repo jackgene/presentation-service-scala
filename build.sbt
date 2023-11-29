@@ -5,7 +5,7 @@ lazy val commonSettings = Seq(
   version := "1.0",
   scalaVersion := "3.3.1",
   scalacOptions ++= Seq(
-    "-feature", "-explain",
+    "-feature", "-deprecation", "-explain",
     "-Wunused:imports,privates,locals,explicits,implicits,params,linted",
     "-Wvalue-discard",
     "-Xfatal-warnings"

@@ -3,21 +3,25 @@ package com.jackleow.presentation
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorSystem, Behavior}
 import akka.http.scaladsl.Http
+import com.jackleow.presentation.config.{Configuration, ConfigurationModule}
 import com.jackleow.presentation.infrastructure.AkkaModule
 import com.jackleow.presentation.route.ServiceRouteModule
 import com.jackleow.presentation.service.interactive.AkkaStreamInteractiveModule
 import com.jackleow.presentation.service.transcription.AkkaStreamTranscriptionModule
 import com.typesafe.scalalogging.StrictLogging
+import pureconfig.ConfigSource
+import pureconfig.error.ConfigReaderFailures
 import scopt.OParser
 
 import java.io.File
 import scala.util.{Failure, Success}
 
-class App(htmlFile: File, port: Int)
+class App(override val configuration: Configuration, htmlFile: File, port: Int)
     extends ServiceRouteModule
     with AkkaStreamInteractiveModule
     with AkkaStreamTranscriptionModule
     with AkkaModule
+    with ConfigurationModule
     with StrictLogging {
 
   override lazy val system: ActorSystem[Nothing] =
@@ -47,7 +51,7 @@ class App(htmlFile: File, port: Int)
     }
   }
 }
-object App {
+object App extends StrictLogging {
   private case class Arguments(
     htmlFile: File = new File(""),
     port: Int = 8973
@@ -73,9 +77,17 @@ object App {
   }
 
   def main(rawArgs: Array[String]): Unit =
-    OParser.parse(parser, rawArgs, Arguments()) match {
-      case Some(args: Arguments) =>
-        val _ = new App(args.htmlFile, args.port)
+    (
+      OParser.parse(parser, rawArgs, Arguments()),
+      ConfigSource.default.load[Configuration]
+    ) match {
+      case (Some(args: Arguments), Right(configuration: Configuration)) =>
+        val _ = new App(configuration, args.htmlFile, args.port)
+
+      case (_, Left(failures: ConfigReaderFailures)) =>
+        logger.error(
+          s"Unable to load configuration:\n${failures.prettyPrint(1)}"
+        )
 
       case _ =>
     }

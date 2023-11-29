@@ -4,6 +4,7 @@ import akka.http.scaladsl.model.ws.TextMessage
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.server.Directives.*
 import akka.http.scaladsl.server.{Directives, Route}
+import com.jackleow.akka.stream.scaladsl.sample
 import com.jackleow.presentation.infrastructure.AkkaModule
 import com.jackleow.presentation.service.interactive.InteractiveModule
 import com.jackleow.presentation.service.interactive.InteractiveService.ChatMessage
@@ -11,6 +12,7 @@ import com.jackleow.presentation.service.transcription.TranscriptionModule
 import spray.json.*
 
 import java.io.File
+import scala.concurrent.duration.*
 import scala.util.{Failure, Success}
 import scala.util.matching.Regex
 
@@ -25,6 +27,24 @@ trait ServiceRouteModule extends RouteModule {
       // Deck
       pathSingleSlash {
         getFromFile(htmlFile, ContentTypes.`text/html(UTF-8)`)
+      }
+      ~
+      path("event" / "language-poll") {
+        handleWebSocketMessages(
+          interactiveService.languagePoll.
+            sample(10, 1.second).
+            map(_.toJson.compactPrint).
+            map(TextMessage(_))
+        )
+      }
+      ~
+      path("event" / "word-cloud") {
+        handleWebSocketMessages(
+          interactiveService.wordCloud.
+            sample(10, 1.second).
+            map(_.toJson.compactPrint).
+            map(TextMessage(_))
+        )
       }
       ~
       path("event" / "question") {
@@ -61,13 +81,26 @@ trait ServiceRouteModule extends RouteModule {
           parameters("route", "text") { (route: String, text: String) =>
             route match {
               case RoutePattern(sender, recipient) =>
-                interactiveService.receiveChatMessage(ChatMessage(sender, recipient, text))
-                complete(StatusCodes.NoContent, HttpEntity.Empty)
+                onComplete(
+                  interactiveService.receiveChatMessage(ChatMessage(sender, recipient, text))
+                ) {
+                  case Success(_) => complete(StatusCodes.NoContent, HttpEntity.Empty)
+                  case Failure(_) => complete(StatusCodes.TooManyRequests, HttpEntity.Empty)
+                }
               case IgnoredRoutePattern() =>
                 complete(StatusCodes.NoContent, HttpEntity.Empty)
               case _ =>
                 complete(StatusCodes.BadRequest, HttpEntity.Empty)
             }
+          }
+        }
+      }
+      ~
+      path("reset") {
+        get {
+          onComplete(interactiveService.reset()) {
+            case Success(_) => complete(StatusCodes.NoContent, HttpEntity.Empty)
+            case Failure(_) => complete(StatusCodes.TooManyRequests, HttpEntity.Empty)
           }
         }
       }
