@@ -78,13 +78,20 @@ object App extends StrictLogging:
       OParser.parse(parser, rawArgs, Arguments()),
       ConfigSource.default.load[Configuration]
     ) match
+      case (None, _) =>
+        System.exit(1)
+
+      case (Some(Arguments(htmlFile: File, _)), _)
+          if !htmlFile.exists() || htmlFile.isDirectory =>
+        System.err.println(s"Deck file not found: ${htmlFile.getAbsolutePath}")
+        System.exit(1)
+
+      case (_, Left(failures: ConfigReaderFailures)) =>
+        System.err.println(
+          s"Unable to load configuration:\n${failures.prettyPrint(1)}"
+        )
+        System.exit(1)
+
       case (Some(args: Arguments), Right(configuration: Configuration)) =>
         logger.debug(s"Starting presentation service with configuration\n$configuration")
         val _ = new App(configuration, args.htmlFile, args.port)
-
-      case (_, Left(failures: ConfigReaderFailures)) =>
-        logger.error(
-          s"Unable to load configuration:\n${failures.prettyPrint(1)}"
-        )
-
-      case _ =>
