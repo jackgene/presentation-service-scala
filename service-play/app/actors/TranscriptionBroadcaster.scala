@@ -9,13 +9,13 @@ import play.api.libs.json.{JsValue, Json, Writes}
  * Accumulates transcription texts, and broadcast them to subscribers.
  */
 object TranscriptionBroadcaster {
-  sealed trait Command
-  final case class NewTranscriptionText(text: String) extends Command
-  final case class Subscribe(subscriber: ActorRef[Event]) extends Command
-  final case class Unsubscribe(subscriber: ActorRef[Event]) extends Command
+  final case class NewTranscriptionText(text: String)
+  final case class Subscribe(subscriber: ActorRef[Event])
+  final case class Unsubscribe(subscriber: ActorRef[Event])
+  type Command = NewTranscriptionText | Subscribe | Unsubscribe
 
-  sealed trait Event
-  private final case class Transcription(text: String) extends Event
+  final case class Transcription(text: String)
+  type Event = Transcription
 
   // JSON
   private implicit val eventWrites: Writes[Event] = {

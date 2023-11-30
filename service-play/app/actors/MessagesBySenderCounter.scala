@@ -13,14 +13,14 @@ import scala.concurrent.duration.{DurationInt, FiniteDuration}
  * Counts messages grouping by senders.
  */
 object MessagesBySenderCounter {
-  sealed trait Command
-  final case class Subscribe(subscriber: ActorRef[Event]) extends Command
-  final case class Unsubscribe(subscriber: ActorRef[Event]) extends Command
-  final case class Record(chatMessage: ChatMessage) extends Command
-  case object Reset extends Command
+  final case class Subscribe(subscriber: ActorRef[Event])
+  final case class Unsubscribe(subscriber: ActorRef[Event])
+  final case class Record(chatMessage: ChatMessage)
+  case object Reset
+  type Command = Subscribe | Unsubscribe | Record | Reset.type
 
-  sealed trait Event
-  final case class Counts(sendersByCount: Map[Int,Seq[String]]) extends Event
+  final case class Counts(sendersByCount: Map[Int,Seq[String]])
+  type Event = Counts
 
   // JSON
   private implicit val eventWrites: Writes[Event] = {

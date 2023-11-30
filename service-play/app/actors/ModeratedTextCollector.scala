@@ -12,14 +12,14 @@ import play.api.libs.json.{JsValue, Json, Writes}
  * Specifically, accepts text for messages where the sender is an empty string.
  */
 object ModeratedTextCollector {
-  sealed trait Command
-  final case class Subscribe(subscriber: ActorRef[Event]) extends Command
-  final case class Unsubscribe(subscriber: ActorRef[Event]) extends Command
-  final case class Record(chatMessage: ChatMessage) extends Command
-  case object Reset extends Command
+  final case class Subscribe(subscriber: ActorRef[Event])
+  final case class Unsubscribe(subscriber: ActorRef[Event])
+  final case class Record(chatMessage: ChatMessage)
+  case object Reset
+  type Command = Subscribe | Unsubscribe | Record | Reset.type
 
-  sealed trait Event
-  private final case class ChatMessages(chatText: Seq[String]) extends Event
+  final case class ChatMessages(chatText: Seq[String])
+  type Event = ChatMessages
 
   // JSON
   private implicit val eventWrites: Writes[Event] = {

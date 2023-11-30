@@ -25,13 +25,13 @@ object ChatMessageBroadcaster {
     override def toString: String = s"$sender to $recipient: $text"
   }
 
-  sealed trait Command
-  final case class Subscribe(subscriber: ActorRef[Event]) extends Command
-  final case class Unsubscribe(subscriber: ActorRef[Event]) extends Command
-  final case class Record(chatMessage: ChatMessage) extends Command
+  final case class Subscribe(subscriber: ActorRef[Event])
+  final case class Unsubscribe(subscriber: ActorRef[Event])
+  final case class Record(chatMessage: ChatMessage)
+  type Command = Subscribe | Unsubscribe | Record
 
-  sealed trait Event
-  final case class New(chatMessage: ChatMessage) extends Event
+  final case class New(chatMessage: ChatMessage)
+  type Event = New
 
   // JSON
   implicit val writes: Writes[ChatMessage] = (
