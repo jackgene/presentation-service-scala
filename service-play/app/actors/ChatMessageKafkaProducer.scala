@@ -58,7 +58,7 @@ private class ChatMessageKafkaProducer(
           Set(sender),
           kafkaProducer.runWith(
             Source.queue[ChatMessage](1).
-              map { msg: ChatMessage =>
+              map { (msg: ChatMessage) =>
                 new ProducerRecord[String, String](
                   kafkaTopicName, msg.sender, Json.toJson(msg).toString()
                 )
