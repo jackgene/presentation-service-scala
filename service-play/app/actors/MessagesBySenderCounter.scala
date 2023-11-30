@@ -20,7 +20,7 @@ object MessagesBySenderCounter {
   case object Reset extends Command
 
   sealed trait Event
-  final case class Counts(sendersByCount: Map[Int,Seq[String]]) extends Event
+  private final case class Counts(sendersByCount: Map[Int,Seq[String]]) extends Event
 
   // JSON
   private implicit val eventWrites: Writes[Event] = {
