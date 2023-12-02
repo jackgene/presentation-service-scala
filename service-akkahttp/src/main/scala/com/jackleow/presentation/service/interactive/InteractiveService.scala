@@ -24,6 +24,7 @@ object InteractiveService:
     )
 
   final case class Counts(tokens: MultiSet[String])
+
   implicit object countsFormat extends RootJsonWriter[Counts]:
     override def write(counts: Counts): JsValue = JsObject(
       // JSON keys must be strings
