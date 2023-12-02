@@ -28,7 +28,7 @@ object AkkaStreamInteractiveService:
         .take(1)
         .pipe(source.prependLazy)
 
-//    private def prependingLastEmitted()(implicit materializer: Materializer): Source[Out, Mat] = {
+//    private def prependingLastEmitted()(implicit materializer: Materializer): Source[Out, Mat] =
 //      val lastEmitted: AtomicReference[Out] = new AtomicReference[Out]()
 //      source.runForeach(lastEmitted.set)
 //
@@ -38,7 +38,6 @@ object AkkaStreamInteractiveService:
 //        .collect:
 //          case Some(value: Out) => value
 //        .pipe(source.prepend)
-//    }
 
   private case object Reset
 
