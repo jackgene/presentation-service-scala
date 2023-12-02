@@ -39,6 +39,9 @@ object AkkaStreamInteractiveService:
 //          case Some(value: Out) => value
 //        .pipe(source.prepend)
 //    }
+
+  private case object Reset
+
 class AkkaStreamInteractiveService(
   languagePollConfig: Configuration.LanguagePoll,
   wordCloudConfig: Configuration.WordCloud

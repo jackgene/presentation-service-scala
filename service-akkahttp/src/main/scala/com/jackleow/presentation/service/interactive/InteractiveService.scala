@@ -44,8 +44,6 @@ object InteractiveService:
   implicit val chatMessagesFormat: RootJsonWriter[ChatMessages] =
     jsonFormat1(ChatMessages.apply)
 
-  case object Reset
-
 trait InteractiveService:
   import InteractiveService.*
 
