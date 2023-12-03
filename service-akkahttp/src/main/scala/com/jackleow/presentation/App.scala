@@ -83,11 +83,11 @@ object App extends StrictLogging:
 
       case (Some(Arguments(htmlFile: File, _)), _)
           if !htmlFile.exists() || htmlFile.isDirectory =>
-        System.err.println(s"Deck file not found: ${htmlFile.getAbsolutePath}")
+        Console.err.println(s"Deck file not found: ${htmlFile.getAbsolutePath}")
         System.exit(1)
 
       case (_, Left(failures: ConfigReaderFailures)) =>
-        System.err.println(
+        Console.err.println(
           s"Unable to load configuration:\n${failures.prettyPrint(1)}"
         )
         System.exit(1)
