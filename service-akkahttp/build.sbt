@@ -1,6 +1,6 @@
 name := "presentation-service-akkahttp"
 
-scalacOptions := Seq("-new-syntax", "-deprecation", "-Yexplicit-nulls")
+scalacOptions ++= Seq("-new-syntax", "-deprecation", "-Yexplicit-nulls")
 
 fork := true
 
