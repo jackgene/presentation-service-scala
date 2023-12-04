@@ -21,6 +21,9 @@ lazy val `service-play` = (project in file("service-play")).
   settings(commonSettings).
   enablePlugins(PlayScala).
   dependsOn(shared)
+lazy val `service-ziohttp` = (project in file("service-ziohttp")).
+  settings(commonSettings).
+  dependsOn(shared)
 lazy val benchmark = (project in file("benchmark")).
   settings(commonSettings).
   dependsOn(shared)
