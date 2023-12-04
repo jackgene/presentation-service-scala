@@ -59,8 +59,9 @@ trait ServiceRouteModule extends RouteModule:
             .toJsonWebSocketMessage
         )
       ~
+      // Moderation
       path("moderator"):
-        getFromResource("html/moderator.html")
+        getFromResource("html/moderator.html", ContentTypes.`text/html(UTF-8)`)
       ~
       path("moderator" / "event"):
         handleWebSocketMessages(
@@ -68,7 +69,6 @@ trait ServiceRouteModule extends RouteModule:
             .toJsonWebSocketMessage
         )
       ~
-      // Moderation
       path("chat"):
         post:
           parameters("route", "text"):
@@ -89,7 +89,7 @@ trait ServiceRouteModule extends RouteModule:
       ~
       // Transcription
       path("transcriber"):
-        getFromResource("html/transcriber.html")
+        getFromResource("html/transcriber.html", ContentTypes.`text/html(UTF-8)`)
       ~
       path("transcription"):
         post:
