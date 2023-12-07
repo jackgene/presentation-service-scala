@@ -9,10 +9,7 @@ import zio.stream.ZStream
 
 import java.nio.file
 
-object Service {
-  def apply(htmlPath: file.Path, port: Int): Service = new Service(htmlPath, port)
-}
-class Service(htmlPath: file.Path, port: Int) {
+object Server {
   private val contentTypeHtml: Headers = Headers(
     Header.ContentType(MediaType.text.html,
       charset = Option(Charsets.Utf8))
@@ -29,12 +26,11 @@ class Service(htmlPath: file.Path, port: Int) {
         case Read(WebSocketFrame.Text(text)) =>
           channel.send(Read(WebSocketFrame.Text(text))).repeatN(10)
         case other =>
-          println(s"test?: $other")
           ZIO.unit
       }
     }
 
-  private val app: HttpApp[Any] =
+  private def app(htmlPath: file.Path): HttpApp[Any] =
     Routes(
       // Deck
       Method.GET / empty ->
@@ -73,6 +69,8 @@ class Service(htmlPath: file.Path, port: Int) {
         handler(socketApp.toResponse),
     ).toHttpApp
 
-  def start(): ZIO[Any, Throwable, Nothing] =
-    Server.serve(app).provide(Server.defaultWithPort(port))
+  def make(htmlPath: file.Path, port: Int): ZIO[Any, Throwable, Nothing] =
+    http.Server
+      .serve(app(htmlPath))
+      .provide(http.Server.defaultWithPort(port))
 }
