@@ -39,7 +39,8 @@ object Server {
             headers = contentTypeHtml,
             body = Body.fromStream(ZStream.fromPath(htmlPath))
           )
-        ),
+        )
+      ,
 
       // Modeeration
       Method.GET / "moderator" ->
@@ -50,9 +51,11 @@ object Server {
               ZStream.fromResource("html/moderator.html")
             )
           )
-        ),
+        )
+      ,
       Method.GET / "reset" ->
-        handler(Response.status(Status.NoContent)),
+        handler(Response.status(Status.NoContent))
+      ,
 
       // Transcription
       Method.GET / "transcriber" ->
@@ -63,10 +66,12 @@ object Server {
               ZStream.fromResource("html/transcriber.html")
             )
           )
-        ),
+        )
+      ,
 
       Method.GET / "subscriptions" ->
-        handler(socketApp.toResponse),
+        handler(socketApp.toResponse)
+      ,
     ).toHttpApp
 
   def make(htmlPath: file.Path, port: Int): ZIO[Any, Throwable, Nothing] =
