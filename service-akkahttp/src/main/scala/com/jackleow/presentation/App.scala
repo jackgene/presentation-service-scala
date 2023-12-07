@@ -9,9 +9,6 @@ import com.jackleow.presentation.route.ServiceRouteModule
 import com.jackleow.presentation.service.interactive.AkkaStreamInteractiveModule
 import com.jackleow.presentation.service.transcription.AkkaStreamTranscriptionModule
 import com.typesafe.scalalogging.StrictLogging
-import pureconfig.ConfigSource
-import pureconfig.error.ConfigReaderFailures
-import scopt.OParser
 
 import java.io.File
 import scala.util.{Failure, Success}
