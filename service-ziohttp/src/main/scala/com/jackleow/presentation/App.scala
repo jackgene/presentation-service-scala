@@ -18,6 +18,6 @@ object App extends ZIOCliDefault {
     summary = text("Presentation Service Application"),
     command = command
   ) {
-    case (htmlPath: Path, port: Int) => Service(htmlPath, port).start()
+    case (htmlPath: Path, port: Int) => Server.make(htmlPath, port)
   }
 }
