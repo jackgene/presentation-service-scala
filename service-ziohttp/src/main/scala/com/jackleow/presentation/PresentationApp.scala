@@ -11,13 +11,13 @@ import zio.stream.ZStream
 
 import java.nio.file
 
-object Server {
+object PresentationApp {
   private val contentTypeHtml: Headers = Headers(
     Header.ContentType(MediaType.text.html,
       charset = Option(Charsets.Utf8))
   )
 
-  private def app(htmlPath: file.Path): HttpApp[TranscriptionBroadcaster] =
+  def apply(htmlPath: file.Path): HttpApp[TranscriptionBroadcaster] =
     Routes(
       // Deck
       Method.GET / empty -> handler:
@@ -45,7 +45,7 @@ object Server {
           .toResponse
       ,
 
-      // Modeeration
+      // Moderation
       Method.GET / "moderator" -> handler:
         Response(
           headers = contentTypeHtml,
@@ -80,12 +80,4 @@ object Server {
             ZIO.succeed(Response.badRequest("Missing parameter: text"))
       ,
     ).toHttpApp
-
-  def make(htmlPath: file.Path, port: Int): ZIO[Any, Throwable, Nothing] =
-    http.Server
-      .serve(app(htmlPath))
-      .provide(
-        http.Server.defaultWithPort(port),
-        ZLayer.fromZIO(TranscriptionBroadcaster.make),
-      )
 }

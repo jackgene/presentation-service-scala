@@ -1,12 +1,14 @@
 package com.jackleow.presentation
 
+import com.jackleow.presentation.service.interactive.TranscriptionBroadcaster
 import zio.*
 import zio.cli.*
 import zio.cli.HelpDoc.Span.text
+import zio.http.Server
 
 import java.nio.file.Path
 
-object App extends ZIOCliDefault {
+object Main extends ZIOCliDefault:
   private val options: Options[(Path, Int)] =
     Options.file("html-path", Exists.Yes) ++
     Options.integer("port").map(_.toInt).withDefault(8973)
@@ -17,7 +19,14 @@ object App extends ZIOCliDefault {
     version = "1.0",
     summary = text("Presentation Service Application"),
     command = command
-  ) {
-    case (htmlPath: Path, port: Int) => Server.make(htmlPath, port)
-  }
-}
+  ):
+    case (htmlPath: Path, port: Int) =>
+      Server
+        .serve(PresentationApp(htmlPath))
+        .provide(
+          Server
+            .defaultWithPort(port)
+            .tap: (env: ZEnvironment[Server]) =>
+              ZIO.log(s"Server online at http://localhost:${env.get.port}/"),
+          ZLayer.fromZIO(TranscriptionBroadcaster.make),
+        )
