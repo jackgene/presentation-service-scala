@@ -1,6 +1,7 @@
 package com.jackleow.presentation
 
 import com.jackleow.presentation.service.interactive.TranscriptionBroadcaster
+import com.jackleow.zio.http.noContent
 import zio.*
 import zio.http.*
 import zio.http.ChannelEvent.UserEvent.HandshakeComplete
@@ -54,7 +55,7 @@ object PresentationApp {
         )
       ,
       Method.GET / "reset" -> handler:
-        Response.status(Status.NoContent)
+        Response.noContent
       ,
 
       // Transcription
@@ -74,7 +75,7 @@ object PresentationApp {
               (broadcaster: TranscriptionBroadcaster) =>
                 broadcaster
                   .broadcast(text)
-                  .map(_ => Response.status(Status.NoContent))
+                  .map(_ => Response.noContent)
           case None =>
             ZIO.succeed(Response.badRequest("Missing parameter: text"))
       ,
