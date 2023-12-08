@@ -13,8 +13,7 @@ import java.nio.file
 
 object PresentationApp {
   private val contentTypeHtml: Headers = Headers(
-    Header.ContentType(MediaType.text.html,
-      charset = Option(Charsets.Utf8))
+    Header.ContentType(MediaType.text.html, charset = Option(Charsets.Utf8))
   )
 
   def apply(htmlPath: file.Path): HttpApp[TranscriptionBroadcaster] =
