@@ -34,4 +34,7 @@ final class TranscriptionBroadcaster private (
         ZStream.fromHub(hub)
 
   def broadcast(transcriptionText: String): UIO[Boolean] =
-    hub.publish(Transcription(transcriptionText))
+    for
+      _ <- ZIO.log(s"Received transcription text: $transcriptionText")
+      success: Boolean <- hub.publish(Transcription(transcriptionText))
+    yield success
