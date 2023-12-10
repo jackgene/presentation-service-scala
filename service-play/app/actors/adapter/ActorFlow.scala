@@ -7,7 +7,7 @@ import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, Behavior, PostStop, Terminated}
 import akka.stream.scaladsl.Source
 import akka.stream.typed.scaladsl.ActorSource
-import akka.stream.{Materializer, OverflowStrategy}
+import akka.stream.OverflowStrategy
 import play.api.libs.streams.ActorFlow
 
 /**

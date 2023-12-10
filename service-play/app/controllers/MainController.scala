@@ -5,7 +5,6 @@ import actors.ChatMessageBroadcaster.ChatMessage
 import actors.adapter.sourceBehavior
 import akka.actor.ActorSystem
 import akka.actor.typed.ActorRef
-import akka.stream.Materializer
 import akka.stream.scaladsl.{Flow, Sink}
 import play.api.libs.json.JsValue
 import play.api.libs.streams.ActorFlow
