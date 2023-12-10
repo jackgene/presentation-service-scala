@@ -17,6 +17,14 @@ import play.api.libs.json.*
  * - Etc
  */
 object ChatMessageBroadcaster {
+  object ChatMessage {
+    // JSON
+    given writes: Writes[ChatMessage] = (
+      (JsPath \ "s").write[String] and
+      (JsPath \ "r").write[String] and
+      (JsPath \ "t").write[String]
+    ) { msg => (msg.sender, msg.recipient, msg.text) }
+  }
   case class ChatMessage(
     sender: String,
     recipient: String,
@@ -30,18 +38,14 @@ object ChatMessageBroadcaster {
   final case class Unsubscribe(subscriber: ActorRef[Event]) extends Command
   final case class Record(chatMessage: ChatMessage) extends Command
 
+  object Event {
+    // JSON
+    private[ChatMessageBroadcaster] given writes: Writes[Event] = {
+      case New(chatMessage: ChatMessage) => Json.toJson(chatMessage)
+    }
+  }
   sealed trait Event
   final case class New(chatMessage: ChatMessage) extends Event
-
-  // JSON
-  implicit val writes: Writes[ChatMessage] = (
-    (JsPath \ "s").write[String] and
-    (JsPath \ "r").write[String] and
-    (JsPath \ "t").write[String]
-  ) { msg => (msg.sender, msg.recipient, msg.text) }
-  private implicit val eventWrites: Writes[Event] = {
-    case New(chatMessage: ChatMessage) => Json.toJson(chatMessage)
-  }
 
   private def running(
     subscribers: Set[ActorRef[Event]]

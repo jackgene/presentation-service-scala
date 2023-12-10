@@ -58,9 +58,15 @@ object PresentationServiceApplicationLoader {
         TranscriptionBroadcaster(), "transcriptions"
       )
     private val mainController: MainController = new MainController(
-      chatMessages, rejectedMessages, languagePoll, wordCloud, chattiest,
-      questions, transcriptions, controllerComponents
-    )(actorSystem, materializer)
+      chatMessages = chatMessages,
+      rejectedMessages = rejectedMessages,
+      languagePoll = languagePoll,
+      wordCloud = wordCloud,
+      chattiest = chattiest,
+      questions = questions,
+      transcriptions = transcriptions,
+      controllerComponents
+    )(using actorSystem)
     override val router: Router =
       new Routes(httpErrorHandler, assets, mainController)
   }
