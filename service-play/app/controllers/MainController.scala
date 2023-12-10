@@ -26,7 +26,7 @@ class MainController (
   questions: ActorRef[ModeratedTextCollector.Command],
   transcriptions: ActorRef[TranscriptionBroadcaster.Command],
   cc: ControllerComponents
-)(implicit system: ActorSystem, mat: Materializer) extends AbstractController(cc) {
+)(using system: ActorSystem) extends AbstractController(cc) {
   private val RoutePattern: Regex = """(.*) to (Everyone|You)(?: \(Direct Message\))?""".r
   private val IgnoredRoutePattern: Regex = "You to .*".r
 

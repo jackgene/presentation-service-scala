@@ -18,7 +18,7 @@ extension (ext: ActorFlow.type) {
     behavior: ActorRef[Out] => Behavior[?],
     bufferSize: Int = 16,
     overflowStrategy: OverflowStrategy = OverflowStrategy.dropHead
-  )(implicit factory: ActorSystem, mat: Materializer): Source[Out, NotUsed] = {
+  )(using factory: ActorSystem): Source[Out, NotUsed] = {
     val (
       sourceActor: ActorRef[Option[Out]], source: Source[Option[Out], NotUsed]
     ) = ActorSource.

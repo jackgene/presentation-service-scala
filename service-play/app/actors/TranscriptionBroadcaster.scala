@@ -14,14 +14,15 @@ object TranscriptionBroadcaster {
   final case class Subscribe(subscriber: ActorRef[Event]) extends Command
   final case class Unsubscribe(subscriber: ActorRef[Event]) extends Command
 
+  object Event {
+    // JSON
+    private[TranscriptionBroadcaster] given writes: Writes[Event] = {
+      case transcription: Transcription =>
+        Json.obj("transcriptionText" -> transcription.text)
+    }
+  }
   sealed trait Event
   private final case class Transcription(text: String) extends Event
-
-  // JSON
-  private implicit val eventWrites: Writes[Event] = {
-    case transcription: Transcription =>
-      Json.obj("transcriptionText" -> transcription.text)
-  }
 
   private def running(
     subscribers: Set[ActorRef[Event]]

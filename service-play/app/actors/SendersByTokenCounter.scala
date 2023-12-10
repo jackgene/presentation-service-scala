@@ -20,17 +20,18 @@ object SendersByTokenCounter {
   final case class Record(chatMessage: ChatMessage) extends Command
   case object Reset extends Command
 
+  object Event {
+    // JSON
+    private[SendersByTokenCounter] given writes: Writes[Event] = {
+      case counts: Counts =>
+        Json.obj(
+          // JSON keys must be strings
+          "tokensAndCounts" -> counts.tokens.elementsByCount.toSeq
+        )
+    }
+  }
   sealed trait Event
   private final case class Counts(tokens: MultiSet[String]) extends Event
-
-  // JSON
-  private implicit val eventWrites: Writes[Event] = {
-    case counts: Counts =>
-      Json.obj(
-        // JSON keys must be strings
-        "tokensAndCounts" -> counts.tokens.elementsByCount.toSeq
-      )
-  }
 
   def apply(
     extractTokens: Tokenizer, tokensPerSender: Int,

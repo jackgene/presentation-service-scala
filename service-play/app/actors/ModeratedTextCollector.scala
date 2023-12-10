@@ -18,14 +18,15 @@ object ModeratedTextCollector {
   final case class Record(chatMessage: ChatMessage) extends Command
   case object Reset extends Command
 
+  object Event {
+    // JSON
+    private[ModeratedTextCollector] given writes: Writes[Event] = {
+      case chatMessages: ChatMessages =>
+        Json.obj("chatText" -> chatMessages.chatText)
+    }
+  }
   sealed trait Event
   private final case class ChatMessages(chatText: Seq[String]) extends Event
-
-  // JSON
-  private implicit val eventWrites: Writes[Event] = {
-    case chatMessages: ChatMessages =>
-      Json.obj("chatText" -> chatMessages.chatText)
-  }
 
   def apply(
     chatMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command],
