@@ -1,6 +1,7 @@
 package com.jackleow.presentation.service.interactive
 
 import com.jackleow.presentation.service.interactive.TranscriptionBroadcaster.Transcription
+import com.jackleow.zio.stream.countRunning
 import zio.*
 import zio.json.{DeriveJsonEncoder, JsonEncoder}
 import zio.stream.*
@@ -20,18 +21,12 @@ final class TranscriptionBroadcaster private (
 ):
   val transcriptions: UStream[Transcription] =
     ZStream
-      .acquireReleaseWith(
-        for
-          subscribers: Int <- subscribersRef.updateAndGet(_ + 1)
-          _ <- ZIO.log(s"+1 subscriber (=$subscribers)")
-        yield ()
-      ): _ =>
-        for
-          subscribers: Int <- subscribersRef.updateAndGet(_ - 1)
-          _ <- ZIO.log(s"-1 subscriber (=$subscribers)")
-        yield ()
-      .flatMap: _ =>
-        ZStream.fromHub(hub)
+      .fromHub(hub)
+      .countRunning(
+        subscribersRef,
+        (subscribers: Int) => ZIO.log(s"+1 subscriber (=$subscribers)"),
+        (subscribers: Int) => ZIO.log(s"-1 subscriber (=$subscribers)"),
+      )
 
   def broadcast(transcriptionText: String): UIO[Boolean] =
     for
