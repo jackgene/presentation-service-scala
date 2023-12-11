@@ -1,6 +1,6 @@
 package com.jackleow.presentation
 
-import com.jackleow.presentation.service.interactive.TranscriptionBroadcaster
+import com.jackleow.presentation.service.transcription.TranscriptionBroadcaster
 import com.jackleow.zio.http.noContent
 import zio.*
 import zio.http.*

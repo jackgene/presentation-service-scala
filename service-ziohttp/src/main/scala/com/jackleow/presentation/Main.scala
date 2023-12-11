@@ -1,6 +1,6 @@
 package com.jackleow.presentation
 
-import com.jackleow.presentation.service.interactive.TranscriptionBroadcaster
+import com.jackleow.presentation.service.transcription.TranscriptionBroadcaster
 import zio.*
 import zio.cli.*
 import zio.cli.HelpDoc.Span.text
