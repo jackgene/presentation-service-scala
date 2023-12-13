@@ -10,7 +10,7 @@ object MappedKeywordsTokenizer {
     new MappedKeywordsTokenizer(keywordsByRawToken)
 }
 
-class MappedKeywordsTokenizer private[tokenizing](
+final class MappedKeywordsTokenizer private[tokenizing](
   keywordsByRawToken: Map[String, String]
 ) extends Tokenizer {
   import MappedKeywordsTokenizer.*

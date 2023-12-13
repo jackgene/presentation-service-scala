@@ -16,7 +16,7 @@ object MultiSet {
  * @param elementsByCount mapping of count -> elements
  * @tparam A type of element being counted
  */
-class MultiSet[A] private[collection] (
+final class MultiSet[A] private[collection] (
   private[collection] val countsByElement: Map[A, Int],
   val elementsByCount: Map[Int, Seq[A]]
 ) {

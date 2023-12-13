@@ -16,7 +16,7 @@ import scala.util.matching.Regex
  * This controller creates an `Action` to handle HTTP requests to the
  * application's home page.
  */
-class MainController (
+final class MainController (
   chatMessages: ActorRef[ChatMessageBroadcaster.Command],
   rejectedMessages: ActorRef[ChatMessageBroadcaster.Command],
   languagePoll: ActorRef[SendersByTokenCounter.Command],

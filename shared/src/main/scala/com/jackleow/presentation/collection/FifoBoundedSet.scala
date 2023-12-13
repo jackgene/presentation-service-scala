@@ -34,7 +34,7 @@ object FifoBoundedSet {
  *
  * @tparam A the element type
  */
-class FifoBoundedSet[A] private(
+final class FifoBoundedSet[A] private(
   val maxSize: Int,
   val insertionOrder: IndexedSeq[A] = Vector[A](),
   private val uniques: Set[A] = Set[A]()
