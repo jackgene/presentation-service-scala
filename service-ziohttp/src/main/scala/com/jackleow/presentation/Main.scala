@@ -1,5 +1,7 @@
 package com.jackleow.presentation
 
+import com.jackleow.presentation.service.interactive
+import com.jackleow.presentation.service.interactive.{ChatMessageBroadcaster, InteractiveService}
 import com.jackleow.presentation.service.transcription.TranscriptionBroadcaster
 import zio.*
 import zio.cli.*
@@ -28,5 +30,12 @@ object Main extends ZIOCliDefault:
             .defaultWithPort(port)
             .tap: (env: ZEnvironment[Server]) =>
               ZIO.log(s"Server online at http://localhost:${env.get.port}/"),
+          ZLayer.fromZIO(
+            for
+              chat: ChatMessageBroadcaster <- ChatMessageBroadcaster.make("chat")
+              rejected: ChatMessageBroadcaster <- ChatMessageBroadcaster.make("rejected")
+              service: interactive.InteractiveService <- InteractiveService.make(chat)
+            yield service
+          ),
           ZLayer.fromZIO(TranscriptionBroadcaster.make),
         )
