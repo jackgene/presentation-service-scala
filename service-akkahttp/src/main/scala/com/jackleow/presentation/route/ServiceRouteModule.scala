@@ -4,7 +4,6 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.server.Directives.*
 import akka.http.scaladsl.server.{Directives, Route, StandardRoute}
 import com.jackleow.akka.stream.scaladsl.{sample, toJsonWebSocketMessage}
-import com.jackleow.presentation.infrastructure.AkkaModule
 import com.jackleow.presentation.service.interactive.InteractiveModule
 import com.jackleow.presentation.service.interactive.InteractiveService.ChatMessage
 import com.jackleow.presentation.service.transcription.TranscriptionModule
@@ -20,7 +19,7 @@ object ServiceRouteModule:
     case Failure(_) => complete(StatusCodes.TooManyRequests, HttpEntity.Empty)
 
 trait ServiceRouteModule extends RouteModule:
-  this: AkkaModule & InteractiveModule & TranscriptionModule =>
+  this: InteractiveModule & TranscriptionModule =>
 
   import ServiceRouteModule.*
 
