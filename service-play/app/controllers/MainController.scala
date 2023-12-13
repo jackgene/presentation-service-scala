@@ -89,7 +89,10 @@ final class MainController (
         chatMessages ! ChatMessageBroadcaster.Record(ChatMessage(sender, recipient, text))
         NoContent
       case IgnoredRoutePattern() => NoContent
-      case _ => BadRequest
+      case sender: String =>
+        // With larger Zoom meetings, the "route" is just the sender
+        chatMessages ! ChatMessageBroadcaster.Record(ChatMessage(sender, "Everyone", text))
+        NoContent
     }
   }
 
