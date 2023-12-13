@@ -13,7 +13,7 @@ import com.typesafe.scalalogging.StrictLogging
 import java.io.File
 import scala.util.{Failure, Success}
 
-class App(override val configuration: Configuration, htmlFile: File, port: Int)
+final class App(override val configuration: Configuration, htmlFile: File, port: Int)
   extends ServiceRouteModule
   with AkkaStreamInteractiveModule
   with AkkaStreamTranscriptionModule
