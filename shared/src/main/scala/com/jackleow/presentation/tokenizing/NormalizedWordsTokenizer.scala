@@ -12,7 +12,7 @@ object NormalizedWordsTokenizer {
   ): Tokenizer = new NormalizedWordsTokenizer(stopWords, minWordLength, maxWordLength)
 }
 
-class NormalizedWordsTokenizer private[tokenizing](
+final class NormalizedWordsTokenizer private[tokenizing](
   stopWords: Set[String] = Set(), minWordLength: Int = 1, maxWordLength: Int = Int.MaxValue
 ) extends Tokenizer {
   import NormalizedWordsTokenizer.*
