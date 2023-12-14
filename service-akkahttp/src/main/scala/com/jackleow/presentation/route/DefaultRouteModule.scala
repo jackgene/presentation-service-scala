@@ -5,7 +5,7 @@ import akka.http.scaladsl.server.Directives.*
 import akka.http.scaladsl.server.{Directives, Route, StandardRoute}
 import com.jackleow.akka.stream.scaladsl.{sample, toJsonWebSocketMessage}
 import com.jackleow.presentation.service.interactive.InteractiveModule
-import com.jackleow.presentation.service.interactive.InteractiveService.ChatMessage
+import com.jackleow.presentation.service.interactive.model.ChatMessage
 import com.jackleow.presentation.service.transcription.TranscriptionModule
 
 import java.io.File
@@ -13,15 +13,15 @@ import scala.concurrent.duration.*
 import scala.util.{Failure, Success, Try}
 import scala.util.matching.Regex
 
-object ServiceRouteModule:
+object DefaultRouteModule:
   private val completeWith204or429: Try[Any] => StandardRoute =
     case Success(_) => complete(StatusCodes.NoContent, HttpEntity.Empty)
     case Failure(_) => complete(StatusCodes.TooManyRequests, HttpEntity.Empty)
 
-trait ServiceRouteModule extends RouteModule:
+trait DefaultRouteModule extends RouteModule:
   this: InteractiveModule & TranscriptionModule =>
 
-  import ServiceRouteModule.*
+  import DefaultRouteModule.*
 
   private val RoutePattern: Regex = """(.*) to (Everyone|You)(?: \(Direct Message\))?""".r
   private val IgnoredRoutePattern: Regex = "You to .*".r
@@ -54,8 +54,7 @@ trait ServiceRouteModule extends RouteModule:
       ~
       path("event" / "transcription"):
         handleWebSocketMessages(
-          transcriptionService.transcriptions
-            .toJsonWebSocketMessage
+          transcriptionService.transcriptions.toJsonWebSocketMessage
         )
       ~
       // Moderation
@@ -95,5 +94,5 @@ trait ServiceRouteModule extends RouteModule:
           parameters("text"):
             (text: String) =>
               onComplete(
-                transcriptionService.receiveTranscription(text)
+                transcriptionService.broadcastTranscription(text)
               )(completeWith204or429)
