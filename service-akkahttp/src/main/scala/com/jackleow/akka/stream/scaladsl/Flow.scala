@@ -32,7 +32,7 @@ extension[In, Out, Mat] (flow: Flow[In, Out, Mat])
         (_, next: Out) => next
       .throttle(elements, per)
 
-  def toJsonWebSocketMessage(implicit writer: JsonWriter[Out]): Flow[In, TextMessage, Mat] =
+  def toJsonWebSocketMessage(using writer: JsonWriter[Out]): Flow[In, TextMessage, Mat] =
     flow.
       map:
         (out: Out) =>

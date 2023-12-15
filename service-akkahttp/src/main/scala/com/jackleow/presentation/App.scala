@@ -26,17 +26,17 @@ final class App(override val configuration: Configuration, htmlFile: File, port:
   with DefaultInteractiveModule
   with DefaultRouteModule:
 
-  override lazy val system: ActorSystem[Nothing] =
+  override given system: ActorSystem[Nothing] =
     ActorSystem[Nothing](rootBehavior, "presentation-service")
 
   private def rootBehavior: Behavior[Nothing] =
     Behaviors.setup[Nothing]:
       (ctx: ActorContext[Nothing]) =>
-        startHttpServer(htmlFile, port)(ctx.system)
+        startHttpServer(htmlFile, port)(using ctx.system)
         Behaviors.empty
 
   private def startHttpServer(htmlFile: File, port: Int)(
-    implicit system: ActorSystem[?]
+    using system: ActorSystem[?]
   ): Unit =
     import system.executionContext
     logger.debug(s"Starting presentation service with configuration\n$configuration")
