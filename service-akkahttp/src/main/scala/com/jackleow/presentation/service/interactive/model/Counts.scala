@@ -15,7 +15,8 @@ object Counts:
                 JsNumber(count),
                 JsArray(elems.map(JsString(_)): _*)
               )
-          .toList: _*
+          .toList
+        : _*
       )
     )
 
