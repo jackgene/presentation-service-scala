@@ -1,7 +1,8 @@
 package com.jackleow.presentation
 
-import com.jackleow.presentation.service.interactive
-import com.jackleow.presentation.service.interactive.{ChatMessageBroadcaster, InteractiveService}
+import com.jackleow.presentation.service.common.SubscriberCountingHub
+import com.jackleow.presentation.service.interactive.*
+import com.jackleow.presentation.service.interactive.model.{ChatMessage, Reset}
 import com.jackleow.presentation.service.transcription.TranscriptionBroadcaster
 import zio.*
 import zio.cli.*
@@ -23,19 +24,25 @@ object Main extends ZIOCliDefault:
     command = command
   ):
     case (htmlPath: Path, port: Int) =>
+      val httpServer: TaskLayer[Server] =
+        Server
+          .defaultWithPort(port)
+          .tap: (env: ZEnvironment[Server]) =>
+            ZIO.log(s"Server online at http://localhost:${env.get.port}/")
+      val incomingEventsHub: ULayer[SubscriberCountingHub[ChatMessage | Reset.type]] =
+        ZLayer:
+          SubscriberCountingHub.make("chat")
+      val rejectedMessagesHub: ULayer[SubscriberCountingHub[ChatMessage]] =
+        ZLayer:
+          SubscriberCountingHub.make("rejected")
       Server
-        .serve(PresentationApp(htmlPath))
+        .serve(App(htmlPath))
         .provide(
-          Server
-            .defaultWithPort(port)
-            .tap: (env: ZEnvironment[Server]) =>
-              ZIO.log(s"Server online at http://localhost:${env.get.port}/"),
-          ZLayer.fromZIO(
-            for
-              chat: ChatMessageBroadcaster <- ChatMessageBroadcaster.make("chat")
-              rejected: ChatMessageBroadcaster <- ChatMessageBroadcaster.make("rejected")
-              service: interactive.InteractiveService <- InteractiveService.make(chat)
-            yield service
-          ),
-          ZLayer.fromZIO(TranscriptionBroadcaster.make),
+//          ZLayer.Debug.tree,
+          incomingEventsHub,
+          rejectedMessagesHub,
+          ModeratedTextCollector.live("question"),
+          InteractiveService.live,
+          TranscriptionBroadcaster.live,
+          httpServer
         )
