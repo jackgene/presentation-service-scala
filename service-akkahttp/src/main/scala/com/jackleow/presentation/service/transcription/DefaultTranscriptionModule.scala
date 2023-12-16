@@ -39,10 +39,10 @@ trait DefaultTranscriptionModule extends TranscriptionModule:
             case ((tq, sq), ts) => (tq, sq, ts) // flatten
           .run()
 
-      override def broadcastTranscription(text: String): Future[Unit] =
+      override def broadcastTranscription(transcriptionText: String): Future[Unit] =
         Future
           .successful:
-            transcriptionQueue.offer(Transcription(text))
+            transcriptionQueue.offer(Transcription(transcriptionText))
           .filter:
             _.isEnqueued
           .map:

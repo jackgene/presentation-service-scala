@@ -17,13 +17,13 @@ trait TranscriptionModule:
     /**
      * Broadcasts a new transcription (e.g., from a speech-to-text tool).
      *
-     * @param text the transcription text
+     * @param transcriptionText the transcription text
      * @return if the transcription was successfully enqueued
      */
-    def broadcastTranscription(text: String): Future[Unit]
+    def broadcastTranscription(transcriptionText: String): Future[Unit]
 
     /**
-     * Returns a `Flow` from `Nothing` to `Transcription`s.
+     * `Flow` producing `Transcription`s.
      *
      * @return the transcriptions
      */
