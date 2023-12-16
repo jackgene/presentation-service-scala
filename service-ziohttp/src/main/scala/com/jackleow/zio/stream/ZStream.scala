@@ -1,7 +1,7 @@
 package com.jackleow.zio.stream
 
 import zio.{Ref, UIO, ZIO}
-import zio.stream.ZStream
+import zio.stream.{UStream, ZStream}
 
 extension[R, E, A] (stream: ZStream[R, E, A])
   def countRunning(
@@ -21,3 +21,13 @@ extension[R, E, A] (stream: ZStream[R, E, A])
           _ <- onComplete(count)
         yield ()
       .flatMap(_ => stream)
+
+  def takeWhileActive(actives: UStream[Boolean]): ZStream[R, E, A] =
+    actives
+      .mergeEither(stream)
+      .collectWhile:
+        case activeSubs @ Left(true) => activeSubs
+        case a @ Right(_) => a
+      .collect:
+        case Right(a: A) => a
+
