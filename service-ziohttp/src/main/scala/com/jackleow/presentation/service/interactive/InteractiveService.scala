@@ -7,7 +7,7 @@ import zio.{UIO, URIO, URLayer, ZIO, ZLayer}
 
 object InteractiveService:
   def live: URLayer[
-    SubscriberCountingHub[ChatMessage | Reset.type] & SubscriberCountingHub[ChatMessage] & ModeratedTextCollector,
+    SubscriberCountingHub[ChatMessage, "chat"] & SubscriberCountingHub[ChatMessage, "rejected"] & ModeratedTextCollector,
     InteractiveService
   ] =
     ZLayer.fromFunction(InteractiveServiceLive.apply _)
@@ -15,7 +15,7 @@ object InteractiveService:
   def receiveChatMessage(chatMessage: ChatMessage): URIO[InteractiveService, Boolean] =
     ZIO.serviceWithZIO[InteractiveService](_.receiveChatMessage(chatMessage))
 
-  def reset(): URIO[InteractiveService, Boolean] =
+  def reset(): URIO[InteractiveService, Unit] =
     ZIO.serviceWithZIO[InteractiveService](_.reset())
 
   def languagePoll: URIO[InteractiveService, UStream[Counts]] =
@@ -44,7 +44,7 @@ trait InteractiveService:
    *
    * @return if the reset was successfully enqueued
    */
-  def reset(): UIO[Boolean]
+  def reset(): UIO[Unit]
 
   /**
    * Stream of language poll counts.

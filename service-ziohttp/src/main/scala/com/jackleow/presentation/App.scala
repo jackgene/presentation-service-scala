@@ -56,7 +56,8 @@ object App:
             channel.receiveAll:
               case UserEventTriggered(HandshakeComplete) =>
                 for
-                  transcriptions: UStream[Transcription] <- TranscriptionBroadcaster.transcriptions
+                  transcriptions: UStream[Transcription] <-
+                    TranscriptionBroadcaster.transcriptions
                   _ <- transcriptions
                     .map(_.toJson)
                     .map(WebSocketFrame.text)
@@ -84,7 +85,8 @@ object App:
             channel.receiveAll:
               case UserEventTriggered(HandshakeComplete) =>
                 for
-                  rejectedMessages: UStream[ChatMessage] <- InteractiveService.rejectedMessages
+                  rejectedMessages: UStream[ChatMessage] <-
+                    InteractiveService.rejectedMessages
                   _ <- rejectedMessages
                     .map(_.toJson)
                     .map(WebSocketFrame.text)
@@ -101,9 +103,11 @@ object App:
           case (Some(route: String), Some(text: String)) =>
             route match
               case RoutePattern(sender, recipient) =>
-                InteractiveService
-                  .receiveChatMessage(ChatMessage(sender, recipient, text))
-                  .map(_ => Response.noContent)
+                for
+                  _ <- InteractiveService.receiveChatMessage(
+                    ChatMessage(sender, recipient, text)
+                  )
+                yield Response.noContent
               case IgnoredRoutePattern() =>
                 ZIO.succeed(Response.noContent)
               case _ =>
@@ -116,7 +120,9 @@ object App:
             ZIO.succeed(Response.badRequest("Missing parameters: route, text"))
       ,
       Method.GET / "reset" -> handler:
-        Response.noContent
+        for
+          _ <- InteractiveService.reset()
+        yield Response.noContent
       ,
 
       // Transcription

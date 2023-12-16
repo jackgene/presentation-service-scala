@@ -6,8 +6,8 @@ import zio.{UIO, ZIO}
 import zio.stream.UStream
 
 private final case class InteractiveServiceLive(
-  incomingEventHub: SubscriberCountingHub[ChatMessage | Reset.type],
-  rejectedMessageHub: SubscriberCountingHub[ChatMessage],
+  incomingEventHub: SubscriberCountingHub[ChatMessage, "chat"],
+  rejectedMessageHub: SubscriberCountingHub[ChatMessage, "rejected"],
   questionsCollector: ModeratedTextCollector
 ) extends InteractiveService:
   override def receiveChatMessage(chatMessage: ChatMessage): UIO[Boolean] =
@@ -16,7 +16,8 @@ private final case class InteractiveServiceLive(
       success: Boolean <- incomingEventHub.publish(chatMessage)
     yield success
 
-  override def reset(): UIO[Boolean] = incomingEventHub.publish(Reset)
+  override def reset(): UIO[Unit] =
+    questionsCollector.reset()
 
   override def languagePoll: UStream[Counts] = ???
 
