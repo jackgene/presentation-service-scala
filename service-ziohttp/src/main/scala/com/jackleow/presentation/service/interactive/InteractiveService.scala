@@ -1,20 +1,67 @@
 package com.jackleow.presentation.service.interactive
 
-import zio.{UIO, ZIO}
+import com.jackleow.presentation.service.common.SubscriberCountingHub
+import com.jackleow.presentation.service.interactive.model.*
+import zio.stream.UStream
+import zio.{UIO, URIO, URLayer, ZIO, ZLayer}
 
 object InteractiveService:
-  def make(chatMessageBroadcaster: ChatMessageBroadcaster): UIO[InteractiveService] =
-    ZIO.succeed(new DefaultInteractiveService(chatMessageBroadcaster))
+  def live: URLayer[
+    SubscriberCountingHub[ChatMessage | Reset.type] & SubscriberCountingHub[ChatMessage] & ModeratedTextCollector,
+    InteractiveService
+  ] =
+    ZLayer.fromFunction(InteractiveServiceLive.apply _)
 
-  private final class DefaultInteractiveService(
-    chatMessageBroadcaster: ChatMessageBroadcaster
-  ) extends InteractiveService:
-    override def receiveChatMessage(
-      chatMessage: ChatMessageBroadcaster.ChatMessage
-    ): UIO[Boolean] =
-      chatMessageBroadcaster.broadcast(chatMessage)
+  def receiveChatMessage(chatMessage: ChatMessage): URIO[InteractiveService, Boolean] =
+    ZIO.serviceWithZIO[InteractiveService](_.receiveChatMessage(chatMessage))
+
+  def reset(): URIO[InteractiveService, Boolean] =
+    ZIO.serviceWithZIO[InteractiveService](_.reset())
+
+  def languagePoll: URIO[InteractiveService, UStream[Counts]] =
+    ZIO.serviceWith[InteractiveService](_.languagePoll)
+
+  def wordCloud: URIO[InteractiveService, UStream[Counts]] =
+    ZIO.serviceWith[InteractiveService](_.wordCloud)
+
+  def questions: URIO[InteractiveService, UStream[ChatMessages]] =
+    ZIO.serviceWithZIO[InteractiveService](_.questions)
+
+  def rejectedMessages: URIO[InteractiveService, UStream[ChatMessage]] =
+    ZIO.serviceWith[InteractiveService](_.rejectedMessages)
 
 trait InteractiveService:
-  def receiveChatMessage(
-    chatMessage: ChatMessageBroadcaster.ChatMessage
-  ): UIO[Boolean]
+  /**
+   * Receives a new chat message.
+   *
+   * @param chatMessage the chat message
+   * @return if the chat message was successfully enqueued
+   */
+  def receiveChatMessage(chatMessage: ChatMessage): UIO[Boolean]
+
+  /**
+   * Resets all state in this service.
+   *
+   * @return if the reset was successfully enqueued
+   */
+  def reset(): UIO[Boolean]
+
+  /**
+   * Stream of language poll counts.
+   */
+  def languagePoll: UStream[Counts]
+
+  /**
+   * Stream of word cloud counts.
+   */
+  def wordCloud: UStream[Counts]
+
+  /**
+   * Stream of questions.
+   */
+  def questions: UIO[UStream[ChatMessages]]
+
+  /**
+   * Stream of rejected chat messages.
+   */
+  def rejectedMessages: UStream[ChatMessage]

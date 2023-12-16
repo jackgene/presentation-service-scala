@@ -1,41 +1,33 @@
 package com.jackleow.presentation.service.transcription
 
-import com.jackleow.presentation.service.transcription.TranscriptionBroadcaster.Transcription
-import com.jackleow.zio.stream.countRunning
+import com.jackleow.presentation.service.common.SubscriberCountingHub
+import com.jackleow.presentation.service.transcription.model.Transcription
 import zio.*
-import zio.json.{DeriveJsonEncoder, JsonEncoder}
 import zio.stream.*
 
 object TranscriptionBroadcaster:
-  object Transcription:
-    given encoder: JsonEncoder[Transcription] =
-      DeriveJsonEncoder.gen[Transcription]
-  final case class Transcription(transcriptionText: String)
-
-  def make: UIO[TranscriptionBroadcaster] =
-    for
-      hub: Hub[Transcription] <- Hub.dropping(1)
-      subscribers: Ref[Int] <- Ref.make(0)
-    yield DefaultTranscriptionBroadcaster(hub, subscribers)
-
-  private final class DefaultTranscriptionBroadcaster (
-    hub: Hub[Transcription], subscribersRef: Ref[Int]
-  ) extends TranscriptionBroadcaster:
-    override val transcriptions: UStream[Transcription] =
-      ZStream
-        .fromHub(hub)
-        .countRunning(
-          subscribersRef,
-          (subscribers: Int) => ZIO.log(s"+1 subscriber (=$subscribers)"),
-          (subscribers: Int) => ZIO.log(s"-1 subscriber (=$subscribers)"),
-        )
-
-    override def broadcast(transcriptionText: String): UIO[Boolean] =
+  def live: ULayer[TranscriptionBroadcaster] =
+    ZLayer:
       for
-        _ <- ZIO.log(s"Received transcription text: $transcriptionText")
-        success: Boolean <- hub.publish(Transcription(transcriptionText))
-      yield success
+        hub: SubscriberCountingHub[Transcription] <- SubscriberCountingHub.make("transcription")
+      yield TranscriptionBroadcasterLive(hub)
+
+  def transcriptions: URIO[TranscriptionBroadcaster, UStream[Transcription]] =
+    ZIO.serviceWith[TranscriptionBroadcaster](_.transcriptions)
+
+  def broadcast(transcriptionText: String): URIO[TranscriptionBroadcaster, Boolean] =
+    ZIO.serviceWithZIO[TranscriptionBroadcaster](_.broadcast(transcriptionText))
 
 trait TranscriptionBroadcaster:
+  /**
+   * Stream of transcriptions.
+   */
   def transcriptions: UStream[Transcription]
+
+  /**
+   * Broadcasts a new transcription (e.g., from a speech-to-text tool).
+   *
+   * @param transcriptionText the transcription text
+   * @return if the transcription was successfully enqueued
+   */
   def broadcast(transcriptionText: String): UIO[Boolean]

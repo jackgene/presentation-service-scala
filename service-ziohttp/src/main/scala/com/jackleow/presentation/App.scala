@@ -1,8 +1,9 @@
 package com.jackleow.presentation
 
-import com.jackleow.presentation.service.interactive.ChatMessageBroadcaster.ChatMessage
 import com.jackleow.presentation.service.interactive.InteractiveService
+import com.jackleow.presentation.service.interactive.model.*
 import com.jackleow.presentation.service.transcription.TranscriptionBroadcaster
+import com.jackleow.presentation.service.transcription.model.Transcription
 import com.jackleow.zio.http.noContent
 import zio.*
 import zio.http.*
@@ -10,12 +11,12 @@ import zio.http.ChannelEvent.UserEvent.HandshakeComplete
 import zio.http.ChannelEvent.UserEventTriggered
 import zio.http.codec.PathCodec.empty
 import zio.json.EncoderOps
-import zio.stream.ZStream
+import zio.stream.{UStream, ZStream}
 
 import java.nio.file
 import scala.util.matching.Regex
 
-object PresentationApp {
+object App:
   private val contentTypeHtml: Headers = Headers(
     Header.ContentType(MediaType.text.html, charset = Option(Charsets.Utf8))
   )
@@ -31,20 +32,38 @@ object PresentationApp {
           body = Body.fromStream(ZStream.fromPath(htmlPath))
         )
       ,
+      Method.GET / "event" / "question" -> handler:
+        Handler
+          .webSocket: (channel: WebSocketChannel) =>
+            channel.receiveAll:
+              case UserEventTriggered(HandshakeComplete) =>
+                for
+                  questions: UStream[ChatMessages] <- InteractiveService.questions
+                  _ <- questions
+                    .map(_.toJson)
+                    .map(WebSocketFrame.text)
+                    .map(ChannelEvent.read)
+                    .runForeach(channel.send)
+                    .fork
+                yield ()
+
+              case _ => ZIO.unit
+          .toResponse
+      ,
       Method.GET / "event" / "transcription" -> handler:
         Handler
           .webSocket: (channel: WebSocketChannel) =>
             channel.receiveAll:
               case UserEventTriggered(HandshakeComplete) =>
-                ZIO.serviceWithZIO[TranscriptionBroadcaster]:
-                  (broadcaster: TranscriptionBroadcaster) =>
-                    broadcaster
-                      .transcriptions
-                      .map(_.toJson)
-                      .map(WebSocketFrame.text)
-                      .map(ChannelEvent.read)
-                      .runForeach(channel.send)
-                      .fork
+                for
+                  transcriptions: UStream[Transcription] <- TranscriptionBroadcaster.transcriptions
+                  _ <- transcriptions
+                    .map(_.toJson)
+                    .map(WebSocketFrame.text)
+                    .map(ChannelEvent.read)
+                    .runForeach(channel.send)
+                    .fork
+                yield ()
 
               case _ => ZIO.unit
           .toResponse
@@ -59,18 +78,32 @@ object PresentationApp {
           )
         )
       ,
+      Method.GET / "moderator" / "event" -> handler:
+        Handler
+          .webSocket: (channel: WebSocketChannel) =>
+            channel.receiveAll:
+              case UserEventTriggered(HandshakeComplete) =>
+                for
+                  rejectedMessages: UStream[ChatMessage] <- InteractiveService.rejectedMessages
+                  _ <- rejectedMessages
+                    .map(_.toJson)
+                    .map(WebSocketFrame.text)
+                    .map(ChannelEvent.read)
+                    .runForeach(channel.send)
+                    .fork
+                yield ()
+
+              case _ => ZIO.unit
+          .toResponse
+      ,
       Method.POST / "chat" -> handler: (req: Request) =>
         (req.url.queryParams.get("route"), req.url.queryParams.get("text")) match
           case (Some(route: String), Some(text: String)) =>
             route match
               case RoutePattern(sender, recipient) =>
-                ZIO.serviceWithZIO[InteractiveService]:
-                  (service: InteractiveService) =>
-                    service
-                      .receiveChatMessage(ChatMessage(sender, recipient, text))
-                      .tap: (succeeded: Boolean) =>
-                        ZIO.log(if succeeded then "SUCCESS" else "FAILED")
-                      .map(_ => Response.noContent)
+                InteractiveService
+                  .receiveChatMessage(ChatMessage(sender, recipient, text))
+                  .map(_ => Response.noContent)
               case IgnoredRoutePattern() =>
                 ZIO.succeed(Response.noContent)
               case _ =>
@@ -99,13 +132,10 @@ object PresentationApp {
       Method.POST / "transcription" -> handler: (req: Request) =>
         req.url.queryParams.get("text") match
           case Some(text: String) =>
-            ZIO.serviceWithZIO[TranscriptionBroadcaster]:
-              (broadcaster: TranscriptionBroadcaster) =>
-                broadcaster
-                  .broadcast(text)
-                  .map(_ => Response.noContent)
+            TranscriptionBroadcaster
+              .broadcast(text)
+              .map(_ => Response.noContent)
           case None =>
             ZIO.succeed(Response.badRequest("Missing parameter: text"))
       ,
     ).toHttpApp
-}
