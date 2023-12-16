@@ -29,33 +29,33 @@ trait InteractiveModule:
     /**
      * Resets all state in this service.
      *
-     * @return if the chat message was successfully enqueued
+     * @return if the reset was successfully enqueued
      */
     def reset(): Future[Unit]
 
     /**
-     * Flow that produces language poll counts.
+     * `Flow` producing language poll `Count`s.
      *
      * Closes when sink closes.
      */
     def languagePoll: Flow[Any, Counts, NotUsed]
 
     /**
-     * Flow that produces word cloud counts.
+     * `Flow` producing word cloud `Count`s.
      *
      * Closes when sink closes.
      */
     def wordCloud: Flow[Any, Counts, NotUsed]
 
     /**
-     * Flow that produces questions.
+     * `Flow` producing question `ChatMessages`es.
      *
      * Closes when sink closes.
      */
     def questions: Flow[Any, ChatMessages, NotUsed]
 
     /**
-     * Flow that produces rejected chat messages.
+     * `Flow` producing rejected `ChatMessage`s.
      *
      * Closes when sink closes.
      */
