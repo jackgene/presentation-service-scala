@@ -2,7 +2,7 @@ package com.jackleow.presentation
 
 import com.jackleow.presentation.service.common.SubscriberCountingHub
 import com.jackleow.presentation.service.interactive.*
-import com.jackleow.presentation.service.interactive.model.{ChatMessage, Reset}
+import com.jackleow.presentation.service.interactive.model.ChatMessage
 import com.jackleow.presentation.service.transcription.TranscriptionBroadcaster
 import zio.*
 import zio.cli.*
@@ -29,10 +29,10 @@ object Main extends ZIOCliDefault:
           .defaultWithPort(port)
           .tap: (env: ZEnvironment[Server]) =>
             ZIO.log(s"Server online at http://localhost:${env.get.port}/")
-      val incomingEventsHub: ULayer[SubscriberCountingHub[ChatMessage | Reset.type]] =
+      val incomingEventsHub: ULayer[SubscriberCountingHub[ChatMessage, "chat"]] =
         ZLayer:
           SubscriberCountingHub.make("chat")
-      val rejectedMessagesHub: ULayer[SubscriberCountingHub[ChatMessage]] =
+      val rejectedMessagesHub: ULayer[SubscriberCountingHub[ChatMessage, "rejected"]] =
         ZLayer:
           SubscriberCountingHub.make("rejected")
       Server
