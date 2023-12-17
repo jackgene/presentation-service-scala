@@ -6,13 +6,13 @@ import com.jackleow.zio.stream.*
 import zio.stream.{SubscriptionRef, UStream}
 import zio.{Ref, UIO, ZIO}
 
-private final class ModeratedTextCollectorLive(
-  name: String,
+private final class ModeratedTextCollectorLive[N <: String](
+  name: N,
   incomingEvents: UStream[ChatMessage],
   rejectedMessagesBroadcaster: SubscriberCountingHub[ChatMessage, "rejected"],
   moderatedMessagesRef: SubscriptionRef[Seq[String]],
   subscribersRef: SubscriptionRef[Int]
-) extends ModeratedTextCollector:
+) extends ModeratedTextCollector[N]:
   override val moderatedMessages: UIO[UStream[ChatMessages]] =
     for
       subscribers: Int <- subscribersRef.get

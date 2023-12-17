@@ -8,7 +8,7 @@ import zio.stream.UStream
 private final case class InteractiveServiceLive(
   incomingEventHub: SubscriberCountingHub[ChatMessage, "chat"],
   rejectedMessageHub: SubscriberCountingHub[ChatMessage, "rejected"],
-  questionsCollector: ModeratedTextCollector
+  questionsCollector: ModeratedTextCollector["question"]
 ) extends InteractiveService:
   override def receiveChatMessage(chatMessage: ChatMessage): UIO[Boolean] =
     for
