@@ -50,6 +50,42 @@ object App:
               case _ => ZIO.unit
           .toResponse
       ,
+      Method.GET / "event" / "language-poll" -> handler:
+        Handler
+          .webSocket: (channel: WebSocketChannel) =>
+            channel.receiveAll:
+              case UserEventTriggered(HandshakeComplete) =>
+                for
+                  counts: UStream[Counts] <- InteractiveService.languagePoll
+                  _ <- counts
+                    .map(_.toJson)
+                    .map(WebSocketFrame.text)
+                    .map(ChannelEvent.read)
+                    .runForeach(channel.send)
+                    .fork
+                yield ()
+
+              case _ => ZIO.unit
+          .toResponse
+      ,
+      Method.GET / "event" / "word-cloud" -> handler:
+        Handler
+          .webSocket: (channel: WebSocketChannel) =>
+            channel.receiveAll:
+              case UserEventTriggered(HandshakeComplete) =>
+                for
+                  counts: UStream[Counts] <- InteractiveService.wordCloud
+                  _ <- counts
+                    .map(_.toJson)
+                    .map(WebSocketFrame.text)
+                    .map(ChannelEvent.read)
+                    .runForeach(channel.send)
+                    .fork
+                yield ()
+
+              case _ => ZIO.unit
+          .toResponse
+      ,
       Method.GET / "event" / "transcription" -> handler:
         Handler
           .webSocket: (channel: WebSocketChannel) =>

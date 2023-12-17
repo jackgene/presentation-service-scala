@@ -4,7 +4,7 @@ import pureconfig.*
 import pureconfig.generic.derivation.default.*
 import com.jackleow.presentation.config.Configuration.*
 
-case object Configuration:
+object Configuration:
   case class LanguagePoll(
     maxVotesPerPerson: Int,
     languageByKeyword: Map[String, String]

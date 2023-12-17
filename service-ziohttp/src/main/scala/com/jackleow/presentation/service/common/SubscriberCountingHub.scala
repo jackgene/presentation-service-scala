@@ -7,7 +7,7 @@ import zio.{Hub, Ref, UIO, ZIO}
 object SubscriberCountingHub:
   def make[A, N <: String](using name: ValueOf[N]): UIO[SubscriberCountingHub[A, N]] =
     for
-      hub: Hub[A] <- Hub.dropping(1)
+      hub: Hub[A] <- Hub.dropping(64)
       subscribers: Ref[Int] <- Ref.make(0)
     yield SubscriberCountingHub(valueOf[N], hub, subscribers)
 

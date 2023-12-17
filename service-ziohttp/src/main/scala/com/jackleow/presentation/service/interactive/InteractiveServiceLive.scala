@@ -8,6 +8,8 @@ import zio.stream.*
 private final case class InteractiveServiceLive(
   incomingEventHub: SubscriberCountingHub[ChatMessage, "chat"],
   rejectedMessageHub: SubscriberCountingHub[ChatMessage, "rejected"],
+  languagePollCounter: SendersByTokenCounter["language-poll"],
+  wordCloudCounter: SendersByTokenCounter["word-cloud"],
   questionsCollector: ModeratedTextCollector["question"]
 ) extends InteractiveService:
   override def receiveChatMessage(chatMessage: ChatMessage): UIO[Boolean] =
@@ -17,13 +19,21 @@ private final case class InteractiveServiceLive(
     yield success
 
   override def reset(): UIO[Unit] =
-    questionsCollector.reset()
+    for
+      _ <- languagePollCounter.reset()
+      _ <- wordCloudCounter.reset()
+      _ <- questionsCollector.reset()
+    yield ()
 
-  override def languagePoll: UStream[Counts] = ???
+  override def languagePoll: UIO[UStream[Counts]] =
+    languagePollCounter.counts
 
-  override def wordCloud: UStream[Counts] = ???
+  override def wordCloud: UIO[UStream[Counts]] =
+    wordCloudCounter.counts
 
-  override def questions: UIO[UStream[ChatMessages]] = questionsCollector.moderatedMessages
+  override def questions: UIO[UStream[ChatMessages]] =
+    questionsCollector.moderatedMessages
 
-  override def rejectedMessages: UStream[ChatMessage] = rejectedMessageHub.elements
+  override def rejectedMessages: UIO[UStream[ChatMessage]] =
+    ZIO.succeed(rejectedMessageHub.elements)
 
