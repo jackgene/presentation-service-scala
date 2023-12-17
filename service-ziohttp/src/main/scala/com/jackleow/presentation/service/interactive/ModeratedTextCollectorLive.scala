@@ -19,7 +19,7 @@ private final class ModeratedTextCollectorLive[N <: String](
       _ <-
         if subscribers == 0 then
           incomingEvents
-            .takeWhileActive(subscribersRef.changes.map(_ > 0).drop(1))
+            .takeWhileActive(subscribersRef.changes.drop(1).map(_ > 0))
             .runForeach:
               case ChatMessage("", _, text) =>
                 moderatedMessagesRef.update(_ :+ text)
