@@ -6,7 +6,7 @@ import zio.*
 import zio.stream.*
 
 object TranscriptionBroadcaster:
-  def live: ULayer[TranscriptionBroadcaster] =
+  val live: ULayer[TranscriptionBroadcaster] =
     ZLayer:
       for
         hub <- SubscriberCountingHub.make[Transcription, "transcription"]

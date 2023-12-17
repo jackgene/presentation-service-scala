@@ -6,7 +6,7 @@ import zio.*
 import zio.stream.*
 
 object InteractiveService:
-  def live: URLayer[
+  val live: URLayer[
     SubscriberCountingHub[ChatMessage, "chat"] & SubscriberCountingHub[ChatMessage, "rejected"] &
       SendersByTokenCounter["language-poll"] & SendersByTokenCounter["word-cloud"] &
       ModeratedTextCollector["question"],

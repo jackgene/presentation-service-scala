@@ -35,8 +35,8 @@ object Main extends ZIOCliDefault:
         .provide(
 //          ZLayer.Debug.tree,
           Configuration.live,
-          ZLayer(SubscriberCountingHub.make[ChatMessage, "chat"]),
-          ZLayer(SubscriberCountingHub.make[ChatMessage, "rejected"]),
+          ChatMessageBroadcaster.live,
+          RejectedMessageBroadcaster.live,
           LanguagePollCounter.live,
           WordCloudCounter.live,
           ModeratedTextCollector.live["question"],
