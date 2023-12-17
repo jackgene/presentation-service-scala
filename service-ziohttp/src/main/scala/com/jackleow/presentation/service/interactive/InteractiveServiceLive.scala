@@ -2,8 +2,8 @@ package com.jackleow.presentation.service.interactive
 
 import com.jackleow.presentation.service.common.SubscriberCountingHub
 import com.jackleow.presentation.service.interactive.model.*
-import zio.{UIO, ZIO}
-import zio.stream.UStream
+import zio.*
+import zio.stream.*
 
 private final case class InteractiveServiceLive(
   incomingEventHub: SubscriberCountingHub[ChatMessage, "chat"],
