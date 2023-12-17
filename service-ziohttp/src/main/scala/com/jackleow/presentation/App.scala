@@ -11,7 +11,7 @@ import zio.http.ChannelEvent.UserEvent.HandshakeComplete
 import zio.http.ChannelEvent.UserEventTriggered
 import zio.http.codec.PathCodec.empty
 import zio.json.EncoderOps
-import zio.stream.{UStream, ZStream}
+import zio.stream.*
 
 import java.nio.file
 import scala.util.matching.Regex
