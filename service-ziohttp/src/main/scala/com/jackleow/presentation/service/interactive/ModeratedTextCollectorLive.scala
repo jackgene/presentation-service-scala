@@ -4,7 +4,7 @@ import com.jackleow.presentation.service.common.SubscriberCountingHub
 import com.jackleow.presentation.service.interactive.model.*
 import com.jackleow.zio.stream.*
 import zio.stream.{SubscriptionRef, UStream}
-import zio.{Ref, UIO, ZIO}
+import zio.{UIO, ZIO}
 
 private final class ModeratedTextCollectorLive[N <: String](
   name: N,
