@@ -7,7 +7,7 @@ import zio.{UIO, URIO, URLayer, ZIO, ZLayer}
 
 object InteractiveService:
   def live: URLayer[
-    SubscriberCountingHub[ChatMessage, "chat"] & SubscriberCountingHub[ChatMessage, "rejected"] & ModeratedTextCollector,
+    SubscriberCountingHub[ChatMessage, "chat"] & SubscriberCountingHub[ChatMessage, "rejected"] & ModeratedTextCollector["question"],
     InteractiveService
   ] =
     ZLayer.fromFunction(InteractiveServiceLive.apply _)
