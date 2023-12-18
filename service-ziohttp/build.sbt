@@ -2,7 +2,7 @@ name := "presentation-service-ziohttp"
 
 scalacOptions := Seq("-deprecation", "-Yexplicit-nulls", "-Ysafe-init")
 
-val ZioConfigVersion = "4.0.0-RC16"
+val ZioConfigVersion = "3.0.7"
 
 libraryDependencies += "dev.zio" %% "zio-cli" % "0.5.0"
 libraryDependencies += "dev.zio" %% "zio-config" % ZioConfigVersion
