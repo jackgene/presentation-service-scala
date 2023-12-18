@@ -86,26 +86,26 @@ final class MainController (
   def chat(route: String, text: String): Action[Unit] = Action(parse.empty) { (_: Request[Unit]) =>
     route match {
       case RoutePattern(sender, recipient) =>
-        chatMessages ! ChatMessageBroadcaster.Record(ChatMessage(sender, recipient, text))
+        chatMessages ! ChatMessageBroadcaster.Command.Record(ChatMessage(sender, recipient, text))
         NoContent
       case IgnoredRoutePattern() => NoContent
       case sender: String =>
         // With larger Zoom meetings, the "route" is just the sender
-        chatMessages ! ChatMessageBroadcaster.Record(ChatMessage(sender, "Everyone", text))
+        chatMessages ! ChatMessageBroadcaster.Command.Record(ChatMessage(sender, "Everyone", text))
         NoContent
     }
   }
 
   def reset(): Action[Unit] = Action(parse.empty) { (_: Request[Unit]) =>
-    languagePoll ! SendersByTokenCounter.Reset
-    wordCloud ! SendersByTokenCounter.Reset
-    chattiest ! MessagesBySenderCounter.Reset
-    questions ! ModeratedTextCollector.Reset
+    languagePoll ! SendersByTokenCounter.Command.Reset
+    wordCloud ! SendersByTokenCounter.Command.Reset
+    chattiest ! MessagesBySenderCounter.Command.Reset
+    questions ! ModeratedTextCollector.Command.Reset
     NoContent
   }
 
   def transcription(text: String): Action[Unit] = Action(parse.empty) { (_: Request[Unit]) =>
-    transcriptions ! TranscriptionBroadcaster.NewTranscriptionText(text)
+    transcriptions ! TranscriptionBroadcaster.Command.NewTranscriptionText(text)
     NoContent
   }
 }

@@ -13,11 +13,12 @@ import scala.concurrent.duration.{DurationInt, FiniteDuration}
  * Counts messages grouping by senders.
  */
 object MessagesBySenderCounter {
-  sealed trait Command
-  final case class Subscribe(subscriber: ActorRef[Event]) extends Command
-  final case class Unsubscribe(subscriber: ActorRef[Event]) extends Command
-  final case class Record(chatMessage: ChatMessage) extends Command
-  case object Reset extends Command
+  enum Command {
+    case Subscribe(subscriber: ActorRef[Event])
+    case Unsubscribe(subscriber: ActorRef[Event])
+    case Record(chatMessage: ChatMessage)
+    case Reset
+  }
 
   object Event {
     // JSON
@@ -26,43 +27,44 @@ object MessagesBySenderCounter {
         Json.obj("sendersAndCounts" -> counts.sendersByCount.toSeq)
     }
   }
-  sealed trait Event
-  private final case class Counts(sendersByCount: Map[Int,Seq[String]]) extends Event
+  enum Event {
+    private[MessagesBySenderCounter] case Counts(sendersByCount: Map[Int, Seq[String]])
+  }
 
   private def running(
     senders: MultiSet[String], subscribers: Set[ActorRef[Event]]
   ): Behavior[Command] = Behaviors.receive { (ctx: ActorContext[Command], cmd: Command) =>
     cmd match {
-      case Record(chatMessage: ChatMessage) =>
+      case Command.Record(chatMessage: ChatMessage) =>
         val sender: String = chatMessage.sender
         val newSenders: MultiSet[String] = senders + sender
         for (subscriber: ActorRef[Event] <- subscribers) {
-          subscriber ! Counts(newSenders.elementsByCount)
+          subscriber ! Event.Counts(newSenders.elementsByCount)
         }
         running(newSenders, subscribers)
 
-      case Reset =>
+      case Command.Reset =>
         for (subscriber: ActorRef[Event] <- subscribers) {
-          subscriber ! Counts(Map())
+          subscriber ! Event.Counts(Map())
         }
         running(MultiSet[String](), subscribers)
 
-      case Subscribe(subscriber: ActorRef[Event]) if !subscribers.contains(subscriber) =>
+      case Command.Subscribe(subscriber: ActorRef[Event]) if !subscribers.contains(subscriber) =>
         ctx.log.info(s"+1 subscriber (=${subscribers.size + 1})")
-        subscriber ! Counts(senders.elementsByCount)
-        ctx.watchWith(subscriber, Unsubscribe(subscriber))
+        subscriber ! Event.Counts(senders.elementsByCount)
+        ctx.watchWith(subscriber, Command.Unsubscribe(subscriber))
         running(senders, subscribers + subscriber)
 
-      case Subscribe(subscriber: ActorRef[Event]) =>
+      case Command.Subscribe(subscriber: ActorRef[Event]) =>
         ctx.log.warn(s"attempted to subscribe duplicate subscriber - ${subscriber.path}")
         Behaviors.unhandled
 
-      case Unsubscribe(subscriber: ActorRef[Event]) if subscribers.contains(subscriber) =>
+      case Command.Unsubscribe(subscriber: ActorRef[Event]) if subscribers.contains(subscriber) =>
         ctx.log.info(s"-1 subscriber (=${subscribers.size - 1})")
         ctx.unwatch(subscriber)
         running(senders, subscribers - subscriber)
 
-      case Unsubscribe(subscriber: ActorRef[Event]) =>
+      case Command.Unsubscribe(subscriber: ActorRef[Event]) =>
         ctx.log.warn(s"attempted to unsubscribe unknown subscriber - ${subscriber.path}")
         Behaviors.unhandled
     }
@@ -71,9 +73,9 @@ object MessagesBySenderCounter {
   def apply(
     chatMessageBroadcaster: ActorRef[ChatMessageBroadcaster.Command]
   ): Behavior[Command] = Behaviors.setup { (ctx: ActorContext[Command]) =>
-    chatMessageBroadcaster ! ChatMessageBroadcaster.Subscribe(
+    chatMessageBroadcaster ! ChatMessageBroadcaster.Command.Subscribe(
       ctx.messageAdapter {
-        case ChatMessageBroadcaster.New(chatMessage: ChatMessage) => Record(chatMessage)
+        case ChatMessageBroadcaster.Event.New(chatMessage: ChatMessage) => Command.Record(chatMessage)
       }
     )
 
@@ -93,7 +95,7 @@ object MessagesBySenderCounter {
       val rateLimitedCounter = ctx.spawn(
         RateLimiter(ctx.self, MinPeriodBetweenMessages), "rate-limiter"
       )
-      counter ! Subscribe(rateLimitedCounter)
+      counter ! Command.Subscribe(rateLimitedCounter)
 
       JsonWriter(subscriber)
     }
