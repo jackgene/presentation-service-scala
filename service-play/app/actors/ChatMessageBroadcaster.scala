@@ -33,10 +33,11 @@ object ChatMessageBroadcaster {
     override def toString: String = s"$sender to $recipient: $text"
   }
 
-  sealed trait Command
-  final case class Subscribe(subscriber: ActorRef[Event]) extends Command
-  final case class Unsubscribe(subscriber: ActorRef[Event]) extends Command
-  final case class Record(chatMessage: ChatMessage) extends Command
+  enum Command {
+    case Subscribe(subscriber: ActorRef[Event])
+    case Unsubscribe(subscriber: ActorRef[Event])
+    case Record(chatMessage: ChatMessage)
+  }
 
   object Event {
     // JSON
@@ -44,35 +45,36 @@ object ChatMessageBroadcaster {
       case New(chatMessage: ChatMessage) => Json.toJson(chatMessage)
     }
   }
-  sealed trait Event
-  final case class New(chatMessage: ChatMessage) extends Event
+  enum Event {
+    case New(chatMessage: ChatMessage) extends Event
+  }
 
   private def running(
     subscribers: Set[ActorRef[Event]]
   ): Behavior[Command] = Behaviors.receive { (ctx: ActorContext[Command], cmd: Command) =>
     cmd match {
-      case Record(chatMessage: ChatMessage) =>
+      case Command.Record(chatMessage: ChatMessage) =>
         ctx.log.info(s"Received ${ctx.self.path.name} message - $chatMessage")
         for (subscriber: ActorRef[Event] <- subscribers) {
-          subscriber ! New(chatMessage)
+          subscriber ! Event.New(chatMessage)
         }
         Behaviors.same
 
-      case Subscribe(subscriber: ActorRef[Event]) if !subscribers.contains(subscriber) =>
+      case Command.Subscribe(subscriber: ActorRef[Event]) if !subscribers.contains(subscriber) =>
         ctx.log.info(s"+1 ${ctx.self.path.name} subscriber (=${subscribers.size + 1})")
-        ctx.watchWith(subscriber, Unsubscribe(subscriber))
+        ctx.watchWith(subscriber, Command.Unsubscribe(subscriber))
         running(subscribers + subscriber)
 
-      case Subscribe(subscriber: ActorRef[Event]) =>
+      case Command.Subscribe(subscriber: ActorRef[Event]) =>
         ctx.log.warn(s"attempted to subscribe duplicate ${ctx.self.path.name} subscriber - ${subscriber.path}")
         Behaviors.unhandled
 
-      case Unsubscribe(subscriber: ActorRef[Event]) if subscribers.contains(subscriber) =>
+      case Command.Unsubscribe(subscriber: ActorRef[Event]) if subscribers.contains(subscriber) =>
         ctx.log.info(s"-1 ${ctx.self.path.name} subscriber (=${subscribers.size - 1})")
         ctx.unwatch(subscriber)
         running(subscribers - subscriber)
 
-      case Unsubscribe(subscriber: ActorRef[Event]) =>
+      case Command.Unsubscribe(subscriber: ActorRef[Event]) =>
         ctx.log.warn(s"attempted to unsubscribe unknown ${ctx.self.path.name} subscriber - ${subscriber.path}")
         Behaviors.unhandled
     }
@@ -85,7 +87,7 @@ object ChatMessageBroadcaster {
       subscriber: ActorRef[JsValue], broadcaster: ActorRef[Command]
     ): Behavior[Event] = Behaviors.setup { (ctx: ActorContext[Event]) =>
       ctx.watch(broadcaster)
-      broadcaster ! Subscribe(ctx.self)
+      broadcaster ! Command.Subscribe(ctx.self)
 
       JsonWriter(subscriber)
     }

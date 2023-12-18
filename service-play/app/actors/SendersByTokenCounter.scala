@@ -14,11 +14,12 @@ import scala.concurrent.duration.{DurationInt, FiniteDuration}
  * Count senders grouping by (filtered and transformed) message text.
  */
 object SendersByTokenCounter {
-  sealed trait Command
-  final case class Subscribe(subscriber: ActorRef[Event]) extends Command
-  final case class Unsubscribe(subscriber: ActorRef[Event]) extends Command
-  final case class Record(chatMessage: ChatMessage) extends Command
-  case object Reset extends Command
+  enum Command {
+    case Subscribe(subscriber: ActorRef[Event])
+    case Unsubscribe(subscriber: ActorRef[Event])
+    case Record(chatMessage: ChatMessage)
+    case Reset
+  }
 
   object Event {
     // JSON
@@ -30,8 +31,9 @@ object SendersByTokenCounter {
         )
     }
   }
-  sealed trait Event
-  private final case class Counts(tokens: MultiSet[String]) extends Event
+  enum Event {
+    private[SendersByTokenCounter] case Counts(tokens: MultiSet[String])
+  }
 
   def apply(
     extractTokens: Tokenizer, tokensPerSender: Int,
@@ -42,7 +44,7 @@ object SendersByTokenCounter {
       extractTokens, tokensPerSender,
       chatMessageBroadcaster, rejectedMessageBroadcaster,
       ctx.messageAdapter[ChatMessageBroadcaster.Event] {
-        case ChatMessageBroadcaster.New(chatMessage: ChatMessage) => Record(chatMessage)
+        case ChatMessageBroadcaster.Event.New(chatMessage: ChatMessage) => Command.Record(chatMessage)
       }
     ).initial
   }
@@ -60,7 +62,7 @@ object SendersByTokenCounter {
       val rateLimitedCounter = ctx.spawn(
         RateLimiter(ctx.self, MinPeriodBetweenMessages), "rate-limiter"
       )
-      counter ! Subscribe(rateLimitedCounter)
+      counter ! Command.Subscribe(rateLimitedCounter)
 
       JsonWriter(subscriber)
     }
@@ -81,22 +83,22 @@ private class SendersByTokenCounter(
     tokensBySender: Map[String, FifoBoundedSet[String]], tokenCounts: MultiSet[String]
   ): Behavior[Command] = Behaviors.receive { (ctx: ActorContext[Command], cmd: Command) =>
     cmd match {
-      case Reset =>
+      case Command.Reset =>
         paused(emptyTokensBySender, MultiSet[String]())
 
-      case Subscribe(subscriber: ActorRef[Event]) =>
+      case Command.Subscribe(subscriber: ActorRef[Event]) =>
         ctx.log.info(s"+1 ${ctx.self.path.name} subscriber (=1)")
-        subscriber ! Counts(tokenCounts)
-        ctx.watchWith(subscriber, Unsubscribe(subscriber))
-        chatMessageBroadcaster ! ChatMessageBroadcaster.Subscribe(adapter)
+        subscriber ! Event.Counts(tokenCounts)
+        ctx.watchWith(subscriber, Command.Unsubscribe(subscriber))
+        chatMessageBroadcaster ! ChatMessageBroadcaster.Command.Subscribe(adapter)
         running(tokensBySender, tokenCounts, Set(subscriber))
 
       // These are not expected during paused state
-      case Record(chatMessage: ChatMessage) =>
+      case Command.Record(chatMessage: ChatMessage) =>
         ctx.log.warn(s"received unexpected record in paused state - $chatMessage")
         Behaviors.unhandled
 
-      case Unsubscribe(subscriber: ActorRef[Event]) =>
+      case Command.Unsubscribe(subscriber: ActorRef[Event]) =>
         ctx.log.warn(s"received unexpected unsubscription in paused state - ${subscriber.path}")
         Behaviors.unhandled
     }
@@ -107,7 +109,7 @@ private class SendersByTokenCounter(
     subscribers: Set[ActorRef[Event]]
   ): Behavior[Command] = Behaviors.receive { (ctx: ActorContext[Command], cmd: Command) =>
     cmd match {
-      case Record(chatMessage: ChatMessage) =>
+      case Command.Record(chatMessage: ChatMessage) =>
         val extractedTokens: Seq[String] = extractTokens(chatMessage.text)
 
         val (
@@ -117,7 +119,7 @@ private class SendersByTokenCounter(
           extractedTokens match {
             case Nil =>
               ctx.log.info("No token extracted")
-              rejectedMessageBroadcaster ! ChatMessageBroadcaster.Record(chatMessage)
+              rejectedMessageBroadcaster ! ChatMessageBroadcaster.Command.Record(chatMessage)
               (tokensBySender, tokenCounts)
 
             case extractedTokens =>
@@ -161,38 +163,38 @@ private class SendersByTokenCounter(
           }
 
         for (subscriber: ActorRef[Event] <- subscribers) {
-          subscriber ! Counts(newTokens)
+          subscriber ! Event.Counts(newTokens)
         }
         running(newTokensBySender, newTokens, subscribers)
 
-      case Reset =>
+      case Command.Reset =>
         for (subscriber: ActorRef[Event] <- subscribers) {
-          subscriber ! Counts(MultiSet[String]())
+          subscriber ! Event.Counts(MultiSet[String]())
         }
         running(emptyTokensBySender, MultiSet[String](), subscribers)
 
-      case Subscribe(subscriber: ActorRef[Event]) if !subscribers.contains(subscriber) =>
+      case Command.Subscribe(subscriber: ActorRef[Event]) if !subscribers.contains(subscriber) =>
         ctx.log.info(s"+1 ${ctx.self.path.name} subscriber (=${subscribers.size + 1})")
-        subscriber ! Counts(tokenCounts)
-        ctx.watchWith(subscriber, Unsubscribe(subscriber))
+        subscriber ! Event.Counts(tokenCounts)
+        ctx.watchWith(subscriber, Command.Unsubscribe(subscriber))
         running(tokensBySender, tokenCounts, subscribers + subscriber)
 
-      case Subscribe(subscriber: ActorRef[Event]) =>
+      case Command.Subscribe(subscriber: ActorRef[Event]) =>
         ctx.log.warn(s"attempted to subscribe duplicate ${ctx.self.path.name} subscriber - ${subscriber.path}")
         Behaviors.unhandled
 
-      case Unsubscribe(subscriber: ActorRef[Event]) if subscribers.contains(subscriber) =>
+      case Command.Unsubscribe(subscriber: ActorRef[Event]) if subscribers.contains(subscriber) =>
         ctx.log.info(s"-1 ${ctx.self.path.name} subscriber (=${subscribers.size - 1})")
         ctx.unwatch(subscriber)
         val remainingSubscribers: Set[ActorRef[Event]] = subscribers - subscriber
         if (remainingSubscribers.nonEmpty) {
           running(tokensBySender, tokenCounts, remainingSubscribers)
         } else {
-          chatMessageBroadcaster ! ChatMessageBroadcaster.Unsubscribe(adapter)
+          chatMessageBroadcaster ! ChatMessageBroadcaster.Command.Unsubscribe(adapter)
           paused(tokensBySender, tokenCounts)
         }
 
-      case Unsubscribe(subscriber: ActorRef[Event]) =>
+      case Command.Unsubscribe(subscriber: ActorRef[Event]) =>
         ctx.log.warn(s"attempted to unsubscribe unknown ${ctx.self.path.name} subscriber - ${subscriber.path}")
         Behaviors.unhandled
     }
