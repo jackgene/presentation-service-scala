@@ -27,7 +27,7 @@ object Main extends ZIOCliDefault:
     case (htmlPath: Path, port: Int) =>
       val httpServer: TaskLayer[Server] =
         Server
-          .defaultWithPort(port)
+          .defaultWith(_.port(port).idleTimeout(15.minutes))
           .tap: (env: ZEnvironment[Server]) =>
             ZIO.log(s"Server online at http://localhost:${env.get.port}/")
       Server
