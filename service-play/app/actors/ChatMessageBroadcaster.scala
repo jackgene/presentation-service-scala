@@ -46,7 +46,7 @@ object ChatMessageBroadcaster {
     }
   }
   enum Event {
-    case New(chatMessage: ChatMessage) extends Event
+    case New(chatMessage: ChatMessage)
   }
 
   private def running(
