@@ -1,29 +1,30 @@
 package com.jackleow.presentation.service.configuration.model
 
 import com.jackleow.presentation.service.configuration.model.PresentationConfiguration.*
-import zio.Config
 import zio.config.*
-import zio.config.magnolia.deriveConfig
+import zio.config.magnolia.descriptor
 
 object PresentationConfiguration:
   object LanguagePoll:
-    given config: Config[LanguagePoll] = deriveConfig[LanguagePoll]
+    given configDescriptor: ConfigDescriptor[LanguagePoll] =
+      descriptor[LanguagePoll]
   case class LanguagePoll(
     maxVotesPerPerson: Int,
     languageByKeyword: Map[String, String]
   )
 
   object WordCloud:
-    given config: Config[WordCloud] = deriveConfig[WordCloud]
+    given configDescriptor: ConfigDescriptor[WordCloud] =
+      descriptor[WordCloud]
   case class WordCloud(
     maxWordsPerPerson: Int,
     minWordLength: Int,
     maxWordLength: Int,
-    stopWords: Seq[String]
+    stopWords: List[String]
   )
 
-  val config: Config[PresentationConfiguration] =
-    deriveConfig[PresentationConfiguration].nested("presentation")
+  val configDescriptor: ConfigDescriptor[PresentationConfiguration] =
+    descriptor[PresentationConfiguration]
 
 case class PresentationConfiguration(
   languagePoll: LanguagePoll,
