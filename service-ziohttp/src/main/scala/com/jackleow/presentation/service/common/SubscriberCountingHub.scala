@@ -1,8 +1,8 @@
 package com.jackleow.presentation.service.common
 
 import com.jackleow.zio.stream.countRunning
-import zio.stream.{UStream, ZStream}
-import zio.{Hub, Ref, UIO, ZIO}
+import zio.*
+import zio.stream.*
 
 object SubscriberCountingHub:
   def make[A, N <: String](using name: ValueOf[N]): UIO[SubscriberCountingHub[A, N]] =
