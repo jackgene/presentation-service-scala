@@ -39,7 +39,7 @@ object Main extends ZIOCliDefault:
           RejectedMessageBroadcaster.live,
           LanguagePollCounter.live,
           WordCloudCounter.live,
-          ModeratedTextCollector.live["question"],
+          ModeratedTextCollector.live("question"),
           InteractiveService.live,
           TranscriptionBroadcaster.live,
           httpServer

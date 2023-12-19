@@ -2,17 +2,18 @@ package com.jackleow.presentation.service.interactive
 
 import com.jackleow.presentation.service.common.SubscriberCountingHub
 import com.jackleow.presentation.service.interactive.model.*
+import com.jackleow.zio.Named
 import com.jackleow.zio.stream.*
 import zio.*
 import zio.stream.*
 
-private final class ModeratedTextCollectorLive[N <: String](
-  name: N,
+private final class ModeratedTextCollectorLive(
+  name: String,
   incomingEvents: UStream[ChatMessage],
-  rejectedMessagesBroadcaster: SubscriberCountingHub[ChatMessage, "rejected"],
+  rejectedMessagesBroadcaster: SubscriberCountingHub[ChatMessage] Named "rejected",
   moderatedMessagesRef: SubscriptionRef[Seq[String]],
   subscribersRef: SubscriptionRef[Int]
-) extends ModeratedTextCollector[N]:
+) extends ModeratedTextCollector:
   override val moderatedMessages: UIO[UStream[ChatMessages]] =
     for
       subscribers: Int <- subscribersRef.get
@@ -24,7 +25,7 @@ private final class ModeratedTextCollectorLive[N <: String](
               case ChatMessage("", _, text) =>
                 moderatedMessagesRef.update(_ :+ text)
               case rejectedMessage: ChatMessage =>
-                rejectedMessagesBroadcaster.publish(rejectedMessage)
+                rejectedMessagesBroadcaster.get.publish(rejectedMessage)
             .forkDaemon
         else ZIO.unit
     yield

@@ -2,14 +2,15 @@ package com.jackleow.presentation.service.interactive
 
 import com.jackleow.presentation.service.common.SubscriberCountingHub
 import com.jackleow.presentation.service.interactive.model.*
+import com.jackleow.zio.Named
 import zio.*
 import zio.stream.*
 
 object InteractiveService:
   val live: URLayer[
-    SubscriberCountingHub[ChatMessage, "chat"] & SubscriberCountingHub[ChatMessage, "rejected"] &
-      SendersByTokenCounter["language-poll"] & SendersByTokenCounter["word-cloud"] &
-      ModeratedTextCollector["question"],
+    (SubscriberCountingHub[ChatMessage] Named "chat") & (SubscriberCountingHub[ChatMessage] Named "rejected") &
+      (SendersByTokenCounter Named "language-poll") & (SendersByTokenCounter Named "word-cloud") &
+      ModeratedTextCollector,
     InteractiveService
   ] =
     ZLayer.fromFunction(InteractiveServiceLive.apply _)

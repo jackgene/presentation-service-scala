@@ -4,19 +4,20 @@ import com.jackleow.presentation.collection.{FifoBoundedSet, MultiSet}
 import com.jackleow.presentation.service.common.SubscriberCountingHub
 import com.jackleow.presentation.service.interactive.model.{ChatMessage, Counts}
 import com.jackleow.presentation.tokenizing.Tokenizer
+import com.jackleow.zio.Named
 import com.jackleow.zio.stream.*
 import zio.*
 import zio.stream.*
 
-private final class SendersByTokenCounterLive[N <: String](
-  name: N, 
+private final class SendersByTokenCounterLive(
+  name: String, 
   extractTokens: Tokenizer,
   emptyTokensBySender: Map[String, FifoBoundedSet[String]],
   incomingEvents: UStream[ChatMessage],
-  rejectedMessagesBroadcaster: SubscriberCountingHub[ChatMessage, "rejected"],
+  rejectedMessagesBroadcaster: SubscriberCountingHub[ChatMessage] Named "rejected",
   countsRef: SubscriptionRef[(Map[String, FifoBoundedSet[String]], MultiSet[String])],
   subscribersRef: SubscriptionRef[Int]
-) extends SendersByTokenCounter[N]:
+) extends SendersByTokenCounter:
   override val counts: UIO[UStream[Counts]] =
     for
       subscribers: Int <- subscribersRef.get
@@ -29,7 +30,7 @@ private final class SendersByTokenCounterLive[N <: String](
                 case Nil =>
                   for
                     _ <- ZIO.log("No token extracted")
-                    _ <- rejectedMessagesBroadcaster.publish(chatMessage)
+                    _ <- rejectedMessagesBroadcaster.get.publish(chatMessage)
                   yield ()
 
                 case extractedTokens: Seq[String] =>
