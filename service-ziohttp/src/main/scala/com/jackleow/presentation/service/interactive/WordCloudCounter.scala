@@ -9,8 +9,9 @@ import com.jackleow.zio.*
 import zio.*
 
 object WordCloudCounter:
-  val live: URLayer[
+  val live: ZLayer[
     PresentationConfiguration & (SubscriberCountingHub[ChatMessage] Named "chat") & (SubscriberCountingHub[ChatMessage] Named "rejected"),
+    Nothing,
     SendersByTokenCounter Named "word-cloud"
   ] =
     ZLayer:

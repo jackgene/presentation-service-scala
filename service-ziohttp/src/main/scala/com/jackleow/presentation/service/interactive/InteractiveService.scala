@@ -7,30 +7,31 @@ import zio.*
 import zio.stream.*
 
 object InteractiveService:
-  val live: URLayer[
+  val live: ZLayer[
     (SubscriberCountingHub[ChatMessage] Named "chat") & (SubscriberCountingHub[ChatMessage] Named "rejected") &
       (SendersByTokenCounter Named "language-poll") & (SendersByTokenCounter Named "word-cloud") &
       ModeratedTextCollector,
+    Nothing,
     InteractiveService
   ] =
     ZLayer.fromFunction(InteractiveServiceLive.apply _)
 
-  def receiveChatMessage(chatMessage: ChatMessage): URIO[InteractiveService, Boolean] =
+  def receiveChatMessage(chatMessage: ChatMessage): ZIO[InteractiveService, Nothing, Boolean] =
     ZIO.serviceWithZIO[InteractiveService](_.receiveChatMessage(chatMessage))
 
-  def reset(): URIO[InteractiveService, Unit] =
+  def reset(): ZIO[InteractiveService, Nothing, Unit] =
     ZIO.serviceWithZIO[InteractiveService](_.reset())
 
-  def languagePoll: URIO[InteractiveService, UStream[Counts]] =
+  def languagePoll: ZIO[InteractiveService, Nothing, UStream[Counts]] =
     ZIO.serviceWithZIO[InteractiveService](_.languagePoll)
 
-  def wordCloud: URIO[InteractiveService, UStream[Counts]] =
+  def wordCloud: ZIO[InteractiveService, Nothing, UStream[Counts]] =
     ZIO.serviceWithZIO[InteractiveService](_.wordCloud)
 
-  def questions: URIO[InteractiveService, UStream[ChatMessages]] =
+  def questions: ZIO[InteractiveService, Nothing, UStream[ChatMessages]] =
     ZIO.serviceWithZIO[InteractiveService](_.questions)
 
-  def rejectedMessages: URIO[InteractiveService, UStream[ChatMessage]] =
+  def rejectedMessages: ZIO[InteractiveService, Nothing, UStream[ChatMessage]] =
     ZIO.serviceWithZIO[InteractiveService](_.rejectedMessages)
 
 trait InteractiveService:

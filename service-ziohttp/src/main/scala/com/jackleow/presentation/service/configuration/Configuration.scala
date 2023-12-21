@@ -6,7 +6,7 @@ import zio.config.*
 import zio.config.typesafe.TypesafeConfigSource
 
 object Configuration:
-  val live: Layer[ReadError[String], PresentationConfiguration] =
+  val live: ZLayer[Any, ReadError[String], PresentationConfiguration] =
     ZLayer:
       read(
         PresentationConfiguration

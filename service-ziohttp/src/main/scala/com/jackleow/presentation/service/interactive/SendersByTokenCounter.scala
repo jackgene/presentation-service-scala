@@ -11,8 +11,9 @@ import zio.stream.*
 object SendersByTokenCounter:
   def make(
     name: String, extractTokens: Tokenizer, maxTokensPerSender: Int
-  ): URIO[
+  ): ZIO[
     (SubscriberCountingHub[ChatMessage] Named "chat") & (SubscriberCountingHub[ChatMessage] Named "rejected"),
+    Nothing,
     SendersByTokenCounter
   ] =
     val emptyTokensBySender: Map[String, FifoBoundedSet[String]] =

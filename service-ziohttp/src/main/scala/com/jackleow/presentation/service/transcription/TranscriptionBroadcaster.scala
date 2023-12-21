@@ -12,10 +12,10 @@ object TranscriptionBroadcaster:
         hub <- SubscriberCountingHub.make[Transcription]("transcription")
       yield TranscriptionBroadcasterLive(hub)
 
-  def transcriptions: URIO[TranscriptionBroadcaster, UStream[Transcription]] =
+  def transcriptions: ZIO[TranscriptionBroadcaster, Nothing, UStream[Transcription]] =
     ZIO.serviceWith[TranscriptionBroadcaster](_.transcriptions)
 
-  def broadcast(transcriptionText: String): URIO[TranscriptionBroadcaster, Boolean] =
+  def broadcast(transcriptionText: String): ZIO[TranscriptionBroadcaster, Nothing, Boolean] =
     ZIO.serviceWithZIO[TranscriptionBroadcaster](_.broadcast(transcriptionText))
 
 trait TranscriptionBroadcaster:

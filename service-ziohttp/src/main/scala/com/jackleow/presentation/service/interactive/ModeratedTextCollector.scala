@@ -7,8 +7,9 @@ import zio.*
 import zio.stream.*
 
 object ModeratedTextCollector:
-  def live(name: String): URLayer[
+  def live(name: String): ZLayer[
     (SubscriberCountingHub[ChatMessage] Named "chat") & (SubscriberCountingHub[ChatMessage] Named "rejected"),
+    Nothing,
     ModeratedTextCollector
   ] =
     ZLayer:

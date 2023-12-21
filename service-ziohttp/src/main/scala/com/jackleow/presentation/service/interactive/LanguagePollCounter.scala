@@ -9,8 +9,9 @@ import com.jackleow.zio.*
 import zio.*
 
 object LanguagePollCounter:
-  val live: URLayer[
+  val live: ZLayer[
     PresentationConfiguration & (SubscriberCountingHub[ChatMessage] Named "chat") & (SubscriberCountingHub[ChatMessage] Named "rejected"),
+    Nothing,
     SendersByTokenCounter Named "language-poll"
   ] =
     ZLayer:
