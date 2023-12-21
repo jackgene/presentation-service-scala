@@ -1,9 +1,9 @@
 # Presentation Service in Scala
 
-Presentation Service implemented in Scala using various frameworks.
+Presentation Service implemented in Scala 3.3 using various frameworks.
 
-## Play Framework
-Scala 2.13 and Play Framework 2.9
+## Play Framework with Akka Actors
+This is the reference implementation.
 
 ### Running:
 Build the deployment artifact:
@@ -20,6 +20,18 @@ Run:
 Run with live updates:
 ```shell
 ./sbt service-play/run
+```
+
+## Akka HTTP with Akka Stream
+### Running:
+```shell
+./sbt "project service-akkahttp; clean; run --html-path ../service-play/public/html/deck.html"
+```
+
+## ZIO
+### Running:
+```shell
+./sbt "project service-ziohttp; clean; run --html-path service-play/public/html/deck.html"
 ```
 
 ## Benchmark
