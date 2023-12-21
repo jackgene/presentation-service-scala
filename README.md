@@ -28,6 +28,12 @@ Run with live updates:
 ./sbt "project service-akkahttp; clean; run --html-path ../service-play/public/html/deck.html"
 ```
 
+## Kyo
+### Running:
+```shell
+./sbt "project service-kyotapir; clean; run --html-path service-play/public/html/deck.html"
+```
+
 ## ZIO
 ### Running:
 ```shell
