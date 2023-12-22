@@ -1,7 +1,9 @@
 package com.jackleow.zio.stream
 
-import zio.{Ref, UIO, ZIO}
-import zio.stream.{UStream, ZStream}
+import zio.*
+import zio.http.{ChannelEvent, WebSocketFrame}
+import zio.json.{EncoderOps, JsonEncoder}
+import zio.stream.*
 
 extension[R, E, A] (stream: ZStream[R, E, A])
   def countRunning(
@@ -31,3 +33,8 @@ extension[R, E, A] (stream: ZStream[R, E, A])
       .collect:
         case Right(a: A) => a
 
+  def mapToJsonWebSocketFrames(using JsonEncoder[A]): ZStream[R, E, ChannelEvent[WebSocketFrame]] =
+    stream
+      .map(_.toJson)
+      .map(WebSocketFrame.text)
+      .map(ChannelEvent.read)

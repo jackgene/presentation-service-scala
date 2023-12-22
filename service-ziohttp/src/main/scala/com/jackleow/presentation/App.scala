@@ -5,12 +5,12 @@ import com.jackleow.presentation.service.interactive.model.*
 import com.jackleow.presentation.service.transcription.TranscriptionBroadcaster
 import com.jackleow.presentation.service.transcription.model.Transcription
 import com.jackleow.zio.http.noContent
+import com.jackleow.zio.stream.mapToJsonWebSocketFrames
 import zio.*
 import zio.http.*
 import zio.http.ChannelEvent.UserEvent.HandshakeComplete
 import zio.http.ChannelEvent.UserEventTriggered
 import zio.http.codec.PathCodec.empty
-import zio.json.EncoderOps
 import zio.stream.*
 
 import java.nio.file
@@ -40,9 +40,7 @@ object App:
                 for
                   questions: UStream[ChatMessages] <- InteractiveService.questions
                   _ <- questions
-                    .map(_.toJson)
-                    .map(WebSocketFrame.text)
-                    .map(ChannelEvent.read)
+                    .mapToJsonWebSocketFrames
                     .runForeach(channel.send)
                     .fork
                 yield ()
@@ -58,9 +56,7 @@ object App:
                 for
                   counts: UStream[Counts] <- InteractiveService.languagePoll
                   _ <- counts
-                    .map(_.toJson)
-                    .map(WebSocketFrame.text)
-                    .map(ChannelEvent.read)
+                    .mapToJsonWebSocketFrames
                     .runForeach(channel.send)
                     .fork
                 yield ()
@@ -76,9 +72,7 @@ object App:
                 for
                   counts: UStream[Counts] <- InteractiveService.wordCloud
                   _ <- counts
-                    .map(_.toJson)
-                    .map(WebSocketFrame.text)
-                    .map(ChannelEvent.read)
+                    .mapToJsonWebSocketFrames
                     .runForeach(channel.send)
                     .fork
                 yield ()
@@ -95,9 +89,7 @@ object App:
                   transcriptions: UStream[Transcription] <-
                     TranscriptionBroadcaster.transcriptions
                   _ <- transcriptions
-                    .map(_.toJson)
-                    .map(WebSocketFrame.text)
-                    .map(ChannelEvent.read)
+                    .mapToJsonWebSocketFrames
                     .runForeach(channel.send)
                     .fork
                 yield ()
@@ -124,9 +116,7 @@ object App:
                   rejectedMessages: UStream[ChatMessage] <-
                     InteractiveService.rejectedMessages
                   _ <- rejectedMessages
-                    .map(_.toJson)
-                    .map(WebSocketFrame.text)
-                    .map(ChannelEvent.read)
+                    .mapToJsonWebSocketFrames
                     .runForeach(channel.send)
                     .fork
                 yield ()
