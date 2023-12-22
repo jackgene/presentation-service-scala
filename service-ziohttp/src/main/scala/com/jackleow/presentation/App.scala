@@ -56,6 +56,7 @@ object App:
                 for
                   counts: UStream[Counts] <- InteractiveService.languagePoll
                   _ <- counts
+                    .throttleShape(10, 1.second)(_ => 1)
                     .mapToJsonWebSocketFrames
                     .runForeach(channel.send)
                     .fork
@@ -72,6 +73,7 @@ object App:
                 for
                   counts: UStream[Counts] <- InteractiveService.wordCloud
                   _ <- counts
+                    .throttleShape(10, 1.second)(_ => 1)
                     .mapToJsonWebSocketFrames
                     .runForeach(channel.send)
                     .fork
