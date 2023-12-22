@@ -13,12 +13,12 @@ object ModeratedTextCollector:
   ] =
     ZLayer:
       for
-        incomingEventHub <- ZIO.service[SubscriberCountingHub[ChatMessage] Named "chat"]
+        chatMessagesHub <- ZIO.service[SubscriberCountingHub[ChatMessage] Named "chat"]
         rejectedMessagesHub <- ZIO.service[SubscriberCountingHub[ChatMessage] Named "rejected"]
         moderatedMessagesRef <- SubscriptionRef.make(Seq[String]())
         subscribers <- SubscriptionRef.make(0)
       yield ModeratedTextCollectorLive(
-        name, incomingEventHub.get.elements, rejectedMessagesHub,
+        name, chatMessagesHub.get.elements, rejectedMessagesHub,
         moderatedMessagesRef, subscribers
       )
 
