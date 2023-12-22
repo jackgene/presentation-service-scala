@@ -5,14 +5,14 @@ import zio.*
 import zio.stream.*
 
 object SubscriberCountingHub:
-  def make[A, N <: String](using name: ValueOf[N]): UIO[SubscriberCountingHub[A, N]] =
+  def make[A](name: String): UIO[SubscriberCountingHub[A]] =
     for
       hub: Hub[A] <- Hub.dropping(64)
       subscribers: Ref[Int] <- Ref.make(0)
-    yield SubscriberCountingHub(valueOf[N], hub, subscribers)
+    yield SubscriberCountingHub(name, hub, subscribers)
 
-final class SubscriberCountingHub[A, N <: String](
-  name: N, hub: Hub[A], subscribersRef: Ref[Int]
+final class SubscriberCountingHub[A](
+  name: String, hub: Hub[A], subscribersRef: Ref[Int]
 ):
   private val logName: String = if name == "" then "" else s" $name"
 

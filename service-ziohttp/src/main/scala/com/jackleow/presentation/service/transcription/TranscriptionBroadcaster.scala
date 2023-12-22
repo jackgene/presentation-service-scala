@@ -9,7 +9,7 @@ object TranscriptionBroadcaster:
   val live: ULayer[TranscriptionBroadcaster] =
     ZLayer:
       for
-        hub <- SubscriberCountingHub.make[Transcription, "transcription"]
+        hub <- SubscriberCountingHub.make[Transcription]("transcription")
       yield TranscriptionBroadcasterLive(hub)
 
   def transcriptions: URIO[TranscriptionBroadcaster, UStream[Transcription]] =

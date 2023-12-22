@@ -6,7 +6,7 @@ import zio.*
 import zio.stream.*
 
 private final class TranscriptionBroadcasterLive(
-  hub: SubscriberCountingHub[Transcription, ?]
+  hub: SubscriberCountingHub[Transcription]
 ) extends TranscriptionBroadcaster:
   override val transcriptions: UStream[Transcription] = hub.elements
 
