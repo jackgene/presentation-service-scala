@@ -1,8 +1,6 @@
 package com.jackleow.zio
 
-import zio.*
-
-trait Named[A, N <: String]:
+trait Named[A, N <: Singleton & String]:
   /**
    * Wrapped item.
    */
