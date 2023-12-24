@@ -18,13 +18,13 @@ object SendersByTokenCounter:
     val emptyTokensBySender: Map[String, FifoBoundedSet[String]] =
       Map().withDefaultValue(FifoBoundedSet(maxTokensPerSender))
     for
-      incomingEventHub <- ZIO.service[SubscriberCountingHub[ChatMessage] Named "chat"]
+      chatMessagesHub <- ZIO.service[SubscriberCountingHub[ChatMessage] Named "chat"]
       rejectedMessagesHub <- ZIO.service[SubscriberCountingHub[ChatMessage] Named "rejected"]
       countsRef <- SubscriptionRef.make((emptyTokensBySender, MultiSet[String]()))
       subscribers <- SubscriptionRef.make(0)
     yield SendersByTokenCounterLive(
       name, extractTokens, emptyTokensBySender,
-      incomingEventHub.get.elements, rejectedMessagesHub,
+      chatMessagesHub.get.elements, rejectedMessagesHub,
       countsRef, subscribers
     )
 

@@ -9,7 +9,7 @@ import zio.stream.*
 
 private final class ModeratedTextCollectorLive(
   name: String,
-  incomingEvents: UStream[ChatMessage],
+  chatMessages: UStream[ChatMessage],
   rejectedMessagesBroadcaster: SubscriberCountingHub[ChatMessage] Named "rejected",
   moderatedMessagesRef: SubscriptionRef[Seq[String]],
   subscribersRef: SubscriptionRef[Int]
@@ -19,7 +19,7 @@ private final class ModeratedTextCollectorLive(
       subscribers: Int <- subscribersRef.get
       _ <-
         if subscribers == 0 then
-          incomingEvents
+          chatMessages
             .takeWhileActive(subscribersRef.changes.drop(1).map(_ > 0))
             .runForeach:
               case ChatMessage("", _, text) =>

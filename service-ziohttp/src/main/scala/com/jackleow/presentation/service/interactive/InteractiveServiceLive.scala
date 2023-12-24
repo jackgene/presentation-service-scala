@@ -7,7 +7,7 @@ import zio.*
 import zio.stream.*
 
 private final case class InteractiveServiceLive(
-  incomingEventHub: SubscriberCountingHub[ChatMessage] Named "chat",
+  chatMessagesHub: SubscriberCountingHub[ChatMessage] Named "chat",
   rejectedMessageHub: SubscriberCountingHub[ChatMessage] Named "rejected",
   languagePollCounter: SendersByTokenCounter Named "language-poll",
   wordCloudCounter: SendersByTokenCounter Named "word-cloud",
@@ -16,7 +16,7 @@ private final case class InteractiveServiceLive(
   override def receiveChatMessage(chatMessage: ChatMessage): UIO[Boolean] =
     for
       _ <- ZIO.log(s"Received chat message - $chatMessage")
-      success: Boolean <- incomingEventHub.get.publish(chatMessage)
+      success: Boolean <- chatMessagesHub.get.publish(chatMessage)
     yield success
 
   override def reset(): UIO[Unit] =

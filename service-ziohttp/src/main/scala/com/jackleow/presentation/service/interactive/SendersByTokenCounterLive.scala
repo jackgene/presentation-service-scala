@@ -13,7 +13,7 @@ private final class SendersByTokenCounterLive(
   name: String, 
   extractTokens: Tokenizer,
   emptyTokensBySender: Map[String, FifoBoundedSet[String]],
-  incomingEvents: UStream[ChatMessage],
+  chatMessages: UStream[ChatMessage],
   rejectedMessagesBroadcaster: SubscriberCountingHub[ChatMessage] Named "rejected",
   countsRef: SubscriptionRef[(Map[String, FifoBoundedSet[String]], MultiSet[String])],
   subscribersRef: SubscriptionRef[Int]
@@ -23,7 +23,7 @@ private final class SendersByTokenCounterLive(
       subscribers: Int <- subscribersRef.get
       _ <-
         if subscribers == 0 then
-          incomingEvents
+          chatMessages
             .takeWhileActive(subscribersRef.changes.drop(1).map(_ > 0))
             .runForeach: (chatMessage: ChatMessage) =>
               extractTokens(chatMessage.text) match
