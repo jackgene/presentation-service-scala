@@ -7,43 +7,34 @@ import zio.*
 import zio.stream.*
 
 private final case class InteractiveServiceLive(
-  namedChatMessagesHub: SubscriberCountingHub[ChatMessage] Named "chat",
-  namedRejectedMessagesHub: SubscriberCountingHub[ChatMessage] Named "rejected",
-  namedLanguagePollCounter: SendersByTokenCounter Named "language-poll",
-  namedWordCloudCounter: SendersByTokenCounter Named "word-cloud",
+  incomingEventHub: SubscriberCountingHub[ChatMessage] Named "chat",
+  rejectedMessageHub: SubscriberCountingHub[ChatMessage] Named "rejected",
+  languagePollCounter: SendersByTokenCounter Named "language-poll",
+  wordCloudCounter: SendersByTokenCounter Named "word-cloud",
   questionsCollector: ModeratedTextCollector
 ) extends InteractiveService:
-  private val chatMessagesHub: SubscriberCountingHub[ChatMessage] =
-    namedChatMessagesHub.get
-  private val rejectedMessagesHub: SubscriberCountingHub[ChatMessage] =
-    namedRejectedMessagesHub.get
-  private val languagePollCounter: SendersByTokenCounter =
-    namedLanguagePollCounter.get
-  private val wordCloudCounter: SendersByTokenCounter =
-    namedWordCloudCounter.get
-
   override def receiveChatMessage(chatMessage: ChatMessage): UIO[Boolean] =
     for
       _ <- ZIO.log(s"Received chat message - $chatMessage")
-      success: Boolean <- chatMessagesHub.publish(chatMessage)
+      success: Boolean <- incomingEventHub.get.publish(chatMessage)
     yield success
 
   override def reset(): UIO[Unit] =
     for
-      _ <- languagePollCounter.reset()
-      _ <- wordCloudCounter.reset()
+      _ <- languagePollCounter.get.reset()
+      _ <- wordCloudCounter.get.reset()
       _ <- questionsCollector.reset()
     yield ()
 
   override def languagePoll: UIO[UStream[Counts]] =
-    languagePollCounter.counts
+    languagePollCounter.get.counts
 
   override def wordCloud: UIO[UStream[Counts]] =
-    wordCloudCounter.counts
+    wordCloudCounter.get.counts
 
   override def questions: UIO[UStream[ChatMessages]] =
     questionsCollector.moderatedMessages
 
   override def rejectedMessages: UIO[UStream[ChatMessage]] =
-    ZIO.succeed(rejectedMessagesHub.elements)
+    ZIO.succeed(rejectedMessageHub.get.elements)
 

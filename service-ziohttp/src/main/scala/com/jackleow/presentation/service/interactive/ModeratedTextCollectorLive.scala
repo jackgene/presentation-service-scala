@@ -9,26 +9,23 @@ import zio.stream.*
 
 private final class ModeratedTextCollectorLive(
   name: String,
-  chatMessages: UStream[ChatMessage],
-  namedRejectedMessagesBroadcaster: SubscriberCountingHub[ChatMessage] Named "rejected",
+  incomingEvents: UStream[ChatMessage],
+  rejectedMessagesBroadcaster: SubscriberCountingHub[ChatMessage] Named "rejected",
   moderatedMessagesRef: SubscriptionRef[Seq[String]],
   subscribersRef: SubscriptionRef[Int]
 ) extends ModeratedTextCollector:
-  private val rejectedMessagesBroadcaster: SubscriberCountingHub[ChatMessage] =
-    namedRejectedMessagesBroadcaster.get
-
   override val moderatedMessages: UIO[UStream[ChatMessages]] =
     for
       subscribers: Int <- subscribersRef.get
       _ <-
         if subscribers == 0 then
-          chatMessages
+          incomingEvents
             .takeWhileActive(subscribersRef.changes.drop(1).map(_ > 0))
             .runForeach:
               case ChatMessage("", _, text) =>
                 moderatedMessagesRef.update(_ :+ text)
               case rejectedMessage: ChatMessage =>
-                rejectedMessagesBroadcaster.publish(rejectedMessage)
+                rejectedMessagesBroadcaster.get.publish(rejectedMessage)
             .forkDaemon
         else ZIO.unit
     yield
