@@ -36,7 +36,7 @@ object ChatMessageKafkaProducer {
     new ChatMessageKafkaProducer(
       chatMessageBroadcaster, kafkaProducer, kafkaTopicName,
       ctx.messageAdapter[ChatMessageBroadcaster.Event] {
-        case ChatMessageBroadcaster.New(chatMessage: ChatMessage) => Record(chatMessage)
+        case ChatMessageBroadcaster.Event.New(chatMessage: ChatMessage) => Record(chatMessage)
       }
     ).initial
   }
@@ -53,7 +53,7 @@ private class ChatMessageKafkaProducer(
       case Activate(sender: ActorRef[Nothing]) =>
         ctx.log.info(s"+1 ${ctx.self.path.name} activation (=1)")
         ctx.watchWith(sender, Passivate(sender))
-        chatMessageBroadcaster ! ChatMessageBroadcaster.Subscribe(adapter)
+        chatMessageBroadcaster ! ChatMessageBroadcaster.Command.Subscribe(adapter)
         running(
           Set(sender),
           kafkaProducer.runWith(
@@ -105,7 +105,7 @@ private class ChatMessageKafkaProducer(
         if (remainingActivations.nonEmpty) {
           running(remainingActivations, kafkaQueue)
         } else {
-          chatMessageBroadcaster ! ChatMessageBroadcaster.Unsubscribe(adapter)
+          chatMessageBroadcaster ! ChatMessageBroadcaster.Command.Unsubscribe(adapter)
           kafkaQueue.complete()
           paused
         }
