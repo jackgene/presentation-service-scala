@@ -83,7 +83,7 @@ elmMakeDeck := {
 Assets / sourceGenerators += elmMakeDeck.taskValue
 
 // Moderator Elm app
-val elmMakeModerator = taskKey[Seq[File]]("elm-make-moedrator")
+val elmMakeModerator = taskKey[Seq[File]]("elm-make-moderator")
 
 elmMakeModerator := {
   import scala.sys.process.*
