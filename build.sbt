@@ -1,9 +1,9 @@
-scalaVersion := "3.3.1"
+scalaVersion := "3.3.3"
 
 lazy val commonSettings = Seq(
   organization := "com.jackleow",
   version := "1.0",
-  scalaVersion := "3.3.1",
+  scalaVersion := "3.3.3",
   scalacOptions ++= Seq(
     "-feature", "-explain",
     "-Wunused:imports,privates,locals,explicits,implicits,params,linted",
