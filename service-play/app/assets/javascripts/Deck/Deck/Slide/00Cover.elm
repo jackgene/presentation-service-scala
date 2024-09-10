@@ -22,24 +22,25 @@ cover =
   { baseSlideModel
   | view =
     ( \_ _ ->
-      div []
+      div [ css [ coverStyle ] ]
       [ coverBackgroundGraphic
       , div
         [ css
           [ position absolute
-          , top (vw 20), left (vw 35), width (vw 58)
+          , top (vw 17), left (vw 35), width (vw 58)
           ]
         ]
         [ h1 [ css [ margin zero, headerFontFamily, fontSize (vw 4.5) ] ]
-          [ text "Kafka as the"
+          [ text "Functional Reactive"
           , br [] []
-          , text "Source of Truth"
+          , text "Streaming with RxPY"
           ]
         , p
-          [ css [ margin2 (em 2.5) zero, fontSize (em 0.875) ] ]
+          [ css [ margin2 (em 5) zero, fontSize (em 0.875) ] ]
           [ text "Jack Leow"
           , br [] []
-          , text "October 15, 2022"]
+          , text "November 1, 2024"
+          ]
         ]
       ]
     )

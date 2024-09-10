@@ -5,7 +5,7 @@ import Css exposing
   ( borderTop3, bottom, display, height, left, margin, margin4
   , padding2, position, right, top, width
   -- Content
-  , backgroundColor, color, fontSize, fontWeight, verticalAlign
+  , color, fontSize, fontWeight, verticalAlign
   -- Units
   , em, vw, zero
   -- Alignments & Positions
@@ -27,7 +27,7 @@ sectionCoverSlideView number title =
     [ css
       [ position absolute, margin zero
       , top (vw 5), left (vw 6)
-      , color blackTranslucent, numberFontFamily, fontWeight normal, fontSize (vw 35)
+      , color white, numberFontFamily, fontWeight normal, fontSize (vw 35)
       ]
     ]
     [ text (toString number) ]
@@ -59,7 +59,7 @@ standardSlideView page heading subheading content =
         ]
       ]
       [ div [ css [ display inlineBlock, position absolute, right zero ] ]
-        [ text "Kafka as the Source of Truth"
+        [ text "Functional Reactive Streaming with RxPY"
         , numberedDisc (toString page) 50
           [ css [ width (vw 2.5), margin4 zero zero (em 0.1) (em 0.4), verticalAlign middle ] ]
         ]

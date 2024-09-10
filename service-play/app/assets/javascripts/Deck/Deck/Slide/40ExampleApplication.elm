@@ -66,25 +66,26 @@ collecting =
       ( div []
         [ p []
           [ text "Finally, we need to make the word counts available to some sort of front end. "
-          , text "A naïve WebSocket endpoint in ktor might look like:"
+          , text "A naïve WebSocket handler in "
+          , syntaxHighlightedCodeSnippet Python "websockets"
+          , text " might look like:"
           ]
         , div []
-          [ syntaxHighlightedCodeBlock Kotlin Dict.empty Dict.empty []
+          [ syntaxHighlightedCodeBlock Python Dict.empty Dict.empty []
       """
-routing {
-    webSocket("/") {
-        wordCounts
-            .sample(100.milliseconds)
-            .map { Json.encodeToString(it) }
-            .collect(::send)
-    }
-}
+word_counts: Observable[Counts] = word_counts(user_msgs)
+def handler(ws_conn: ServerConnection):
+    publish_counts: Observable[Counts] = word_counts \\
+        >> ops.debounce(timedelta(milliseconds=100)) \\
+        >> ops.do_action(lambda cnts: ws_conn.send(cnts.to_json())
+    publish_counts.run()
+    ws_conn.close()
 """
           ]
         , p []
           [ text "Full source:"
           , br [] []
-          , text "https://github.com/jackgene/reactive-word-cloud-kotlin/tree/presentation"
+          , text "https://github.com/jackgene/reactive-word-cloud-python"
           ]
         ]
       )
@@ -168,7 +169,7 @@ validatedWordsBasePos =
 runningFoldUpdateWordsForSenderBasePos : HorizontalPosition
 runningFoldUpdateWordsForSenderBasePos =
   { leftEm = leftEmAfter validatedWordsBasePos
-  , widthEm = 12
+  , widthEm = 13
   }
 
 
@@ -402,7 +403,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
     visibleHeightEm = 56 / scale
 
     chatMessageHeightEm : Float
-    chatMessageHeightEm = 5.5
+    chatMessageHeightEm = 3.85
 
     extractedWordHeightEm : Float
     extractedWordHeightEm = 3.85
@@ -448,23 +449,23 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
         [ streamLineView (horizontalPosition chatMessagesPos step) visibleHeightEm
         , operationView
           (horizontalPosition mapNormalizeTextPos step) scaleChanged
-          [ "map(", "\xA0\xA0::normalizeText", ")" ]
+          [ "ops.map(", "\xA0\xA0normalize_text", ")" ]
         , streamLineView (horizontalPosition normalizedTextPos step) visibleHeightEm
         , operationView
           (horizontalPosition flatMapConcatSplitIntoWordsPos step) scaleChanged
-          [ "flatMapConcat(", "\xA0\xA0::splitIntoWords", ")" ]
+          [ "ops.concat_map(", "\xA0\xA0split_into_words", ")" ]
         , streamLineView (horizontalPosition rawWordsPos step) visibleHeightEm
         , operationView
           (horizontalPosition filterIsValidWordPos step) scaleChanged
-          [ "filter(", "\xA0\xA0::isValidWord", ")" ]
+          [ "ops.filter(", "\xA0\xA0is_valid_word", ")" ]
         , streamLineView (horizontalPosition validatedWordsPos step) visibleHeightEm
         , operationView
           (horizontalPosition runningFoldUpdateWordsForSenderPos step) scaleChanged
-          [ "runningFold(", "\xA0\xA0mapOf(),", "\xA0\xA0::updateWordsForSender", ")" ]
+          [ "ops.scan(", "\xA0\xA0update_words_for_sender,", "\xA0\xA0seed={}", ")" ]
         , streamLineView (horizontalPosition wordsBySendersPos step) visibleHeightEm
         , operationView
           (horizontalPosition mapCountSendersForWordPos step) scaleChanged
-          [ "map(", "\xA0\xA0::countSendersForWord", ")" ]
+          [ "ops.map(", "\xA0 count_senders_by_word", ")" ]
         , streamLineView (horizontalPosition senderCountsByWordPos step) visibleHeightEm
         ]
       , div [] -- chat messages
@@ -484,11 +485,11 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                       toFloat (List.length event.words) * extractedWordHeightEm
   
                     bigSmallOffsetEm : Float
-                    bigSmallOffsetEm = 0.875
+                    bigSmallOffsetEm = 0
   
                     chatMessageTopEm : Float
                     chatMessageTopEm =
-                      if step < 2 then 0
+                      if step < 2 then 0.25
                       else max 0 (extractedWordsHeightEm - chatMessageHeightEm + bigSmallOffsetEm)
   
                     chatMessageOpacityNum : Float
@@ -496,9 +497,10 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
   
                     elementColor : Color
                     elementColor =
-                      String.uncons event.chatMessage.sender
-                      |> Maybe.map ( \(c, _) -> rem (Char.toCode c + 1) 3 )
-                      |> Maybe.withDefault -1
+                      -- Java string hash function
+                      event.chatMessage.sender
+                      |> String.foldl ( \c acc -> acc * 31 + (Char.toCode c) ) 0
+                      |> ( \hash -> (hash + 1) % 3 )
                       |> partitionColor
                   in
                   ( ( div -- per chat message
@@ -528,10 +530,6 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                           [ tr []
                             [ th [ css [ width (em 5.4), textAlign right, verticalAlign top ] ] [ text "sender:" ]
                             , td [] [ text (firstName event.chatMessage.sender) ]
-                            ]
-                          , tr []
-                            [ th [ css [ textAlign right, verticalAlign top ] ] [ text "recipient:" ]
-                            , td [] [ text event.chatMessage.recipient ]
                             ]
                           , tr []
                             [ th [ css [ textAlign right, verticalAlign top ] ] [ text "text:" ]
@@ -780,22 +778,8 @@ implementation1ChatMessages : Bool -> UnindexedSlideModel
 implementation1ChatMessages showCode =
   implementationDiagramSlide 0 heading
   "Source Events"
-  "We start with the source event messages - actual Zoom chat messages:"
-  """
-val chatMessages: Flow<ChatMessage> =
-    ReceiverSettings<String, ChatMessage>(
-        bootstrapServers = "localhost:9092",
-        keyDeserializer = StringDeserializer(),
-        valueDeserializer = StringDeserializer()
-            .map(Json::decodeFromString),
-        groupId = "word-cloud-app", autoOffsetReset = Earliest
-    ).let { settings ->
-        KafkaReceiver(settings).receive("word-cloud.chat-message")
-            .map { it.value() }
-            .shareIn(CoroutineScope(Default), Lazily)
-    }
-""" showCode
-  implementation1Layout.leftEm detailedMagnification False
+  "We start with the source event messages - text submissions from users:"
+  "" showCode implementation1Layout.leftEm detailedMagnification False
 
 
 implementation2MapNormalizeWords : Bool -> UnindexedSlideModel
@@ -804,14 +788,13 @@ implementation2MapNormalizeWords showCode =
   "Normalizing Message Text"
   "The message text is normalized, retaining the sender:"
   """
-val NON_LETTER_PATTERN = Regex(\"""[^\\p{L}]+\""")
-fun normalizeText(msg: ChatMessage): SenderAndText =
-    SenderAndText(
-        msg.sender,
-        msg.text
-            .replace(NON_LETTER_PATTERN, " ")
-            .trim()
-            .lowercase()
+import re
+from reactive_word_cloud.model import SenderAndText
+
+def normalize_text(sender_text: SenderAndText) -> SenderAndText:
+    return SenderAndText(
+        sender_text.sender,
+        re.sub(r'[^\\w]+', ' ', sender_text.text).strip().lower()
     )
 """ showCode
   implementation2Layout.leftEm detailedMagnification False
@@ -823,13 +806,18 @@ implementation3FlatMapConcatSplitIntoWords showCode =
   "Splitting Message Text Into Words"
   "The normalized text is split into words:"
   """
-fun splitIntoWords(
-    senderText: SenderAndText
-): Flow<SenderAndWord> = senderText.text
-    .split(" ")
-    .map { SenderAndWord(senderText.sender, it) }
-    .reversed()
-    .asFlow()
+import reactivex as rx
+from .model import SenderAndText, SenderAndWord
+
+def split_into_words(
+    sender_text: SenderAndText
+) -> rx.Observable[SenderAndWord]:
+    text: str = sender_text.text
+    words: list[str] = text.split(' ')
+    return rx.from_iterable([
+        SenderAndWord(sender_text.sender, word)
+        for word in reversed(words)
+    ])
 """ showCode
   implementation3Layout.leftEm
   detailedMagnification False
@@ -841,9 +829,17 @@ implementation4FilterIsValidWord showCode =
   "Removing Invalid Words"
   "Invalid words are filtered out:"
   """
-fun isValidWord(senderWord: SenderAndWord): Boolean =
-    senderWord.word.length in minWordLength..maxWordLength
-        && !stopWords.contains(senderWord.word)
+from reactive_word_cloud.model import SenderAndWord
+
+min_word_len: int = 3
+max_word_len: int = 15
+stop_words: set[str] = {
+    'about', 'above', 'after', 'again', #...
+}
+def is_valid_word(sender_word: SenderAndWord) -> bool:
+    word: str = sender_word.word
+    return min_word_len <= len(word) <= max_word_len \\
+        and word not in stop_words
 """ showCode
   (leftEmCentering rawWordsPos.base validatedWordsPos.base)
   detailedMagnification False
@@ -855,17 +851,19 @@ implementation5RunningFoldUpdateWordsForSender showCode =
   "Determine Words for Each Sender"
   "For each sender, retain their most recent three words:"
   """
-fun updateWordsForSender(
-    wordsBySender: Map<String, List<String>>,
-    senderWord: SenderAndWord
-): Map<String, List<String>> {
-    val oldWords: List<String> =
-        wordsBySender[senderWord.sender] ?: listOf()
-    val newWords: List<String> =
-        (listOf(senderWord.word) + oldWords).distinct()
-            .take(maxWordsPerSender)
-    return wordsBySender + (senderWord.sender to newWords)
-}
+from reactive_word_cloud.model import SenderAndWord
+
+max_words_per_sender: int = 3
+def update_words_for_sender(
+    words_by_sender: dict[str, list[str]],
+    sender_word: SenderAndWord
+) -> dict[str, list[str]]:
+    sender: str = sender_word.sender
+    word: str = sender_word.word
+    old_words: list[str] = words_by_sender.get(sender, [])
+    new_words: list[str] = list(dict.fromkeys([word] + old_words))
+    new_words = new_words[0:max_words_per_sender]
+    return words_by_sender | {sender: new_words}
 """ showCode
   (leftEmCentering validatedWordsPos.base wordsBySendersPos.base)
   detailedMagnification False
@@ -877,12 +875,17 @@ implementation6MapCountSendersForWord showCode =
   "Count Senders for Each Word"
   "For each word, count the number of senders:"
   """
-fun countWords(
-    wordsBySender: Map<String, List<String>>
-): Map<String, Int> = wordsBySender
-    .flatMap { it.value.map { word -> word to it.key } }
-    .groupBy({ it.first }, { it.second })
-    .mapValues { it.value.size }
+from itertools import groupby
+
+def count_senders_by_word(
+    words_by_sender: dict[str, list[str]]
+) -> dict[str, int]:
+    words: list[str] = sorted([
+        word
+        for _, words in words_by_sender.items()
+        for word in words
+    ])
+    return {word: len([*grp]) for word, grp in groupby(words)}
 """ showCode
   (leftEmCentering wordsBySendersPos.base senderCountsByWordPos.base)
   detailedMagnification False
@@ -892,15 +895,21 @@ implementation7Complete : Bool -> UnindexedSlideModel
 implementation7Complete showCode =
   implementationDiagramSlide 6 heading
   "Tying It All Together"
-  "Composing all the operations into a single flow:"
+  "Composing all the operations into a single Observable:"
   """
-val wordCounts: Flow<Counts> = chatMessages
-    .map(::normalizeText)
-    .flatMapConcat(::splitIntoWords)
-    .filter(::isValidWord)
-    .runningFold(mapOf(), ::updateWordsForSender)
-    .map(::countWords).map(::Counts)
-    .shareIn(CoroutineScope(Default), Eagerly, 1)
+import reactivex as rx
+import reactivex.operators as ops
+from .model import Counts, SenderAndText
+
+def word_counts(
+    src_msgs: rx.Observable[SenderAndText]
+) -> rx.Observable[Counts]:
+    return src_msgs \\
+        >> ops.map(normalize_text) \\
+        >> ops.concat_map(split_into_words) \\
+        >> ops.filter(is_valid_word) \\
+        >> ops.scan(update_words_for_sender, seed={}) \\
+        >> ops.map(count_senders_by_word) >> ops.map(Counts)
 """ showCode
   0.0 1.0 True
 
@@ -911,16 +920,7 @@ implementationCompleteDistribution showCode =
   "Additional Considerations"
   "Considerations for Distributed Deployment"
   "Observe that some events can be re-ordered without changing the final outcome:"
-  """
-val wordCounts: Flow<Counts> = chatMessages
-    .map(::normalizeText)
-    .flatMapConcat(::splitIntoWords)
-    .filter(::isValidWord)
-    .runningFold(mapOf(), ::updateWordsForSender)
-    .map(::countWords).map(::Counts)
-    .shareIn(CoroutineScope(Default), Eagerly, 1)
-""" showCode
-  0.0 1.0 True
+  "" showCode 0.0 1.0 True
 
 
 implementationCompleteEventSourcing : Bool -> UnindexedSlideModel
@@ -929,23 +929,14 @@ implementationCompleteEventSourcing showCode =
   "Additional Considerations"
   "Application Source of Truth Considerations"
   "Observe that information is lost as it flows through the system:"
-  """
-val wordCounts: Flow<Counts> = chatMessages
-    .map(::normalizeText)
-    .flatMapConcat(::splitIntoWords)
-    .filter(::isValidWord)
-    .runningFold(mapOf(), ::updateWordsForSender)
-    .map(::countWords).map(::Counts)
-    .shareIn(CoroutineScope(Default), Eagerly, 1)
-""" showCode
-  0.0 1.0 True
+  "" showCode 0.0 1.0 True
 
 
 slides : List UnindexedSlideModel
 slides =
   ( introduction
-  ::( [ implementation1ChatMessages
-      , implementation2MapNormalizeWords
+  ::implementation1ChatMessages False
+  ::( [ implementation2MapNormalizeWords
       , implementation3FlatMapConcatSplitIntoWords
       , implementation4FilterIsValidWord
       , implementation5RunningFoldUpdateWordsForSender
