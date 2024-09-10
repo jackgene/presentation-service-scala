@@ -22,7 +22,7 @@ cover =
   { baseSlideModel
   | view =
     ( \_ _ ->
-      div []
+      div [ css [ coverStyle ] ]
       [ coverBackgroundGraphic
       , div
         [ css
@@ -33,15 +33,14 @@ cover =
         [ h1 [ css [ margin zero, headerFontFamily, fontSize (vw 4.5) ] ]
           [ text "Functional Reactive"
           , br [] []
-          , text "Streaming"
-          , br [] []
-          , text "with Kotlin Flow"
+          , text "Streaming with RxPY"
           ]
         , p
-          [ css [ margin2 (em 2.5) zero, fontSize (em 0.875) ] ]
+          [ css [ margin2 (em 5) zero, fontSize (em 0.875) ] ]
           [ text "Jack Leow"
           , br [] []
-          , text "November 1, 2023"]
+          , text "November 1, 2024"
+          ]
         ]
       ]
     )
