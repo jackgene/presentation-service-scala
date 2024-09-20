@@ -695,7 +695,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
               -- Initial value
               ( [ div
                   [ css
-                    [ position absolute, top (em -chatMessageHeightEm)
+                    [ position absolute, top (em -(chatMessageHeightEm * 7)) -- Optimize for audience sending 7 words/submission
                     , transition
                       [ Css.Transitions.opacity3 transitionDurationMs 0 easeInOut
                       , Css.Transitions.top3 transitionDurationMs 0 easeInOut
