@@ -57,15 +57,6 @@ object PresentationServiceApplicationLoader {
       actorSystem.spawn(
         TranscriptionBroadcaster(), "transcriptions"
       )
-    private val chatMessageKafkaProducer: ActorRef[ChatMessageKafkaProducer.Command] =
-      actorSystem.spawn(
-        ChatMessageKafkaProducer(
-          chatMessages,
-          configuration.get[String]("kafka.bootstrapServers"),
-          configuration.get[String]("kafka.topicName.chatMessage")
-        ),
-        "chat-kafka-producer"
-      )
     private val mainController: MainController = new MainController(
       chatMessages = chatMessages,
       rejectedMessages = rejectedMessages,
@@ -74,7 +65,6 @@ object PresentationServiceApplicationLoader {
       chattiest = chattiest,
       questions = questions,
       transcriptions = transcriptions,
-      chatMessageKafkaProducer = chatMessageKafkaProducer,
       controllerComponents
     )(using actorSystem)
     override val router: Router =
