@@ -28,6 +28,7 @@ elmMakeDeck := {
     "elm-make " +
       (
         ((baseDir / "app" / "assets" / "javascripts" / "Deck") ** "*.elm").get ++
+        ((baseDir / "app" / "assets" / "javascripts" / "QRCode") ** "*.elm").get ++
         ((baseDir / "app" / "assets" / "javascripts" / "SyntaxHighlight") ** "*.elm").get ++
         ((baseDir / "app" / "assets" / "javascripts" / "WordCloud") ** "*.elm").get
       ).mkString(" ") +
