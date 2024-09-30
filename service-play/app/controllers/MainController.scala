@@ -24,7 +24,6 @@ final class MainController (
   chattiest: ActorRef[MessagesBySenderCounter.Command],
   questions: ActorRef[ModeratedTextCollector.Command],
   transcriptions: ActorRef[TranscriptionBroadcaster.Command],
-  chatMessageKafkaProducer: ActorRef[ChatMessageKafkaProducer.Command],
   cc: ControllerComponents
 )(using system: ActorSystem) extends AbstractController(cc) {
   private val RoutePattern: Regex = """(.*) to (Everyone|You)(?: \(Direct Message\))?""".r
@@ -44,7 +43,7 @@ final class MainController (
       Sink.ignore,
       ActorFlow.sourceBehavior { (webSocketClient: ActorRef[JsValue]) =>
         // Produce ChatMessage in Kafka
-        chatMessageKafkaProducer ! ChatMessageKafkaProducer.Activate(webSocketClient)
+//        chatMessageKafkaProducer ! ChatMessageKafkaProducer.Activate(webSocketClient)
         SendersByTokenCounter.JsonPublisher(webSocketClient, wordCloud)
       }
     )
