@@ -3,19 +3,20 @@ module Deck.Slide.WordCloud exposing (wordCloud)
 import Css exposing
   ( Color, Style
   -- Container
-  , display, displayFlex, height, listStyle, overflow, padding2, position
+  , bottom, display, displayFlex, height, left, listStyle, overflow, padding2, position, right, width
   -- Content
   , alignItems, color, flexWrap, fontSize, justifyContent, lineHeight, opacity
   -- Units
-  , em, num, vw
+  , em, num, vw, zero
   -- Alignment & Positions
-  , relative
+  , absolute, relative
   -- Transform
   -- Other values
   , block, center, hidden, none, wrap
   )
 import Css.Transitions exposing (easeInOut, transition)
 import Deck.Slide.Common exposing (..)
+import Deck.Slide.Graphics exposing (wordSubmitterAppQrCode)
 import Deck.Slide.Template exposing (standardSlideView)
 import Dict exposing (Dict)
 import Html.Styled exposing (Html, div, text, ul)
@@ -38,6 +39,16 @@ wordCloud heading subheading =
       standardSlideView page heading subheading
       ( div []
         [ div
+          [ css
+            [ position absolute
+            , bottom (vw 4), right (vw 2.5), width (vw 44.5)
+            , fontSize (em 0.8)
+            ]
+          ]
+          [ div [ css [ position absolute, bottom (em 1.5), left zero] ] [ text "http://wordcloud.jackleow.com" ]
+          , div [ css [ position absolute, bottom zero, right zero] ] [ wordSubmitterAppQrCode "20vw" ]
+          ]
+        , div
           [ css
             [ height (vw (if Dict.isEmpty model.wordCloud.countsByWord then 20 else 0))
             , overflow hidden

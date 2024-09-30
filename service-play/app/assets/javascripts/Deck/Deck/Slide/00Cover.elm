@@ -2,7 +2,7 @@ module Deck.Slide.Cover exposing (cover)
 
 import Css exposing
   -- Container
-  ( left, position, top, width, margin, margin2
+  ( bottom, left, position, right, top, width, margin, margin2
   -- Content
   , fontSize
   -- Units
@@ -12,7 +12,7 @@ import Css exposing
   -- Other values
   )
 import Deck.Slide.Common exposing (..)
-import Deck.Slide.Graphics exposing (coverBackgroundGraphic)
+import Deck.Slide.Graphics exposing (coverBackgroundGraphic, wordSubmitterAppQrCode)
 import Html.Styled exposing (Html, br, div, h1, p, text)
 import Html.Styled.Attributes exposing (css)
 
@@ -24,6 +24,16 @@ cover =
     ( \_ _ ->
       div [ css [ coverStyle ] ]
       [ coverBackgroundGraphic
+      , div
+        [ css
+          [ position absolute
+          , bottom zero, right (vw 1), width (vw 49)
+          , fontSize (em 0.8)
+          ]
+        ]
+        [ div [ css [ position absolute, bottom (em 1.75), left zero] ] [ text "http://wordcloud.jackleow.com" ]
+        , div [ css [ position absolute, bottom zero, right zero] ] [ wordSubmitterAppQrCode "25vw" ]
+        ]
       , div
         [ css
           [ position absolute
