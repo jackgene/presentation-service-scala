@@ -382,12 +382,8 @@ streamElementView pos color opacityNum scaleChanged rows =
   ]
 
 
-firstName : String -> String
-firstName fullName =
-  fullName
-  |> String.words
-  |> List.head
-  |> Maybe.withDefault ""
+displayName : String -> String
+displayName = identity
 
 
 implementationDiagramView : WordCounts -> Int -> Float -> Float -> Bool -> Html msg
@@ -529,7 +525,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                           elementColor chatMessageOpacityNum scaleChanged
                           [ tr []
                             [ th [ css [ width (em 5.4), textAlign right, verticalAlign top ] ] [ text "sender:" ]
-                            , td [] [ text (firstName event.chatMessage.sender) ]
+                            , td [ css [ truncatedTextStyle ] ] [ text (displayName event.chatMessage.sender) ]
                             ]
                           , tr []
                             [ th [ css [ textAlign right, verticalAlign top ] ] [ text "text:" ]
@@ -542,7 +538,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                             elementColor chatMessageOpacityNum scaleChanged
                             [ tr []
                               [ th [ css [ width (em 4.5), textAlign right, verticalAlign top ] ] [ text "sender:" ]
-                              , td [] [ text (firstName event.chatMessage.sender) ]
+                              , td [ css [ truncatedTextStyle ] ] [ text (displayName event.chatMessage.sender) ]
                               ]
                             , tr []
                               [ th [ css [ textAlign right, verticalAlign top ] ] [ text "text:" ]
@@ -580,7 +576,7 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                               wordRows =
                                 [ tr []
                                   [ th [ css [ width (em 4.5), textAlign right, verticalAlign top ] ] [ text "sender:" ]
-                                  , td [] [ text (firstName event.chatMessage.sender) ]
+                                  , td [ css [ truncatedTextStyle ] ] [ text (displayName event.chatMessage.sender) ]
                                   ]
                                 , tr []
                                   [ th [ css [ textAlign right, verticalAlign top ] ] [ text "word:" ]
@@ -622,7 +618,8 @@ implementationDiagramView counts step fromLeftEm scale scaleChanged =
                                               if Set.member sender senders then (wordsBySenderTrs, senders)
                                               else
                                                 ( ( tr []
-                                                    [ td [ css [ textAlign center, verticalAlign top ] ] [ text (firstName sender) ]
+                                                    [ td [ css [ textAlign center, verticalAlign top, truncatedTextStyle ] ]
+                                                      [ text (displayName sender) ]
                                                     , td [ css [ textAlign center, verticalAlign top ] ]
                                                       [ text
                                                         ( String.join ", "
