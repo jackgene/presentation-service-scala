@@ -71,8 +71,8 @@ darkGray : Color
 darkGray = rgb 192 192 192
 
 
-lightGrey : Color
-lightGrey = rgb 238 238 238
+lightGray : Color
+lightGray = rgb 238 238 238
 
 
 consoleText : Color
