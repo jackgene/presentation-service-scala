@@ -20404,10 +20404,11 @@ var _jackgene$live_deck$Deck_Slide_Common$subHeaderStyle = _rtfeldman$elm_css$Cs
 		}
 	});
 var _jackgene$live_deck$Deck_Slide_Common$consoleText = A3(_rtfeldman$elm_css$Css$rgb, 65, 255, 0);
-var _jackgene$live_deck$Deck_Slide_Common$lightGrey = A3(_rtfeldman$elm_css$Css$rgb, 238, 238, 238);
+var _jackgene$live_deck$Deck_Slide_Common$lightGray = A3(_rtfeldman$elm_css$Css$rgb, 238, 238, 238);
 var _jackgene$live_deck$Deck_Slide_Common$darkGray = A3(_rtfeldman$elm_css$Css$rgb, 192, 192, 192);
 var _jackgene$live_deck$Deck_Slide_Common$blackTranslucent = A4(_rtfeldman$elm_css$Css$rgba, 32, 31, 27, 0.15);
-var _jackgene$live_deck$Deck_Slide_Common$primary = A3(_rtfeldman$elm_css$Css$rgb, 224, 229, 249);
+var _jackgene$live_deck$Deck_Slide_Common$secondary = A3(_rtfeldman$elm_css$Css$rgb, 196, 0, 0);
+var _jackgene$live_deck$Deck_Slide_Common$primary = A3(_rtfeldman$elm_css$Css$rgb, 255, 0, 0);
 var _jackgene$live_deck$Deck_Slide_Common$headerStyle = _rtfeldman$elm_css$Css$batch(
 	{
 		ctor: '::',
@@ -21147,83 +21148,28 @@ var _jackgene$live_deck$Deck_Slide_Graphics$languageSwiftLogo = A2(
 			}
 		}
 	});
-var _jackgene$live_deck$Deck_Slide_Graphics$languageScalaLogo = A2(
-	_rtfeldman$elm_css$Svg_Styled$svg,
-	{
-		ctor: '::',
-		_0: _rtfeldman$elm_css$Svg_Styled_Attributes$width('2.5vw'),
-		_1: {
+var _jackgene$live_deck$Deck_Slide_Graphics$languageScalaLogoWithSize = function (size) {
+	return A2(
+		_rtfeldman$elm_css$Svg_Styled$svg,
+		{
 			ctor: '::',
-			_0: _rtfeldman$elm_css$Svg_Styled_Attributes$height('2.5vw'),
+			_0: _rtfeldman$elm_css$Svg_Styled_Attributes$width(size),
 			_1: {
 				ctor: '::',
-				_0: _rtfeldman$elm_css$Svg_Styled_Attributes$viewBox('0 0 256 416'),
-				_1: {ctor: '[]'}
-			}
-		}
-	},
-	{
-		ctor: '::',
-		_0: A2(
-			_rtfeldman$elm_css$Svg_Styled$defs,
-			{ctor: '[]'},
-			{
-				ctor: '::',
-				_0: A2(
-					_rtfeldman$elm_css$Svg_Styled$linearGradient,
-					{
-						ctor: '::',
-						_0: _rtfeldman$elm_css$Svg_Styled_Attributes$x1('0%'),
-						_1: {
-							ctor: '::',
-							_0: _rtfeldman$elm_css$Svg_Styled_Attributes$y1('50%'),
-							_1: {
-								ctor: '::',
-								_0: _rtfeldman$elm_css$Svg_Styled_Attributes$x2('100%'),
-								_1: {
-									ctor: '::',
-									_0: _rtfeldman$elm_css$Svg_Styled_Attributes$y2('50%'),
-									_1: {
-										ctor: '::',
-										_0: _rtfeldman$elm_css$Svg_Styled_Attributes$id('scalaLinearGradient-1'),
-										_1: {ctor: '[]'}
-									}
-								}
-							}
-						}
-					},
-					{
-						ctor: '::',
-						_0: A2(
-							_rtfeldman$elm_css$Svg_Styled$stop,
-							{
-								ctor: '::',
-								_0: _rtfeldman$elm_css$Svg_Styled_Attributes$stopColor('#4F4F4F'),
-								_1: {
-									ctor: '::',
-									_0: _rtfeldman$elm_css$Svg_Styled_Attributes$offset('0%'),
-									_1: {ctor: '[]'}
-								}
-							},
-							{ctor: '[]'}),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_rtfeldman$elm_css$Svg_Styled$stop,
-								{
-									ctor: '::',
-									_0: _rtfeldman$elm_css$Svg_Styled_Attributes$stopColor('#000000'),
-									_1: {
-										ctor: '::',
-										_0: _rtfeldman$elm_css$Svg_Styled_Attributes$offset('100%'),
-										_1: {ctor: '[]'}
-									}
-								},
-								{ctor: '[]'}),
-							_1: {ctor: '[]'}
-						}
-					}),
+				_0: _rtfeldman$elm_css$Svg_Styled_Attributes$height(size),
 				_1: {
+					ctor: '::',
+					_0: _rtfeldman$elm_css$Svg_Styled_Attributes$viewBox('0 0 256 416'),
+					_1: {ctor: '[]'}
+				}
+			}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_rtfeldman$elm_css$Svg_Styled$defs,
+				{ctor: '[]'},
+				{
 					ctor: '::',
 					_0: A2(
 						_rtfeldman$elm_css$Svg_Styled$linearGradient,
@@ -21241,7 +21187,7 @@ var _jackgene$live_deck$Deck_Slide_Graphics$languageScalaLogo = A2(
 										_0: _rtfeldman$elm_css$Svg_Styled_Attributes$y2('50%'),
 										_1: {
 											ctor: '::',
-											_0: _rtfeldman$elm_css$Svg_Styled_Attributes$id('scalaLinearGradient-2'),
+											_0: _rtfeldman$elm_css$Svg_Styled_Attributes$id('scalaLinearGradient-1'),
 											_1: {ctor: '[]'}
 										}
 									}
@@ -21254,7 +21200,7 @@ var _jackgene$live_deck$Deck_Slide_Graphics$languageScalaLogo = A2(
 								_rtfeldman$elm_css$Svg_Styled$stop,
 								{
 									ctor: '::',
-									_0: _rtfeldman$elm_css$Svg_Styled_Attributes$stopColor('#C40000'),
+									_0: _rtfeldman$elm_css$Svg_Styled_Attributes$stopColor('#4F4F4F'),
 									_1: {
 										ctor: '::',
 										_0: _rtfeldman$elm_css$Svg_Styled_Attributes$offset('0%'),
@@ -21268,7 +21214,7 @@ var _jackgene$live_deck$Deck_Slide_Graphics$languageScalaLogo = A2(
 									_rtfeldman$elm_css$Svg_Styled$stop,
 									{
 										ctor: '::',
-										_0: _rtfeldman$elm_css$Svg_Styled_Attributes$stopColor('#FF0000'),
+										_0: _rtfeldman$elm_css$Svg_Styled_Attributes$stopColor('#000000'),
 										_1: {
 											ctor: '::',
 											_0: _rtfeldman$elm_css$Svg_Styled_Attributes$offset('100%'),
@@ -21279,45 +21225,83 @@ var _jackgene$live_deck$Deck_Slide_Graphics$languageScalaLogo = A2(
 								_1: {ctor: '[]'}
 							}
 						}),
-					_1: {ctor: '[]'}
-				}
-			}),
-		_1: {
-			ctor: '::',
-			_0: A2(
-				_rtfeldman$elm_css$Svg_Styled$g,
-				{ctor: '[]'},
-				{
-					ctor: '::',
-					_0: A2(
-						_rtfeldman$elm_css$Svg_Styled$path,
-						{
-							ctor: '::',
-							_0: _rtfeldman$elm_css$Svg_Styled_Attributes$d('M0,288 L0,256 C0,250.606222 116.376889,241.571556 192.199111,224 L192.199111,224 C228.828444,232.490667 256,242.968889 256,256 L256,256 L256,288 C256,301.024 228.828444,311.509333 192.199111,320 L192.199111,320 C116.376889,302.424889 0,293.390222 0,288'),
-							_1: {
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_rtfeldman$elm_css$Svg_Styled$linearGradient,
+							{
 								ctor: '::',
-								_0: _rtfeldman$elm_css$Svg_Styled_Attributes$fill('url(#scalaLinearGradient-1)'),
+								_0: _rtfeldman$elm_css$Svg_Styled_Attributes$x1('0%'),
 								_1: {
 									ctor: '::',
-									_0: _rtfeldman$elm_css$Svg_Styled_Attributes$transform('translate(128.000000, 272.000000) scale(1, -1) translate(-128.000000, -272.000000) '),
+									_0: _rtfeldman$elm_css$Svg_Styled_Attributes$y1('50%'),
+									_1: {
+										ctor: '::',
+										_0: _rtfeldman$elm_css$Svg_Styled_Attributes$x2('100%'),
+										_1: {
+											ctor: '::',
+											_0: _rtfeldman$elm_css$Svg_Styled_Attributes$y2('50%'),
+											_1: {
+												ctor: '::',
+												_0: _rtfeldman$elm_css$Svg_Styled_Attributes$id('scalaLinearGradient-2'),
+												_1: {ctor: '[]'}
+											}
+										}
+									}
+								}
+							},
+							{
+								ctor: '::',
+								_0: A2(
+									_rtfeldman$elm_css$Svg_Styled$stop,
+									{
+										ctor: '::',
+										_0: _rtfeldman$elm_css$Svg_Styled_Attributes$stopColor('#C40000'),
+										_1: {
+											ctor: '::',
+											_0: _rtfeldman$elm_css$Svg_Styled_Attributes$offset('0%'),
+											_1: {ctor: '[]'}
+										}
+									},
+									{ctor: '[]'}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_rtfeldman$elm_css$Svg_Styled$stop,
+										{
+											ctor: '::',
+											_0: _rtfeldman$elm_css$Svg_Styled_Attributes$stopColor('#FF0000'),
+											_1: {
+												ctor: '::',
+												_0: _rtfeldman$elm_css$Svg_Styled_Attributes$offset('100%'),
+												_1: {ctor: '[]'}
+											}
+										},
+										{ctor: '[]'}),
 									_1: {ctor: '[]'}
 								}
-							}
-						},
-						{ctor: '[]'}),
-					_1: {
+							}),
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_rtfeldman$elm_css$Svg_Styled$g,
+					{ctor: '[]'},
+					{
 						ctor: '::',
 						_0: A2(
 							_rtfeldman$elm_css$Svg_Styled$path,
 							{
 								ctor: '::',
-								_0: _rtfeldman$elm_css$Svg_Styled_Attributes$d('M0,160 L0,128 C0,122.606222 116.376889,113.571556 192.199111,96 L192.199111,96 C228.828444,104.490667 256,114.968889 256,128 L256,128 L256,160 C256,173.024 228.828444,183.509333 192.199111,192 L192.199111,192 C116.376889,174.424889 0,165.390222 0,160'),
+								_0: _rtfeldman$elm_css$Svg_Styled_Attributes$d('M0,288 L0,256 C0,250.606222 116.376889,241.571556 192.199111,224 L192.199111,224 C228.828444,232.490667 256,242.968889 256,256 L256,256 L256,288 C256,301.024 228.828444,311.509333 192.199111,320 L192.199111,320 C116.376889,302.424889 0,293.390222 0,288'),
 								_1: {
 									ctor: '::',
 									_0: _rtfeldman$elm_css$Svg_Styled_Attributes$fill('url(#scalaLinearGradient-1)'),
 									_1: {
 										ctor: '::',
-										_0: _rtfeldman$elm_css$Svg_Styled_Attributes$transform('translate(128.000000, 144.000000) scale(1, -1) translate(-128.000000, -144.000000) '),
+										_0: _rtfeldman$elm_css$Svg_Styled_Attributes$transform('translate(128.000000, 272.000000) scale(1, -1) translate(-128.000000, -272.000000) '),
 										_1: {ctor: '[]'}
 									}
 								}
@@ -21329,13 +21313,13 @@ var _jackgene$live_deck$Deck_Slide_Graphics$languageScalaLogo = A2(
 								_rtfeldman$elm_css$Svg_Styled$path,
 								{
 									ctor: '::',
-									_0: _rtfeldman$elm_css$Svg_Styled_Attributes$d('M0,224 L0,128 C0,136 256,152 256,192 L256,192 L256,288 C256,248 0,232 0,224'),
+									_0: _rtfeldman$elm_css$Svg_Styled_Attributes$d('M0,160 L0,128 C0,122.606222 116.376889,113.571556 192.199111,96 L192.199111,96 C228.828444,104.490667 256,114.968889 256,128 L256,128 L256,160 C256,173.024 228.828444,183.509333 192.199111,192 L192.199111,192 C116.376889,174.424889 0,165.390222 0,160'),
 									_1: {
 										ctor: '::',
-										_0: _rtfeldman$elm_css$Svg_Styled_Attributes$fill('url(#scalaLinearGradient-2)'),
+										_0: _rtfeldman$elm_css$Svg_Styled_Attributes$fill('url(#scalaLinearGradient-1)'),
 										_1: {
 											ctor: '::',
-											_0: _rtfeldman$elm_css$Svg_Styled_Attributes$transform('translate(128.000000, 208.000000) scale(1, -1) translate(-128.000000, -208.000000) '),
+											_0: _rtfeldman$elm_css$Svg_Styled_Attributes$transform('translate(128.000000, 144.000000) scale(1, -1) translate(-128.000000, -144.000000) '),
 											_1: {ctor: '[]'}
 										}
 									}
@@ -21347,13 +21331,13 @@ var _jackgene$live_deck$Deck_Slide_Graphics$languageScalaLogo = A2(
 									_rtfeldman$elm_css$Svg_Styled$path,
 									{
 										ctor: '::',
-										_0: _rtfeldman$elm_css$Svg_Styled_Attributes$d('M0,96 L0,0 C0,8 256,24 256,64 L256,64 L256,160 C256,120 0,104 0,96'),
+										_0: _rtfeldman$elm_css$Svg_Styled_Attributes$d('M0,224 L0,128 C0,136 256,152 256,192 L256,192 L256,288 C256,248 0,232 0,224'),
 										_1: {
 											ctor: '::',
 											_0: _rtfeldman$elm_css$Svg_Styled_Attributes$fill('url(#scalaLinearGradient-2)'),
 											_1: {
 												ctor: '::',
-												_0: _rtfeldman$elm_css$Svg_Styled_Attributes$transform('translate(128.000000, 80.000000) scale(1, -1) translate(-128.000000, -80.000000) '),
+												_0: _rtfeldman$elm_css$Svg_Styled_Attributes$transform('translate(128.000000, 208.000000) scale(1, -1) translate(-128.000000, -208.000000) '),
 												_1: {ctor: '[]'}
 											}
 										}
@@ -21365,27 +21349,48 @@ var _jackgene$live_deck$Deck_Slide_Graphics$languageScalaLogo = A2(
 										_rtfeldman$elm_css$Svg_Styled$path,
 										{
 											ctor: '::',
-											_0: _rtfeldman$elm_css$Svg_Styled_Attributes$d('M0,352 L0,256 C0,264 256,280 256,320 L256,320 L256,416 C256,376 0,360 0,352'),
+											_0: _rtfeldman$elm_css$Svg_Styled_Attributes$d('M0,96 L0,0 C0,8 256,24 256,64 L256,64 L256,160 C256,120 0,104 0,96'),
 											_1: {
 												ctor: '::',
 												_0: _rtfeldman$elm_css$Svg_Styled_Attributes$fill('url(#scalaLinearGradient-2)'),
 												_1: {
 													ctor: '::',
-													_0: _rtfeldman$elm_css$Svg_Styled_Attributes$transform('translate(128.000000, 336.000000) scale(1, -1) translate(-128.000000, -336.000000) '),
+													_0: _rtfeldman$elm_css$Svg_Styled_Attributes$transform('translate(128.000000, 80.000000) scale(1, -1) translate(-128.000000, -80.000000) '),
 													_1: {ctor: '[]'}
 												}
 											}
 										},
 										{ctor: '[]'}),
-									_1: {ctor: '[]'}
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_rtfeldman$elm_css$Svg_Styled$path,
+											{
+												ctor: '::',
+												_0: _rtfeldman$elm_css$Svg_Styled_Attributes$d('M0,352 L0,256 C0,264 256,280 256,320 L256,320 L256,416 C256,376 0,360 0,352'),
+												_1: {
+													ctor: '::',
+													_0: _rtfeldman$elm_css$Svg_Styled_Attributes$fill('url(#scalaLinearGradient-2)'),
+													_1: {
+														ctor: '::',
+														_0: _rtfeldman$elm_css$Svg_Styled_Attributes$transform('translate(128.000000, 336.000000) scale(1, -1) translate(-128.000000, -336.000000) '),
+														_1: {ctor: '[]'}
+													}
+												}
+											},
+											{ctor: '[]'}),
+										_1: {ctor: '[]'}
+									}
 								}
 							}
 						}
-					}
-				}),
-			_1: {ctor: '[]'}
-		}
-	});
+					}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _jackgene$live_deck$Deck_Slide_Graphics$languageScalaLogo = _jackgene$live_deck$Deck_Slide_Graphics$languageScalaLogoWithSize('2.5vw');
+var _jackgene$live_deck$Deck_Slide_Graphics$languageScalaLogoBig = _jackgene$live_deck$Deck_Slide_Graphics$languageScalaLogoWithSize('121vw');
 var _jackgene$live_deck$Deck_Slide_Graphics$languagePythonLogo = A2(
 	_rtfeldman$elm_css$Svg_Styled$svg,
 	{
@@ -27664,7 +27669,7 @@ var _jackgene$live_deck$Deck_Slide_Graphics$numberedDisc = F3(
 												_0: _jackgene$live_deck$Deck_Slide_Common$numberFontFamily,
 												_1: {
 													ctor: '::',
-													_0: _rtfeldman$elm_css$Css$fill(_jackgene$live_deck$Deck_Slide_Common$black),
+													_0: _rtfeldman$elm_css$Css$fill(_jackgene$live_deck$Deck_Slide_Common$white),
 													_1: {
 														ctor: '::',
 														_0: _rtfeldman$elm_css$Css$fontSize(
@@ -27687,56 +27692,8 @@ var _jackgene$live_deck$Deck_Slide_Graphics$numberedDisc = F3(
 				}
 			});
 	});
+var _jackgene$live_deck$Deck_Slide_Graphics$coverBackgroundGraphic = _jackgene$live_deck$Deck_Slide_Graphics$languageScalaLogoBig;
 var _jackgene$live_deck$Deck_Slide_Graphics$coverBackgroundViewBox = 52;
-var _jackgene$live_deck$Deck_Slide_Graphics$coverBackgroundGraphic = A2(
-	_rtfeldman$elm_css$Svg_Styled$svg,
-	{
-		ctor: '::',
-		_0: _rtfeldman$elm_css$Svg_Styled_Attributes$css(
-			{
-				ctor: '::',
-				_0: _rtfeldman$elm_css$Css$width(
-					_rtfeldman$elm_css$Css$vw((_jackgene$live_deck$Deck_Slide_Graphics$coverBackgroundViewBox * 100) / 160)),
-				_1: {ctor: '[]'}
-			}),
-		_1: {
-			ctor: '::',
-			_0: _rtfeldman$elm_css$Svg_Styled_Attributes$viewBox(
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					'0 0 ',
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						_elm_lang$core$Basics$toString(_jackgene$live_deck$Deck_Slide_Graphics$coverBackgroundViewBox),
-						' 90'))),
-			_1: {ctor: '[]'}
-		}
-	},
-	{
-		ctor: '::',
-		_0: A2(
-			_rtfeldman$elm_css$Svg_Styled$rect,
-			{
-				ctor: '::',
-				_0: _rtfeldman$elm_css$Svg_Styled_Attributes$width('52'),
-				_1: {
-					ctor: '::',
-					_0: _rtfeldman$elm_css$Svg_Styled_Attributes$height('90'),
-					_1: {
-						ctor: '::',
-						_0: _rtfeldman$elm_css$Svg_Styled_Attributes$css(
-							{
-								ctor: '::',
-								_0: _rtfeldman$elm_css$Css$fill(_jackgene$live_deck$Deck_Slide_Common$primary),
-								_1: {ctor: '[]'}
-							}),
-						_1: {ctor: '[]'}
-					}
-				}
-			},
-			{ctor: '[]'}),
-		_1: {ctor: '[]'}
-	});
 var _jackgene$live_deck$Deck_Slide_Template$standardSlideView = F4(
 	function (page, heading, subheading, content) {
 		return A2(
@@ -27930,7 +27887,16 @@ var _jackgene$live_deck$Deck_Slide_Template$sectionCoverSlideView = F2(
 	function (number, title) {
 		return A2(
 			_rtfeldman$elm_css$Html_Styled$div,
-			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: _rtfeldman$elm_css$Svg_Styled_Attributes$css(
+					{
+						ctor: '::',
+						_0: _rtfeldman$elm_css$Css$backgroundColor(_jackgene$live_deck$Deck_Slide_Common$primary),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			},
 			{
 				ctor: '::',
 				_0: _jackgene$live_deck$Deck_Slide_Graphics$coverBackgroundGraphic,
@@ -27954,10 +27920,10 @@ var _jackgene$live_deck$Deck_Slide_Template$sectionCoverSlideView = F2(
 											_1: {
 												ctor: '::',
 												_0: _rtfeldman$elm_css$Css$left(
-													_rtfeldman$elm_css$Css$vw(6)),
+													_rtfeldman$elm_css$Css$vw(1.5)),
 												_1: {
 													ctor: '::',
-													_0: _rtfeldman$elm_css$Css$color(_jackgene$live_deck$Deck_Slide_Common$primary),
+													_0: _rtfeldman$elm_css$Css$color(_jackgene$live_deck$Deck_Slide_Common$black),
 													_1: {
 														ctor: '::',
 														_0: _jackgene$live_deck$Deck_Slide_Common$numberFontFamily,
@@ -27998,7 +27964,7 @@ var _jackgene$live_deck$Deck_Slide_Template$sectionCoverSlideView = F2(
 										_1: {
 											ctor: '::',
 											_0: _rtfeldman$elm_css$Css$top(
-												_rtfeldman$elm_css$Css$vw(18)),
+												_rtfeldman$elm_css$Css$vw(16)),
 											_1: {
 												ctor: '::',
 												_0: _rtfeldman$elm_css$Css$left(
@@ -28179,7 +28145,16 @@ var _jackgene$live_deck$Deck_Slide_Cover$cover = _elm_lang$core$Native_Utils.upd
 			function (_p1, _p0) {
 				return A2(
 					_rtfeldman$elm_css$Html_Styled$div,
-					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _rtfeldman$elm_css$Html_Styled_Attributes$css(
+							{
+								ctor: '::',
+								_0: _rtfeldman$elm_css$Css$backgroundColor(_jackgene$live_deck$Deck_Slide_Common$primary),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					},
 					{
 						ctor: '::',
 						_0: _jackgene$live_deck$Deck_Slide_Graphics$coverBackgroundGraphic,
@@ -31205,7 +31180,7 @@ var _jackgene$live_deck$Deck_Slide_TypeSystemProperties$errorPreventionReport = 
 									_0: _rtfeldman$elm_css$Css$color(_jackgene$live_deck$Deck_Slide_Common$darkGray),
 									_1: {
 										ctor: '::',
-										_0: _rtfeldman$elm_css$Css$backgroundColor(_jackgene$live_deck$Deck_Slide_Common$lightGrey),
+										_0: _rtfeldman$elm_css$Css$backgroundColor(_jackgene$live_deck$Deck_Slide_Common$lightGray),
 										_1: {ctor: '[]'}
 									}
 								};
@@ -32044,7 +32019,7 @@ var _jackgene$live_deck$Deck_Slide_TypeSystemProperties$languageReport = functio
 																								_rtfeldman$elm_css$Css$borderLeft3,
 																								_rtfeldman$elm_css$Css$vw(0.1),
 																								_rtfeldman$elm_css$Css$solid,
-																								_jackgene$live_deck$Deck_Slide_Common$lightGrey),
+																								_jackgene$live_deck$Deck_Slide_Common$lightGray),
 																							_1: {ctor: '[]'}
 																						}
 																					}
