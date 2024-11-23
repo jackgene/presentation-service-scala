@@ -28,7 +28,7 @@ cover =
       , div
         [ css
           [ position absolute
-          , top (vw 20), left (vw 35), width (vw 58)
+          , top (vw 20), left (vw 30), width (vw 58)
           ]
         ]
         [ h1 [ css [ margin zero, headerFontFamily, fontSize (vw 4.2) ] ]
