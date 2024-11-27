@@ -20358,6 +20358,12 @@ var _jackgene$live_deck$Deck_Slide_Common$contentContainerStyle = A2(
 	_rtfeldman$elm_css$Css$margin2,
 	_rtfeldman$elm_css$Css$zero,
 	_rtfeldman$elm_css$Css$vw(7));
+var _jackgene$live_deck$Deck_Slide_Common$textWithShadow = A4(
+	_rtfeldman$elm_css$Css$textShadow4,
+	_rtfeldman$elm_css$Css$zero,
+	_rtfeldman$elm_css$Css$em(0.125),
+	_rtfeldman$elm_css$Css$em(0.375),
+	A3(_rtfeldman$elm_css$Css$rgb, 64, 64, 64));
 var _jackgene$live_deck$Deck_Slide_Common$codeFontFamily = _rtfeldman$elm_css$Css$batch(
 	{
 		ctor: '::',
@@ -20499,12 +20505,7 @@ var _jackgene$live_deck$Deck_Slide_Common$white = A3(_rtfeldman$elm_css$Css$rgb,
 var _jackgene$live_deck$Deck_Slide_Common$coverStyle = _rtfeldman$elm_css$Css$batch(
 	{
 		ctor: '::',
-		_0: A4(
-			_rtfeldman$elm_css$Css$textShadow4,
-			_rtfeldman$elm_css$Css$zero,
-			_rtfeldman$elm_css$Css$em(0.125),
-			_rtfeldman$elm_css$Css$em(0.375),
-			A3(_rtfeldman$elm_css$Css$rgb, 64, 64, 64)),
+		_0: _jackgene$live_deck$Deck_Slide_Common$textWithShadow,
 		_1: {
 			ctor: '::',
 			_0: _rtfeldman$elm_css$Css$color(_jackgene$live_deck$Deck_Slide_Common$white),
@@ -27676,12 +27677,16 @@ var _jackgene$live_deck$Deck_Slide_Graphics$numberedDisc = F3(
 												_0: _jackgene$live_deck$Deck_Slide_Common$numberFontFamily,
 												_1: {
 													ctor: '::',
-													_0: _rtfeldman$elm_css$Css$fill(_jackgene$live_deck$Deck_Slide_Common$white),
+													_0: _jackgene$live_deck$Deck_Slide_Common$textWithShadow,
 													_1: {
 														ctor: '::',
-														_0: _rtfeldman$elm_css$Css$fontSize(
-															_rtfeldman$elm_css$Css$px(fontSizePct)),
-														_1: {ctor: '[]'}
+														_0: _rtfeldman$elm_css$Css$fill(_jackgene$live_deck$Deck_Slide_Common$white),
+														_1: {
+															ctor: '::',
+															_0: _rtfeldman$elm_css$Css$fontSize(
+																_rtfeldman$elm_css$Css$px(fontSizePct)),
+															_1: {ctor: '[]'}
+														}
 													}
 												}
 											}),
@@ -27837,7 +27842,8 @@ var _jackgene$live_deck$Deck_Slide_Template$standardSlideView = F4(
 																_0: _rtfeldman$elm_css$Css$position(_rtfeldman$elm_css$Css$absolute),
 																_1: {
 																	ctor: '::',
-																	_0: _rtfeldman$elm_css$Css$right(_rtfeldman$elm_css$Css$zero),
+																	_0: _rtfeldman$elm_css$Css$right(
+																		_rtfeldman$elm_css$Css$em(0.25)),
 																	_1: {ctor: '[]'}
 																}
 															}
@@ -31541,7 +31547,7 @@ var _jackgene$live_deck$Deck_Slide_TypeSystemProperties$tableOfContent = functio
 																	ctor: '::',
 																	_0: A2(
 																		_rtfeldman$elm_css$Css$margin2,
-																		_rtfeldman$elm_css$Css$em(0.125),
+																		_rtfeldman$elm_css$Css$em(0.25),
 																		_rtfeldman$elm_css$Css$zero),
 																	_1: {
 																		ctor: '::',
