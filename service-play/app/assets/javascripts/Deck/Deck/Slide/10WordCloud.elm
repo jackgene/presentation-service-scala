@@ -41,11 +41,11 @@ wordCloud heading subheading =
         [ div
           [ css
             [ position absolute
-            , bottom (vw 4), right (vw 2.5), width (vw 44.5)
+            , bottom (vw 4), right (vw 2.5), width (vw 58)
             , fontSize (em 0.8)
             ]
           ]
-          [ div [ css [ position absolute, bottom (em 1.5), left zero] ] [ text "http://wordcloud.jackleow.com" ]
+          [ div [ css [ position absolute, bottom (em 1.375), left zero] ] [ text "Submit words at http://wordcloud.jackleow.com" ]
           , div [ css [ position absolute, bottom zero, right zero] ] [ wordSubmitterAppQrCode "20vw" ]
           ]
         , div
