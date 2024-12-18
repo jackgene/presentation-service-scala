@@ -22,24 +22,26 @@ cover =
   { baseSlideModel
   | view =
     ( \_ _ ->
-      div [ css [ coverStyle ] ]
+      div []
       [ coverBackgroundGraphic
       , div
         [ css
           [ position absolute
-          , top (vw 20), left (vw 26), width (vw 80)
+          , top (vw 17), left (vw 35), width (vw 58)
           ]
         ]
-        [ h1 [ css [ margin zero, headerFontFamily, fontSize (vw 4.2) ] ]
-          [ text "Functional Reactive Streaming"
+        [ h1 [ css [ margin zero, headerFontFamily, fontSize (vw 4.5) ] ]
+          [ text "Functional Reactive"
           , br [] []
-          , text "with Pekko Streams"
+          , text "Streaming"
+          , br [] []
+          , text "with Kotlin Flow"
           ]
         , p
           [ css [ margin2 (em 2.5) zero, fontSize (em 0.875) ] ]
           [ text "Jack Leow"
           , br [] []
-          , text "February 17, 2025"]
+          , text "November 1, 2023"]
         ]
       ]
     )
