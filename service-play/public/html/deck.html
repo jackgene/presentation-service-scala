@@ -36466,27 +36466,22 @@ var _jackgene$live_deck$SyntaxHighlight_Language_Python$typeReferenceInnerLoop =
 							},
 							_elm_tools$parser$Parser$source(
 								_elm_tools$parser$Parser$oneOf(
-									{
-										ctor: '::',
-										_0: _elm_tools$parser$Parser$symbol('|'),
-										_1: {
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										{
 											ctor: '::',
-											_0: _elm_tools$parser$Parser$symbol('.'),
+											_0: _elm_tools$parser$Parser$symbol('|'),
 											_1: {
 												ctor: '::',
-												_0: _elm_tools$parser$Parser$symbol(','),
-												_1: {
-													ctor: '::',
-													_0: _elm_tools$parser$Parser$symbol('['),
-													_1: {
-														ctor: '::',
-														_0: _elm_tools$parser$Parser$symbol(']'),
-														_1: {ctor: '[]'}
-													}
-												}
+												_0: _elm_tools$parser$Parser$symbol('.'),
+												_1: {ctor: '[]'}
 											}
-										}
-									}))),
+										},
+										_elm_lang$core$List$isEmpty(groupCloses) ? {ctor: '[]'} : {
+											ctor: '::',
+											_0: _elm_tools$parser$Parser$symbol(','),
+											_1: {ctor: '[]'}
+										})))),
 						_1: {
 							ctor: '::',
 							_0: A2(
@@ -43939,13 +43934,13 @@ var _jackgene$live_deck$Deck_Slide_NullSafety$safeScalaNullableFor = function ()
 												{ctor: '[]'},
 												{
 													ctor: '::',
-													_0: _rtfeldman$elm_css$Html_Styled$text('It is also possible to nest them '),
+													_0: _rtfeldman$elm_css$Html_Styled$text('It is also possible to nest them ('),
 													_1: {
 														ctor: '::',
-														_0: A2(_jackgene$live_deck$Deck_Slide_SyntaxHighlight$syntaxHighlightedCodeSnippet, _jackgene$live_deck$Deck_Slide_SyntaxHighlight$Scala, ': Option[Option[String]]'),
+														_0: A2(_jackgene$live_deck$Deck_Slide_SyntaxHighlight$syntaxHighlightedCodeSnippet, _jackgene$live_deck$Deck_Slide_SyntaxHighlight$Scala, '_: Option[Option[String]]'),
 														_1: {
 															ctor: '::',
-															_0: _rtfeldman$elm_css$Html_Styled$text(', if needed.'),
+															_0: _rtfeldman$elm_css$Html_Styled$text('), if needed.'),
 															_1: {ctor: '[]'}
 														}
 													}
@@ -49402,7 +49397,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$unsafeGoPrep = functio
 		_elm_lang$core$Dict$empty,
 		_elm_lang$core$Dict$empty,
 		{ctor: '[]'},
-		'\npackage status\n\ntype AccountStatus interface {\n    isStatus()\n}\n\ntype Active struct{}\nfunc (_ Active) isStatus() {}\n\ntype Inactive struct{}\nfunc (_ Inactive) isStatus() {}\n');
+		'\npackage status\n\ntype AccountStatus interface {\n    isStatus()\n}\n\ntype Active struct{}\nfunc (_ Active) isStatus() {}\n\ntype Inactive struct{}\nfunc (_ Inactive) isStatus() {}\n');
 	return _elm_lang$core$Native_Utils.update(
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
@@ -49721,6 +49716,62 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safePythonInvalid = fu
 				})
 		});
 }();
+var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$unsafePython = function () {
+	var codeBlock = A5(
+		_jackgene$live_deck$Deck_Slide_SyntaxHighlight$syntaxHighlightedCodeBlock,
+		_jackgene$live_deck$Deck_Slide_SyntaxHighlight$Python,
+		_elm_lang$core$Dict$fromList(
+			{
+				ctor: '::',
+				_0: {ctor: '_Tuple2', _0: 10, _1: _jackgene$live_deck$SyntaxHighlight_Model$Deletion},
+				_1: {
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 11, _1: _jackgene$live_deck$SyntaxHighlight_Model$Addition},
+					_1: {ctor: '[]'}
+				}
+			}),
+		_elm_lang$core$Dict$empty,
+		{ctor: '[]'},
+		'\nfrom enum import Enum\n\nclass AccountStatus(Enum):\n    Active = 1\n    Inactive = 2\n    Terminated = 3\n\ndef do_work(status: AccountStatus):\n    match status:\n        case AccountStatus.Active: print(\"Perform API calls...\")\n        case AccountStatus.Inactive: print(\"Skipping...\")\n        case _: print(\"Skipping...\")\n');
+	return _elm_lang$core$Native_Utils.update(
+		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
+		{
+			view: F2(
+				function (page, _p5) {
+					return A4(
+						_jackgene$live_deck$Deck_Slide_Template$standardSlideView,
+						page,
+						_jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$heading,
+						_jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$subheadingPython,
+						A2(
+							_rtfeldman$elm_css$Html_Styled$div,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: A2(
+									_rtfeldman$elm_css$Html_Styled$p,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: _rtfeldman$elm_css$Html_Styled$text('Unfortunately, wildcard matches effectively defeats exhaustiveness checking:'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_rtfeldman$elm_css$Html_Styled$div,
+										{ctor: '[]'},
+										{
+											ctor: '::',
+											_0: codeBlock,
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
+								}
+							}));
+				})
+		});
+}();
 var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeTypeScript = function () {
 	var codeBlock = A5(
 		_jackgene$live_deck$Deck_Slide_SyntaxHighlight$syntaxHighlightedCodeBlock,
@@ -49733,7 +49784,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeTypeScript = funct
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
 			view: F2(
-				function (page, _p5) {
+				function (page, _p6) {
 					return A4(
 						_jackgene$live_deck$Deck_Slide_Template$standardSlideView,
 						page,
@@ -49817,7 +49868,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeTypeScriptInvalid 
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
 			view: F2(
-				function (page, _p6) {
+				function (page, _p7) {
 					return A4(
 						_jackgene$live_deck$Deck_Slide_Template$standardSlideView,
 						page,
@@ -49880,7 +49931,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeScalaPrep = functi
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
 			view: F2(
-				function (page, _p7) {
+				function (page, _p8) {
 					return A4(
 						_jackgene$live_deck$Deck_Slide_Template$standardSlideView,
 						page,
@@ -49935,7 +49986,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeScala = function (
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
 			view: F2(
-				function (page, _p8) {
+				function (page, _p9) {
 					return A4(
 						_jackgene$live_deck$Deck_Slide_Template$standardSlideView,
 						page,
@@ -50045,7 +50096,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeScalaInvalid = fun
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
 			view: F2(
-				function (page, _p9) {
+				function (page, _p10) {
 					return A4(
 						_jackgene$live_deck$Deck_Slide_Template$standardSlideView,
 						page,
@@ -50136,7 +50187,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeScalaAlt = functio
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
 			view: F2(
-				function (page, _p10) {
+				function (page, _p11) {
 					return A4(
 						_jackgene$live_deck$Deck_Slide_Template$standardSlideView,
 						page,
@@ -50183,7 +50234,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeKotlin = function 
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
 			view: F2(
-				function (page, _p11) {
+				function (page, _p12) {
 					return A4(
 						_jackgene$live_deck$Deck_Slide_Template$standardSlideView,
 						page,
@@ -50275,7 +50326,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeKotlinInvalid = fu
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
 			view: F2(
-				function (page, _p12) {
+				function (page, _p13) {
 					return A4(
 						_jackgene$live_deck$Deck_Slide_Template$standardSlideView,
 						page,
@@ -50322,7 +50373,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeSwiftPrep = functi
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
 			view: F2(
-				function (page, _p13) {
+				function (page, _p14) {
 					return A4(
 						_jackgene$live_deck$Deck_Slide_Template$standardSlideView,
 						page,
@@ -50377,7 +50428,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeSwift = function (
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
 			view: F2(
-				function (page, _p14) {
+				function (page, _p15) {
 					return A4(
 						_jackgene$live_deck$Deck_Slide_Template$standardSlideView,
 						page,
@@ -50476,7 +50527,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeSwiftInvalid = fun
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
 			view: F2(
-				function (page, _p15) {
+				function (page, _p16) {
 					return A4(
 						_jackgene$live_deck$Deck_Slide_Template$standardSlideView,
 						page,
@@ -50548,7 +50599,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeSwiftAlt = functio
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
 			view: F2(
-				function (page, _p16) {
+				function (page, _p17) {
 					return A4(
 						_jackgene$live_deck$Deck_Slide_Template$standardSlideView,
 						page,
@@ -50595,7 +50646,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeElm = function () 
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
 			view: F2(
-				function (page, _p17) {
+				function (page, _p18) {
 					return A4(
 						_jackgene$live_deck$Deck_Slide_Template$standardSlideView,
 						page,
@@ -50749,7 +50800,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeElmInvalid = funct
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
 			view: F2(
-				function (page, _p18) {
+				function (page, _p19) {
 					return A4(
 						_jackgene$live_deck$Deck_Slide_Template$standardSlideView,
 						page,
@@ -50813,7 +50864,7 @@ var _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeElmAlt = function 
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
 			view: F2(
-				function (page, _p19) {
+				function (page, _p20) {
 					return A4(
 						_jackgene$live_deck$Deck_Slide_Template$standardSlideView,
 						page,
@@ -53406,60 +53457,10 @@ var _jackgene$live_deck$Deck_Slide_Conclusion$preCompileChecks = _elm_lang$core$
 															{ctor: '[]'},
 															{
 																ctor: '::',
-																_0: _rtfeldman$elm_css$Html_Styled$text('TypeScript ESLint’s '),
-																_1: {
-																	ctor: '::',
-																	_0: A2(_jackgene$live_deck$Deck_Slide_SyntaxHighlight$syntaxHighlightedCodeSnippet, _jackgene$live_deck$Deck_Slide_SyntaxHighlight$XML, 'no-explicit-any'),
-																	_1: {
-																		ctor: '::',
-																		_0: _rtfeldman$elm_css$Html_Styled$text(' rule disallows the use of '),
-																		_1: {
-																			ctor: '::',
-																			_0: A2(_jackgene$live_deck$Deck_Slide_SyntaxHighlight$syntaxHighlightedCodeSnippet, _jackgene$live_deck$Deck_Slide_SyntaxHighlight$TypeScript, 'any'),
-																			_1: {ctor: '[]'}
-																		}
-																	}
-																}
-															}),
-														_1: {
-															ctor: '::',
-															_0: A2(
-																_jackgene$live_deck$Deck_Slide_Common$li,
-																{ctor: '[]'},
-																{
-																	ctor: '::',
-																	_0: _rtfeldman$elm_css$Html_Styled$text('SwiftLint can disallow “force” operators: '),
-																	_1: {
-																		ctor: '::',
-																		_0: A2(_jackgene$live_deck$Deck_Slide_SyntaxHighlight$syntaxHighlightedCodeSnippet, _jackgene$live_deck$Deck_Slide_SyntaxHighlight$Swift, 'as!'),
-																		_1: {
-																			ctor: '::',
-																			_0: _rtfeldman$elm_css$Html_Styled$text(', '),
-																			_1: {
-																				ctor: '::',
-																				_0: A2(_jackgene$live_deck$Deck_Slide_SyntaxHighlight$syntaxHighlightedCodeSnippet, _jackgene$live_deck$Deck_Slide_SyntaxHighlight$Swift, 'try!'),
-																				_1: {
-																					ctor: '::',
-																					_0: _rtfeldman$elm_css$Html_Styled$text(', and unsafe unwraps'),
-																					_1: {ctor: '[]'}
-																				}
-																			}
-																		}
-																	}
-																}),
-															_1: {
-																ctor: '::',
-																_0: A2(
-																	_jackgene$live_deck$Deck_Slide_Common$li,
-																	{ctor: '[]'},
-																	{
-																		ctor: '::',
-																		_0: _rtfeldman$elm_css$Html_Styled$text('Static analysis tools find potential sources of bugs'),
-																		_1: {ctor: '[]'}
-																	}),
+																_0: _rtfeldman$elm_css$Html_Styled$text('Static analysis tools find potential sources of bugs'),
 																_1: {ctor: '[]'}
-															}
-														}
+															}),
+														_1: {ctor: '[]'}
 													}
 												}
 											}),
@@ -54158,102 +54159,106 @@ var _jackgene$live_deck$Deck_Slide$unindexedSlideModels = A2(
 																																																																																														_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Python', _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safePythonInvalid),
 																																																																																														_1: {
 																																																																																															ctor: '::',
-																																																																																															_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Scala', _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeScalaPrep),
+																																																																																															_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Python', _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$unsafePython),
 																																																																																															_1: {
 																																																																																																ctor: '::',
-																																																																																																_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Scala', _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeScala),
+																																																																																																_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Scala', _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeScalaPrep),
 																																																																																																_1: {
 																																																																																																	ctor: '::',
-																																																																																																	_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Scala', _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeScalaInvalid),
+																																																																																																	_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Scala', _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeScala),
 																																																																																																	_1: {
 																																																																																																		ctor: '::',
-																																																																																																		_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Scala', _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeScalaAlt),
+																																																																																																		_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Scala', _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeScalaInvalid),
 																																																																																																		_1: {
 																																																																																																			ctor: '::',
-																																																																																																			_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Elm', _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeElm),
+																																																																																																			_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Scala', _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeScalaAlt),
 																																																																																																			_1: {
 																																																																																																				ctor: '::',
-																																																																																																				_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Elm', _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeElmInvalid),
+																																																																																																				_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Elm', _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeElm),
 																																																																																																				_1: {
 																																																																																																					ctor: '::',
-																																																																																																					_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Elm', _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeElmAlt),
+																																																																																																					_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Elm', _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeElmInvalid),
 																																																																																																					_1: {
 																																																																																																						ctor: '::',
-																																																																																																						_0: _elm_lang$core$Maybe$Just(
-																																																																																																							_jackgene$live_deck$Deck_Slide_TypeSystemProperties$languageReport(5)),
+																																																																																																						_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Elm', _jackgene$live_deck$Deck_Slide_ExhaustivenessChecking$safeElmAlt),
 																																																																																																						_1: {
 																																																																																																							ctor: '::',
 																																																																																																							_0: _elm_lang$core$Maybe$Just(
-																																																																																																								_jackgene$live_deck$Deck_Slide_TypeSystemProperties$tableOfContent(
-																																																																																																									_elm_lang$core$Maybe$Just(6))),
+																																																																																																								_jackgene$live_deck$Deck_Slide_TypeSystemProperties$languageReport(5)),
 																																																																																																							_1: {
 																																																																																																								ctor: '::',
-																																																																																																								_0: _elm_lang$core$Maybe$Just(_jackgene$live_deck$Deck_Slide_Encapsulation$introduction),
+																																																																																																								_0: _elm_lang$core$Maybe$Just(
+																																																																																																									_jackgene$live_deck$Deck_Slide_TypeSystemProperties$tableOfContent(
+																																																																																																										_elm_lang$core$Maybe$Just(6))),
 																																																																																																								_1: {
 																																																																																																									ctor: '::',
-																																																																																																									_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Go', _jackgene$live_deck$Deck_Slide_Encapsulation$safeGoPrep),
+																																																																																																									_0: _elm_lang$core$Maybe$Just(_jackgene$live_deck$Deck_Slide_Encapsulation$introduction),
 																																																																																																									_1: {
 																																																																																																										ctor: '::',
-																																																																																																										_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Go', _jackgene$live_deck$Deck_Slide_Encapsulation$safeGoInvalid),
+																																																																																																										_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Go', _jackgene$live_deck$Deck_Slide_Encapsulation$safeGoPrep),
 																																																																																																										_1: {
 																																																																																																											ctor: '::',
-																																																																																																											_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Python', _jackgene$live_deck$Deck_Slide_Encapsulation$safePythonInvalid),
+																																																																																																											_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Go', _jackgene$live_deck$Deck_Slide_Encapsulation$safeGoInvalid),
 																																																																																																											_1: {
 																																																																																																												ctor: '::',
-																																																																																																												_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Scala', _jackgene$live_deck$Deck_Slide_Encapsulation$safeScalaInvalid),
+																																																																																																												_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Python', _jackgene$live_deck$Deck_Slide_Encapsulation$safePythonInvalid),
 																																																																																																												_1: {
 																																																																																																													ctor: '::',
-																																																																																																													_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Elm', _jackgene$live_deck$Deck_Slide_Encapsulation$safeElmPrep),
+																																																																																																													_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Scala', _jackgene$live_deck$Deck_Slide_Encapsulation$safeScalaInvalid),
 																																																																																																													_1: {
 																																																																																																														ctor: '::',
-																																																																																																														_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Elm', _jackgene$live_deck$Deck_Slide_Encapsulation$safeElmInvalid),
+																																																																																																														_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Elm', _jackgene$live_deck$Deck_Slide_Encapsulation$safeElmPrep),
 																																																																																																														_1: {
 																																																																																																															ctor: '::',
-																																																																																																															_0: _elm_lang$core$Maybe$Just(
-																																																																																																																_jackgene$live_deck$Deck_Slide_TypeSystemProperties$languageReport(6)),
+																																																																																																															_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Elm', _jackgene$live_deck$Deck_Slide_Encapsulation$safeElmInvalid),
 																																																																																																															_1: {
 																																																																																																																ctor: '::',
 																																																																																																																_0: _elm_lang$core$Maybe$Just(
-																																																																																																																	_jackgene$live_deck$Deck_Slide_TypeSystemProperties$tableOfContent(
-																																																																																																																		_elm_lang$core$Maybe$Just(7))),
+																																																																																																																	_jackgene$live_deck$Deck_Slide_TypeSystemProperties$languageReport(6)),
 																																																																																																																_1: {
 																																																																																																																	ctor: '::',
-																																																																																																																	_0: _elm_lang$core$Maybe$Just(_jackgene$live_deck$Deck_Slide_Immutability$introduction),
+																																																																																																																	_0: _elm_lang$core$Maybe$Just(
+																																																																																																																		_jackgene$live_deck$Deck_Slide_TypeSystemProperties$tableOfContent(
+																																																																																																																			_elm_lang$core$Maybe$Just(7))),
 																																																																																																																	_1: {
 																																																																																																																		ctor: '::',
-																																																																																																																		_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Go', _jackgene$live_deck$Deck_Slide_Immutability$unsafeGoPrep),
+																																																																																																																		_0: _elm_lang$core$Maybe$Just(_jackgene$live_deck$Deck_Slide_Immutability$introduction),
 																																																																																																																		_1: {
 																																																																																																																			ctor: '::',
-																																																																																																																			_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Go', _jackgene$live_deck$Deck_Slide_Immutability$unsafeGo),
+																																																																																																																			_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Go', _jackgene$live_deck$Deck_Slide_Immutability$unsafeGoPrep),
 																																																																																																																			_1: {
 																																																																																																																				ctor: '::',
-																																																																																																																				_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Go', _jackgene$live_deck$Deck_Slide_Immutability$safeGoPrep),
+																																																																																																																				_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Go', _jackgene$live_deck$Deck_Slide_Immutability$unsafeGo),
 																																																																																																																				_1: {
 																																																																																																																					ctor: '::',
-																																																																																																																					_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Go', _jackgene$live_deck$Deck_Slide_Immutability$safeGoInvalid),
+																																																																																																																					_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Go', _jackgene$live_deck$Deck_Slide_Immutability$safeGoPrep),
 																																																																																																																					_1: {
 																																																																																																																						ctor: '::',
-																																																																																																																						_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Python', _jackgene$live_deck$Deck_Slide_Immutability$safePythonPrep),
+																																																																																																																						_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Go', _jackgene$live_deck$Deck_Slide_Immutability$safeGoInvalid),
 																																																																																																																						_1: {
 																																																																																																																							ctor: '::',
-																																																																																																																							_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Python', _jackgene$live_deck$Deck_Slide_Immutability$safePythonInvalid),
+																																																																																																																							_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Python', _jackgene$live_deck$Deck_Slide_Immutability$safePythonPrep),
 																																																																																																																							_1: {
 																																																																																																																								ctor: '::',
-																																																																																																																								_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Python', _jackgene$live_deck$Deck_Slide_Immutability$unsafePythonFrozenMutation),
+																																																																																																																								_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Python', _jackgene$live_deck$Deck_Slide_Immutability$safePythonInvalid),
 																																																																																																																								_1: {
 																																																																																																																									ctor: '::',
-																																																																																																																									_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Python', _jackgene$live_deck$Deck_Slide_Immutability$unsafePythonConstantMutation),
+																																																																																																																									_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Python', _jackgene$live_deck$Deck_Slide_Immutability$unsafePythonFrozenMutation),
 																																																																																																																									_1: {
 																																																																																																																										ctor: '::',
-																																																																																																																										_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Scala', _jackgene$live_deck$Deck_Slide_Immutability$safeScalaInvalid),
+																																																																																																																										_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Python', _jackgene$live_deck$Deck_Slide_Immutability$unsafePythonConstantMutation),
 																																																																																																																										_1: {
 																																																																																																																											ctor: '::',
-																																																																																																																											_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Elm', _jackgene$live_deck$Deck_Slide_Immutability$safeElmInvalid),
+																																																																																																																											_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Scala', _jackgene$live_deck$Deck_Slide_Immutability$safeScalaInvalid),
 																																																																																																																											_1: {
 																																																																																																																												ctor: '::',
-																																																																																																																												_0: _elm_lang$core$Maybe$Just(
-																																																																																																																													_jackgene$live_deck$Deck_Slide_TypeSystemProperties$languageReport(7)),
-																																																																																																																												_1: {ctor: '[]'}
+																																																																																																																												_0: A2(_jackgene$live_deck$Deck_Slide$unindexedSlideModelForLang, 'Elm', _jackgene$live_deck$Deck_Slide_Immutability$safeElmInvalid),
+																																																																																																																												_1: {
+																																																																																																																													ctor: '::',
+																																																																																																																													_0: _elm_lang$core$Maybe$Just(
+																																																																																																																														_jackgene$live_deck$Deck_Slide_TypeSystemProperties$languageReport(7)),
+																																																																																																																													_1: {ctor: '[]'}
+																																																																																																																												}
 																																																																																																																											}
 																																																																																																																										}
 																																																																																																																									}
