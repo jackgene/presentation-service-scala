@@ -474,7 +474,7 @@ pythonTypeHintWrongRun =
         , p []
           [ text "Type annotations in Python are just "
           , em [] [ text "hints" ]
-          , text " to facilitate 3rd-party type checkers, such as those built into PyCharm or VSCode. "
+          , text " to facilitate 3rd-party type checkers, such as those built into PyCharm or Visual Studio Code. "
           ]
         , p []
           [ text "It is up to programming teams to incorporate these type checkers in their build process, "
