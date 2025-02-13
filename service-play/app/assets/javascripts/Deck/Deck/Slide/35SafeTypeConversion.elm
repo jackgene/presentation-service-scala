@@ -81,7 +81,7 @@ package main
 import "strings"
 
 func main() {
-    var thing interface{} = 42
+    var thing any = 42
     switch str := thing.(type) {
         case string:
             println(strings.ToUpper(str))
@@ -117,7 +117,7 @@ package main
 import "strings"
 
 func main() {
-    var thing interface{} = 42
+    var thing any = 42
     if str, ok := thing.(string); ok {
         println(strings.ToUpper(str))
     }
@@ -149,7 +149,7 @@ package main
 import "strings"
 
 func main() {
-    var thing interface{} = 42
+    var thing any = 42
 
     str, _ := thing.(string)      // non-panicking type assertion
     println(strings.ToUpper(str)) // let's hope zero-value is ok!
