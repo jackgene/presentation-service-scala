@@ -40108,14 +40108,14 @@ var _jackgene$live_deck$Deck_Slide_TypeSafety$unsafeGoInvalid = function () {
 						{ctor: '[]'},
 						{
 							ctor: '::',
-							_0: _rtfeldman$elm_css$Html_Styled$text('invalid operation: left * right (operator * not defined on interface)'),
+							_0: _rtfeldman$elm_css$Html_Styled$text('invalid operation: operator * not defined on num1 (variable of type any)'),
 							_1: {ctor: '[]'}
 						}),
 					_1: {ctor: '[]'}
 				}),
 			_1: {ctor: '[]'}
 		},
-		'\npackage typesafety\n\nfunc Multiply(num1 float64, num2 float64) float64 {\nfunc Multiply(num1 interface{}, num1 interface{}) float64 {\n    return num1 * num2\n}\n\nvar product float64 = Multiply(\"42\", true)\n');
+		'\npackage typesafety\n\nfunc Multiply(num1 float64, num2 float64) float64 {\nfunc Multiply(num1 any, num1 any) float64 {\n    return num1 * num2\n}\n\nvar product float64 = Multiply(\"42\", true)\n');
 	return _elm_lang$core$Native_Utils.update(
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
@@ -40179,7 +40179,7 @@ var _jackgene$live_deck$Deck_Slide_TypeSafety$unsafeGo = function () {
 			}),
 		_elm_lang$core$Dict$empty,
 		{ctor: '[]'},
-		'\npackage typesafety\n\nfunc Multiply(num1 interface{}, num2 interface{}) float64 {\n    return num1 * num2\n    num1_, _ := num1.(float64)\n    num2_, _ := num2.(float64)\n    return num1_ * num2_\n}\n\nvar product float64 = Multiply(\"42\", true)\n');
+		'\npackage typesafety\n\nfunc Multiply(num1 any, num2 any) float64 {\n    return num1 * num2\n    num1_, _ := num1.(float64)\n    num2_, _ := num2.(float64)\n    return num1_ * num2_\n}\n\nvar product float64 = Multiply(\"42\", true)\n');
 	return _elm_lang$core$Native_Utils.update(
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
@@ -40810,7 +40810,7 @@ var _jackgene$live_deck$Deck_Slide_TypeSafety$pythonTypeHintWrongRun = _elm_lang
 													}),
 												_1: {
 													ctor: '::',
-													_0: _rtfeldman$elm_css$Html_Styled$text(' to facilitate 3rd-party type checkers, such as those built into PyCharm or VSCode. '),
+													_0: _rtfeldman$elm_css$Html_Styled$text(' to facilitate 3rd-party type checkers, such as those built into PyCharm or Visual Studio Code. '),
 													_1: {ctor: '[]'}
 												}
 											}
@@ -46853,7 +46853,7 @@ var _jackgene$live_deck$Deck_Slide_SafeTypeConversion$safeGo = function () {
 		_elm_lang$core$Dict$empty,
 		_elm_lang$core$Dict$empty,
 		{ctor: '[]'},
-		'\npackage main\nimport \"strings\"\n\nfunc main() {\n    var thing interface{} = 42\n    switch str := thing.(type) {\n        case string:\n            println(strings.ToUpper(str))\n    }\n}\n');
+		'\npackage main\nimport \"strings\"\n\nfunc main() {\n    var thing any = 42\n    switch str := thing.(type) {\n        case string:\n            println(strings.ToUpper(str))\n    }\n}\n');
 	return _elm_lang$core$Native_Utils.update(
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
@@ -46908,7 +46908,7 @@ var _jackgene$live_deck$Deck_Slide_SafeTypeConversion$introGo = function () {
 		_elm_lang$core$Dict$empty,
 		_elm_lang$core$Dict$empty,
 		{ctor: '[]'},
-		'\npackage main\nimport \"strings\"\n\nfunc main() {\n    var thing interface{} = 42\n    if str, ok := thing.(string); ok {\n        println(strings.ToUpper(str))\n    }\n}\n');
+		'\npackage main\nimport \"strings\"\n\nfunc main() {\n    var thing any = 42\n    if str, ok := thing.(string); ok {\n        println(strings.ToUpper(str))\n    }\n}\n');
 	return _elm_lang$core$Native_Utils.update(
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
@@ -46955,7 +46955,7 @@ var _jackgene$live_deck$Deck_Slide_SafeTypeConversion$unsafeGo = function () {
 		_elm_lang$core$Dict$empty,
 		_elm_lang$core$Dict$empty,
 		{ctor: '[]'},
-		'\npackage main\nimport \"strings\"\n\nfunc main() {\n    var thing interface{} = 42\n\n    str, _ := thing.(string)      // non-panicking type assertion\n    println(strings.ToUpper(str)) // let\'s hope zero-value is ok!\n\n    str = thing.(string)          // unsafe type assertion - panic!\n}\n');
+		'\npackage main\nimport \"strings\"\n\nfunc main() {\n    var thing any = 42\n\n    str, _ := thing.(string)      // non-panicking type assertion\n    println(strings.ToUpper(str)) // let\'s hope zero-value is ok!\n\n    str = thing.(string)          // unsafe type assertion - panic!\n}\n');
 	return _elm_lang$core$Native_Utils.update(
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
@@ -47112,7 +47112,7 @@ var _jackgene$live_deck$Deck_Slide_SafeTypeConversion$unsafePythonGoodGuard = fu
 		_elm_lang$core$Dict$empty,
 		_elm_lang$core$Dict$empty,
 		{ctor: '[]'},
-		'\nfrom typing import Any, TypeGuard\n\ndef is_str_array(objs: list[Any]) -> TypeGuard[list[str]]:\n    return all(isinstance(obj, str) for obj in objs)\n\nnums: list[object] = [1, 2, 3]\nif is_str_array(nums):\n    for num in nums:\n        print(num.upper())\n');
+		'\nfrom typing import Any, TypeGuard\n\ndef is_str_array(objs: list[Any]) -> TypeGuard[list[str]]:\n    return all(isinstance(obj, str) for obj in objs)\n\nnums: list[Any] = [1, 2, 3]\nif is_str_array(nums):\n    for num in nums:\n        print(num.upper())\n');
 	return _elm_lang$core$Native_Utils.update(
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{
@@ -47168,7 +47168,7 @@ var _jackgene$live_deck$Deck_Slide_SafeTypeConversion$unsafePythonBadGuard = fun
 			}),
 		_elm_lang$core$Dict$empty,
 		{ctor: '[]'},
-		'\nfrom typing import Any, TypeGuard\n\ndef is_str_array(objs: list[Any]) -> TypeGuard[list[str]]:\n    return all(isinstance(obj, str) for obj in objs)\n    return True\n\nnums: list[object] = [1, 2, 3]\nif is_str_array(nums):\n    for num in nums:\n        print(num.upper())\n');
+		'\nfrom typing import Any, TypeGuard\n\ndef is_str_array(objs: list[Any]) -> TypeGuard[list[str]]:\n    return all(isinstance(obj, str) for obj in objs)\n    return True\n\nnums: list[Any] = [1, 2, 3]\nif is_str_array(nums):\n    for num in nums:\n        print(num.upper())\n');
 	return _elm_lang$core$Native_Utils.update(
 		_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
 		{

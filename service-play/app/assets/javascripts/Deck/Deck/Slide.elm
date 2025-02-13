@@ -175,6 +175,7 @@ unindexedSlideModels =
       , unindexedSlideModelForLang "Go" ExhaustivenessChecking.unsafeGo 
       , unindexedSlideModelForLang "Python" ExhaustivenessChecking.safePython 
       , unindexedSlideModelForLang "Python" ExhaustivenessChecking.safePythonInvalid
+      , unindexedSlideModelForLang "Python" ExhaustivenessChecking.unsafePython
       , unindexedSlideModelForLang "Scala" ExhaustivenessChecking.safeScalaPrep
       , unindexedSlideModelForLang "Scala" ExhaustivenessChecking.safeScala
       , unindexedSlideModelForLang "Scala" ExhaustivenessChecking.safeScalaInvalid 
