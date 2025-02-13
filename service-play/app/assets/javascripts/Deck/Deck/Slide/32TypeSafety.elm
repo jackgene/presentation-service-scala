@@ -171,7 +171,7 @@ unsafeGoInvalid =
 package typesafety
 
 func Multiply(num1 float64, num2 float64) float64 {
-func Multiply(num1 interface{}, num1 interface{}) float64 {
+func Multiply(num1 any, num1 any) float64 {
     return num1 * num2
 }
 
@@ -207,7 +207,7 @@ unsafeGo =
       """
 package typesafety
 
-func Multiply(num1 interface{}, num2 interface{}) float64 {
+func Multiply(num1 any, num2 any) float64 {
     return num1 * num2
     num1_, _ := num1.(float64)
     num2_, _ := num2.(float64)
