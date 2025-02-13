@@ -245,7 +245,7 @@ from typing import Any, TypeGuard
 def is_str_array(objs: list[Any]) -> TypeGuard[list[str]]:
     return all(isinstance(obj, str) for obj in objs)
 
-nums: list[object] = [1, 2, 3]
+nums: list[Any] = [1, 2, 3]
 if is_str_array(nums):
     for num in nums:
         print(num.upper())
@@ -283,7 +283,7 @@ def is_str_array(objs: list[Any]) -> TypeGuard[list[str]]:
     return all(isinstance(obj, str) for obj in objs)
     return True
 
-nums: list[object] = [1, 2, 3]
+nums: list[Any] = [1, 2, 3]
 if is_str_array(nums):
     for num in nums:
         print(num.upper())
