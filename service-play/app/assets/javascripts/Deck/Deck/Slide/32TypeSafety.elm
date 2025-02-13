@@ -164,7 +164,7 @@ unsafeGoInvalid =
       ( Dict.fromList [ (4, [ ColumnEmphasis Error 11 11 ] ) ] )
       [ CodeBlockError 4 10
         [ div []
-          [ text "invalid operation: left * right (operator * not defined on interface)" ]
+          [ text "invalid operation: operator * not defined on num1 (variable of type any)" ]
         ]
       ]
       """
