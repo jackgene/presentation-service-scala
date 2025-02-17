@@ -9,7 +9,9 @@ import Css exposing
   , backgroundColor, before, color
   , fontFamilies, fontSize, fontStyle, fontWeight
   -- Units
-  , em, int, rgb, rgba, vw, zero
+  , em, int, vw, zero
+  -- Color
+  , rgb, rgba
   -- Alignments & Positions
   -- Other values
   , block, italic
@@ -65,8 +67,8 @@ darkGray : Color
 darkGray = rgb 192 192 192
 
 
-lightGrey : Color
-lightGrey = rgb 238 238 238
+lightGray : Color
+lightGray = rgb 238 238 238
 
 
 consoleText : Color
