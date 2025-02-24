@@ -4,19 +4,20 @@ module Deck.Slide.Graphics exposing
   , languageSwiftLogo, languageTypeScriptLogo
   )
 
-import Css exposing (fontSize, px, vw)
+import Css exposing (fontSize, px)
 import Deck.Slide.Common exposing
-  ( themeBackgroundColor, themeForegroundColor, black, numberFontFamily
+  ( numberFontFamily, themeBackgroundColor, themeForegroundColor
+  , textWithShadow
   )
 import Svg.Styled exposing (..)
 import Svg.Styled.Attributes as Attributes exposing
-  ( class, css, d, id
+  ( class, css, d, id, transform
   -- Units
   , gradientUnits
   -- Container
   , height, viewBox, width
   -- Dimensions & Positions
-  , offset, points, r, rx, x1, x2, y, y1, y2
+  , offset, points, r, rx, x, x1, x2, y, y1, y2
   -- Lines
   -- Fills
   , clipRule, fill, fillRule, gradientTransform
@@ -39,10 +40,10 @@ numberedDisc : String -> Float -> List (Attribute msg) -> Svg msg
 numberedDisc num fontSizePct attributes =
   svg
   ( viewBox "-50 -50 100 100" :: attributes )
-  [ circle [ r "50", css [ Css.fill primary ] ] []
+  [ circle [ r "50", css [ Css.fill themeBackgroundColor ] ] []
   , text_
     [ alignmentBaseline "middle", textAnchor "middle", y "5"
-    , css [ numberFontFamily, textWithShadow, Css.fill white, fontSize (px fontSizePct) ]
+    , css [ numberFontFamily, textWithShadow, Css.fill themeForegroundColor, fontSize (px fontSizePct) ]
     ]
     [ text num ]
   ]
