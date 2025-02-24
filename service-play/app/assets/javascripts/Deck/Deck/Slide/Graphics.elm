@@ -9,7 +9,6 @@ import Css exposing (fontSize, px, vw)
 import Deck.Slide.Common exposing (black, numberFontFamily, primary)
 import Dict exposing (Dict)
 import Html.Styled exposing (span)
-import Html.Styled.Attributes exposing (attribute)
 import Svg.Styled exposing (..)
 import Svg.Styled.Attributes as Attributes exposing
   ( class, css, d, id, transform
@@ -78,7 +77,7 @@ languageElmLogo =
 
 languageGoLogo : Svg msg
 languageGoLogo =
-  svg [ height "1.5vw", viewBox "0 -15 205.4 92", attribute "style" "enable-background:new 0 0 205.4 76.7;" ]
+  svg [ height "1.5vw", viewBox "0 -15 205.4 92", Attributes.style "enable-background:new 0 0 205.4 76.7;" ]
   [ style [] [ text " .st0{fill:#00ACD7;} " ]
   , g []
     [ g []
@@ -140,7 +139,7 @@ languageGoLogo =
 
 languageKotlinLogo : Svg msg
 languageKotlinLogo =
-  svg [ height "2.5vw", viewBox "0 -6 64 72", attribute "style" "enable-background:new 0 0 60 60;" ]
+  svg [ height "2.5vw", viewBox "0 -6 64 72", Attributes.style "enable-background:new 0 0 60 60;" ]
   [ g []
     [ linearGradient
       [ id "kotlinLinearGradient-1"
@@ -148,14 +147,14 @@ languageKotlinLogo =
       , x1 "15.9594", y1 "-13.0143", x2 "44.3068", y2 "15.3332"
       , gradientTransform "matrix(1 0 0 -1 0 61)"
       ]
-      [ stop [ offset "9.677000e-02", attribute "style" "stop-color:#0095D5" ] []
-      , stop [ offset "0.3007", attribute "style" "stop-color:#238AD9" ] []
-      , stop [ offset "0.6211", attribute "style" "stop-color:#557BDE" ] []
-      , stop [ offset "0.8643", attribute "style" "stop-color:#7472E2" ] []
-      , stop [ offset "1", attribute "style" "stop-color:#806EE3" ] []
+      [ stop [ offset "9.677000e-02", Attributes.style "stop-color:#0095D5" ] []
+      , stop [ offset "0.3007", Attributes.style "stop-color:#238AD9" ] []
+      , stop [ offset "0.6211", Attributes.style "stop-color:#557BDE" ] []
+      , stop [ offset "0.8643", Attributes.style "stop-color:#7472E2" ] []
+      , stop [ offset "1", Attributes.style "stop-color:#806EE3" ] []
       ]
     , polygon
-      [ attribute "style" "fill:url(#kotlinLinearGradient-1);", points "0,60 30.1,29.9 60,60 " ]
+      [ Attributes.style "fill:url(#kotlinLinearGradient-1);", points "0,60 30.1,29.9 60,60 " ]
       []
     , linearGradient
       [ id "kotlinLinearGradient-2"
@@ -163,26 +162,26 @@ languageKotlinLogo =
       , x1 "4.2092", y1 "48.9409", x2 "20.6734", y2 "65.405"
       , gradientTransform "matrix(1 0 0 -1 0 61)"
       ]
-      [ stop [ offset "0.1183", attribute "style" "stop-color:#0095D5" ] []
-      , stop [ offset "0.4178", attribute "style" "stop-color:#3C83DC" ] []
-      , stop [ offset "0.6962", attribute "style" "stop-color:#6D74E1" ] []
-      , stop [ offset "0.8333", attribute "style" "stop-color:#806EE3" ] []
+      [ stop [ offset "0.1183", Attributes.style "stop-color:#0095D5" ] []
+      , stop [ offset "0.4178", Attributes.style "stop-color:#3C83DC" ] []
+      , stop [ offset "0.6962", Attributes.style "stop-color:#6D74E1" ] []
+      , stop [ offset "0.8333", Attributes.style "stop-color:#806EE3" ] []
       ]
-    , polygon [ attribute "style" "fill:url(#kotlinLinearGradient-2);", points "0,0 30.1,0 0,32.5 " ] []
+    , polygon [ Attributes.style "fill:url(#kotlinLinearGradient-2);", points "0,0 30.1,0 0,32.5 " ] []
     , linearGradient
       [ id "kotlinLinearGradient-3"
       , gradientUnits "userSpaceOnUse"
       , x1 "-10.1017", y1 "5.8362", x2 "45.7315", y2 "61.6694"
       , gradientTransform "matrix(1 0 0 -1 0 61)"
       ]
-      [ stop [ offset "0.1075", attribute "style" "stop-color:#C757BC" ] []
-      , stop [ offset "0.2138", attribute "style" "stop-color:#D0609A" ] []
-      , stop [ offset "0.4254", attribute "style" "stop-color:#E1725C" ] []
-      , stop [ offset "0.6048", attribute "style" "stop-color:#EE7E2F" ] []
-      , stop [ offset "0.743", attribute "style" "stop-color:#F58613" ] []
-      , stop [ offset "0.8232", attribute "style" "stop-color:#F88909" ] []
+      [ stop [ offset "0.1075", Attributes.style "stop-color:#C757BC" ] []
+      , stop [ offset "0.2138", Attributes.style "stop-color:#D0609A" ] []
+      , stop [ offset "0.4254", Attributes.style "stop-color:#E1725C" ] []
+      , stop [ offset "0.6048", Attributes.style "stop-color:#EE7E2F" ] []
+      , stop [ offset "0.743", Attributes.style "stop-color:#F58613" ] []
+      , stop [ offset "0.8232", Attributes.style "stop-color:#F88909" ] []
       ]
-    , polygon [ attribute "style" "fill:url(#kotlinLinearGradient-3);", points "30.1,0 0,31.7 0,60 30.1,29.9 60,0 " ] []
+    , polygon [ Attributes.style "fill:url(#kotlinLinearGradient-3);", points "30.1,0 0,31.7 0,60 30.1,29.9 60,0 " ] []
     ]
   ]
 
@@ -301,7 +300,7 @@ languageTypeScriptLogo =
     , clipRule "evenodd"
     , fill "#fff"
     , fillRule "evenodd"
-    , attribute "style" "fill:#fff"
+    , Attributes.style "fill:#fff"
     ]
     []
   ]
@@ -317,13 +316,13 @@ logosByLanguage =
         [ path
           [ fill "#283593", fillRule "evenodd"
           , d "m 17.903,0.28628166 c 0.679,-0.381 1.515,-0.381 2.193,0 C 23.451,2.1692817 33.547,7.8372817 36.903,9.7202817 37.582,10.100282 38,10.804282 38,11.566282 c 0,3.766 0,15.101 0,18.867 0,0.762 -0.418,1.466 -1.097,1.847 -3.355,1.883 -13.451,7.551 -16.807,9.434 -0.679,0.381 -1.515,0.381 -2.193,0 -3.355,-1.883 -13.451,-7.551 -16.807,-9.434 -0.678,-0.381 -1.096,-1.084 -1.096,-1.846 0,-3.766 0,-15.101 0,-18.867 0,-0.762 0.418,-1.466 1.097,-1.8470003 3.354,-1.883 13.452,-7.551 16.806,-9.43400004 z"
-          , clipRule "evenodd", attribute "style" "fill:#004482;fill-opacity:1"
+          , clipRule "evenodd", Attributes.style "fill:#004482;fill-opacity:1"
           ]
           []
         , path
           [ fill "#5c6bc0", fillRule "evenodd"
           , d "m 0.304,31.404282 c -0.266,-0.356 -0.304,-0.694 -0.304,-1.149 0,-3.744 0,-15.014 0,-18.759 0,-0.758 0.417,-1.458 1.094,-1.8360003 3.343,-1.872 13.405,-7.507 16.748,-9.38000004 0.677,-0.379 1.594,-0.371 2.271,0.008 3.343,1.87200004 13.371,7.45900004 16.714,9.33100004 0.27,0.152 0.476,0.335 0.66,0.5760003 z"
-          , clipRule "evenodd", attribute "style" "fill:#659ad2;fill-opacity:1"
+          , clipRule "evenodd", Attributes.style "fill:#659ad2;fill-opacity:1"
           ]
           []
         , path
@@ -335,7 +334,7 @@ logosByLanguage =
         , path
           [ fill "#3949ab", fillRule "evenodd"
           , d "m 37.485,10.205282 c 0.516,0.483 0.506,1.211 0.506,1.784 0,3.795 -0.032,14.589 0.009,18.384 0.004,0.396 -0.127,0.813 -0.323,1.127 l -19.084,-10.5 z"
-          , clipRule "evenodd", attribute "style" "fill:#00599c;fill-opacity:1"
+          , clipRule "evenodd", Attributes.style "fill:#00599c;fill-opacity:1"
           ]
           []
         ]
@@ -463,32 +462,32 @@ logosByLanguage =
         [ defs [] []
         , path
           [ d "M 127.999,0 C 57.423,0 0,57.423 0,128.001 0,198.585 57.423,256.005 127.999,256.005 198.577,256.005 256,198.585 256,128.001 256,57.423 198.577,0 127.999,0"
-          , attribute "style" "fill:#ffffff"
+          , Attributes.style "fill:#ffffff"
           ]
           []
         , path
           [ d "m 123.318,130.303 c -1.15,2.492 -2.419,5.292 -3.733,8.272 -4.645,10.524 -9.789,23.33 -11.668,31.534 -0.675,2.922 -1.093,6.543 -1.085,10.558 0,1.588 0.085,3.257 0.22,4.957 6.567,2.413 13.66,3.74 21.067,3.753 6.743,-0.013 13.221,-1.127 19.284,-3.143 -1.425,-1.303 -2.785,-2.692 -4.023,-4.257 -8.22,-10.482 -12.806,-25.844 -20.062,-51.674"
-          , attribute "style" "fill:#91dc47"
+          , Attributes.style "fill:#91dc47"
           ]
           []
         , path
           [ d "m 92.97,78.225 c -15.699,11.064 -25.972,29.312 -26.011,49.992 0.039,20.371 10.003,38.383 25.307,49.493 3.754,-15.637 13.164,-29.955 27.275,-58.655 -0.838,-2.302 -1.793,-4.822 -2.862,-7.469 -3.909,-9.806 -9.551,-21.194 -14.586,-26.351 -2.567,-2.694 -5.682,-5.022 -9.123,-7.01"
-          , attribute "style" "fill:#91dc47"
+          , Attributes.style "fill:#91dc47"
           ]
           []
         , path
           [ d "m 181.394,198.367 c -8.1,-1.015 -14.785,-2.24 -20.633,-4.303 -9.836,4.884 -20.913,7.643 -32.642,7.643 -40.584,0 -73.483,-32.894 -73.488,-73.49 0,-22.027 9.704,-41.773 25.056,-55.24 -4.106,-0.992 -8.388,-1.571 -12.762,-1.563 -21.562,0.203 -44.323,12.136 -53.799,44.363 -0.886,4.691 -0.675,8.238 -0.675,12.442 0,63.885 51.791,115.676 115.671,115.676 39.122,0 73.682,-19.439 94.611,-49.169 -11.32,2.821 -22.206,4.17 -31.528,4.199 -3.494,0 -6.774,-0.187 -9.811,-0.558"
-          , attribute "style" "fill:#63b132"
+          , Attributes.style "fill:#63b132"
           ]
           []
         , path
           [ d "m 159.658,175.953 c 0.714,0.354 2.333,0.932 4.586,1.571 15.157,-11.127 25.007,-29.05 25.046,-49.307 l -0.006,0 c -0.057,-33.771 -27.386,-61.096 -61.165,-61.163 -6.714,0.013 -13.164,1.121 -19.203,3.122 12.419,14.156 18.391,34.386 24.168,56.515 0.003,0.01 0.008,0.018 0.01,0.026 0.011,0.018 1.848,6.145 5.002,14.274 3.132,8.118 7.594,18.168 12.46,25.492 3.195,4.908 6.709,8.435 9.102,9.47"
-          , attribute "style" "fill:#90b4fe"
+          , Attributes.style "fill:#90b4fe"
           ]
           []
         , path
           [ d "m 128.122,12.541 c -38.744,0 -73.016,19.073 -94.008,48.318 10.925,-6.842 22.08,-9.31 31.815,-9.222 13.446,0.039 24.017,4.208 29.089,7.06 1.225,0.706 2.388,1.466 3.527,2.247 9.05,-3.986 19.05,-6.215 29.574,-6.215 40.589,0.005 73.493,32.899 73.499,73.488 l -0.006,0 c 0,20.464 -8.37,38.967 -21.863,52.291 3.312,0.371 6.844,0.602 10.451,0.584 12.811,0.006 26.658,-2.821 37.039,-11.552 6.769,-5.702 12.44,-14.051 15.585,-26.569 0.615,-4.835 0.969,-9.75 0.969,-14.752 0,-63.882 -51.786,-115.678 -115.671,-115.678"
-          , attribute "style" "fill:#5881d8"
+          , Attributes.style "fill:#5881d8"
           ]
           []
         ]
@@ -531,12 +530,12 @@ logosByLanguage =
       [ languageElmLogo
       , -- Haskell
         svg [ height "2.4vw", viewBox "0 0 175 120" ]
-        [ g [ attribute "style" "fill: rgb(102,102,102);" ]
+        [ g [ Attributes.style "fill: rgb(102,102,102);" ]
           [ path [ d "M 0 120 L 40 60 L 0 0 L 30 0 L 70 60 L 30 120" ] []
           , path [ d "M 136.666667 85 L 123.333333 65 L 170 65 L 170 85" ] []
           , path [ d "M 116.666667 55 L 103.333333 35 L 170 35 L 170 55" ] []
           ]
-        , g [ attribute "style" "fill: rgb(153,153,153);" ]
+        , g [ Attributes.style "fill: rgb(153,153,153);" ]
           [ path [ d "M 40 120 L 80 60 L 40 0 L 70 0 L 150 120 L 120 120 L 95 82.5 L 70 120" ] [] ]
         ]
       ]
@@ -562,10 +561,10 @@ logosByLanguage =
           , gradientTransform "matrix(363.05789,0,0,-363.05789,177.52002,256.30713)"
           , gradientUnits "userSpaceOnUse", id "phpRadialGradient-1", r "1", spreadMethod "pad"
           ]
-          [ stop [ offset "0", attribute "style" "stop-opacity:1;stop-color:#aeb2d5" ] []
-          , stop [ offset "0.3", attribute "style" "stop-opacity:1;stop-color:#aeb2d5" ] []
-          , stop [ offset "0.75", attribute "style" "stop-opacity:1;stop-color:#484c89" ] []
-          , stop [ offset "1", attribute "style" "stop-opacity:1;stop-color:#484c89" ] []
+          [ stop [ offset "0", Attributes.style "stop-opacity:1;stop-color:#aeb2d5" ] []
+          , stop [ offset "0.3", Attributes.style "stop-opacity:1;stop-color:#aeb2d5" ] []
+          , stop [ offset "0.75", Attributes.style "stop-opacity:1;stop-color:#484c89" ] []
+          , stop [ offset "1", Attributes.style "stop-opacity:1;stop-color:#484c89" ] []
           ]
         , clipPath [ clipPathUnits "userSpaceOnUse", id "clipPath3468" ]
           [ path [ d "M 0,324 576,324 576,0 0,0 0,324 Z" ] [] ]
@@ -579,7 +578,7 @@ logosByLanguage =
               [ g []
                 [ path
                   [ d "M 11.52,162 C 11.52,81.677 135.307,16.561 288,16.561 l 0,0 c 152.693,0 276.481,65.116 276.481,145.439 l 0,0 c 0,80.322 -123.788,145.439 -276.481,145.439 l 0,0 C 135.307,307.439 11.52,242.322 11.52,162"
-                  , attribute "style" "fill:url(#phpRadialGradient-1);stroke:none"
+                  , Attributes.style "fill:url(#phpRadialGradient-1);stroke:none"
                   ]
                   []
                 ]
@@ -591,7 +590,7 @@ logosByLanguage =
             [ g [ transform "translate(288,27.3594)" ]
               [ path
                 [ d "M 0,0 C 146.729,0 265.68,60.281 265.68,134.641 265.68,209 146.729,269.282 0,269.282 -146.729,269.282 -265.68,209 -265.68,134.641 -265.68,60.281 -146.729,0 0,0"
-                , attribute "style" "fill:#777bb3;fill-opacity:1;fill-rule:nonzero;stroke:none"
+                , Attributes.style "fill:#777bb3;fill-opacity:1;fill-rule:nonzero;stroke:none"
                 ]
                 []
               ]
@@ -602,34 +601,34 @@ logosByLanguage =
             [ g [ transform "translate(161.7344,145.3066)" ]
               [ path
                 [ d "m 0,0 c 12.065,0 21.072,2.225 26.771,6.611 5.638,4.341 9.532,11.862 11.573,22.353 1.903,9.806 1.178,16.653 -2.154,20.348 C 32.783,53.086 25.417,55 14.297,55 L -4.984,55 -15.673,0 0,0 Z m -63.063,-67.75 c -0.895,0 -1.745,0.4 -2.314,1.092 -0.57,0.691 -0.801,1.601 -0.63,2.48 L -37.679,81.573 C -37.405,82.982 -36.17,84 -34.734,84 L 26.32,84 C 45.508,84 59.79,78.79 68.767,68.513 77.792,58.182 80.579,43.741 77.05,25.592 75.614,18.198 73.144,11.331 69.709,5.183 66.27,-0.972 61.725,-6.667 56.198,-11.747 49.582,-17.939 42.094,-22.429 33.962,-25.071 25.959,-27.678 15.681,-29 3.414,-29 l -24.722,0 -7.06,-36.322 c -0.274,-1.41 -1.508,-2.428 -2.944,-2.428 l -31.751,0 z"
-                , attribute "style" "fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+                , Attributes.style "fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
                 ]
                 []
               ]
             , g [ transform "translate(159.2236,197.3071)" ]
               [ path
                 [ d "m 0,0 16.808,0 c 13.421,0 18.083,-2.945 19.667,-4.7 2.628,-2.914 3.124,-9.058 1.435,-17.767 C 36.012,-32.217 32.494,-39.13 27.452,-43.012 22.29,-46.986 13.898,-49 2.511,-49 L -9.523,-49 0,0 Z m 28.831,35 -61.055,0 c -2.872,0 -5.341,-2.036 -5.889,-4.855 l -28.328,-145.751 c -0.342,-1.759 0.12,-3.578 1.259,-4.961 1.14,-1.383 2.838,-2.183 4.63,-2.183 l 31.75,0 c 2.873,0 5.342,2.036 5.89,4.855 l 6.588,33.895 22.249,0 c 12.582,0 23.174,1.372 31.479,4.077 8.541,2.775 16.399,7.48 23.354,13.984 5.752,5.292 10.49,11.232 14.08,17.657 3.591,6.427 6.171,13.594 7.668,21.302 3.715,19.104 0.697,34.402 -8.969,45.466 C 63.965,29.444 48.923,35 28.831,35 m -45.633,-90 19.313,0 c 12.801,0 22.336,2.411 28.601,7.234 6.266,4.824 10.492,12.875 12.688,24.157 2.101,10.832 1.144,18.476 -2.871,22.929 C 36.909,3.773 28.87,6 16.808,6 L -4.946,6 -16.802,-55 M 28.831,29 C 47.198,29 60.597,24.18 69.019,14.539 77.44,4.898 79.976,-8.559 76.616,-25.836 75.233,-32.953 72.894,-39.46 69.601,-45.355 66.304,-51.254 61.999,-56.648 56.679,-61.539 50.339,-67.472 43.296,-71.7 35.546,-74.218 27.796,-76.743 17.925,-78 5.925,-78 l -27.196,0 -7.531,-38.75 -31.75,0 28.328,145.75 61.055,0"
-                , attribute "style" "fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+                , Attributes.style "fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
                 ]
                 []
               ]
             , g [ transform "translate(311.583,116.3066)" ]
               [ path
                 [ d "m 0,0 c -0.896,0 -1.745,0.4 -2.314,1.092 -0.571,0.691 -0.802,1.6 -0.631,2.48 L 9.586,68.061 C 10.778,74.194 10.484,78.596 8.759,80.456 7.703,81.593 4.531,83.5 -4.848,83.5 L -27.55,83.5 -43.305,2.428 C -43.579,1.018 -44.814,0 -46.25,0 l -31.5,0 c -0.896,0 -1.745,0.4 -2.315,1.092 -0.57,0.691 -0.801,1.601 -0.63,2.48 l 28.328,145.751 c 0.274,1.409 1.509,2.427 2.945,2.427 l 31.5,0 c 0.896,0 1.745,-0.4 2.315,-1.091 0.57,-0.692 0.801,-1.601 0.63,-2.481 L -21.813,113 2.609,113 c 18.605,0 31.221,-3.28 38.569,-10.028 7.49,-6.884 9.827,-17.891 6.947,-32.719 L 34.945,2.428 C 34.671,1.018 33.437,0 32,0 L 0,0 Z"
-                , attribute "style" "fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+                , Attributes.style "fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
                 ]
                 []
               ]
             , g [ transform "translate(293.6611,271.0571)" ]
               [ path
                 [ d "m 0,0 -31.5,0 c -2.873,0 -5.342,-2.036 -5.89,-4.855 l -28.328,-145.751 c -0.342,-1.759 0.12,-3.578 1.26,-4.961 1.14,-1.383 2.838,-2.183 4.63,-2.183 l 31.5,0 c 2.872,0 5.342,2.036 5.89,4.855 l 15.283,78.645 20.229,0 c 9.363,0 11.328,-2 11.407,-2.086 0.568,-0.611 1.315,-3.441 0.082,-9.781 l -12.531,-64.489 c -0.342,-1.759 0.12,-3.578 1.26,-4.961 1.14,-1.383 2.838,-2.183 4.63,-2.183 l 32,0 c 2.872,0 5.342,2.036 5.89,4.855 l 13.179,67.825 c 3.093,15.921 0.447,27.864 -7.861,35.5 -7.928,7.281 -21.208,10.82 -40.599,10.82 l -20.784,0 6.143,31.605 C 6.231,-5.386 5.77,-3.566 4.63,-2.184 3.49,-0.801 1.792,0 0,0 m 0,-6 -7.531,-38.75 28.062,0 c 17.657,0 29.836,-3.082 36.539,-9.238 6.703,-6.16 8.711,-16.141 6.032,-29.938 l -13.18,-67.824 -32,0 12.531,64.488 c 1.426,7.336 0.902,12.34 -1.574,15.008 -2.477,2.668 -7.746,4.004 -15.805,4.004 l -25.176,0 -16.226,-83.5 -31.5,0 L -31.5,-6 0,-6"
-                , attribute "style" "fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+                , Attributes.style "fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
                 ]
                 []
               ]
             , g [ transform "translate(409.5498,145.3066)" ]
               [ path
-                [ d "m 0,0 c 12.065,0 21.072,2.225 26.771,6.611 5.638,4.34 9.532,11.861 11.574,22.353 1.903,9.806 1.178,16.653 -2.155,20.348 C 32.783,53.086 25.417,55 14.297,55 L -4.984,55 -15.673,0 0,0 Z m -63.062,-67.75 c -0.895,0 -1.745,0.4 -2.314,1.092 -0.57,0.691 -0.802,1.601 -0.631,2.48 L -37.679,81.573 C -37.404,82.982 -36.17,84 -34.733,84 L 26.32,84 C 45.509,84 59.79,78.79 68.768,68.513 77.793,58.183 80.579,43.742 77.051,25.592 75.613,18.198 73.144,11.331 69.709,5.183 66.27,-0.972 61.725,-6.667 56.198,-11.747 49.582,-17.939 42.094,-22.429 33.962,-25.071 25.959,-27.678 15.681,-29 3.414,-29 l -24.723,0 -7.057,-36.322 c -0.275,-1.41 -1.509,-2.428 -2.946,-2.428 l -31.75,0 z", attribute "style" "fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" ] [] ], g [ id "g3504", transform "translate(407.0391,197.3071)" ] [ path [ d "M 0,0 16.808,0 C 30.229,0 34.891,-2.945 36.475,-4.7 39.104,-7.614 39.6,-13.758 37.91,-22.466 36.012,-32.217 32.493,-39.13 27.452,-43.012 22.29,-46.986 13.898,-49 2.511,-49 L -9.522,-49 0,0 Z m 28.831,35 -61.054,0 c -2.872,0 -5.341,-2.036 -5.889,-4.855 L -66.44,-115.606 c -0.342,-1.759 0.12,-3.578 1.259,-4.961 1.14,-1.383 2.838,-2.183 4.63,-2.183 l 31.75,0 c 2.872,0 5.342,2.036 5.89,4.855 l 6.587,33.895 22.249,0 c 12.582,0 23.174,1.372 31.479,4.077 8.541,2.775 16.401,7.481 23.356,13.986 5.752,5.291 10.488,11.23 14.078,17.655 3.591,6.427 6.171,13.594 7.668,21.302 3.715,19.105 0.697,34.403 -8.969,45.467 C 63.965,29.444 48.924,35 28.831,35 m -45.632,-90 19.312,0 c 12.801,0 22.336,2.411 28.601,7.234 6.267,4.824 10.492,12.875 12.688,24.157 2.102,10.832 1.145,18.476 -2.871,22.929 C 36.909,3.773 28.87,6 16.808,6 L -4.946,6 -16.801,-55 M 28.831,29 C 47.198,29 60.597,24.18 69.019,14.539 77.441,4.898 79.976,-8.559 76.616,-25.836 75.233,-32.953 72.894,-39.46 69.601,-45.355 66.304,-51.254 61.999,-56.648 56.679,-61.539 50.339,-67.472 43.296,-71.7 35.546,-74.218 27.796,-76.743 17.925,-78 5.925,-78 l -27.196,0 -7.53,-38.75 -31.75,0 28.328,145.75 61.054,0", attribute "style" "fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" ] [] ] ] ] ]
+                [ d "m 0,0 c 12.065,0 21.072,2.225 26.771,6.611 5.638,4.34 9.532,11.861 11.574,22.353 1.903,9.806 1.178,16.653 -2.155,20.348 C 32.783,53.086 25.417,55 14.297,55 L -4.984,55 -15.673,0 0,0 Z m -63.062,-67.75 c -0.895,0 -1.745,0.4 -2.314,1.092 -0.57,0.691 -0.802,1.601 -0.631,2.48 L -37.679,81.573 C -37.404,82.982 -36.17,84 -34.733,84 L 26.32,84 C 45.509,84 59.79,78.79 68.768,68.513 77.793,58.183 80.579,43.742 77.051,25.592 75.613,18.198 73.144,11.331 69.709,5.183 66.27,-0.972 61.725,-6.667 56.198,-11.747 49.582,-17.939 42.094,-22.429 33.962,-25.071 25.959,-27.678 15.681,-29 3.414,-29 l -24.723,0 -7.057,-36.322 c -0.275,-1.41 -1.509,-2.428 -2.946,-2.428 l -31.75,0 z", Attributes.style "fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" ] [] ], g [ id "g3504", transform "translate(407.0391,197.3071)" ] [ path [ d "M 0,0 16.808,0 C 30.229,0 34.891,-2.945 36.475,-4.7 39.104,-7.614 39.6,-13.758 37.91,-22.466 36.012,-32.217 32.493,-39.13 27.452,-43.012 22.29,-46.986 13.898,-49 2.511,-49 L -9.522,-49 0,0 Z m 28.831,35 -61.054,0 c -2.872,0 -5.341,-2.036 -5.889,-4.855 L -66.44,-115.606 c -0.342,-1.759 0.12,-3.578 1.259,-4.961 1.14,-1.383 2.838,-2.183 4.63,-2.183 l 31.75,0 c 2.872,0 5.342,2.036 5.89,4.855 l 6.587,33.895 22.249,0 c 12.582,0 23.174,1.372 31.479,4.077 8.541,2.775 16.401,7.481 23.356,13.986 5.752,5.291 10.488,11.23 14.078,17.655 3.591,6.427 6.171,13.594 7.668,21.302 3.715,19.105 0.697,34.403 -8.969,45.467 C 63.965,29.444 48.924,35 28.831,35 m -45.632,-90 19.312,0 c 12.801,0 22.336,2.411 28.601,7.234 6.267,4.824 10.492,12.875 12.688,24.157 2.102,10.832 1.145,18.476 -2.871,22.929 C 36.909,3.773 28.87,6 16.808,6 L -4.946,6 -16.801,-55 M 28.831,29 C 47.198,29 60.597,24.18 69.019,14.539 77.441,4.898 79.976,-8.559 76.616,-25.836 75.233,-32.953 72.894,-39.46 69.601,-45.355 66.304,-51.254 61.999,-56.648 56.679,-61.539 50.339,-67.472 43.296,-71.7 35.546,-74.218 27.796,-76.743 17.925,-78 5.925,-78 l -27.196,0 -7.53,-38.75 -31.75,0 28.328,145.75 61.054,0", Attributes.style "fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" ] [] ] ] ] ]
       ]
     )
   , ( "Python", languagePythonLogo )
@@ -638,359 +637,359 @@ logosByLanguage =
       [ defs []
         [ linearGradient
           [ id "XMLID_17_-9", gradientUnits "userSpaceOnUse", x1 "174.0737", y1 "215.5488", x2 "132.27631", y2 "141.7533" ]
-          [ stop [ offset "0", attribute "style" "stop-color:#FB7655" ] []
-          , stop [ offset "0", attribute "style" "stop-color:#FB7655" ] []
-          , stop [ offset "0.41", attribute "style" "stop-color:#E42B1E" ] []
-          , stop [ offset "0.99", attribute "style" "stop-color:#990000" ] []
-          , stop [ offset "1", attribute "style" "stop-color:#990000" ] []
+          [ stop [ offset "0", Attributes.style "stop-color:#FB7655" ] []
+          , stop [ offset "0", Attributes.style "stop-color:#FB7655" ] []
+          , stop [ offset "0.41", Attributes.style "stop-color:#E42B1E" ] []
+          , stop [ offset "0.99", Attributes.style "stop-color:#990000" ] []
+          , stop [ offset "1", Attributes.style "stop-color:#990000" ] []
           ]
         , linearGradient
           [ id "XMLID_18_-7", gradientUnits "userSpaceOnUse", x1 "194.895", y1 "153.5576", x2 "141.0276", y2 "117.4093" ]
-          [ stop [ offset "0", attribute "style" "stop-color:#871101" ] []
-          , stop [ offset "0", attribute "style" "stop-color:#871101" ] []
-          , stop [ offset "0.99", attribute "style" "stop-color:#911209" ] []
-          , stop [ offset "1", attribute "style" "stop-color:#911209" ] []
+          [ stop [ offset "0", Attributes.style "stop-color:#871101" ] []
+          , stop [ offset "0", Attributes.style "stop-color:#871101" ] []
+          , stop [ offset "0.99", Attributes.style "stop-color:#911209" ] []
+          , stop [ offset "1", Attributes.style "stop-color:#911209" ] []
           ]
         , linearGradient
           [ id "XMLID_19_-4", gradientUnits "userSpaceOnUse", x1 "151.79539", y1 "217.7852", x2 "97.929703", y2 "181.638" ]
-          [ stop [ offset "0", attribute "style" "stop-color:#871101" ] []
-          , stop [ offset "0", attribute "style" "stop-color:#871101" ] []
-          , stop [ offset "0.99", attribute "style" "stop-color:#911209" ] []
-          , stop [ offset "1", attribute "style" "stop-color:#911209" ] []
+          [ stop [ offset "0", Attributes.style "stop-color:#871101" ] []
+          , stop [ offset "0", Attributes.style "stop-color:#871101" ] []
+          , stop [ offset "0.99", Attributes.style "stop-color:#911209" ] []
+          , stop [ offset "1", Attributes.style "stop-color:#911209" ] []
           ]
         , linearGradient
           [ id "XMLID_20_-9", gradientUnits "userSpaceOnUse", x1 "38.696301", y1 "127.3906", x2 "47.046902", y2 "181.66141" ]
-          [ stop [ offset "0", attribute "style" "stop-color:#FFFFFF" ] []
-          , stop [ offset "0", attribute "style" "stop-color:#FFFFFF" ] []
-          , stop [ offset "0.23", attribute "style" "stop-color:#E57252" ] []
-          , stop [ offset "0.46", attribute "style" "stop-color:#DE3B20" ] []
-          , stop [ offset "0.99", attribute "style" "stop-color:#A60003" ] []
-          , stop [ offset "1", attribute "style" "stop-color:#A60003" ] []
+          [ stop [ offset "0", Attributes.style "stop-color:#FFFFFF" ] []
+          , stop [ offset "0", Attributes.style "stop-color:#FFFFFF" ] []
+          , stop [ offset "0.23", Attributes.style "stop-color:#E57252" ] []
+          , stop [ offset "0.46", Attributes.style "stop-color:#DE3B20" ] []
+          , stop [ offset "0.99", Attributes.style "stop-color:#A60003" ] []
+          , stop [ offset "1", Attributes.style "stop-color:#A60003" ] []
           ]
         , linearGradient
           [ id "XMLID_21_-3", gradientUnits "userSpaceOnUse", x1 "96.132797", y1 "76.715302", x2 "99.209602", y2 "132.1021" ]
-          [ stop [ offset "0", attribute "style" "stop-color:#FFFFFF" ] []
-          , stop [ offset "0", attribute "style" "stop-color:#FFFFFF" ] []
-          , stop [ offset "0.23", attribute "style" "stop-color:#E4714E" ] []
-          , stop [ offset "0.56", attribute "style" "stop-color:#BE1A0D" ] []
-          , stop [ offset "0.99", attribute "style" "stop-color:#A80D00" ] []
-          , stop [ offset "1", attribute "style" "stop-color:#A80D00" ] []
+          [ stop [ offset "0", Attributes.style "stop-color:#FFFFFF" ] []
+          , stop [ offset "0", Attributes.style "stop-color:#FFFFFF" ] []
+          , stop [ offset "0.23", Attributes.style "stop-color:#E4714E" ] []
+          , stop [ offset "0.56", Attributes.style "stop-color:#BE1A0D" ] []
+          , stop [ offset "0.99", Attributes.style "stop-color:#A80D00" ] []
+          , stop [ offset "1", Attributes.style "stop-color:#A80D00" ] []
           ]
         , linearGradient
           [ id "XMLID_22_-7", gradientUnits "userSpaceOnUse", x1 "147.103", y1 "25.521", x2 "156.3141", y2 "65.216202" ]
-          [ stop [ offset "0", attribute "style" "stop-color:#FFFFFF" ] []
-          , stop [ offset "0", attribute "style" "stop-color:#FFFFFF" ] []
-          , stop [ offset "0.18", attribute "style" "stop-color:#E46342" ] []
-          , stop [ offset "0.4", attribute "style" "stop-color:#C82410" ] []
-          , stop [ offset "0.99", attribute "style" "stop-color:#A80D00" ] []
-          , stop [ offset "1", attribute "style" "stop-color:#A80D00" ] []
+          [ stop [ offset "0", Attributes.style "stop-color:#FFFFFF" ] []
+          , stop [ offset "0", Attributes.style "stop-color:#FFFFFF" ] []
+          , stop [ offset "0.18", Attributes.style "stop-color:#E46342" ] []
+          , stop [ offset "0.4", Attributes.style "stop-color:#C82410" ] []
+          , stop [ offset "0.99", Attributes.style "stop-color:#A80D00" ] []
+          , stop [ offset "1", Attributes.style "stop-color:#A80D00" ] []
           ]
         , linearGradient
           [ id "XMLID_23_-9", gradientUnits "userSpaceOnUse", x1 "118.9761", y1 "11.5415", x2 "158.66859", y2 "-8.3048" ]
-          [ stop [ offset "0", attribute "style" "stop-color:#FFFFFF" ] []
-          , stop [ offset "0", attribute "style" "stop-color:#FFFFFF" ] []
-          , stop [ offset "0.54", attribute "style" "stop-color:#C81F11" ] []
-          , stop [ offset "0.99", attribute "style" "stop-color:#BF0905" ] []
-          , stop [ offset "1", attribute "style" "stop-color:#BF0905" ] []
+          [ stop [ offset "0", Attributes.style "stop-color:#FFFFFF" ] []
+          , stop [ offset "0", Attributes.style "stop-color:#FFFFFF" ] []
+          , stop [ offset "0.54", Attributes.style "stop-color:#C81F11" ] []
+          , stop [ offset "0.99", Attributes.style "stop-color:#BF0905" ] []
+          , stop [ offset "1", Attributes.style "stop-color:#BF0905" ] []
           ]
         , linearGradient
           [ id "XMLID_24_-3", gradientUnits "userSpaceOnUse", x1 "3.9033", y1 "113.5547", x2 "7.1701999", y2 "146.2628" ]
-          [ stop [ offset "0", attribute "style" "stop-color:#FFFFFF" ] []
-          , stop [ offset "0", attribute "style" "stop-color:#FFFFFF" ] []
-          , stop [ offset "0.31", attribute "style" "stop-color:#DE4024" ] []
-          , stop [ offset "0.99", attribute "style" "stop-color:#BF190B" ] []
-          , stop [ offset "1", attribute "style" "stop-color:#BF190B" ] []
+          [ stop [ offset "0", Attributes.style "stop-color:#FFFFFF" ] []
+          , stop [ offset "0", Attributes.style "stop-color:#FFFFFF" ] []
+          , stop [ offset "0.31", Attributes.style "stop-color:#DE4024" ] []
+          , stop [ offset "0.99", Attributes.style "stop-color:#BF190B" ] []
+          , stop [ offset "1", Attributes.style "stop-color:#BF190B" ] []
           ]
         , linearGradient
           [ id "XMLID_25_-9", gradientUnits "userSpaceOnUse", x1 "-18.5557", y1 "155.10451", x2 "135.0152", y2 "-2.8092999" ]
-          [ stop [ offset "0", attribute "style" "stop-color:#BD0012" ] []
-          , stop [ offset "0", attribute "style" "stop-color:#BD0012" ] []
-          , stop [ offset "0.07", attribute "style" "stop-color:#FFFFFF" ] []
-          , stop [ offset "0.17", attribute "style" "stop-color:#FFFFFF" ] []
-          , stop [ offset "0.27", attribute "style" "stop-color:#C82F1C" ] []
-          , stop [ offset "0.33", attribute "style" "stop-color:#820C01" ] []
-          , stop [ offset "0.46", attribute "style" "stop-color:#A31601" ] []
-          , stop [ offset "0.72", attribute "style" "stop-color:#B31301" ] []
-          , stop [ offset "0.99", attribute "style" "stop-color:#E82609" ] []
-          , stop [ offset "1", attribute "style" "stop-color:#E82609" ] []
+          [ stop [ offset "0", Attributes.style "stop-color:#BD0012" ] []
+          , stop [ offset "0", Attributes.style "stop-color:#BD0012" ] []
+          , stop [ offset "0.07", Attributes.style "stop-color:#FFFFFF" ] []
+          , stop [ offset "0.17", Attributes.style "stop-color:#FFFFFF" ] []
+          , stop [ offset "0.27", Attributes.style "stop-color:#C82F1C" ] []
+          , stop [ offset "0.33", Attributes.style "stop-color:#820C01" ] []
+          , stop [ offset "0.46", Attributes.style "stop-color:#A31601" ] []
+          , stop [ offset "0.72", Attributes.style "stop-color:#B31301" ] []
+          , stop [ offset "0.99", Attributes.style "stop-color:#E82609" ] []
+          , stop [ offset "1", Attributes.style "stop-color:#E82609" ] []
           ]
         , linearGradient
           [ id "XMLID_26_-2", gradientUnits "userSpaceOnUse", x1 "99.074699", y1 "171.0332", x2 "52.817699", y2 "159.61659" ]
-          [ stop [ offset "0", attribute "style" "stop-color:#8C0C01" ] []
-          , stop [ offset "0", attribute "style" "stop-color:#8C0C01" ] []
-          , stop [ offset "0.54", attribute "style" "stop-color:#990C00" ] []
-          , stop [ offset "0.99", attribute "style" "stop-color:#A80D0E" ] []
-          , stop [ offset "1", attribute "style" "stop-color:#A80D0E" ] []
+          [ stop [ offset "0", Attributes.style "stop-color:#8C0C01" ] []
+          , stop [ offset "0", Attributes.style "stop-color:#8C0C01" ] []
+          , stop [ offset "0.54", Attributes.style "stop-color:#990C00" ] []
+          , stop [ offset "0.99", Attributes.style "stop-color:#A80D0E" ] []
+          , stop [ offset "1", Attributes.style "stop-color:#A80D0E" ] []
           ]
         , linearGradient
           [ id "XMLID_27_-1", gradientUnits "userSpaceOnUse", x1 "178.52589", y1 "115.5146", x2 "137.43269", y2 "78.683998" ]
-          [ stop [ offset "0", attribute "style" "stop-color:#7E110B" ] []
-          , stop [ offset "0", attribute "style" "stop-color:#7E110B" ] []
-          , stop [ offset "0.99", attribute "style" "stop-color:#9E0C00" ] []
-          , stop [ offset "1", attribute "style" "stop-color:#9E0C00" ] []
+          [ stop [ offset "0", Attributes.style "stop-color:#7E110B" ] []
+          , stop [ offset "0", Attributes.style "stop-color:#7E110B" ] []
+          , stop [ offset "0.99", Attributes.style "stop-color:#9E0C00" ] []
+          , stop [ offset "1", Attributes.style "stop-color:#9E0C00" ] []
           ]
         , linearGradient
           [ id "XMLID_28_-1", gradientUnits "userSpaceOnUse", x1 "193.6235", y1 "47.937", x2 "173.15421", y2 "26.053801" ]
-          [ stop [ offset "0", attribute "style" "stop-color:#79130D" ] []
-          , stop [ offset "0", attribute "style" "stop-color:#79130D" ] []
-          , stop [ offset "0.99", attribute "style" "stop-color:#9E120B" ] []
-          , stop [ offset "1", attribute "style" "stop-color:#9E120B" ] []
+          [ stop [ offset "0", Attributes.style "stop-color:#79130D" ] []
+          , stop [ offset "0", Attributes.style "stop-color:#79130D" ] []
+          , stop [ offset "0.99", Attributes.style "stop-color:#9E120B" ] []
+          , stop [ offset "1", Attributes.style "stop-color:#9E120B" ] []
           ]
         , radialGradient
           [ id "XMLID_29_-4", cx "143.8315", cy "79.388199", r "50.357601", gradientUnits "userSpaceOnUse" ]
-          [ stop [ offset "0", attribute "style" "stop-color:#A80D00" ] []
-          , stop [ offset "0", attribute "style" "stop-color:#A80D00" ] []
-          , stop [ offset "0.99", attribute "style" "stop-color:#7E0E08" ] []
-          , stop [ offset "1", attribute "style" "stop-color:#7E0E08" ] []
+          [ stop [ offset "0", Attributes.style "stop-color:#A80D00" ] []
+          , stop [ offset "0", Attributes.style "stop-color:#A80D00" ] []
+          , stop [ offset "0.99", Attributes.style "stop-color:#7E0E08" ] []
+          , stop [ offset "1", Attributes.style "stop-color:#7E0E08" ] []
           ]
         , radialGradient
           [ id "XMLID_30_-6", cx "74.0923", cy "145.75101", r "66.943703", gradientUnits "userSpaceOnUse" ]
-          [ stop [ offset "0", attribute "style" "stop-color:#A30C00" ] []
-          , stop [ offset "0", attribute "style" "stop-color:#A30C00" ] []
-          , stop [ offset "0.99", attribute "style" "stop-color:#800E08" ] []
-          , stop [ offset "1", attribute "style" "stop-color:#800E08" ] []
+          [ stop [ offset "0", Attributes.style "stop-color:#A30C00" ] []
+          , stop [ offset "0", Attributes.style "stop-color:#A30C00" ] []
+          , stop [ offset "0.99", Attributes.style "stop-color:#800E08" ] []
+          , stop [ offset "1", Attributes.style "stop-color:#800E08" ] []
           ]
         , linearGradient
           [ id "XMLID_31_-6", gradientUnits "userSpaceOnUse", x1 "26.669901", y1 "197.33591", x2 "9.9886999", y2 "140.742" ]
-          [ stop [ offset "0", attribute "style" "stop-color:#8B2114" ] []
-          , stop [ offset "0", attribute "style" "stop-color:#8B2114" ] []
-          , stop [ offset "0.43", attribute "style" "stop-color:#9E100A" ] []
-          , stop [ offset "0.99", attribute "style" "stop-color:#B3100C" ] []
-          , stop [ offset "1", attribute "style" "stop-color:#B3100C" ] []
+          [ stop [ offset "0", Attributes.style "stop-color:#8B2114" ] []
+          , stop [ offset "0", Attributes.style "stop-color:#8B2114" ] []
+          , stop [ offset "0.43", Attributes.style "stop-color:#9E100A" ] []
+          , stop [ offset "0.99", Attributes.style "stop-color:#B3100C" ] []
+          , stop [ offset "1", Attributes.style "stop-color:#B3100C" ] []
           ]
         , linearGradient
           [ id "XMLID_32_-0", gradientUnits "userSpaceOnUse", x1 "154.6411", y1 "9.7979002", x2 "192.039", y2 "26.305901" ]
-          [ stop [ offset "0", attribute "style" "stop-color:#B31000" ] []
-          , stop [ offset "0", attribute "style" "stop-color:#B31000" ] []
-          , stop [ offset "0.44", attribute "style" "stop-color:#910F08" ] []
-          , stop [ offset "0.99", attribute "style" "stop-color:#791C12" ] []
-          , stop [ offset "1", attribute "style" "stop-color:#791C12" ] []
+          [ stop [ offset "0", Attributes.style "stop-color:#B31000" ] []
+          , stop [ offset "0", Attributes.style "stop-color:#B31000" ] []
+          , stop [ offset "0.44", Attributes.style "stop-color:#910F08" ] []
+          , stop [ offset "0.99", Attributes.style "stop-color:#791C12" ] []
+          , stop [ offset "1", Attributes.style "stop-color:#791C12" ] []
           ]
         ]
       , linearGradient
         [ id "XMLID_17_", gradientUnits "userSpaceOnUse", x1 "174.0737", y1 "215.5488", x2 "132.2763", y2 "141.7533" ]
-        [ stop [ offset "0", attribute "style" "stop-color:#FB7655" ] []
-        , stop [ offset "0", attribute "style" "stop-color:#FB7655" ] []
-        , stop [ offset "0.41", attribute "style" "stop-color:#E42B1E" ] []
-        , stop [ offset "0.99", attribute "style" "stop-color:#990000" ] []
-        , stop [ offset "1", attribute "style" "stop-color:#990000" ] []
+        [ stop [ offset "0", Attributes.style "stop-color:#FB7655" ] []
+        , stop [ offset "0", Attributes.style "stop-color:#FB7655" ] []
+        , stop [ offset "0.41", Attributes.style "stop-color:#E42B1E" ] []
+        , stop [ offset "0.99", Attributes.style "stop-color:#990000" ] []
+        , stop [ offset "1", Attributes.style "stop-color:#990000" ] []
         ]
       , linearGradient
         [ id "XMLID_18_", gradientUnits "userSpaceOnUse", x1 "194.895", y1 "153.5576", x2 "141.0276", y2 "117.4093" ]
-        [ stop [ offset "0", attribute "style" "stop-color:#871101" ] []
-        , stop [ offset "0", attribute "style" "stop-color:#871101" ] []
-        , stop [ offset "0.99", attribute "style" "stop-color:#911209" ] []
-        , stop [ offset "1", attribute "style" "stop-color:#911209" ] []
+        [ stop [ offset "0", Attributes.style "stop-color:#871101" ] []
+        , stop [ offset "0", Attributes.style "stop-color:#871101" ] []
+        , stop [ offset "0.99", Attributes.style "stop-color:#911209" ] []
+        , stop [ offset "1", Attributes.style "stop-color:#911209" ] []
         ]
       , linearGradient
         [ id "XMLID_19_", gradientUnits "userSpaceOnUse", x1 "151.7954", y1 "217.7852", x2 "97.9297", y2 "181.638" ]
-        [ stop [ offset "0", attribute "style" "stop-color:#871101" ] []
-        , stop [ offset "0", attribute "style" "stop-color:#871101" ] []
-        , stop [ offset "0.99", attribute "style" "stop-color:#911209" ] []
-        , stop [ offset "1", attribute "style" "stop-color:#911209" ] []
+        [ stop [ offset "0", Attributes.style "stop-color:#871101" ] []
+        , stop [ offset "0", Attributes.style "stop-color:#871101" ] []
+        , stop [ offset "0.99", Attributes.style "stop-color:#911209" ] []
+        , stop [ offset "1", Attributes.style "stop-color:#911209" ] []
         ]
       , linearGradient
         [ id "XMLID_20_", gradientUnits "userSpaceOnUse", x1 "38.6963", y1 "127.3906", x2 "47.0469", y2 "181.6614" ]
-        [ stop [ offset "0", attribute "style" "stop-color:#FFFFFF" ] []
-        , stop [ offset "0", attribute "style" "stop-color:#FFFFFF" ] []
-        , stop [ offset "0.23", attribute "style" "stop-color:#E57252" ] []
-        , stop [ offset "0.46", attribute "style" "stop-color:#DE3B20" ] []
-        , stop [ offset "0.99", attribute "style" "stop-color:#A60003" ] []
-        , stop [ offset "1", attribute "style" "stop-color:#A60003" ] []
+        [ stop [ offset "0", Attributes.style "stop-color:#FFFFFF" ] []
+        , stop [ offset "0", Attributes.style "stop-color:#FFFFFF" ] []
+        , stop [ offset "0.23", Attributes.style "stop-color:#E57252" ] []
+        , stop [ offset "0.46", Attributes.style "stop-color:#DE3B20" ] []
+        , stop [ offset "0.99", Attributes.style "stop-color:#A60003" ] []
+        , stop [ offset "1", Attributes.style "stop-color:#A60003" ] []
         ]
       , linearGradient
         [ id "XMLID_21_", gradientUnits "userSpaceOnUse", x1 "96.1328", y1 "76.7153", x2 "99.2096", y2 "132.1021" ]
-        [ stop [ offset "0", attribute "style" "stop-color:#FFFFFF" ] []
-        , stop [ offset "0", attribute "style" "stop-color:#FFFFFF" ] []
-        , stop [ offset "0.23", attribute "style" "stop-color:#E4714E" ] []
-        , stop [ offset "0.56", attribute "style" "stop-color:#BE1A0D" ] []
-        , stop [ offset "0.99", attribute "style" "stop-color:#A80D00" ] []
-        , stop [ offset "1", attribute "style" "stop-color:#A80D00" ] []
+        [ stop [ offset "0", Attributes.style "stop-color:#FFFFFF" ] []
+        , stop [ offset "0", Attributes.style "stop-color:#FFFFFF" ] []
+        , stop [ offset "0.23", Attributes.style "stop-color:#E4714E" ] []
+        , stop [ offset "0.56", Attributes.style "stop-color:#BE1A0D" ] []
+        , stop [ offset "0.99", Attributes.style "stop-color:#A80D00" ] []
+        , stop [ offset "1", Attributes.style "stop-color:#A80D00" ] []
         ]
       , linearGradient
         [ id "XMLID_22_", gradientUnits "userSpaceOnUse", x1 "147.103", y1 "25.521", x2 "156.3141", y2 "65.2162" ]
-        [ stop [ offset "0", attribute "style" "stop-color:#FFFFFF" ] []
-        , stop [ offset "0", attribute "style" "stop-color:#FFFFFF" ] []
-        , stop [ offset "0.18", attribute "style" "stop-color:#E46342" ] []
-        , stop [ offset "0.4", attribute "style" "stop-color:#C82410" ] []
-        , stop [ offset "0.99", attribute "style" "stop-color:#A80D00" ] []
-        , stop [ offset "1", attribute "style" "stop-color:#A80D00" ] []
+        [ stop [ offset "0", Attributes.style "stop-color:#FFFFFF" ] []
+        , stop [ offset "0", Attributes.style "stop-color:#FFFFFF" ] []
+        , stop [ offset "0.18", Attributes.style "stop-color:#E46342" ] []
+        , stop [ offset "0.4", Attributes.style "stop-color:#C82410" ] []
+        , stop [ offset "0.99", Attributes.style "stop-color:#A80D00" ] []
+        , stop [ offset "1", Attributes.style "stop-color:#A80D00" ] []
         ]
       , linearGradient
         [ id "XMLID_23_", gradientUnits "userSpaceOnUse", x1 "118.9761", y1 "11.5415", x2 "158.6686", y2 "-8.3048" ]
-        [ stop [ offset "0", attribute "style" "stop-color:#FFFFFF" ] []
-        , stop [ offset "0", attribute "style" "stop-color:#FFFFFF" ] []
-        , stop [ offset "0.54", attribute "style" "stop-color:#C81F11" ] []
-        , stop [ offset "0.99", attribute "style" "stop-color:#BF0905" ] []
-        , stop [ offset "1", attribute "style" "stop-color:#BF0905" ] []
+        [ stop [ offset "0", Attributes.style "stop-color:#FFFFFF" ] []
+        , stop [ offset "0", Attributes.style "stop-color:#FFFFFF" ] []
+        , stop [ offset "0.54", Attributes.style "stop-color:#C81F11" ] []
+        , stop [ offset "0.99", Attributes.style "stop-color:#BF0905" ] []
+        , stop [ offset "1", Attributes.style "stop-color:#BF0905" ] []
         ]
       , linearGradient
         [ id "XMLID_24_", gradientUnits "userSpaceOnUse", x1 "3.9033", y1 "113.5547", x2 "7.1702", y2 "146.2628" ]
-        [ stop [ offset "0", attribute "style" "stop-color:#FFFFFF" ] []
-        , stop [ offset "0", attribute "style" "stop-color:#FFFFFF" ] []
-        , stop [ offset "0.31", attribute "style" "stop-color:#DE4024" ] []
-        , stop [ offset "0.99", attribute "style" "stop-color:#BF190B" ] []
-        , stop [ offset "1", attribute "style" "stop-color:#BF190B" ] []
+        [ stop [ offset "0", Attributes.style "stop-color:#FFFFFF" ] []
+        , stop [ offset "0", Attributes.style "stop-color:#FFFFFF" ] []
+        , stop [ offset "0.31", Attributes.style "stop-color:#DE4024" ] []
+        , stop [ offset "0.99", Attributes.style "stop-color:#BF190B" ] []
+        , stop [ offset "1", Attributes.style "stop-color:#BF190B" ] []
         ]
       , linearGradient
         [ id "XMLID_25_", gradientUnits "userSpaceOnUse", x1 "-18.5557", y1 "155.1045", x2 "135.0152", y2 "-2.8093" ]
-        [ stop [ offset "0", attribute "style" "stop-color:#BD0012" ] []
-        , stop [ offset "0", attribute "style" "stop-color:#BD0012" ] []
-        , stop [ offset "0.07", attribute "style" "stop-color:#FFFFFF" ] []
-        , stop [ offset "0.17", attribute "style" "stop-color:#FFFFFF" ] []
-        , stop [ offset "0.27", attribute "style" "stop-color:#C82F1C" ] []
-        , stop [ offset "0.33", attribute "style" "stop-color:#820C01" ] []
-        , stop [ offset "0.46", attribute "style" "stop-color:#A31601" ] []
-        , stop [ offset "0.72", attribute "style" "stop-color:#B31301" ] []
-        , stop [ offset "0.99", attribute "style" "stop-color:#E82609" ] []
-        , stop [ offset "1", attribute "style" "stop-color:#E82609" ] []
+        [ stop [ offset "0", Attributes.style "stop-color:#BD0012" ] []
+        , stop [ offset "0", Attributes.style "stop-color:#BD0012" ] []
+        , stop [ offset "0.07", Attributes.style "stop-color:#FFFFFF" ] []
+        , stop [ offset "0.17", Attributes.style "stop-color:#FFFFFF" ] []
+        , stop [ offset "0.27", Attributes.style "stop-color:#C82F1C" ] []
+        , stop [ offset "0.33", Attributes.style "stop-color:#820C01" ] []
+        , stop [ offset "0.46", Attributes.style "stop-color:#A31601" ] []
+        , stop [ offset "0.72", Attributes.style "stop-color:#B31301" ] []
+        , stop [ offset "0.99", Attributes.style "stop-color:#E82609" ] []
+        , stop [ offset "1", Attributes.style "stop-color:#E82609" ] []
         ]
       , linearGradient
         [ id "XMLID_26_", gradientUnits "userSpaceOnUse", x1 "99.0747", y1 "171.0332", x2 "52.8177", y2 "159.6166" ]
-        [ stop [ offset "0", attribute "style" "stop-color:#8C0C01" ] []
-        , stop [ offset "0", attribute "style" "stop-color:#8C0C01" ] []
-        , stop [ offset "0.54", attribute "style" "stop-color:#990C00" ] []
-        , stop [ offset "0.99", attribute "style" "stop-color:#A80D0E" ] []
-        , stop [ offset "1", attribute "style" "stop-color:#A80D0E" ] []
+        [ stop [ offset "0", Attributes.style "stop-color:#8C0C01" ] []
+        , stop [ offset "0", Attributes.style "stop-color:#8C0C01" ] []
+        , stop [ offset "0.54", Attributes.style "stop-color:#990C00" ] []
+        , stop [ offset "0.99", Attributes.style "stop-color:#A80D0E" ] []
+        , stop [ offset "1", Attributes.style "stop-color:#A80D0E" ] []
         ]
       , linearGradient
         [ id "XMLID_27_", gradientUnits "userSpaceOnUse", x1 "178.5259", y1 "115.5146", x2 "137.4327", y2 "78.684" ]
-        [ stop [ offset "0", attribute "style" "stop-color:#7E110B" ] []
-        , stop [ offset "0", attribute "style" "stop-color:#7E110B" ] []
-        , stop [ offset "0.99", attribute "style" "stop-color:#9E0C00" ] []
-        , stop [ offset "1", attribute "style" "stop-color:#9E0C00" ] []
+        [ stop [ offset "0", Attributes.style "stop-color:#7E110B" ] []
+        , stop [ offset "0", Attributes.style "stop-color:#7E110B" ] []
+        , stop [ offset "0.99", Attributes.style "stop-color:#9E0C00" ] []
+        , stop [ offset "1", Attributes.style "stop-color:#9E0C00" ] []
         ]
       , linearGradient
         [ id "XMLID_28_", gradientUnits "userSpaceOnUse", x1 "193.6235", y1 "47.937", x2 "173.1542", y2 "26.0538" ]
-        [ stop [ offset "0", attribute "style" "stop-color:#79130D" ] []
-        , stop [ offset "0", attribute "style" "stop-color:#79130D" ] []
-        , stop [ offset "0.99", attribute "style" "stop-color:#9E120B" ] []
-        , stop [ offset "1", attribute "style" "stop-color:#9E120B" ] []
+        [ stop [ offset "0", Attributes.style "stop-color:#79130D" ] []
+        , stop [ offset "0", Attributes.style "stop-color:#79130D" ] []
+        , stop [ offset "0.99", Attributes.style "stop-color:#9E120B" ] []
+        , stop [ offset "1", Attributes.style "stop-color:#9E120B" ] []
         ]
       , radialGradient
         [ id "XMLID_29_", cx "143.8315", cy "79.3882", r "50.3576", gradientUnits "userSpaceOnUse" ]
-        [ stop [ offset "0", attribute "style" "stop-color:#A80D00" ] []
-        , stop [ offset "0", attribute "style" "stop-color:#A80D00" ] []
-        , stop [ offset "0.99", attribute "style" "stop-color:#7E0E08" ] []
-        , stop [ offset "1", attribute "style" "stop-color:#7E0E08" ] []
+        [ stop [ offset "0", Attributes.style "stop-color:#A80D00" ] []
+        , stop [ offset "0", Attributes.style "stop-color:#A80D00" ] []
+        , stop [ offset "0.99", Attributes.style "stop-color:#7E0E08" ] []
+        , stop [ offset "1", Attributes.style "stop-color:#7E0E08" ] []
         ]
       , radialGradient
         [ id "XMLID_30_", cx "74.0923", cy "145.751", r "66.9437", gradientUnits "userSpaceOnUse" ]
-        [ stop [ offset "0", attribute "style" "stop-color:#A30C00" ] []
-        , stop [ offset "0", attribute "style" "stop-color:#A30C00" ] []
-        , stop [ offset "0.99", attribute "style" "stop-color:#800E08" ] []
-        , stop [ offset "1", attribute "style" "stop-color:#800E08" ] []
+        [ stop [ offset "0", Attributes.style "stop-color:#A30C00" ] []
+        , stop [ offset "0", Attributes.style "stop-color:#A30C00" ] []
+        , stop [ offset "0.99", Attributes.style "stop-color:#800E08" ] []
+        , stop [ offset "1", Attributes.style "stop-color:#800E08" ] []
         ]
       , linearGradient
         [ id "XMLID_31_", gradientUnits "userSpaceOnUse", x1 "26.6699", y1 "197.3359", x2 "9.9887", y2 "140.742" ]
-        [ stop [ offset "0", attribute "style" "stop-color:#8B2114" ] []
-        , stop [ offset "0", attribute "style" "stop-color:#8B2114" ] []
-        , stop [ offset "0.43", attribute "style" "stop-color:#9E100A" ] []
-        , stop [ offset "0.99", attribute "style" "stop-color:#B3100C" ] []
-        , stop [ offset "1", attribute "style" "stop-color:#B3100C" ] [] 
+        [ stop [ offset "0", Attributes.style "stop-color:#8B2114" ] []
+        , stop [ offset "0", Attributes.style "stop-color:#8B2114" ] []
+        , stop [ offset "0.43", Attributes.style "stop-color:#9E100A" ] []
+        , stop [ offset "0.99", Attributes.style "stop-color:#B3100C" ] []
+        , stop [ offset "1", Attributes.style "stop-color:#B3100C" ] [] 
         ]
       , linearGradient
         [ id "XMLID_32_", gradientUnits "userSpaceOnUse", x1 "154.6411", y1 "9.7979", x2 "192.039", y2 "26.3059" ]
-        [ stop [ offset "0", attribute "style" "stop-color:#B31000" ] []
-        , stop [ offset "0", attribute "style" "stop-color:#B31000" ] []
-        , stop [ offset "0.44", attribute "style" "stop-color:#910F08" ] []
-        , stop [ offset "0.99", attribute "style" "stop-color:#791C12" ] []
-        , stop [ offset "1", attribute "style" "stop-color:#791C12" ] []
+        [ stop [ offset "0", Attributes.style "stop-color:#B31000" ] []
+        , stop [ offset "0", Attributes.style "stop-color:#B31000" ] []
+        , stop [ offset "0.44", Attributes.style "stop-color:#910F08" ] []
+        , stop [ offset "0.99", Attributes.style "stop-color:#791C12" ] []
+        , stop [ offset "1", Attributes.style "stop-color:#791C12" ] []
         ]
       , polygon
-        [ attribute "style" "fill:url(#XMLID_17_-9);fill-rule:evenodd"
+        [ Attributes.style "fill:url(#XMLID_17_-9);fill-rule:evenodd"
         , clipRule "evenodd", points "153.5,130.41 40.38,197.58 186.849,187.641 198.13,39.95 "
         ]
         []
       , polygon
-        [ attribute "style" "fill:url(#XMLID_18_-7);fill-rule:evenodd"
+        [ Attributes.style "fill:url(#XMLID_18_-7);fill-rule:evenodd"
         , clipRule "evenodd", points "187.089,187.54 174.5,100.65 140.209,145.93 "
         ]
         []
       , polygon
-        [ attribute "style" "fill:url(#XMLID_19_-4);fill-rule:evenodd"
+        [ Attributes.style "fill:url(#XMLID_19_-4);fill-rule:evenodd"
         , clipRule "evenodd", points "187.259,187.54 95.03,180.3 40.87,197.391 "
         ]
         []
       , polygon
-        [ attribute "style" "fill:url(#XMLID_20_-9);fill-rule:evenodd"
+        [ Attributes.style "fill:url(#XMLID_20_-9);fill-rule:evenodd"
         , clipRule "evenodd", points "41,197.41 64.04,121.93 13.34,132.771 "
         ]
         []
       , polygon
-        [ attribute "style" "fill:url(#XMLID_21_-3);fill-rule:evenodd"
+        [ Attributes.style "fill:url(#XMLID_21_-3);fill-rule:evenodd"
         , clipRule "evenodd", points "140.2,146.18 119,63.14 58.33,120.01 "
         ]
         []
       , polygon
-        [ attribute "style" "fill:url(#XMLID_22_-7);fill-rule:evenodd"
+        [ Attributes.style "fill:url(#XMLID_22_-7);fill-rule:evenodd"
         , clipRule "evenodd", points "193.32,64.31 135.97,17.47 120,69.1 "
         ]
         []
       , polygon
-        [ attribute "style" "fill:url(#XMLID_23_-9);fill-rule:evenodd"
+        [ Attributes.style "fill:url(#XMLID_23_-9);fill-rule:evenodd"
         , clipRule "evenodd", points "166.5,0.77 132.77,19.41 111.49,0.52 "
         ]
         []
       , polygon
-        [ attribute "style" "fill:url(#XMLID_24_-3);fill-rule:evenodd"
+        [ Attributes.style "fill:url(#XMLID_24_-3);fill-rule:evenodd"
         , clipRule "evenodd", points "0,158.09 14.13,132.32 2.7,101.62 "
         ]
         []
       , path
-        [ attribute "style" "fill:#ffffff;fill-rule:evenodd"
+        [ Attributes.style "fill:#ffffff;fill-rule:evenodd"
         , clipRule "evenodd"
         , d "m 1.94,100.65 11.5,32.62 49.97,-11.211 57.05,-53.02 L 136.56,17.9 111.209,0 68.109,16.13 C 54.53,28.76 28.18,53.75 27.23,54.22 26.29,54.7 9.83,85.81 1.94,100.65 z" ] []
       , path
-        [ attribute "style" "fill:url(#XMLID_25_-9);fill-rule:evenodd"
+        [ Attributes.style "fill:url(#XMLID_25_-9);fill-rule:evenodd"
         , clipRule "evenodd"
         , d "m 42.32,42.05 c 29.43,-29.18 67.37,-46.42 81.93,-31.73 14.551,14.69 -0.88,50.39 -30.31,79.56 -29.43,29.17 -66.9,47.36 -81.45,32.67 -14.56,-14.68 0.4,-51.33 29.83,-80.5 z"
         ]
         []
       , path
-        [ attribute "style" "fill:url(#XMLID_26_-2);fill-rule:evenodd"
+        [ Attributes.style "fill:url(#XMLID_26_-2);fill-rule:evenodd"
         , clipRule "evenodd"
         , d "m 41,197.38 22.86,-75.72 75.92,24.39 C 112.33,171.79 81.8,193.55 41,197.38 z"
         ]
         []
       , path
-        [ attribute "style" "fill:url(#XMLID_27_-1);fill-rule:evenodd"
+        [ Attributes.style "fill:url(#XMLID_27_-1);fill-rule:evenodd"
         , clipRule "evenodd"
         , d "m 120.56,68.89 19.49,77.2 C 162.98,121.98 183.56,96.06 193.639,64 l -73.079,4.89 z"
         ]
         []
       , path
-        [ attribute "style" "fill:url(#XMLID_28_-1);fill-rule:evenodd"
+        [ Attributes.style "fill:url(#XMLID_28_-1);fill-rule:evenodd"
         , clipRule "evenodd"
         , d "m 193.44,64.39 c 7.8,-23.54 9.6,-57.31 -27.181,-63.58 l -30.18,16.67 57.361,46.91 z"
         ]
         []
       , path
-        [ attribute "style" "fill:#9e1209;fill-rule:evenodd"
+        [ Attributes.style "fill:#9e1209;fill-rule:evenodd"
         , clipRule "evenodd"
         , d "m 0,157.75 c 1.08,38.851 29.11,39.43 41.05,39.771 L 13.47,133.11 0,157.75 z"
         ]
         []
       , path
-        [ attribute "style" "fill:url(#XMLID_29_-4);fill-rule:evenodd"
+        [ Attributes.style "fill:url(#XMLID_29_-4);fill-rule:evenodd"
         , clipRule "evenodd"
         , d "m 120.669,69.01 c 17.62,10.83 53.131,32.58 53.851,32.98 1.119,0.63 15.31,-23.93 18.53,-37.81 l -72.381,4.83 z"
         ]
         []
       , path
-        [ attribute "style" "fill:url(#XMLID_30_-6);fill-rule:evenodd"
+        [ Attributes.style "fill:url(#XMLID_30_-6);fill-rule:evenodd"
         , clipRule "evenodd"
         , d "m 63.83,121.66 30.56,58.96 c 18.07,-9.8 32.22,-21.74 45.18,-34.53 L 63.83,121.66 z"
         ]
         []
       , path
-        [ attribute "style" "fill:url(#XMLID_31_-6);fill-rule:evenodd"
+        [ Attributes.style "fill:url(#XMLID_31_-6);fill-rule:evenodd"
         , clipRule "evenodd"
         , d "m 13.35,133.19 -4.33,51.56 c 8.17,11.16 19.41,12.13 31.2,11.26 -8.53,-21.23 -25.57,-63.68 -26.87,-62.82 z"
         ]
         []
       , path
-        [ attribute "style" "fill:url(#XMLID_32_-0);fill-rule:evenodd"
+        [ Attributes.style "fill:url(#XMLID_32_-0);fill-rule:evenodd"
         , clipRule "evenodd"
         , d "m 135.9,17.61 60.71,8.52 C 193.37,12.4 183.42,3.54 166.46,0.77 L 135.9,17.61 z"
         ]
