@@ -20339,8 +20339,7 @@ var _jackgene$live_deck$Deck_Slide_Common$consoleText = A3(_rtfeldman$elm_css$Cs
 var _jackgene$live_deck$Deck_Slide_Common$lightGray = A3(_rtfeldman$elm_css$Css$rgb, 238, 238, 238);
 var _jackgene$live_deck$Deck_Slide_Common$darkGray = A3(_rtfeldman$elm_css$Css$rgb, 192, 192, 192);
 var _jackgene$live_deck$Deck_Slide_Common$blackTranslucent = A4(_rtfeldman$elm_css$Css$rgba, 32, 31, 27, 0.15);
-var _jackgene$live_deck$Deck_Slide_Common$secondary = A3(_rtfeldman$elm_css$Css$rgb, 196, 0, 0);
-var _jackgene$live_deck$Deck_Slide_Common$primary = A3(_rtfeldman$elm_css$Css$rgb, 255, 0, 0);
+var _jackgene$live_deck$Deck_Slide_Common$themeBackgroundColor = A3(_rtfeldman$elm_css$Css$rgb, 255, 0, 0);
 var _jackgene$live_deck$Deck_Slide_Common$headerStyle = _rtfeldman$elm_css$Css$batch(
 	{
 		ctor: '::',
@@ -20375,7 +20374,7 @@ var _jackgene$live_deck$Deck_Slide_Common$headerStyle = _rtfeldman$elm_css$Css$b
 												_rtfeldman$elm_css$Css$em(1.875)),
 											_1: {
 												ctor: '::',
-												_0: _rtfeldman$elm_css$Css$backgroundColor(_jackgene$live_deck$Deck_Slide_Common$primary),
+												_0: _rtfeldman$elm_css$Css$backgroundColor(_jackgene$live_deck$Deck_Slide_Common$themeBackgroundColor),
 												_1: {ctor: '[]'}
 											}
 										}
@@ -20388,6 +20387,7 @@ var _jackgene$live_deck$Deck_Slide_Common$headerStyle = _rtfeldman$elm_css$Css$b
 			}
 		}
 	});
+var _jackgene$live_deck$Deck_Slide_Common$themeForegroundSecondaryColor = A3(_rtfeldman$elm_css$Css$rgb, 196, 0, 0);
 var _jackgene$live_deck$Deck_Slide_Common$black = A3(_rtfeldman$elm_css$Css$rgb, 0, 0, 0);
 var _jackgene$live_deck$Deck_Slide_Common$console = function (output) {
 	return A2(
@@ -20428,6 +20428,7 @@ var _jackgene$live_deck$Deck_Slide_Common$console = function (output) {
 		});
 };
 var _jackgene$live_deck$Deck_Slide_Common$white = A3(_rtfeldman$elm_css$Css$rgb, 255, 255, 255);
+var _jackgene$live_deck$Deck_Slide_Common$themeForegroundColor = _jackgene$live_deck$Deck_Slide_Common$white;
 var _jackgene$live_deck$Deck_Slide_Common$coverStyle = _rtfeldman$elm_css$Css$batch(
 	{
 		ctor: '::',
@@ -20437,7 +20438,7 @@ var _jackgene$live_deck$Deck_Slide_Common$coverStyle = _rtfeldman$elm_css$Css$ba
 			_0: _rtfeldman$elm_css$Css$color(_jackgene$live_deck$Deck_Slide_Common$white),
 			_1: {
 				ctor: '::',
-				_0: _rtfeldman$elm_css$Css$backgroundColor(_jackgene$live_deck$Deck_Slide_Common$primary),
+				_0: _rtfeldman$elm_css$Css$backgroundColor(_jackgene$live_deck$Deck_Slide_Common$themeBackgroundColor),
 				_1: {ctor: '[]'}
 			}
 		}
@@ -27557,7 +27558,7 @@ var _jackgene$live_deck$Deck_Slide_Graphics$numberedDisc = F3(
 							_0: _rtfeldman$elm_css$Svg_Styled_Attributes$css(
 								{
 									ctor: '::',
-									_0: _rtfeldman$elm_css$Css$fill(_jackgene$live_deck$Deck_Slide_Common$primary),
+									_0: _rtfeldman$elm_css$Css$fill(_jackgene$live_deck$Deck_Slide_Common$themeBackgroundColor),
 									_1: {ctor: '[]'}
 								}),
 							_1: {ctor: '[]'}
@@ -27588,7 +27589,7 @@ var _jackgene$live_deck$Deck_Slide_Graphics$numberedDisc = F3(
 													_0: _jackgene$live_deck$Deck_Slide_Common$textWithShadow,
 													_1: {
 														ctor: '::',
-														_0: _rtfeldman$elm_css$Css$fill(_jackgene$live_deck$Deck_Slide_Common$white),
+														_0: _rtfeldman$elm_css$Css$fill(_jackgene$live_deck$Deck_Slide_Common$themeForegroundColor),
 														_1: {
 															ctor: '::',
 															_0: _rtfeldman$elm_css$Css$fontSize(
@@ -54974,7 +54975,7 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$wordCloud = F2(
 																							_rtfeldman$elm_css$Css$em(0.25)),
 																						_1: {
 																							ctor: '::',
-																							_0: _rtfeldman$elm_css$Css$color(_jackgene$live_deck$Deck_Slide_Common$secondary),
+																							_0: _rtfeldman$elm_css$Css$color(_jackgene$live_deck$Deck_Slide_Common$themeForegroundSecondaryColor),
 																							_1: {
 																								ctor: '::',
 																								_0: _rtfeldman$elm_css$Css$opacity(
