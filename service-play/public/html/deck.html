@@ -45256,13 +45256,13 @@ var _jackgene$live_deck$Deck_Slide_Operators$operatorFlatMapMerge = F2(
 											_0: '        3.seconds,',
 											_1: {
 												ctor: '::',
-												_0: '        number',
+												_0: '        number.toLong',
 												_1: {
 													ctor: '::',
-													_0: '      .take(2)',
+													_0: '      )',
 													_1: {
 														ctor: '::',
-														_0: '    )',
+														_0: '      .take(2)',
 														_1: {
 															ctor: '::',
 															_0: ')',
@@ -47688,7 +47688,7 @@ var _jackgene$live_deck$Deck_Slide_Operators$operatorFlatMapMerge = F2(
 					})
 			},
 			animate,
-			'\ngiven ActorSystem = ActorSystem(\"reactive-streams-system\")\nval numbers: Source[Int, _] = Source\n  .tick(2.seconds, 2.seconds, 1)\n  .scan(0)(_ + _)\n\nnumbers\n  .flatMapMerge(\n    breadth = 2,\n    (number: Int) =>\n      Source\n        .tick(0.second, 3.seconds, number)\n        .take(2)\n  )\n  .run()\n',
+			'\ngiven ActorSystem = ActorSystem(\"reactive-streams-system\")\nval numbers: Source[Int, _] = Source\n  .tick(2.seconds, 2.seconds, 1)\n  .scan(0)(_ + _)\n\nnumbers\n  .flatMapMerge(\n    breadth = 2,\n    (number: Int) =>\n      Source\n        .tick(0.second, 3.seconds, number.toLong)\n        .take(2)\n  )\n  .run()\n',
 			showCode);
 	});
 var _jackgene$live_deck$Deck_Slide_Operators$operatorFlatMapConcat = F2(
@@ -49004,13 +49004,13 @@ var _jackgene$live_deck$Deck_Slide_Operators$operatorFlatMapConcat = F2(
 										_0: '        3.seconds,',
 										_1: {
 											ctor: '::',
-											_0: '        number',
+											_0: '        number.toLong',
 											_1: {
 												ctor: '::',
-												_0: '      .take(2)',
+												_0: '      )',
 												_1: {
 													ctor: '::',
-													_0: '    )',
+													_0: '      .take(2)',
 													_1: {
 														ctor: '::',
 														_0: ')',
@@ -51435,7 +51435,7 @@ var _jackgene$live_deck$Deck_Slide_Operators$operatorFlatMapConcat = F2(
 					})
 			},
 			animate,
-			'\ngiven ActorSystem = ActorSystem(\"reactive-streams-system\")\nval numbers: Source[Int, _] = Source\n  .tick(2.seconds, 2.seconds, 1)\n  .scan(0)(_ + _)\n\nnumbers\n  .flatMapConcat(\n    (number: Int) =>\n      Source\n        .tick(0.second, 3.seconds, number)\n        .take(2)\n  )\n  .run()\n',
+			'\ngiven ActorSystem = ActorSystem(\"reactive-streams-system\")\nval numbers: Source[Int, _] = Source\n  .tick(2.seconds, 2.seconds, 1)\n  .scan(0)(_ + _)\n\nnumbers\n  .flatMapConcat(\n    (number: Int) =>\n      Source\n        .tick(0.second, 3.seconds, number.toLong)\n        .take(2)\n  )\n  .run()\n',
 			showCode);
 	});
 var _jackgene$live_deck$Deck_Slide_Operators$operatorFold = F2(
