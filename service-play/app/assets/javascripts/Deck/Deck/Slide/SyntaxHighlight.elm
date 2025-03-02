@@ -74,8 +74,8 @@ syntaxHighlightedCodeBlock language lineEmphases columnEmphases errors source =
     Result.map
     ( \block ->
       let
-        lineEmhasizedBlock : Block
-        lineEmhasizedBlock =
+        lineEmphasizedBlock : Block
+        lineEmphasizedBlock =
           Dict.foldl
           ( \line lineEm accumBlock ->
             Line.emphasizeLines lineEm line (line+1) accumBlock
@@ -89,7 +89,7 @@ syntaxHighlightedCodeBlock language lineEmphases columnEmphases errors source =
           ( \line colEms accumBlock ->
             Line.emphasizeColumns colEms line accumBlock
           )
-          lineEmhasizedBlock
+          lineEmphasizedBlock
           columnEmphases
 
         codeBlock : Html msg

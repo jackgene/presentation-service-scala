@@ -13,7 +13,7 @@ import Css exposing
   )
 import Deck.Slide.Common exposing (..)
 import Deck.Slide.Graphics exposing (coverBackgroundGraphic)
-import Html.Styled exposing (Html, br, div, h1, h2, p, text)
+import Html.Styled exposing (Html, div, h1, p, text)
 import Html.Styled.Attributes exposing (css)
 
 

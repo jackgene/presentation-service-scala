@@ -2,7 +2,7 @@ module Deck.Slide.Introduction exposing ( introduction )
 
 import Deck.Slide.Common exposing (..)
 import Deck.Slide.Template exposing (standardSlideView)
-import Html.Styled exposing (Html, b, div, p, text, ul)
+import Html.Styled exposing (Html, div, p, text)
 
 
 -- Constants
