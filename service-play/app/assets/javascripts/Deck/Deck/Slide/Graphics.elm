@@ -1,7 +1,7 @@
 module Deck.Slide.Graphics exposing
-  ( coverBackgroundGraphic, numberedDisc
-  , languageGoLogo, languageKotlinLogo, languagePythonLogo
-  , languageSwiftLogo, languageTypeScriptLogo
+  ( coverBackgroundGraphic, numberedDisc, languageScalaLogoBig
+  , languageElmLogo, languageGoLogo, languageKotlinLogo, languagePythonLogo
+  , languageScalaLogo, languageSwiftLogo, languageTypeScriptLogo
   )
 
 import Css exposing (fontSize, px)
