@@ -4,13 +4,12 @@ import Css exposing
   -- Container
   ( left, position, top, width, margin, margin2
   -- Content
-  , backgroundColor, fontSize, fontWeight
+  , fontSize
   -- Units
-  , em, int, vw, zero
+  , em, vw, zero
   -- Alignments & Positions
   , absolute
   -- Other values
-  , normal
   )
 import Deck.Slide.Common exposing (..)
 import Deck.Slide.Graphics exposing (coverBackgroundGraphic)
