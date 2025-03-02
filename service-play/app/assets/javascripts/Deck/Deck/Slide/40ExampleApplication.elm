@@ -27,7 +27,7 @@ import Deck.Slide.MarbleDiagram exposing (..)
 import Deck.Slide.SyntaxHighlight exposing (..)
 import Deck.Slide.Template exposing (standardSlideView)
 import Dict exposing (Dict)
-import Html.Styled exposing (Html, br, div, p, table, td, text, th, tr)
+import Html.Styled exposing (Html, div, p, table, td, text, th, tr)
 import Html.Styled.Attributes exposing (css)
 import Set
 import WordCloud exposing (WordCounts)

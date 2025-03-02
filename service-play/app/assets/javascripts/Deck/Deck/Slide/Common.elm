@@ -9,7 +9,7 @@ import Css exposing
   , backgroundColor, before, color
   , fontFamilies, fontSize, fontStyle, fontWeight
   -- Units
-  , em, int, rgb, rgba, vw, zero
+  , em, int, rgb, vw, zero
   -- Alignments & Positions
   -- Other values
   , block, italic, textShadow4
@@ -63,10 +63,6 @@ themeForegroundSecondaryColor = rgb 196 0 0
 
 themeBackgroundColor : Color
 themeBackgroundColor = rgb 255 0 0
-
-
-blackTranslucent : Color
-blackTranslucent = rgba 32 31 27 0.15
 
 
 darkGray : Color
