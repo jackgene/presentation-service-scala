@@ -6,7 +6,7 @@ module Deck.Slide.Graphics exposing
 
 import Css exposing (fontSize, px, vw)
 import Deck.Slide.Common exposing
-  ( themeBackgroundColor, themeForegroundColor, black, numberFontFamily
+  ( black, numberFontFamily, themeBackgroundColor, themeForegroundColor
   )
 import Svg.Styled exposing (..)
 import Svg.Styled.Attributes as Attributes exposing
