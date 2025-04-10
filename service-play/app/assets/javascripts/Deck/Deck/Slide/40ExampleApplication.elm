@@ -71,16 +71,16 @@ collecting =
         , div []
           [ syntaxHighlightedCodeBlock Scala Dict.empty Dict.empty []
       """
-path("/word-counts") {
-  handleWebSocketMessages(
-    Flow.fromSinkAndSource(
-      Sink.ignore,
-      wordCounts.map { (counts: Map[String, Int]) =>
-        TextMessage(counts.toJson.compactPrint)
-      }
-    )
-  )
-}
+import org.apache.pekko.http.scaladsl.model.ws.TextMessage
+import org.apache.pekko.http.scaladsl.server.Directives.*
+import org.apache.pekko.stream.scaladsl.{Flow, Sink}
+import spray.json.*
+path("/word-counts"):
+  handleWebSocketMessages(Flow.fromSinkAndSource(
+    Sink.ignore,
+    wordCounts.map: (counts: Map[String, Int]) =>
+      TextMessage(counts.toJson.compactPrint)
+  ))
 """
           ]
         , p []
