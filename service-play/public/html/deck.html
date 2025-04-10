@@ -22727,7 +22727,7 @@ var _jackgene$live_deck$Deck_Slide_Cover$cover = _elm_lang$core$Native_Utils.upd
 														{ctor: '[]'}),
 													_1: {
 														ctor: '::',
-														_0: _rtfeldman$elm_css$Html_Styled$text('February 17, 2025'),
+														_0: _rtfeldman$elm_css$Html_Styled$text('April 10, 2025'),
 														_1: {ctor: '[]'}
 													}
 												}
@@ -33570,7 +33570,7 @@ var _jackgene$live_deck$Deck_Slide_ExampleApplication$collecting = _elm_lang$cor
 											_elm_lang$core$Dict$empty,
 											_elm_lang$core$Dict$empty,
 											{ctor: '[]'},
-											'\npath(\"/word-counts\") {\n  handleWebSocketMessages(\n    Flow.fromSinkAndSource(\n      Sink.ignore,\n      wordCounts.map { (counts: Map[String, Int]) =>\n        TextMessage(counts.toJson.compactPrint)\n      }\n    )\n  )\n}\n'),
+											'\nimport org.apache.pekko.http.scaladsl.model.ws.TextMessage\nimport org.apache.pekko.http.scaladsl.server.Directives.*\nimport org.apache.pekko.stream.scaladsl.{Flow, Sink}\nimport spray.json.*\npath(\"/word-counts\"):\n  handleWebSocketMessages(Flow.fromSinkAndSource(\n    Sink.ignore,\n    wordCounts.map: (counts: Map[String, Int]) =>\n      TextMessage(counts.toJson.compactPrint)\n  ))\n'),
 										_1: {ctor: '[]'}
 									}),
 								_1: {
@@ -33590,13 +33590,13 @@ var _jackgene$live_deck$Deck_Slide_ExampleApplication$collecting = _elm_lang$cor
 			})
 	});
 var _jackgene$live_deck$Deck_Slide_ExampleApplication$implementation1ChatMessages = function (showCode) {
-	return A9(_jackgene$live_deck$Deck_Slide_ExampleApplication$implementationDiagramSlide, 0, _jackgene$live_deck$Deck_Slide_ExampleApplication$heading, 'Source Events', 'We start with the source event messages - actual Zoom chat messages:', '\nval chatMessages: Source[ChatMessage, _] = Consumer\n  .plainSource(\n    ConsumerSettings(\n      system, new StringDeserializer, new StringDeserializer\n    ) .withBootstrapServers(\"localhost:9092\")\n      .withGroupId(\"word-cloud-app\")\n      .withProperty(\"auto.offset.reset\", \"earliest\"),\n    Subscriptions.topics(\"word-cloud.chat-message\")\n  )\n  .map(_.value.parseJson.convertTo[ChatMessage])\n', showCode, _jackgene$live_deck$Deck_Slide_ExampleApplication$implementation1Layout.leftEm, _jackgene$live_deck$Deck_Slide_ExampleApplication$detailedMagnification, false);
+	return A9(_jackgene$live_deck$Deck_Slide_ExampleApplication$implementationDiagramSlide, 0, _jackgene$live_deck$Deck_Slide_ExampleApplication$heading, 'Source Events', 'We start with the source event messages - actual Zoom chat messages:', '\nimport org.apache.pekko.kafka.scaladsl.Consumer\nimport org.apache.pekko.kafka.{ConsumerSettings, Subscriptions}\nimport org.apache.pekko.stream.scaladsl.Source\nimport spray.json.*\n\nval chatMessages: Source[ChatMessage, _] = Consumer.plainSource(\n  ConsumerSettings(\n    system, new StringDeserializer, new StringDeserializer\n  ) .withBootstrapServers(\"localhost:9092\")\n    .withGroupId(\"word-cloud-app\")\n  Subscriptions.topics(\"word-cloud.chat-message\")\n).map(_.value.parseJson.convertTo[ChatMessage])\n', showCode, _jackgene$live_deck$Deck_Slide_ExampleApplication$implementation1Layout.leftEm, _jackgene$live_deck$Deck_Slide_ExampleApplication$detailedMagnification, false);
 };
 var _jackgene$live_deck$Deck_Slide_ExampleApplication$implementation2MapNormalizeWords = function (showCode) {
-	return A9(_jackgene$live_deck$Deck_Slide_ExampleApplication$implementationDiagramSlide, 1, _jackgene$live_deck$Deck_Slide_ExampleApplication$heading, 'Normalizing Message Text', 'The message text is normalized, retaining the sender:', '\nval NonLetterPattern: Regex = \"\"\"[^\\p{L}]+\"\"\".r\ndef normalizeText(msg: ChatMessage): SenderAndText =\n  SenderAndText(\n    msg.sender,\n    NonLetterPattern.replaceAllIn(msg.text, \" \")\n      .trim\n      .toLowerCase\n  )\n', showCode, _jackgene$live_deck$Deck_Slide_ExampleApplication$implementation2Layout.leftEm, _jackgene$live_deck$Deck_Slide_ExampleApplication$detailedMagnification, false);
+	return A9(_jackgene$live_deck$Deck_Slide_ExampleApplication$implementationDiagramSlide, 1, _jackgene$live_deck$Deck_Slide_ExampleApplication$heading, 'Normalizing Message Text', 'The message text is normalized, retaining the sender:', '\nimport scala.util.matching.Regex\n\nval NonLetterPattern: Regex = \"\"\"[^\\p{L}]+\"\"\".r\ndef normalizeText(msg: ChatMessage): SenderAndText =\n  SenderAndText(\n    msg.sender,\n    NonLetterPattern.replaceAllIn(msg.text, \" \")\n      .trim()\n      .toLowerCase()\n  )\n', showCode, _jackgene$live_deck$Deck_Slide_ExampleApplication$implementation2Layout.leftEm, _jackgene$live_deck$Deck_Slide_ExampleApplication$detailedMagnification, false);
 };
 var _jackgene$live_deck$Deck_Slide_ExampleApplication$implementation3FlatMapConcatSplitIntoWords = function (showCode) {
-	return A9(_jackgene$live_deck$Deck_Slide_ExampleApplication$implementationDiagramSlide, 2, _jackgene$live_deck$Deck_Slide_ExampleApplication$heading, 'Splitting Message Text Into Words', 'The normalized text is split into words:', '\nimport org.apache.pekko.NotUsed\nimport org.apache.pekko.stream.scaladsl.Source\n\ndef splitIntoWords(\n  senderAndText: SenderAndText\n): Source[SenderAndWord, NotUsed] = Source(\n  senderAndText.text\n    .split(\" \")\n    .map(SenderAndWord(senderAndText.sender, _))\n    .reverse\n)\n', showCode, _jackgene$live_deck$Deck_Slide_ExampleApplication$implementation3Layout.leftEm, _jackgene$live_deck$Deck_Slide_ExampleApplication$detailedMagnification, false);
+	return A9(_jackgene$live_deck$Deck_Slide_ExampleApplication$implementationDiagramSlide, 2, _jackgene$live_deck$Deck_Slide_ExampleApplication$heading, 'Splitting Message Text Into Words', 'The normalized text is split into words:', '\nimport org.apache.pekko.stream.scaladsl.Source\n\ndef splitIntoWords(\n  senderAndText: SenderAndText\n): Source[SenderAndWord, _] = Source(\n  senderAndText.text\n    .split(\" \")\n    .map(SenderAndWord(senderAndText.sender, _))\n    .reverse\n)\n', showCode, _jackgene$live_deck$Deck_Slide_ExampleApplication$implementation3Layout.leftEm, _jackgene$live_deck$Deck_Slide_ExampleApplication$detailedMagnification, false);
 };
 var _jackgene$live_deck$Deck_Slide_ExampleApplication$implementation4FilterIsValidWord = function (showCode) {
 	return A9(
@@ -33631,7 +33631,7 @@ var _jackgene$live_deck$Deck_Slide_ExampleApplication$implementation6MapCountSen
 		_jackgene$live_deck$Deck_Slide_ExampleApplication$heading,
 		'Count Senders for Each Word',
 		'For each word, count the number of senders:',
-		'\ndef countSendersForWords(\n  wordsBySender: Map[String, Seq[String]]\n): Map[String, Int] = wordsBySender.toSeq\n  .flatMap {\n    case (sender: String, words: Seq[String]) =>\n      words.map(_ -> sender)\n  }\n  .groupMap(_._1)(_._2)\n  .view.mapValues(_.size).toMap()\n',
+		'\ndef countSendersByWords(\n  wordsBySender: Map[String, Seq[String]]\n): Map[String, Int] = wordsBySender.values\n  .flatten()\n//  .groupMapReduce(identity)(_ => 1)(_ + _)\n  .groupBy(identity).view\n  .mapValues(_.size).toMap\n',
 		showCode,
 		A2(_jackgene$live_deck$Deck_Slide_ExampleApplication$leftEmCentering, _jackgene$live_deck$Deck_Slide_ExampleApplication$wordsBySendersPos.base, _jackgene$live_deck$Deck_Slide_ExampleApplication$senderCountsByWordPos.base),
 		_jackgene$live_deck$Deck_Slide_ExampleApplication$detailedMagnification,
@@ -49308,6 +49308,55 @@ var _jackgene$live_deck$Deck_Slide_QuestionAnswer$slide = function (index) {
 			eventsWsPath: _elm_lang$core$Maybe$Just('question')
 		});
 };
+var _jackgene$live_deck$Deck_Slide_SectionCover$thankYou = _elm_lang$core$Native_Utils.update(
+	_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
+	{
+		view: F2(
+			function (_p1, _p0) {
+				return A2(_jackgene$live_deck$Deck_Slide_Template$sectionCoverSlideView, 6, 'Thank You');
+			})
+	});
+var _jackgene$live_deck$Deck_Slide_SectionCover$questions = _elm_lang$core$Native_Utils.update(
+	_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
+	{
+		view: F2(
+			function (_p3, _p2) {
+				return A2(_jackgene$live_deck$Deck_Slide_Template$sectionCoverSlideView, 5, 'Audience Questions');
+			}),
+		eventsWsPath: _elm_lang$core$Maybe$Just('question')
+	});
+var _jackgene$live_deck$Deck_Slide_SectionCover$additionalConsiderations = _elm_lang$core$Native_Utils.update(
+	_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
+	{
+		view: F2(
+			function (_p5, _p4) {
+				return A2(_jackgene$live_deck$Deck_Slide_Template$sectionCoverSlideView, 4, 'Additional Considerations');
+			})
+	});
+var _jackgene$live_deck$Deck_Slide_SectionCover$application = _elm_lang$core$Native_Utils.update(
+	_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
+	{
+		view: F2(
+			function (_p7, _p6) {
+				return A2(_jackgene$live_deck$Deck_Slide_Template$sectionCoverSlideView, 3, 'Example Application');
+			})
+	});
+var _jackgene$live_deck$Deck_Slide_SectionCover$operators = _elm_lang$core$Native_Utils.update(
+	_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
+	{
+		view: F2(
+			function (_p9, _p8) {
+				return A2(_jackgene$live_deck$Deck_Slide_Template$sectionCoverSlideView, 2, 'Operators');
+			})
+	});
+var _jackgene$live_deck$Deck_Slide_SectionCover$introduction = _elm_lang$core$Native_Utils.update(
+	_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
+	{
+		view: F2(
+			function (_p11, _p10) {
+				return A2(_jackgene$live_deck$Deck_Slide_Template$sectionCoverSlideView, 1, 'Introduction');
+			})
+	});
 var _jackgene$live_deck$Deck_Slide_WordCloud$maxWordDisplayCount = 11;
 var _jackgene$live_deck$Deck_Slide_WordCloud$wordCloud = F2(
 	function (heading, subheading) {
@@ -49548,55 +49597,6 @@ var _jackgene$live_deck$Deck_Slide_WordCloud$wordCloud = F2(
 					}),
 				eventsWsPath: _elm_lang$core$Maybe$Just('word-cloud')
 			});
-	});
-var _jackgene$live_deck$Deck_Slide_SectionCover$thankYou = _elm_lang$core$Native_Utils.update(
-	_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
-	{
-		view: F2(
-			function (_p1, _p0) {
-				return A2(_jackgene$live_deck$Deck_Slide_Template$sectionCoverSlideView, 6, 'Thank You');
-			})
-	});
-var _jackgene$live_deck$Deck_Slide_SectionCover$questions = _elm_lang$core$Native_Utils.update(
-	_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
-	{
-		view: F2(
-			function (_p3, _p2) {
-				return A2(_jackgene$live_deck$Deck_Slide_Template$sectionCoverSlideView, 5, 'Audience Questions');
-			}),
-		eventsWsPath: _elm_lang$core$Maybe$Just('question')
-	});
-var _jackgene$live_deck$Deck_Slide_SectionCover$additionalConsiderations = _elm_lang$core$Native_Utils.update(
-	_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
-	{
-		view: F2(
-			function (_p5, _p4) {
-				return A2(_jackgene$live_deck$Deck_Slide_Template$sectionCoverSlideView, 4, 'Additional Considerations');
-			})
-	});
-var _jackgene$live_deck$Deck_Slide_SectionCover$application = _elm_lang$core$Native_Utils.update(
-	_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
-	{
-		view: F2(
-			function (_p7, _p6) {
-				return A2(_jackgene$live_deck$Deck_Slide_Template$sectionCoverSlideView, 3, 'Example Application');
-			})
-	});
-var _jackgene$live_deck$Deck_Slide_SectionCover$operators = _elm_lang$core$Native_Utils.update(
-	_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
-	{
-		view: F2(
-			function (_p9, _p8) {
-				return A2(_jackgene$live_deck$Deck_Slide_Template$sectionCoverSlideView, 2, 'Operators');
-			})
-	});
-var _jackgene$live_deck$Deck_Slide_SectionCover$introduction = _elm_lang$core$Native_Utils.update(
-	_jackgene$live_deck$Deck_Slide_Common$baseSlideModel,
-	{
-		view: F2(
-			function (_p11, _p10) {
-				return A2(_jackgene$live_deck$Deck_Slide_Template$sectionCoverSlideView, 1, 'Introduction');
-			})
 	});
 var _jackgene$live_deck$Deck_Slide$slideView = F2(
 	function (model, slide) {

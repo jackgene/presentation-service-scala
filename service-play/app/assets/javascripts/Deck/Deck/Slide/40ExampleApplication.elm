@@ -782,16 +782,18 @@ implementation1ChatMessages showCode =
   "Source Events"
   "We start with the source event messages - actual Zoom chat messages:"
   """
-val chatMessages: Source[ChatMessage, _] = Consumer
-  .plainSource(
-    ConsumerSettings(
-      system, new StringDeserializer, new StringDeserializer
-    ) .withBootstrapServers("localhost:9092")
-      .withGroupId("word-cloud-app")
-      .withProperty("auto.offset.reset", "earliest"),
-    Subscriptions.topics("word-cloud.chat-message")
-  )
-  .map(_.value.parseJson.convertTo[ChatMessage])
+import org.apache.pekko.kafka.scaladsl.Consumer
+import org.apache.pekko.kafka.{ConsumerSettings, Subscriptions}
+import org.apache.pekko.stream.scaladsl.Source
+import spray.json.*
+
+val chatMessages: Source[ChatMessage, _] = Consumer.plainSource(
+  ConsumerSettings(
+    system, new StringDeserializer, new StringDeserializer
+  ) .withBootstrapServers("localhost:9092")
+    .withGroupId("word-cloud-app")
+  Subscriptions.topics("word-cloud.chat-message")
+).map(_.value.parseJson.convertTo[ChatMessage])
 """ showCode
   implementation1Layout.leftEm detailedMagnification False
 
@@ -802,13 +804,15 @@ implementation2MapNormalizeWords showCode =
   "Normalizing Message Text"
   "The message text is normalized, retaining the sender:"
   """
+import scala.util.matching.Regex
+
 val NonLetterPattern: Regex = ""\"[^\\p{L}]+""\".r
 def normalizeText(msg: ChatMessage): SenderAndText =
   SenderAndText(
     msg.sender,
     NonLetterPattern.replaceAllIn(msg.text, " ")
-      .trim
-      .toLowerCase
+      .trim()
+      .toLowerCase()
   )
 """ showCode
   implementation2Layout.leftEm detailedMagnification False
@@ -820,12 +824,11 @@ implementation3FlatMapConcatSplitIntoWords showCode =
   "Splitting Message Text Into Words"
   "The normalized text is split into words:"
   """
-import org.apache.pekko.NotUsed
 import org.apache.pekko.stream.scaladsl.Source
 
 def splitIntoWords(
   senderAndText: SenderAndText
-): Source[SenderAndWord, NotUsed] = Source(
+): Source[SenderAndWord, _] = Source(
   senderAndText.text
     .split(" ")
     .map(SenderAndWord(senderAndText.sender, _))
@@ -884,15 +887,13 @@ implementation6MapCountSendersForWord showCode =
   "Count Senders for Each Word"
   "For each word, count the number of senders:"
   """
-def countSendersForWords(
+def countSendersByWords(
   wordsBySender: Map[String, Seq[String]]
-): Map[String, Int] = wordsBySender.toSeq
-  .flatMap {
-    case (sender: String, words: Seq[String]) =>
-      words.map(_ -> sender)
-  }
-  .groupMap(_._1)(_._2)
-  .view.mapValues(_.size).toMap()
+): Map[String, Int] = wordsBySender.values
+  .flatten()
+//  .groupMapReduce(identity)(_ => 1)(_ + _)
+  .groupBy(identity).view
+  .mapValues(_.size).toMap
 """ showCode
   (leftEmCentering wordsBySendersPos.base senderCountsByWordPos.base)
   detailedMagnification False
